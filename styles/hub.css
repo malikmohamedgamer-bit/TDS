@@ -125,3 +125,4 @@
 
 .mods { display: grid; gap: 2px; }
 .mods small { color: var(--text-2); }
+.diffs input:disabled:not(:checked) + span { opacity: 0.45; }

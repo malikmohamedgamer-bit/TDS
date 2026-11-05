@@ -92,6 +92,23 @@ test('daily challenge: same for everyone on a date, reward once per day', () => 
   assert.equal(applyMatchResult(save, res('d2'), C, C.meta, '2026-11-05').daily, false, 'second win the same day');
 });
 
+test('daily challenge: modifier budget, role slots and excluded modifiers hold on every date', () => {
+  const mode = C.modes.get('daily');
+  for (let i = 0; i < 60; i++) {
+    const date = new Date(Date.UTC(2026, 10, 5 + i)).toISOString().slice(0, 10);
+    const dc = dailyChallenge(C, date);
+    const cost = dc.modifiers.reduce((s, id) => s + (C.modifiers.get(id).dailyCost ?? 1), 0);
+    assert.ok(dc.modifiers.length >= 1 && cost <= mode.dailyBudget, `${date}: budget ${cost}`);
+    assert.ok(dc.modifiers.every((id) => C.modifiers.get(id).inDaily !== false), `${date}: excluded modifier`);
+    assert.equal(new Set(dc.loadout).size, 6);
+    const defs = dc.loadout.map((id) => C.towers.get(id));
+    assert.ok(defs.some((t) => t.stats.range >= 25 && t.stats.damage), `${date}: long-range boss killer`);
+    assert.ok(defs.some((t) => t.stats.splash > 0), `${date}: splash`);
+    assert.ok(defs.some((t) => t.stats.targets?.air), `${date}: anti-air`);
+    assert.ok(Object.values(dc.levels).every((l) => l === mode.loanerLevel));
+  }
+});
+
 test('balance smoke: boss rush and daily challenge are winnable; endless lasts beyond 20 waves', () => {
   const run = (mode, seed, extra = {}) => playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed, skill: 0.7, options: { mode, ...extra }, maxTicks: 60 * 60 * 45 });
   assert.ok(['b0', 'b1'].some((s) => run('boss_rush', s).won), 'boss rush');

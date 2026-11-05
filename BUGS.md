@@ -23,3 +23,7 @@ Status is **Fixed** only after a test proves it.
 | 17 | Boss bar intercepted clicks aimed at the ground behind it | e2e ability aiming | Fixed | boss bar is click-through; e2e boss/ability test |
 | 18 | Default loadout had only 2 towers on a new save | screenshot review | Fixed | defaults to 6 towers |
 | 19 | Phone HUD: brand badge and camera buttons overlapped the status bar | phone screenshot | Fixed | in-match phone layout rules (match.css) |
+| 20 | Assist "Skip this wave" button showed for every player (`.btn` display overrode the `hidden` attribute; no global `[hidden]` rule) | milestone 6 screenshot review | Fixed | global `[hidden] { display: none !important }`; screenshot docs/screenshots/m6/04-tutorial-pick.png; e2e assists test still finds it when Assist is on |
+| 21 | Daily Challenge fairness swung 0-100% between dates (loadouts without a long-range boss killer, Giant bosses on the final boss) | `npm run balance -- --daily 10` + modifier x loadout grid | Fixed | role slots + modifier budget; no date below 1/6, 65% overall; unit "daily challenge: modifier budget, role slots ..." |
+| 22 | Leaving the Daily Challenge for another mode shrank the loadout to the owned loaners (3 towers) | milestone 6 screenshot review | Fixed | falls back to the saved loadout or the starters |
+| 23 | Daily loaner cards showed the save's level (Lv 1) instead of the loaner level | in-app check | Fixed | screenshot docs/screenshots/m6/02-daily.png |

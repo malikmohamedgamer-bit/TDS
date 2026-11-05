@@ -210,18 +210,30 @@ export function claimQuest(save, quests, content, date, claimId) {
 export function dailyChallenge(content, date) {
   const mode = content.modes?.get('daily');
   const rng = new Rng(`daily:${date}`);
-  const mods = rng.shuffle([...content.modifiers.keys()].sort()).slice(0, mode?.dailyModifiers ?? 1);
+  // Modifiers: fill a difficulty budget (dailyCost points) so every date is about as hard.
+  const budget = mode?.dailyBudget ?? 2;
+  const mods = [];
+  let spent = 0;
+  const pool = [...content.modifiers.values()].filter((m) => m.inDaily !== false).map((m) => m.id).sort();
+  for (const id of rng.shuffle(pool)) {
+    const cost = content.modifiers.get(id).dailyCost ?? 1;
+    if (spent + cost <= budget) { mods.push(id); spent += cost; }
+    if (spent >= budget) break;
+  }
   const all = [...content.towers.values()].sort((a, b) => (a.id < b.id ? -1 : 1));
   const loadout = [];
   const take = (pred) => {
     const pool = rng.shuffle(all.filter((t) => pred(t) && !loadout.includes(t.id)));
     if (pool.length) loadout.push(pool[0].id);
   };
+  // Role slots keep every loadout complete: a long-range boss killer, splash, anti-air,
+  // two sustained-damage picks (12+ DPS, so slow control towers never stack) and one support.
+  take((t) => (t.stats.range || 0) >= 25 && t.stats.damage);
   take((t) => t.stats.splash > 0 && t.stats.damage);
   take((t) => t.stats.targets?.air && t.stats.damage);
-  take((t) => (t.stats.range || 0) >= 20 && t.stats.damage);
-  take((t) => t.stats.damage);
-  take((t) => t.stats.damage);
+  const dps = (t) => (t.stats.damage || 0) * (t.stats.rate || 0);
+  take((t) => dps(t) >= 12);
+  take((t) => dps(t) >= 12);
   take((t) => !t.stats.damage);
   const levels = Object.fromEntries(loadout.map((id) => [id, mode?.loanerLevel ?? 5]));
   return { date, difficulty: mode?.difficulty || 'easy', modifiers: mods, loadout, levels, rewardId: `dailychallenge:${date}`, reward: { sigils: 120, crowns: 300 } };

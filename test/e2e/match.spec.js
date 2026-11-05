@@ -158,8 +158,14 @@ test('tutorial advances on real actions and can be skipped', async ({ page }) =>
   await page.keyboard.up('KeyW');
   await page.evaluate(() => window.TDS.setView(window.TDS.camera.yaw + 1));
   await expect(tut).toHaveAttribute('data-step', 'pick', { timeout: 30_000 });
+  // the control each step talks about glows
+  await expect(page.locator('[data-testid="hotbar"] .slot').first()).toHaveClass(/tut-glow/);
   await page.keyboard.press('Digit1');
   await expect(tut).toHaveAttribute('data-step', 'place', { timeout: 30_000 });
+  await expect(page.locator('[data-testid="hotbar"] .slot').first()).not.toHaveClass(/tut-glow/);
+  await page.evaluate(() => window.TDS.ctrl.command({ type: 'place', tower: window.TDS.match.loadout[0], x: -10, z: -12 }));
+  await expect(tut).toHaveAttribute('data-step', 'wave', { timeout: 30_000 });
+  await expect(page.getByTestId('skip')).toHaveClass(/tut-glow/);
   await page.getByRole('button', { name: 'Skip tutorial' }).click();
   await expect(tut).toBeHidden();
   expect(await page.evaluate(() => window.TDS.save.progress.tutorialDone)).toBe(true);

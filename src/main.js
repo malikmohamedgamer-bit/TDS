@@ -15,7 +15,7 @@ import { Hud } from './ui/hud.js';
 import { createStorage } from './save/storage.js';
 import { loadSettings, saveSettings } from './save/settings.js';
 import { loadSave } from './save/save.js';
-import { ensureStarters } from './meta/meta.js';
+import { ensureStarters, dailyChallenge } from './meta/meta.js';
 import { Sfx } from './audio/sfx.js';
 import { MatchController } from './game/matchController.js';
 import { SIM_DT } from './sim/match.js';
@@ -236,6 +236,8 @@ async function boot() {
     get match() { return ctrl.match; },
     get ctrl() { return ctrl; },
     get save() { return save; },
+    content,
+    dailyChallenge: (date) => dailyChallenge(content, date),
     settings,
     map: { id: map.id, size: map.size, get bounds() { return mw.world.bounds; }, props: mw.layout.length, colliders: mw.world.colliders.size },
     setCamera,

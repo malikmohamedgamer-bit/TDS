@@ -55,6 +55,7 @@ export class MatchController {
       this.save.progress.tutorialDone = true;
       this.persist();
       if (skipped) this.mhud.banner('Tutorial skipped');
+      else { this.mhud.banner('Tutorial complete!', 'info'); this.sfx.play('upgrade'); }
     });
     this.thumb = (id) => towerThumbnail(this.renderer, this.content, id);
     this.hub = new Hub(this.ui, {
@@ -162,8 +163,7 @@ export class MatchController {
     document.body.classList.remove('in-match');
     this.select(null);
     this.cancelMode();
-    this.tutorial.active = false;
-    this.tutorial.el.hidden = true;
+    this.tutorial.stop();
   }
 
   setPaused(on) {

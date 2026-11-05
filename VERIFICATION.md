@@ -119,3 +119,18 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 | Index silhouettes for undiscovered entries | screenshot docs/screenshots/m5/hub-index.png | pass | |
 | Slot machine visuals | screenshots docs/screenshots/m5/hub-summon-*.png | pass | sounds not verifiable headless |
 | Regression: all earlier e2e + soak | full e2e (18 passed), soak 30 min (0 failures) | pass | |
+
+## Milestone 6: modes and difficulties (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Every mode builds a match; endless waves generated deterministically, boss every 10 | unit modes.test.js | pass | |
+| Boss Rush rotates bosses; Sandbox infinite cash, skip any time, no rewards; Time Attack timer score | unit modes.test.js; e2e modes "Sandbox ..." and "Boss Rush, Time Attack and Challenge ..." | pass | Sandbox e2e places an unowned Gunship chosen in the hub |
+| Locked modes show unlock level; Endless past wave 20 with a boss on 30, best run saved | e2e modes "locked modes ... Endless ..." | pass | |
+| Challenge modifiers apply to the match and raise the shown reward (x1.76 for Tough + Horde) | e2e modes; unit "modifiers ..." | pass | |
+| Daily Challenge: same for everyone on a date, reward once per day | unit; e2e modes "Daily Challenge ..." (fixed Easy, modifiers, loaner levels, second win gives no daily reward) | pass | |
+| Daily rules hold on 60 dates (budget, role slots, excluded modifier) | unit "daily challenge: modifier budget ..." | pass | |
+| Daily balance target 60-70% (bot skill 0.7, fixed Easy, 10 dates) | `npm run balance -- --daily 10 --seeds 6` | pass | 39/60 = 65% (2026-11-05..14); held-out 2027-01-10..19: 45/60 = 75%. Every date wins at least 1/6; Swift Blight days are hardest |
+| Tutorial glows the control per step, device wording, skips impossible steps | e2e "tutorial advances on real actions ..." (hotbar slot glow, then Start wave glow); screenshots docs/screenshots/m6/04-05 | pass | touch wording not screenshot-checked on a phone |
+| Assist skip button hidden unless Assist is on | screenshot docs/screenshots/m6/04-tutorial-pick.png; e2e assists test | pass | bug 20 |
+| Regression: full e2e + soak | 22 passed (4.1 min); soak 30 simulated min, 0 rescues, 0 failures; unit 56/56; lint clean | pass | |

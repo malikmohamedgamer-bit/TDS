@@ -55,3 +55,19 @@ give crowns, but do not set records, complete achievements or count for the dail
 
 `data/difficulties.json`: Easy 0.67x, Normal 1x, Medium 1.5x, Hard 2.25x, Extra Hard 3.4x,
 Extreme 5.1x, Impossible 7.6x enemy health, multiplied with the preset.
+
+## Daily Challenge (data/modes.json, mode "daily")
+
+Fixed for everyone on a date: Easy difficulty, seeded modifiers and a loaner loadout.
+
+| Knob | Where | Effect |
+|---|---|---|
+| `loanerLevel` | daily mode | permanent level of every loaner tower (4). One level is a big step: 3 gave 57%, 5 gave 98% |
+| `dailyBudget` | daily mode | difficulty points of modifiers per day (3) |
+| `tune` | daily mode | extra multipliers, like tuning.json (`enemyHp` 1.08: the fine knob) |
+| `dailyCost` | each modifier | points it costs (1 light, 3 heavy: Tough, No support) |
+| `inDaily: false` | a modifier | keeps it out of the daily (Giant bosses: 0% on its own) |
+
+Measured with `npm run balance -- --daily 10 --seeds 6` (add `--from 2027-01-10` for other dates,
+`--loaner` / `--budget` to try values without editing data): 39/60 = 65% on 2026-11-05..14,
+45/60 = 75% on 2027-01-10..19. Days with Swift Blight are the hardest (1-3/6 wins).

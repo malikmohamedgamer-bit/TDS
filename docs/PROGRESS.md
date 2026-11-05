@@ -13,10 +13,10 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 4. Vertical slice | Done (2026-11-05), deployed to GitHub Pages |
 | Tuning presets + Assist (owner request) | Done (2026-11-05) |
 | 5. Meta progression | **Done (2026-11-05)** |
-| 6. Modes and difficulties | **In progress (stopped at usage limit)**: 7 modes + 9 modifiers in data and sim, hub Play tab, unit tests pass; e2e for modes, tutorial polish, docs and screenshots not done |
+| 6. Modes and difficulties | **Done (2026-11-05)**: 7 modes, 9 modifiers, fair Daily Challenge (bot 65%), mode e2e, tutorial polish |
 | 7-9 | Not started |
 
-## Real content counts (end of milestone 5)
+## Real content counts (end of milestone 6)
 
 | Content | Count |
 |---|---|
@@ -26,7 +26,8 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
 | Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
 | Daily login rewards | 7-day streak |
-| Unit tests / E2E tests | 48 / 18 |
+| Modes / modifiers | 7 / 9 |
+| Unit tests / E2E tests | 56 / 22 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 

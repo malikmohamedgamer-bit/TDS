@@ -115,16 +115,16 @@ export class Hub {
     return `
       ${modes.length > 1 ? `<fieldset><legend>Mode</legend><div class="diffs modes" role="radiogroup" aria-label="Mode">${modes.map((m) => `<label><input type="radio" name="mode" value="${m.id}" data-testid="mode-${m.id}" ${m.id === this.cfg.mode ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked ? m.locked : m.desc)}</small></span></label>`).join('')}</div></fieldset>` : ''}
       ${mode.modifiers ? `<fieldset><legend>Modifiers <span class="count">reward x${modMul.toFixed(2)}</span></legend><div class="mods">${mods.map((x) => `<label class="row"><input type="checkbox" name="mod" value="${x.id}" ${this.cfg.modifiers.includes(x.id) ? 'checked' : ''}> <b>${esc(x.name)}</b> <small>${esc(x.desc)} · x${x.rewardMul}</small></label>`).join('')}</div></fieldset>` : ''}
-      ${daily ? `<fieldset data-testid="daily-challenge"><legend>Today (${daily.date})</legend><p class="note">Difficulty: ${esc(this.c.difficulties.get(daily.difficulty).name)} (fixed). Modifier: ${daily.modifiers.map((id) => esc(this.c.modifiers.get(id).name)).join(', ')}. Loaner loadout below. Win for ${Object.entries(daily.reward).map(([k, v]) => `${v} ${k}`).join(' + ')}${this.save.claimed.includes(daily.rewardId) ? ' (already claimed today)' : ''}.</p></fieldset>` : ''}
+      ${daily ? `<fieldset data-testid="daily-challenge"><legend>Today (${daily.date})</legend><p class="note">Difficulty: ${esc(this.c.difficulties.get(daily.difficulty).name)} (fixed). Modifiers: ${daily.modifiers.map((id) => `<b>${esc(this.c.modifiers.get(id).name)}</b> (${esc(this.c.modifiers.get(id).desc)})`).join(', ')}. Loaner loadout below, every tower at level ${Object.values(daily.levels)[0]}. Win for ${Object.entries(daily.reward).map(([k, v]) => `${v} ${k}`).join(' + ')}${this.save.claimed.includes(daily.rewardId) ? ' (already claimed today)' : ''}.</p></fieldset>` : ''}
       ${mode.sandbox ? '<p class="note">Sandbox: infinite cash, every tower, press Next wave any time. No rewards, no records.</p>' : ''}
       <fieldset><legend>Difficulty</legend><div class="diffs" role="radiogroup" aria-label="Difficulty">
-        ${diffs.map((d) => `<label><input type="radio" name="diff" value="${d.id}" ${d.id === this.cfg.difficulty ? 'checked' : ''}><span><b>${esc(d.name)}</b><small>${d.id === 'relaxed' ? 'slower enemies, 2x keep' : `${d.hpMul}x enemy health`}${this.save.progress.best?.riftline?.[d.id] ? ` · best ${this.save.progress.best.riftline[d.id]}` : ''}</small></span></label>`).join('')}
+        ${diffs.map((d) => `<label><input type="radio" name="diff" value="${d.id}" ${(daily ? d.id === daily.difficulty : d.id === this.cfg.difficulty) ? 'checked' : ''} ${daily ? 'disabled' : ''}><span><b>${esc(d.name)}</b><small>${d.id === 'relaxed' ? 'slower enemies, 2x keep' : `${d.hpMul}x enemy health`}${this.save.progress.best?.riftline?.[d.id] ? ` · best ${this.save.progress.best.riftline[d.id]}` : ''}</small></span></label>`).join('')}
       </div></fieldset>
       <fieldset><legend>Loadout <span class="count" data-testid="loadout-count">${this.cfg.loadout.length}/6</span></legend><div class="cards" data-testid="loadout">
         ${towers.map((t) => {
           const own = usable(t.id);
           const on = this.cfg.loadout.includes(t.id);
-          const lvl = this.save.towers.owned[t.id]?.level || 1;
+          const lvl = daily?.levels[t.id] ?? (this.save.towers.owned[t.id]?.level || 1);
           return `<button class="card ${on ? 'on' : ''} ${own ? '' : 'locked'} f-${t.faction} r-${t.rarity}" data-tower="${t.id}" aria-pressed="${on}" ${own ? '' : 'aria-disabled="true"'}>
             <img alt="" data-thumb="t:${t.id}:${own ? 0 : 1}"><span class="nm">${own ? esc(t.name) : `🔒 ${esc(t.name)}`}</span>
             <span class="meta">${t.faction === 'magic' ? 'Magic' : 'War'} · ${esc(t.class)}${own ? ` · Lv ${lvl}` : ''}</span>
@@ -228,7 +228,8 @@ export class Hub {
     if (e.target.name === 'mode') {
       this.cfg.mode = e.target.value;
       const m = this.c.modes.get(this.cfg.mode);
-      if (!m?.allTowers) this.cfg.loadout = (this.save.towers.loadout?.length ? this.save.towers.loadout : this.cfg.loadout).filter((id) => owns(this.save, id)).slice(0, 6);
+      if (!m?.modifiers) this.cfg.modifiers = [];
+      if (!m?.allTowers) this.cfg.loadout = (this.save.towers.loadout?.length ? this.save.towers.loadout : this.meta.starterTowers).filter((id) => owns(this.save, id)).slice(0, 6);
       this.render();
     }
     if (e.target.name === 'mod') {

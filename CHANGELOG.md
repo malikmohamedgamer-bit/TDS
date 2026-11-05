@@ -53,3 +53,20 @@
   until discovered), Quests (3 daily, story), Achievements, 7-day daily login streak.
 - Player level and XP with level-up rewards; game speed 2x / 3x unlocked by level.
 - Save schema v3 (migration from v2); every reward granted exactly once.
+
+## 0.6.0 - Milestone 6: modes and difficulties (2026-11-05)
+- `data/modes.json`: Campaign, Endless (generated waves, boss every 10, best run saved), Boss Rush
+  (six rotating bosses), Daily Challenge, Time Attack, Challenge (pick modifiers for bigger
+  rewards), Sandbox (infinite cash, every tower, Next wave any time, no rewards). 9 modifiers.
+- Daily Challenge rebuilt for fairness: modifiers fill a difficulty budget (`dailyCost` /
+  `dailyBudget`; heavy ones stand alone, Giant bosses excluded), role-slot loaner loadout (long-range
+  boss killer, splash, anti-air, two sustained-damage picks, one support), loaners at level 4,
+  enemies +8% health. Bot (skill 0.7) wins 65% over 10 dates; 75% on 10 held-out dates.
+- Hub: daily card lists each modifier with its effect and the loaner level; difficulty is locked
+  in Daily; loaner cards show the loaner level; switching modes restores your own loadout.
+- Tutorial: device-specific wording (touch or keyboard), the control each step mentions glows
+  (hotbar slot, place hint, Start wave, Upgrade, ability), steps that a mode makes impossible are
+  skipped, the last step names the real wave count and boss waves, a completion banner.
+- `npm run balance -- --daily 10` measures the Daily Challenge; `tools/mode-shots.mjs`.
+- Fixed: elements with the `hidden` attribute could still show (the Assist "Skip this wave"
+  button was visible to everyone).
