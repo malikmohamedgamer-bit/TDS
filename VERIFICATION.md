@@ -57,3 +57,16 @@ Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU perfo
 | Lint | `npm run lint` | pass | |
 
 Note: the simulation has no visuals yet; towers and enemies appear in milestone 4.
+
+## Milestone 3 (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Blender build + rig + animate + export (6 assets) | Blender MCP run of tools/blender; `node tools/glb-info.mjs assets/models/*.glb` | pass | 306-880 triangles; clips Idle/Walk/Fly/Attack/Death as appropriate |
+| Review from 4+ angles in Blender | MCP `look` (front, back, side, three-quarter) per asset | pass, with fixes | Ironshell rebuilt (shell, legs, mandible direction), Gloomwing belly/spars adjusted |
+| Review from 4+ angles in the engine | `node tools/review-assets.mjs docs/screenshots/m3` (front, back, right, top, 3/4, animation frame) | pass | contact sheets in docs/screenshots/m3 |
+| GLBs valid, clips present, triangle budgets, no zero scale | unit models.test.js | pass | |
+| Viewer loads every GLB and plays clips without errors | e2e viewer.spec.js | pass | |
+| Meshy cost shown and asked before spending | dry-run (30 credits/model), owner approved boss + hero | pass | |
+| Meshy generation | `meshy text-to-3d create --mode preview` | fail (external) | HTTP 402: free plan cannot create tasks; balance still 100 |
+| CC0 packs / Mixamo animations | assets/packs and assets/incoming checked | unverified | nothing dropped in yet; loader accepts any GLB listed in data/models.json |

@@ -78,6 +78,23 @@ Every content file is listed in `data/index.json`.
 
 `npm test` validates all cross references (unknown enemy ids, damage types, props, abilities).
 
+## Adding art
+
+1. **Blender** (needs the Blender MCP add-on, or run the scripts in Blender's Scripting tab):
+   `tools/blender/tdslib.py` has the helpers, `tools/blender/assets.py` one builder per asset.
+   In Blender: `ns = {}; exec(open(r"<repo>/tools/blender/tdslib.py").read(), ns);
+   exec(open(r"<repo>/tools/blender/assets.py").read(), ns); coll, arm = ns['BUILDERS']['husk']();
+   ns['export_glb'](coll, r"<repo>/assets/models/husk.glb")`. Models face -Y in Blender, 1 unit =
+   1 m, origin at ground centre, palette colours from docs/art-style.md. Save the .blend often.
+2. **Register** the GLB in `data/models.json` (url, kind, clip names for idle / move / attack /
+   death) and point the tower or enemy at it with `"model": { "glb": "<id>" }`.
+3. **Check it** in the asset viewer (`viewer.html`) from every angle, then run
+   `node tools/review-assets.mjs docs/screenshots/<dir>` for contact sheets.
+4. **Packs**: drop CC0 packs (Kenney, Quaternius) in `assets/packs/<pack>/`, list the GLB in
+   `data/models.json` and record the licence in `docs/credits.md`.
+5. **Meshy** (paid plans only): `npm exec --yes --package=meshy-cli@0.4.0 -- meshy make "<prompt>" --dry-run`
+   shows the cost first.
+
 ## Tests and tools
 
 ```bash

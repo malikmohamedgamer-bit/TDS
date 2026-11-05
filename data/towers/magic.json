@@ -5,7 +5,7 @@
       "id": "ember_adept", "name": "Ember Adept", "faction": "magic", "class": "area", "rarity": "common",
       "description": "Apprentice fire mage. Fireballs splash small groups.",
       "cost": 300, "limit": 10, "footprint": 0.9, "placement": "ground",
-      "model": { "builder": "emberAdept" },
+      "model": { "glb": "ember_adept", "builder": "emberAdept" },
       "stats": { "damage": 14, "damageType": "fire", "rate": 0.9, "range": 14, "splash": 2.2, "targets": { "ground": true, "air": false }, "detection": false, "projectile": { "kind": "fireball", "speed": 28 } },
       "upgrades": {
         "linear": [

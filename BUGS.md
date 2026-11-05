@@ -15,3 +15,6 @@ Status is **Fixed** only after a test proves it.
 | 9 | Upgrades were worse value than new towers (bot, and players, would never upgrade) | balance bot (0 upgrades) | Fixed | prices retuned; bot now buys 34+ upgrades per Normal run |
 | 10 | Long-range Marksman about 2x more cost-efficient than any other tower | efficiency measurement (damage x road coverage / cost) | Fixed | rebalanced; all damage towers within 94-133 per 100 cash |
 | 11 | spawnEnemy accepted a NaN path distance (silent bad state) | unit test investigation | Fixed | now throws; covered by sim tests |
+| 12 | Gloomwing GLB exported empty: its collection was hidden during review, hidden objects cannot be selected | glb-info after export | Fixed | export_glb unhides and refuses partial selections; unit test checks every GLB parses with its clips |
+| 13 | Rebuilding an asset while its collection was hidden produced zero-scale parts (world matrices not evaluated) | viewer contact sheet (model invisible) | Fixed | collection() always unhides; export refuses zero scale; unit test rejects zero-scale nodes |
+| 14 | Imported emissive parts bloomed far too strongly (emission strength 6) | viewer contact sheet | Fixed | glow clamped to the procedural props' HDR level (max 2.6) |

@@ -40,6 +40,7 @@ export async function loadContent(readJson) {
     abilities: await loadMany(readJson, index.abilities, 'abilities'),
     heroes: await loadMany(readJson, index.heroes, 'heroes'),
     progression: index.progression ? await readJson(index.progression) : null,
+    models: new Map(Object.entries(index.models ? (await readJson(index.models)).models : {})),
   };
   content.version = contentVersion(content);
   return content;
@@ -96,6 +97,9 @@ export function validateContent(c) {
     dmg(h.attack?.damageType, `hero ${h.id}`);
   }
   for (const a of c.abilities.values()) dmg(a.effects?.damageType, `ability ${a.id}`);
+  for (const [kind, map] of [['tower', c.towers], ['enemy', c.enemies]]) {
+    for (const x of map.values()) if (x.model?.glb && c.models && !c.models.has(x.model.glb)) errs.push(`${kind} ${x.id}: unknown model "${x.model.glb}"`);
+  }
   return errs;
 }
 

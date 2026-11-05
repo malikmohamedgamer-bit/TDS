@@ -5,7 +5,7 @@
       "id": "rifleman", "name": "Rifleman", "faction": "war", "class": "ground", "rarity": "common",
       "description": "Cheap, reliable single-target soldier.",
       "cost": 200, "limit": 10, "footprint": 0.9, "placement": "ground",
-      "model": { "builder": "rifleman" },
+      "model": { "glb": "rifleman", "builder": "rifleman" },
       "stats": { "damage": 9, "damageType": "physical", "rate": 1.6, "range": 15, "targets": { "ground": true, "air": false }, "detection": false, "projectile": { "kind": "bullet", "speed": 90 } },
       "upgrades": {
         "linear": [
@@ -74,7 +74,7 @@
       "id": "rocket_battery", "name": "Rocket Battery", "faction": "war", "class": "area", "rarity": "rare",
       "description": "Salvo launcher. Big explosive splash; can hit air.",
       "cost": 800, "limit": 6, "footprint": 1.2, "placement": "ground",
-      "model": { "builder": "rocketBattery" },
+      "model": { "glb": "rocket_battery", "builder": "rocketBattery" },
       "stats": { "damage": 26, "damageType": "explosive", "rate": 0.6, "range": 20, "splash": 4, "targets": { "ground": true, "air": true }, "detection": false, "projectile": { "kind": "rocket", "speed": 26 } },
       "upgrades": {
         "linear": [

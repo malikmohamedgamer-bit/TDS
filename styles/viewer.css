@@ -1,0 +1,30 @@
+/* Asset viewer layout (shares tokens with main.css). */
+body.viewer #scene { position: fixed; inset: 0; }
+.v-list { position: fixed; left: 12px; top: 12px; bottom: 12px; width: 230px; padding: 12px; overflow: auto; }
+.v-list h1 { margin: 0 0 8px; font-size: 1rem; letter-spacing: 0.06em; color: var(--gold); }
+.v-list h2 { margin: 12px 0 6px; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2); }
+.v-list button {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; padding: 6px 10px; margin: 0 0 4px;
+  text-align: left; border-radius: 8px; border: 2px solid transparent; background: #1b1f2c; font-weight: 600; font-size: 0.88rem;
+}
+.v-list button[aria-current="true"] { border-color: var(--gold); background: #262b3d; }
+.v-list button .tag { margin-left: auto; font-size: 0.66rem; padding: 2px 6px; border-radius: 99px; background: #2f3548; color: var(--text-2); }
+.v-info { position: fixed; right: 12px; top: 12px; width: 280px; padding: 12px 14px; font-size: 0.86rem; }
+.v-info h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.v-info dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 8px 0; }
+.v-info dt { color: var(--text-2); }
+.v-info dd { margin: 0; font-variant-numeric: tabular-nums; }
+.v-info .clips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.v-info .clips button, .v-views button {
+  min-height: 40px; min-width: 44px; padding: 4px 10px; border-radius: 8px; border: 2px solid var(--border); background: #1b1f2c; font-weight: 700;
+}
+.v-info .clips button[aria-pressed="true"], .v-views button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.v-info .row { min-height: 36px; }
+.v-info .src { color: var(--text-2); font-size: 0.75rem; word-break: break-word; }
+.swatches { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.swatches span { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.25); }
+.v-views { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 6px; padding: 8px; flex-wrap: wrap; justify-content: center; }
+@media (max-width: 760px) {
+  .v-list { width: auto; right: 12px; bottom: auto; max-height: 34vh; }
+  .v-info { top: auto; bottom: 86px; left: 12px; right: 12px; width: auto; max-height: 30vh; overflow: auto; }
+}

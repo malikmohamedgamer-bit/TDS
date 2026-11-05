@@ -1,0 +1,11 @@
+{
+  "$doc": "3D model manifest. key = model id used by towers/enemies/heroes (data 'model.glb'). url is relative to the game root. clips maps game states to clip names inside the GLB. scale multiplies the model. source records where the art came from (blender / pack / meshy) and its .blend or licence.",
+  "models": {
+    "husk": { "url": "assets/models/husk.glb", "kind": "enemy", "clips": { "idle": "Idle", "move": "Walk", "attack": "Attack", "death": "Death" }, "source": "blender: assets/blend/tds_assets.blend (collection husk), tools/blender/assets.py" },
+    "gloomwing": { "url": "assets/models/gloomwing.glb", "kind": "enemy", "clips": { "idle": "Idle", "move": "Fly", "attack": "Attack", "death": "Death" }, "source": "blender: collection gloomwing" },
+    "ironshell": { "url": "assets/models/ironshell.glb", "kind": "enemy", "clips": { "idle": "Idle", "move": "Walk", "attack": "Attack", "death": "Death" }, "source": "blender: collection ironshell" },
+    "rifleman": { "url": "assets/models/rifleman.glb", "kind": "tower", "clips": { "idle": "Idle", "attack": "Attack" }, "source": "blender: collection rifleman" },
+    "ember_adept": { "url": "assets/models/ember_adept.glb", "kind": "tower", "clips": { "idle": "Idle", "attack": "Attack" }, "source": "blender: collection ember_adept" },
+    "rocket_battery": { "url": "assets/models/rocket_battery.glb", "kind": "tower", "clips": { "idle": "Idle", "attack": "Attack" }, "source": "blender: collection rocket_battery" }
+  }
+}

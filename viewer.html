@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#12141C">
+  <title>TDS Asset Viewer</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/viewer.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/build/three.module.js",
+        "three/addons/": "./vendor/three/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body class="viewer">
+  <canvas id="scene" aria-label="Asset preview" tabindex="0"></canvas>
+  <aside class="v-list panel" aria-label="Assets"><h1>Asset viewer</h1><div class="v-groups" data-testid="asset-list"></div></aside>
+  <section class="v-info panel" aria-label="Asset details" data-testid="asset-info"></section>
+  <nav class="v-views panel" aria-label="Camera angles" data-testid="views"></nav>
+  <div id="loading" role="status" aria-live="polite"><div class="load-logo" aria-hidden="true">◆</div><h1>TDS</h1><p class="load-tag">Asset viewer</p><div class="load-bar" aria-hidden="true"><span></span></div><p class="load-text">Loading…</p></div>
+  <script type="module" src="src/viewer/viewer.js"></script>
+</body>
+</html>

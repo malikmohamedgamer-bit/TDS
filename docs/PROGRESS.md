@@ -8,25 +8,24 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 |---|---|
 | 0. Setup check | Done (2026-11-05) |
 | 1. Art style, scaffold, 3D scene, character, cameras, collision | Done (2026-11-05) |
-| 2. Simulation core: paths, towers, targeting, damage, waves, economy, saves, tests | **Done (2026-11-05)** |
-| 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | Next |
-| 4. Vertical slice, then STOP for the owner to play | Not started |
+| 2. Simulation core: paths, towers, targeting, damage, waves, economy, saves, tests | Done (2026-11-05) |
+| 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | **Done (2026-11-05)**, Meshy blocked (see below) |
+| 4. Vertical slice, then STOP for the owner to play | Next |
 | 5-9 | Not started |
 
-## Real content counts (end of milestone 2)
+## Real content counts (end of milestone 3)
 
 | Content | Count |
 |---|---|
 | Maps | 1 (Riftline Valley) |
-| Towers (data + sim) | 11 (6 War, 5 Magic), each with 2 linear steps + 2 branches (evolutions) |
-| Enemies | 11 + 1 boss (Gravemaw, 3 phases) |
-| Wave sets | 1 (20-wave campaign, bosses on 10 and 20) |
-| Difficulties | 8 (Relaxed + Easy..Impossible) |
-| Abilities / heroes | 3 / 1 |
-| Prop types | 23 |
-| Unit tests | 34 |
-| E2E tests | 7 |
-| Tower / enemy 3D models | 0 (they exist only in the simulation so far) |
+| Towers (data + sim) | 11 (6 War, 5 Magic) |
+| Enemies | 11 + 1 boss |
+| Rigged, animated GLB models (Blender) | 6: Rifleman, Ember Adept, Rocket Battery (towers); Husk, Gloomwing, Ironshell (enemies) |
+| Procedural (code) models | 23 props + hero |
+| Meshy models | 0 (API refuses task creation on the free plan; 100 credits untouched) |
+| Asset packs / Mixamo | 0 (none dropped into assets/packs or assets/incoming yet) |
+| Unit tests | 36 |
+| E2E tests | 8 |
 
 ## What exists
 
@@ -58,19 +57,36 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   L15 won; Medium L3 and Hard L6 lose at the final boss (gates about 1 level higher); a 2-tower
   strategy loses at wave 13.
 
+- Art pipeline (milestone 3): `tools/blender/tdslib.py` (palette materials, primitives with UVs,
+  armatures, rigid bone binding, NLA clips, checked GLB export) + `tools/blender/assets.py` (one
+  builder per asset). Run them in Blender through the MCP (see README "Adding art").
+  Master file `assets/blend/tds_assets.blend` (one collection per asset). GLBs in `assets/models`,
+  listed in `data/models.json`; towers/enemies reference them with `model.glb`.
+- `src/engine/models.js`: GLB loading, style pass (flat shading, pixel grain, clamped glow),
+  skeleton-safe cloning, AnimationMixer clips with crossfade.
+- `viewer.html` asset viewer: every GLB, prop and the hero; front/back/left/right/top/3-4 views,
+  animations, wireframe, hero for scale. `node tools/review-assets.mjs docs/screenshots/<dir>`
+  writes a contact sheet per asset.
+
 ## Next exact action
 
-Milestone 3: art pipeline proof. In Blender (MCP) build 3 towers (Rifleman, Ember Adept, Rocket
-Battery) and 3 enemies (Husk, Gloomwing, Ironshell) as modular low-poly GLBs following
-docs/art-style.md; save .blend files under assets/blend; export to assets/models. Check
-assets/packs and assets/incoming for owner-dropped CC0 packs / Mixamo FBX. Meshy: run a dry-run
-for one hero/boss model, show the credit cost, and ASK before generating. Build the in-game asset
-viewer (`?viewer`) with 4-angle screenshots.
+Milestone 4 (vertical slice): connect `src/sim/match.js` to the renderer in `src/main.js`
+(match view: enemies from GLB / procedural models with clips, towers with idle/attack, projectiles,
+explosions, damage numbers, range rings), placement preview from any camera (raycast to terrain,
+range circle, valid/invalid by shape + text), tower select / upgrade (A/B branches) / move / sell /
+targeting UI, abilities bar (manual / auto), wave + cash + keep HP HUD, game over / victory,
+tutorial, and Blender models for the remaining 8 towers, 8 enemies and the Gravemaw boss (code
+models are acceptable for the less important ones). Then STOP and ask the owner to play.
 
 ## Known weak spots (honest)
 
 - Enemy portal void is static concentric rings (reads a bit like a target); animate a swirl shader in the VFX milestone.
-- Hero is a code-built model with code animation; a rigged Blender/Mixamo version comes in milestone 3.
+- Hero is still the code-built model with code animation (Meshy was blocked); a Blender version can replace it.
+- Rocket Battery radar dish reads as a grey blob from behind; Gloomwing wing spars overshoot slightly.
+- Blender models use flat palette colours plus the shared grain texture, not per-asset pixel textures.
+- Meshy: `meshy text-to-3d create` returns HTTP 402 "Task creation on the free plan is no longer
+  supported". Options for the owner: upgrade the Meshy plan, or generate on meshy.ai and drop the GLB
+  into assets/incoming for me to clean, rig and import.
 - Frame times so far are only from headless software rendering (SwiftShader, ~10 fps at 1280x720
   High); no real-GPU measurement yet.
 - 245 draw calls at High (shadow pass doubles instanced batches); fine for desktop, phones default to Low.

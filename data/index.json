@@ -6,6 +6,7 @@
   "abilities": "abilities.json",
   "heroes": "heroes.json",
   "progression": "progression.json",
+  "models": "models.json",
   "towers": ["towers/war.json", "towers/magic.json"],
   "enemies": ["enemies/blight.json", "bosses/gravemaw.json"],
   "waves": ["waves/riftline_campaign.json"],

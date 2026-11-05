@@ -22,3 +22,11 @@
 - Versioned saves: migrations, sanitizing, export/import with checksum, backup, rewards once.
 - Content validation, data-driven progression (`data/progression.json`), difficulty cash scaling.
 - Balance bot (`npm run balance`); upgrade prices tuned from bot findings.
+
+## 0.3.0 - Milestone 3 (2026-11-05)
+- Blender pipeline in the repo (`tools/blender/`): helper library and builders; 6 rigged, animated,
+  low-poly GLB models (Rifleman, Ember Adept, Rocket Battery, Husk, Gloomwing, Ironshell).
+- Model manifest `data/models.json`; data references (`model.glb`) validated.
+- GLB loader with the game's material style and animation mixers.
+- Asset viewer (`viewer.html`) and contact-sheet review script (`tools/review-assets.mjs`).
+- Meshy dry-run done (30 credits per model); generation blocked by the free plan (no credits spent).
