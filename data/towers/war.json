@@ -1,0 +1,163 @@
+{
+  "$doc": "Modern War towers. stats: damage per hit, rate = attacks/s, range m, splash m (radius), targets {ground, air}, detection (sees stealth). Upgrades apply in order: linear steps, then one branch (A or B). Each step: cost, and stat ops mul / add / set (dotted paths allowed, e.g. 'burn.dps'). evolve renames the tower for this match. lobby: permanent per-level bonuses and level evolutions.",
+  "towers": [
+    {
+      "id": "rifleman", "name": "Rifleman", "faction": "war", "class": "ground", "rarity": "common",
+      "description": "Cheap, reliable single-target soldier.",
+      "cost": 200, "limit": 10, "footprint": 0.9, "placement": "ground",
+      "model": { "builder": "rifleman" },
+      "stats": { "damage": 9, "damageType": "physical", "rate": 1.6, "range": 15, "targets": { "ground": true, "air": false }, "detection": false, "projectile": { "kind": "bullet", "speed": 90 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Steady Grip", "cost": 75, "mul": { "rate": 1.3 }, "desc": "+30% fire rate" },
+          { "name": "Long Scope", "cost": 125, "add": { "range": 4 }, "set": { "detection": true }, "desc": "+4 range, sees hidden enemies" }
+        ],
+        "branches": {
+          "A": { "name": "Commando", "desc": "Faster, harder hitting rifle fire.", "steps": [
+            { "name": "Burst Fire", "cost": 350, "mul": { "damage": 1.4, "rate": 1.4 }, "desc": "+40% damage, +40% fire rate" },
+            { "name": "Commando", "cost": 700, "mul": { "damage": 1.8 }, "set": { "targets.air": true }, "evolve": "Commando", "desc": "+80% damage, can hit air" }
+          ] },
+          "B": { "name": "Grenadier", "desc": "Switches to explosive rifle grenades.", "steps": [
+            { "name": "Rifle Grenades", "cost": 450, "mul": { "damage": 1.3 }, "set": { "damageType": "explosive", "splash": 2.5, "projectile.kind": "grenade", "projectile.speed": 30 }, "desc": "Explosive splash" },
+            { "name": "Grenadier", "cost": 850, "mul": { "damage": 1.6 }, "set": { "splash": 3.5 }, "evolve": "Grenadier", "desc": "+60% damage, bigger blasts" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "marksman", "name": "Marksman", "faction": "war", "class": "sniper", "rarity": "uncommon",
+      "description": "Long-range sniper. Huge single hits, slow reload.",
+      "cost": 450, "limit": 6, "footprint": 0.9, "placement": "ground",
+      "model": { "builder": "marksman" },
+      "stats": { "damage": 40, "damageType": "physical", "rate": 0.4, "range": 30, "armorPierce": 0.3, "targets": { "ground": true, "air": false }, "detection": false, "projectile": { "kind": "tracer", "speed": 260 }, "targeting": "strongest" },
+      "upgrades": {
+        "linear": [
+          { "name": "Hollow Points", "cost": 175, "mul": { "damage": 1.4 }, "desc": "+40% damage" },
+          { "name": "Thermal Scope", "cost": 225, "add": { "range": 6 }, "set": { "detection": true }, "desc": "+6 range, sees hidden enemies" }
+        ],
+        "branches": {
+          "A": { "name": "Deadeye", "desc": "Ignores armour, deletes elites.", "steps": [
+            { "name": "AP Rounds", "cost": 700, "mul": { "damage": 1.8 }, "set": { "armorPierce": 1 }, "desc": "+80% damage, ignores armour" },
+            { "name": "Deadeye", "cost": 1600, "mul": { "damage": 1.5, "rate": 1.5 }, "set": { "targets.air": true }, "evolve": "Deadeye", "desc": "+50% damage and fire rate, hits air" }
+          ] },
+          "B": { "name": "Spotter", "desc": "Marks targets so every tower hits harder.", "steps": [
+            { "name": "Laser Designator", "cost": 500, "set": { "mark": { "amount": 0.25, "duration": 4 } }, "desc": "Marked enemies take +25% damage for 4 s" },
+            { "name": "Recon Sniper", "cost": 1000, "mul": { "rate": 1.6 }, "set": { "mark.amount": 0.4, "aura": { "detection": true } }, "evolve": "Recon Sniper", "desc": "+60% fire rate, +40% mark, gives detection to nearby towers" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "gunner", "name": "Gunner", "faction": "war", "class": "ground", "rarity": "uncommon",
+      "description": "Machine gunner. Shreds swarms and light air units.",
+      "cost": 450, "limit": 8, "footprint": 1.0, "placement": "ground",
+      "model": { "builder": "gunner" },
+      "stats": { "damage": 4, "damageType": "physical", "rate": 8, "range": 13, "targets": { "ground": true, "air": true }, "detection": false, "projectile": { "kind": "bullet", "speed": 110 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Belt Feed", "cost": 175, "mul": { "rate": 1.3 }, "desc": "+30% fire rate" },
+          { "name": "Tripod", "cost": 225, "add": { "range": 3, "damage": 1 }, "desc": "+3 range, +1 damage" }
+        ],
+        "branches": {
+          "A": { "name": "Minigunner", "desc": "Spin it up.", "steps": [
+            { "name": "Rotary Barrels", "cost": 650, "mul": { "rate": 1.8 }, "desc": "+80% fire rate" },
+            { "name": "Minigunner", "cost": 1500, "mul": { "rate": 1.4, "damage": 1.5 }, "evolve": "Minigunner", "desc": "+40% fire rate, +50% damage" }
+          ] },
+          "B": { "name": "Incendiary", "desc": "Burning rounds.", "steps": [
+            { "name": "Incendiary Rounds", "cost": 750, "set": { "damageType": "fire", "burn": { "dps": 6, "duration": 3 } }, "desc": "Fire damage, sets enemies alight" },
+            { "name": "Flame Trooper", "cost": 1500, "mul": { "damage": 1.5 }, "set": { "burn.dps": 14 }, "evolve": "Flame Trooper", "desc": "Hotter burn, +50% damage" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "rocket_battery", "name": "Rocket Battery", "faction": "war", "class": "area", "rarity": "rare",
+      "description": "Salvo launcher. Big explosive splash; can hit air.",
+      "cost": 800, "limit": 6, "footprint": 1.2, "placement": "ground",
+      "model": { "builder": "rocketBattery" },
+      "stats": { "damage": 26, "damageType": "explosive", "rate": 0.6, "range": 20, "splash": 4, "targets": { "ground": true, "air": true }, "detection": false, "projectile": { "kind": "rocket", "speed": 26 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Bigger Warheads", "cost": 275, "mul": { "damage": 1.35 }, "desc": "+35% damage" },
+          { "name": "Twin Pods", "cost": 425, "mul": { "rate": 1.5 }, "desc": "+50% fire rate" }
+        ],
+        "branches": {
+          "A": { "name": "Artillery", "desc": "Huge range, huge craters. Ground only.", "steps": [
+            { "name": "Long Barrels", "cost": 1500, "add": { "range": 14, "splash": 2 }, "mul": { "damage": 1.6 }, "set": { "targets.air": false }, "desc": "+14 range, +2 splash, +60% damage" },
+            { "name": "Howitzer", "cost": 3000, "mul": { "damage": 2 }, "set": { "stun": 0.5 }, "evolve": "Howitzer", "desc": "Double damage, shells stun briefly" }
+          ] },
+          "B": { "name": "Skyguard", "desc": "Anti-air specialist.", "steps": [
+            { "name": "Seeker Missiles", "cost": 1400, "mul": { "rate": 1.8, "damage": 1.3 }, "set": { "airBonus": 1.75 }, "desc": "+80% fire rate, +75% damage vs air" },
+            { "name": "Skyguard", "cost": 2600, "mul": { "damage": 1.7 }, "set": { "detection": true }, "evolve": "Skyguard", "desc": "+70% damage, sees hidden enemies" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "gunship", "name": "Gunship", "faction": "war", "class": "air", "rarity": "epic",
+      "description": "Attack helicopter. Hovers over its pad and circles, hitting ground and air.",
+      "cost": 1400, "limit": 3, "footprint": 1.4, "placement": "ground",
+      "model": { "builder": "gunship" },
+      "air": { "altitude": 9, "patrol": 7, "speed": 0.45 },
+      "stats": { "damage": 9, "damageType": "physical", "rate": 6, "range": 20, "targets": { "ground": true, "air": true }, "detection": false, "projectile": { "kind": "bullet", "speed": 120 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Chin Turret", "cost": 500, "mul": { "damage": 1.4 }, "desc": "+40% damage" },
+          { "name": "Thermal Optics", "cost": 575, "set": { "detection": true }, "add": { "range": 4 }, "desc": "Sees hidden enemies, +4 range" }
+        ],
+        "branches": {
+          "A": { "name": "Hellfire", "desc": "Rocket pods: explosive splash.", "steps": [
+            { "name": "Rocket Pods", "cost": 2000, "mul": { "damage": 1.6 }, "set": { "damageType": "explosive", "splash": 2.5, "projectile.kind": "rocket", "projectile.speed": 50 }, "desc": "Explosive splash rockets" },
+            { "name": "Hellfire Gunship", "cost": 4200, "mul": { "damage": 2 }, "evolve": "Hellfire Gunship", "desc": "Double damage" }
+          ] },
+          "B": { "name": "Nightwatch", "desc": "Rotary cannon, extreme fire rate.", "steps": [
+            { "name": "Rotary Cannon", "cost": 1900, "mul": { "rate": 2 }, "desc": "Double fire rate" },
+            { "name": "Nightwatch", "cost": 3900, "mul": { "rate": 1.4, "damage": 1.6 }, "evolve": "Nightwatch", "desc": "+40% fire rate, +60% damage" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "supply_depot", "name": "Supply Depot", "faction": "war", "class": "support", "rarity": "uncommon",
+      "description": "Earns cash at the end of every wave.",
+      "cost": 600, "limit": 4, "footprint": 1.3, "placement": "ground",
+      "model": { "builder": "supplyDepot" },
+      "stats": { "income": 110, "range": 0, "targets": { "ground": false, "air": false } },
+      "upgrades": {
+        "linear": [
+          { "name": "Second Truck", "cost": 325, "set": { "income": 190 }, "desc": "190 cash per wave" },
+          { "name": "Convoy", "cost": 575, "set": { "income": 300 }, "desc": "300 cash per wave" }
+        ],
+        "branches": {
+          "A": { "name": "Field Bank", "desc": "Pure income.", "steps": [
+            { "name": "Field Bank", "cost": 1425, "set": { "income": 620 }, "evolve": "Field Bank", "desc": "620 cash per wave" }
+          ] },
+          "B": { "name": "Logistics Hub", "desc": "Income and faster reloads nearby.", "steps": [
+            { "name": "Logistics Hub", "cost": 1300, "set": { "income": 360, "range": 12, "aura": { "rate": 0.15 } }, "evolve": "Logistics Hub", "desc": "360 per wave, +15% fire rate to towers within 12 m" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "mine_layer", "name": "Mine Layer", "faction": "war", "class": "trap", "rarity": "uncommon",
+      "description": "Plants mines on the road within range. Mines blow up under ground enemies.",
+      "cost": 500, "limit": 4, "footprint": 1.0, "placement": "ground",
+      "model": { "builder": "mineLayer" },
+      "stats": { "damage": 55, "damageType": "explosive", "range": 10, "splash": 2.5, "targets": { "ground": true, "air": false }, "detection": true, "trap": { "interval": 2.5, "max": 5, "trigger": 1.3 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Shaped Charges", "cost": 175, "mul": { "damage": 1.4 }, "desc": "+40% damage" },
+          { "name": "Quick Fuse", "cost": 250, "mul": { "trap.interval": 0.7 }, "desc": "Plants 43% faster" }
+        ],
+        "branches": {
+          "A": { "name": "Minefield", "desc": "Many more mines.", "steps": [
+            { "name": "Minefield", "cost": 550, "set": { "trap.max": 10 }, "add": { "splash": 1 }, "evolve": "Minefield", "desc": "Up to 10 mines, bigger blasts" }
+          ] },
+          "B": { "name": "Claymore", "desc": "Fewer, deadlier mines that stun.", "steps": [
+            { "name": "Claymore", "cost": 1100, "mul": { "damage": 2.2 }, "set": { "stun": 0.8 }, "evolve": "Claymore Expert", "desc": "+120% damage, mines stun 0.8 s" }
+          ] }
+        }
+      }
+    }
+  ]
+}

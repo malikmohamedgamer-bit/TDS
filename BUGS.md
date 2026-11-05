@@ -11,3 +11,7 @@ Status is **Fixed** only after a test proves it.
 | 5 | Step-height rocks flipped between "floor" and "wall" inside one substep, triggering safety-net rescues | soak bot (3 rescues / 20 min) | Fixed | soak: 30 simulated min, 0 rescues, 0 failures; unit soak test asserts 0 rescues |
 | 6 | Draw-call stat showed 1 (renderer info reset per post-processing pass) | e2e load test | Fixed | e2e load test asserts > 10 calls |
 | 7 | Touch controls hidden from the accessibility tree (aria-hidden on container) | e2e phone test | Fixed | e2e phone test finds buttons by role |
+| 8 | Mid-campaign boss leak (1000) ended any run that missed it, so Hard and above always died at wave 11 | balance bot timeline | Fixed | wave groups can override leak (wave 10 boss: 60); bot ladder now reaches wave 20 on every difficulty |
+| 9 | Upgrades were worse value than new towers (bot, and players, would never upgrade) | balance bot (0 upgrades) | Fixed | prices retuned; bot now buys 34+ upgrades per Normal run |
+| 10 | Long-range Marksman about 2x more cost-efficient than any other tower | efficiency measurement (damage x road coverage / cost) | Fixed | rebalanced; all damage towers within 94-133 per 100 cash |
+| 11 | spawnEnemy accepted a NaN path distance (silent bad state) | unit test investigation | Fixed | now throws; covered by sim tests |

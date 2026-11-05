@@ -10,7 +10,7 @@ export default [
       globals: { ...globals.browser },
     },
     rules: {
-      'no-unused-vars': ['error', { args: 'none', caughtErrors: 'none' }],
+      'no-unused-vars': ['error', { args: 'none', caughtErrors: 'none', ignoreRestSiblings: true }],
       'no-undef': 'error',
       'no-unreachable': 'error',
       'no-dupe-keys': 'error',

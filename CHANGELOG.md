@@ -13,3 +13,12 @@
 - Input: keyboard, mouse look (right-drag and pointer lock), wheel zoom, touch joystick, drag look,
   pinch zoom, on-screen buttons.
 - HUD and settings dialog with accessibility options; settings saved with in-memory fallback.
+
+## 0.2.0 - Milestone 2 (2026-11-05)
+- Pure deterministic match simulation (`src/sim/`): waves, 11 enemy archetypes + boss phases,
+  11 towers with branching upgrades and in-match evolutions, targeting modes, damage types,
+  resistances, armor, shields, status effects, summons, mines, auras, air units, abilities, hero.
+- Commands with validation, logging and replay; state hash for determinism checks.
+- Versioned saves: migrations, sanitizing, export/import with checksum, backup, rewards once.
+- Content validation, data-driven progression (`data/progression.json`), difficulty cash scaling.
+- Balance bot (`npm run balance`); upgrade prices tuned from bot findings.

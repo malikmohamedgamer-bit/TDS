@@ -1,0 +1,27 @@
+{
+  "$doc": "Bosses are enemies with boss data. phases trigger once when health drops to 'at' (fraction). Actions: telegraph (warning ring, then effect after delay), summon, shield, speed, enrage. Telegraph effects: stunTowers, slamBase.",
+  "enemies": [
+    {
+      "id": "gravemaw", "name": "Gravemaw, the Rift Colossus", "archetype": "boss", "boss": true,
+      "hp": 4200, "speed": 1.6, "armor": 0.25, "reward": 300, "leak": 1000, "size": 3.2,
+      "resist": { "dark": 0.5, "poison": 0.7, "holy": 1.35, "lightning": 1.15 },
+      "model": { "builder": "gravemaw" },
+      "description": "A walking rift wrapped in Blight-stone. Stomps towers into silence and calls the swarm.",
+      "phases": [
+        { "at": 0.75, "name": "Rift Stomp", "actions": [
+          { "type": "telegraph", "effect": "stunTowers", "radius": 11, "duration": 3, "delay": 1.8 },
+          { "type": "summon", "into": "mite", "count": 8 }
+        ] },
+        { "at": 0.5, "name": "Stone Skin", "actions": [
+          { "type": "shield", "amount": 0.25 },
+          { "type": "summon", "into": "husk", "count": 5 }
+        ] },
+        { "at": 0.25, "name": "Enraged", "actions": [
+          { "type": "speed", "mul": 1.6 },
+          { "type": "telegraph", "effect": "stunTowers", "radius": 14, "duration": 4, "delay": 1.8 },
+          { "type": "summon", "into": "skitter", "count": 6 }
+        ] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$doc": "Wave table. Each wave: groups of {enemy, count, interval s between spawns, delay s after wave start, hpMul / leak / path optional}. Enemy health = base hp x difficulty hpMul x (1 + hpScalePerWave x (wave - 1)) x group hpMul. Next wave starts after the wave is cleared plus intermission, or after maxDuration s, whichever is first. waveBonus cash = bonusBase + bonusPerWave x wave.",
+  "id": "riftline_campaign",
+  "name": "Riftline Campaign",
+  "startCash": 650,
+  "baseHp": 150,
+  "hpScalePerWave": 0.07,
+  "intermission": 6,
+  "firstWaveDelay": 12,
+  "maxDuration": 75,
+  "bonusBase": 100,
+  "bonusPerWave": 20,
+  "waves": [
+    { "groups": [{ "enemy": "husk", "count": 6, "interval": 1.4 }] },
+    { "groups": [{ "enemy": "husk", "count": 8, "interval": 1.1 }, { "enemy": "skitter", "count": 3, "interval": 1.0, "delay": 8 }] },
+    { "groups": [{ "enemy": "husk", "count": 10, "interval": 0.9 }, { "enemy": "skitter", "count": 5, "interval": 0.8, "delay": 6 }] },
+    { "groups": [{ "enemy": "husk", "count": 8, "interval": 1.0 }, { "enemy": "ironshell", "count": 2, "interval": 3, "delay": 6 }] },
+    { "groups": [{ "enemy": "mite", "count": 20, "interval": 0.35 }, { "enemy": "husk", "count": 8, "interval": 0.9, "delay": 4 }] },
+    { "groups": [{ "enemy": "gloomwing", "count": 5, "interval": 1.5 }, { "enemy": "husk", "count": 10, "interval": 0.8, "delay": 3 }] },
+    { "groups": [{ "enemy": "shade", "count": 4, "interval": 1.6 }, { "enemy": "skitter", "count": 8, "interval": 0.6, "delay": 5 }] },
+    { "groups": [{ "enemy": "ironshell", "count": 5, "interval": 2.5 }, { "enemy": "mender", "count": 2, "interval": 4, "delay": 4 }, { "enemy": "husk", "count": 10, "interval": 0.8, "delay": 2 }] },
+    { "groups": [{ "enemy": "brood_sac", "count": 6, "interval": 2 }, { "enemy": "gloomwing", "count": 6, "interval": 1.2, "delay": 8 }] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 0.4, "leak": 60 }, { "enemy": "husk", "count": 12, "interval": 1.2, "delay": 2 }] },
+    { "groups": [{ "enemy": "bulwark", "count": 4, "interval": 3 }, { "enemy": "skitter", "count": 10, "interval": 0.5, "delay": 2 }] },
+    { "groups": [{ "enemy": "mossback", "count": 3, "interval": 4 }, { "enemy": "husk", "count": 16, "interval": 0.6 }] },
+    { "groups": [{ "enemy": "caller", "count": 2, "interval": 6 }, { "enemy": "shade", "count": 6, "interval": 1.2, "delay": 3 }, { "enemy": "gloomwing", "count": 6, "interval": 1.0, "delay": 10 }] },
+    { "groups": [{ "enemy": "ironshell", "count": 8, "interval": 1.8 }, { "enemy": "bulwark", "count": 4, "interval": 2.5, "delay": 6 }, { "enemy": "mender", "count": 3, "interval": 4, "delay": 3 }] },
+    { "groups": [{ "enemy": "mite", "count": 40, "interval": 0.2 }, { "enemy": "brood_sac", "count": 8, "interval": 1.5, "delay": 5 }] },
+    { "groups": [{ "enemy": "shade", "count": 10, "interval": 1.0 }, { "enemy": "mossback", "count": 4, "interval": 4, "delay": 4 }] },
+    { "groups": [{ "enemy": "gloomwing", "count": 14, "interval": 0.8 }, { "enemy": "bulwark", "count": 6, "interval": 2, "delay": 5 }] },
+    { "groups": [{ "enemy": "caller", "count": 4, "interval": 5 }, { "enemy": "ironshell", "count": 10, "interval": 1.5, "delay": 2 }, { "enemy": "mender", "count": 4, "interval": 3, "delay": 6 }] },
+    { "groups": [
+      { "enemy": "husk", "count": 20, "interval": 0.4 }, { "enemy": "skitter", "count": 15, "interval": 0.5, "delay": 3 },
+      { "enemy": "ironshell", "count": 6, "interval": 2, "delay": 5 }, { "enemy": "bulwark", "count": 6, "interval": 2, "delay": 8 },
+      { "enemy": "mossback", "count": 4, "interval": 3, "delay": 10 }, { "enemy": "shade", "count": 8, "interval": 1, "delay": 12 },
+      { "enemy": "gloomwing", "count": 10, "interval": 0.8, "delay": 14 }
+    ] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1 }, { "enemy": "bulwark", "count": 4, "interval": 3, "delay": 5 }, { "enemy": "mender", "count": 2, "interval": 5, "delay": 8 }] }
+  ]
+}

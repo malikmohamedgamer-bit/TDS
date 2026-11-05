@@ -30,3 +30,30 @@ Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU perfo
 - Real-GPU frame times on a mid-range desktop and a real phone.
 - Pointer-lock look (headless Chromium cannot grant pointer lock); right-drag look path shares the
   same code.
+
+## Milestone 2 (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Content consistency | unit "content is internally consistent" (validateContent) | pass | 11 towers, 12 enemies incl. boss |
+| Path following | unit "path arc-length lookup" | pass | |
+| Upgrades, branches, evolutions | unit "upgrades: linear first, then a branch choice" | pass | Commando evolution renames, hits air |
+| Lobby levels and evolutions | unit "lobby levels scale stats and evolve permanently" | pass | Veteran L5, Legendary L15 |
+| Damage (resist, armor, pierce, shields, mark) | unit "damage: ..." | pass | exact values checked |
+| Targeting (7 modes, stealth, flying) | unit "targeting modes ..." | pass | |
+| Placement rules (road, props, towers, cash, limit, bounds, slope) | unit "placement validation" | pass | |
+| Economy (buy, upgrade, sell 70%, kill cash, wave bonus once) | unit "economy" | pass | |
+| Waves and difficulty scaling | unit "waves" | pass | |
+| Enemy behaviours (split, heal, regen vs burn, leak) | unit "enemy behaviours" | pass | |
+| Stealth / flying rules | unit "stealth enemies ignored without detection ..." | pass | |
+| Boss phases + telegraph warning before stun | unit "boss phases" | pass | |
+| Abilities (cooldown, manual, automatic) | unit "abilities" | pass | |
+| Summons, mines, support aura | unit "summoner wolves ...; mines ...; aura" | pass | |
+| Determinism and replay | unit "determinism" (same hash twice; replaying the log reproduces it) | pass | |
+| Balance: Normal winnable, not trivial | unit "balance" + `npm run balance` | pass | Normal L1 won (keep 111/150); weak 2-tower strategy loses |
+| Higher difficulties winnable with meta levels | `npm run balance` ladder | partial | Extra Hard L9, Extreme L12, Impossible L15 won; Medium L3 / Hard L6 lose at the final boss (fine-tune in milestone 7) |
+| Saves: memory fallback, migration, sanitize, export/import, tamper rejection, backup, rewards once | unit save.test.js (6 tests) | pass | |
+| Game still boots with the new content loader | e2e "loads the map" | pass | |
+| Lint | `npm run lint` | pass | |
+
+Note: the simulation has no visuals yet; towers and enemies appear in milestone 4.

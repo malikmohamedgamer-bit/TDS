@@ -1,0 +1,116 @@
+{
+  "$doc": "Magic towers. Same schema as war.json. chain: {count, falloff, range} jumps to further enemies. aura: buffs for towers within range (support). summon: unit walks the road backwards from the keep and fights.",
+  "towers": [
+    {
+      "id": "ember_adept", "name": "Ember Adept", "faction": "magic", "class": "area", "rarity": "common",
+      "description": "Apprentice fire mage. Fireballs splash small groups.",
+      "cost": 300, "limit": 10, "footprint": 0.9, "placement": "ground",
+      "model": { "builder": "emberAdept" },
+      "stats": { "damage": 14, "damageType": "fire", "rate": 0.9, "range": 14, "splash": 2.2, "targets": { "ground": true, "air": false }, "detection": false, "projectile": { "kind": "fireball", "speed": 28 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Kindling", "cost": 100, "mul": { "damage": 1.35 }, "desc": "+35% damage" },
+          { "name": "Wider Blaze", "cost": 150, "add": { "splash": 1, "range": 2 }, "desc": "+1 splash, +2 range" }
+        ],
+        "branches": {
+          "A": { "name": "Pyromancer", "desc": "Fire that keeps burning.", "steps": [
+            { "name": "Searing Flames", "cost": 500, "mul": { "damage": 1.4 }, "set": { "burn": { "dps": 10, "duration": 3 } }, "desc": "+40% damage, burns 10/s" },
+            { "name": "Inferno Magus", "cost": 1050, "mul": { "damage": 1.8 }, "set": { "burn.dps": 25 }, "evolve": "Inferno Magus", "desc": "+80% damage, burns 25/s" }
+          ] },
+          "B": { "name": "Sunfire", "desc": "Rapid holy flame.", "steps": [
+            { "name": "Quickcast", "cost": 475, "mul": { "rate": 1.6 }, "desc": "+60% cast speed" },
+            { "name": "Sunfire Warden", "cost": 1000, "mul": { "damage": 2 }, "set": { "damageType": "holy", "targets.air": true, "projectile.kind": "sunbolt" }, "evolve": "Sunfire Warden", "desc": "Holy damage x2, hits air" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "frost_weaver", "name": "Frost Weaver", "faction": "magic", "class": "support", "rarity": "uncommon",
+      "description": "Chilling bolts slow everything they splash. Hits air.",
+      "cost": 400, "limit": 6, "footprint": 0.9, "placement": "ground",
+      "model": { "builder": "frostWeaver" },
+      "stats": { "damage": 9, "damageType": "ice", "rate": 1.0, "range": 13, "splash": 1.6, "slow": { "amount": 0.3, "duration": 2 }, "targets": { "ground": true, "air": true }, "detection": false, "projectile": { "kind": "frostbolt", "speed": 30 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Biting Cold", "cost": 175, "set": { "slow.amount": 0.4 }, "add": { "damage": 3 }, "desc": "40% slow, +3 damage" },
+          { "name": "Frost Reach", "cost": 225, "add": { "range": 3 }, "desc": "+3 range" }
+        ],
+        "branches": {
+          "A": { "name": "Glacier Sage", "desc": "Every few hits freezes solid.", "steps": [
+            { "name": "Flash Freeze", "cost": 800, "set": { "freeze": { "every": 4, "duration": 1 } }, "add": { "splash": 0.8 }, "desc": "Every 4th hit freezes for 1 s" },
+            { "name": "Glacier Archon", "cost": 1600, "set": { "freeze.duration": 1.6, "splash": 3.2 }, "mul": { "damage": 2 }, "evolve": "Glacier Archon", "desc": "Longer freeze, big splash" }
+          ] },
+          "B": { "name": "Rime Lancer", "desc": "Turns frost into piercing lances.", "steps": [
+            { "name": "Ice Lance", "cost": 800, "mul": { "damage": 4, "rate": 1.2 }, "desc": "x4 damage, +20% cast speed" },
+            { "name": "Winter's Edge", "cost": 1500, "mul": { "damage": 2 }, "set": { "slow.amount": 0.5 }, "evolve": "Winter's Edge", "desc": "x2 damage, 50% slow" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "storm_caller", "name": "Storm Caller", "faction": "magic", "class": "hybrid", "rarity": "rare",
+      "description": "Chain lightning that leaps between enemies. Shreds shields.",
+      "cost": 900, "limit": 6, "footprint": 1.0, "placement": "ground",
+      "model": { "builder": "stormCaller" },
+      "stats": { "damage": 24, "damageType": "lightning", "rate": 1.0, "range": 16, "chain": { "count": 3, "falloff": 0.75, "range": 6 }, "targets": { "ground": true, "air": true }, "detection": false, "projectile": { "kind": "lightning", "speed": 0 } },
+      "upgrades": {
+        "linear": [
+          { "name": "Charged Focus", "cost": 325, "mul": { "damage": 1.3 }, "desc": "+30% damage" },
+          { "name": "Overcharge", "cost": 375, "mul": { "rate": 1.3 }, "desc": "+30% cast speed" }
+        ],
+        "branches": {
+          "A": { "name": "Tempest", "desc": "Longer chains.", "steps": [
+            { "name": "Forked Bolts", "cost": 1200, "set": { "chain.count": 6, "chain.falloff": 0.85 }, "desc": "Chains to 6 enemies" },
+            { "name": "Tempest Lord", "cost": 2500, "mul": { "damage": 1.8 }, "set": { "detection": true }, "evolve": "Tempest Lord", "desc": "+80% damage, sees hidden enemies" }
+          ] },
+          "B": { "name": "Thunder Spear", "desc": "One massive bolt.", "steps": [
+            { "name": "Arc Lance", "cost": 850, "mul": { "damage": 2.6 }, "set": { "chain.count": 1, "stun": 0.4 }, "desc": "x2.6 damage, stuns briefly" },
+            { "name": "Thunder Spear", "cost": 2400, "mul": { "damage": 2 }, "add": { "range": 6 }, "evolve": "Thunder Spear", "desc": "x2 damage, +6 range" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "rune_totem", "name": "Rune Totem", "faction": "magic", "class": "support", "rarity": "rare",
+      "description": "Empowers towers within its circle. Does not attack.",
+      "cost": 700, "limit": 4, "footprint": 0.9, "placement": "ground",
+      "model": { "builder": "runeTotem" },
+      "stats": { "range": 12, "aura": { "damage": 0.12, "range": 0.08 }, "targets": { "ground": false, "air": false } },
+      "upgrades": {
+        "linear": [
+          { "name": "Inscribed Runes", "cost": 350, "set": { "aura.damage": 0.18 }, "desc": "+18% damage aura" },
+          { "name": "Seeing Glyph", "cost": 450, "set": { "aura.detection": true }, "desc": "Nearby towers see hidden enemies" }
+        ],
+        "branches": {
+          "A": { "name": "Ward of Haste", "desc": "Faster attacks.", "steps": [
+            { "name": "Ward of Haste", "cost": 1100, "set": { "aura.rate": 0.2 }, "evolve": "Haste Monolith", "desc": "+20% attack speed aura" }
+          ] },
+          "B": { "name": "Ward of Might", "desc": "Bigger hits, longer reach.", "steps": [
+            { "name": "Ward of Might", "cost": 1100, "set": { "aura.damage": 0.3, "aura.range": 0.15 }, "evolve": "Might Monolith", "desc": "+30% damage, +15% range aura" }
+          ] }
+        }
+      }
+    },
+    {
+      "id": "spirit_summoner", "name": "Spirit Summoner", "faction": "magic", "class": "summoner", "rarity": "epic",
+      "description": "Calls spirit wolves that run up the road from your keep and fight.",
+      "cost": 1200, "limit": 3, "footprint": 1.0, "placement": "ground",
+      "model": { "builder": "spiritSummoner" },
+      "stats": { "range": 0, "targets": { "ground": true, "air": false }, "summon": { "interval": 8, "max": 3, "unit": { "id": "spirit_wolf", "hp": 140, "damage": 16, "rate": 1.2, "speed": 4.5, "range": 1.6, "damageType": "arcane", "splash": 0 } } },
+      "upgrades": {
+        "linear": [
+          { "name": "Stronger Bonds", "cost": 500, "mul": { "summon.unit.hp": 1.5, "summon.unit.damage": 1.4 }, "desc": "Wolves +50% health, +40% damage" },
+          { "name": "Pack Call", "cost": 600, "set": { "summon.max": 4, "summon.interval": 6 }, "desc": "Up to 4 wolves, summoned faster" }
+        ],
+        "branches": {
+          "A": { "name": "Wolf Lord", "desc": "Huge wolves.", "steps": [
+            { "name": "Alpha Spirits", "cost": 1600, "mul": { "summon.unit.hp": 2.2, "summon.unit.damage": 2 }, "evolve": "Wolf Lord", "desc": "Wolves x2.2 health, x2 damage" }
+          ] },
+          "B": { "name": "Drake Caller", "desc": "Summons fire drakes that breathe in an arc.", "steps": [
+            { "name": "Spirit Drakes", "cost": 1900, "set": { "summon.unit.id": "spirit_drake", "summon.unit.damageType": "fire", "summon.unit.splash": 2.5, "summon.unit.range": 3 }, "mul": { "summon.unit.damage": 2.4 }, "evolve": "Drake Caller", "desc": "Fire drakes with splash" }
+          ] }
+        }
+      }
+    }
+  ]
+}

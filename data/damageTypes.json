@@ -1,0 +1,14 @@
+{
+  "$doc": "Damage types. vsShield multiplies damage dealt to shields. armorPierce: share of enemy armor ignored. Colours and glyphs follow docs/art-style.md.",
+  "types": [
+    { "id": "physical", "name": "Physical", "color": "#D9D9D9", "glyph": "bullet", "vsShield": 1, "armorApplies": true },
+    { "id": "fire", "name": "Fire", "color": "#FF6B35", "glyph": "flame", "vsShield": 0.8, "armorApplies": false },
+    { "id": "ice", "name": "Ice", "color": "#7FDBFF", "glyph": "snowflake", "vsShield": 1, "armorApplies": false },
+    { "id": "lightning", "name": "Lightning", "color": "#FFE14D", "glyph": "bolt", "vsShield": 1.6, "armorApplies": false },
+    { "id": "arcane", "name": "Arcane", "color": "#B15CFF", "glyph": "star", "vsShield": 1.4, "armorApplies": false },
+    { "id": "poison", "name": "Poison", "color": "#7BD389", "glyph": "droplet", "vsShield": 0.5, "armorApplies": false },
+    { "id": "explosive", "name": "Explosive", "color": "#FF9F1C", "glyph": "burst", "vsShield": 1.2, "armorApplies": true, "armorPierce": 0.5 },
+    { "id": "holy", "name": "Holy", "color": "#FFF3B0", "glyph": "sun", "vsShield": 1, "armorApplies": false },
+    { "id": "dark", "name": "Dark", "color": "#8E5BB5", "glyph": "crescent", "vsShield": 1, "armorApplies": false }
+  ]
+}

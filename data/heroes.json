@@ -1,0 +1,13 @@
+{
+  "$doc": "Playable heroes (walking commanders). attack: auto-attacks the nearest enemy in range while the player walks around. abilities reference data/abilities.json.",
+  "heroes": [
+    {
+      "id": "commander_vale", "name": "Commander Vale", "faction": "hero", "rarity": "rare",
+      "description": "Spellblade officer: a saber that cuts with arcane light and a commander's rally.",
+      "model": { "builder": "commander" },
+      "attack": { "damage": 12, "damageType": "arcane", "rate": 1.4, "range": 7, "splash": 1.5 },
+      "abilities": ["commanders_rally", "airstrike", "frost_nova"],
+      "hp": 200
+    }
+  ]
+}

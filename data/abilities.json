@@ -1,0 +1,14 @@
+{
+  "$doc": "Player abilities (hero skills, airstrikes, spells). cooldown s; target: point (aim at ground), self (around hero) or global. mode defaults to manual; automatic picks the densest enemy group. Effects: damage {amount, type, radius}, slow, stun, heal base, cash.",
+  "abilities": [
+    { "id": "airstrike", "name": "Airstrike", "faction": "war", "cooldown": 45, "target": "point", "delay": 1.5, "radius": 7,
+      "effects": { "damage": 220, "damageType": "explosive", "stun": 0.6 }, "unlockWave": 1,
+      "description": "Call in a jet strike on a point after 1.5 s." },
+    { "id": "frost_nova", "name": "Frost Nova", "faction": "magic", "cooldown": 35, "target": "point", "delay": 0.3, "radius": 9,
+      "effects": { "damage": 40, "damageType": "ice", "freeze": 2.5 }, "unlockWave": 1,
+      "description": "Freezes every enemy in a wide circle for 2.5 s." },
+    { "id": "commanders_rally", "name": "Commander's Rally", "faction": "hero", "cooldown": 60, "target": "self", "delay": 0, "radius": 16,
+      "effects": { "towerBuff": { "rate": 0.35, "duration": 8 } }, "unlockWave": 1,
+      "description": "Towers near the Commander attack 35% faster for 8 s." }
+  ]
+}

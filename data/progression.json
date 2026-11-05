@@ -1,0 +1,13 @@
+{
+  "$doc": "Permanent (lobby) tower levels. Stats multiply by (1 + perLevel x (level - 1)); evolutions apply from their level on and rename the tower permanently (a tower's own lobby.evolutions overrides these). Level-up costs are in crowns (meta currency).",
+  "towerLevels": {
+    "maxLevel": 15,
+    "perLevel": { "damage": 0.07, "rate": 0.02, "range": 0.005 },
+    "evolutions": [
+      { "level": 5, "prefix": "Veteran", "mul": { "damage": 1.1 } },
+      { "level": 10, "prefix": "Elite", "mul": { "damage": 1.15, "range": 1.05 } },
+      { "level": 15, "prefix": "Legendary", "mul": { "damage": 1.2, "rate": 1.1 } }
+    ],
+    "costs": [0, 60, 90, 130, 180, 250, 340, 450, 600, 780, 1000, 1280, 1620, 2050, 2600]
+  }
+}

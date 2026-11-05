@@ -3,6 +3,7 @@
   "name": "Riftline Valley",
   "description": "Where the Arcane Grove meets the Ironhold outpost. One winding road, a Blight portal in the west and your keep in the east.",
   "seed": "riftline-v1",
+  "waves": "riftline_campaign",
   "size": { "w": 110, "d": 80 },
   "sky": { "top": "#7FB8F5", "horizon": "#E3F1FF", "fog": "#CFE6FA", "fogNear": 70, "fogFar": 190 },
   "sun": { "azimuth": 215, "elevation": 52, "color": "#FFF1D6", "intensity": 2.6 },

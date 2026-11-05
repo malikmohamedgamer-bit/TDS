@@ -7,21 +7,26 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Milestone | State |
 |---|---|
 | 0. Setup check | Done (2026-11-05) |
-| 1. Art style, scaffold, 3D scene, character, cameras, collision | **Done (2026-11-05)** |
-| 2. Simulation core: paths, towers, targeting, damage, waves, economy, saves, tests | Next |
-| 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | Not started |
+| 1. Art style, scaffold, 3D scene, character, cameras, collision | Done (2026-11-05) |
+| 2. Simulation core: paths, towers, targeting, damage, waves, economy, saves, tests | **Done (2026-11-05)** |
+| 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | Next |
 | 4. Vertical slice, then STOP for the owner to play | Not started |
 | 5-9 | Not started |
 
-## Real content counts (end of milestone 1)
+## Real content counts (end of milestone 2)
 
 | Content | Count |
 |---|---|
-| Maps | 1 (Riftline Valley, hand-placed + seeded scatter) |
-| Prop types | 23 procedural low-poly props (data/props.json) |
-| Towers / enemies / bosses / heroes | 0 / 0 / 0 / 1 (procedural Commander model, movement only) |
-| Unit tests | 11 (node --test) |
-| E2E tests | 7 (6 desktop, 1 emulated phone) |
+| Maps | 1 (Riftline Valley) |
+| Towers (data + sim) | 11 (6 War, 5 Magic), each with 2 linear steps + 2 branches (evolutions) |
+| Enemies | 11 + 1 boss (Gravemaw, 3 phases) |
+| Wave sets | 1 (20-wave campaign, bosses on 10 and 20) |
+| Difficulties | 8 (Relaxed + Easy..Impossible) |
+| Abilities / heroes | 3 / 1 |
+| Prop types | 23 |
+| Unit tests | 34 |
+| E2E tests | 7 |
+| Tower / enemy 3D models | 0 (they exist only in the simulation so far) |
 
 ## What exists
 
@@ -42,12 +47,25 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   invert Y). Settings persist in localStorage with in-memory fallback (`src/save/`).
 - `window.TDS` debug/test hooks (used by Playwright and screenshots).
 
+- `src/sim/` (pure, deterministic): `match.js` (waves, enemies with all archetype behaviours, towers,
+  projectiles, chains, splash, burn/slow/freeze/stun/mark, summoned allies that block, mines, support
+  auras, air units, boss phases with telegraphs, hero auto-attack, abilities manual/auto, economy,
+  commands with validation + log, hash, result), `stats.js` (upgrade ops, lobby levels),
+  `combat.js` (damage, targeting), `path.js`, `bot.js` (balance bot + replay).
+- `src/save/save.js`: schema v2, v1 migration, sanitize, export/import with checksum, backup,
+  rewards granted once.
+- Balance (bot, seed bal0): Normal L1 won (keep 111/150); Extra Hard L9, Extreme L12, Impossible
+  L15 won; Medium L3 and Hard L6 lose at the final boss (gates about 1 level higher); a 2-tower
+  strategy loses at wave 13.
+
 ## Next exact action
 
-Milestone 2: create `src/sim/` (pure): enemy path following on `map.paths`, tower data model,
-targeting modes, damage types and resistances, wave tables, economy, match state machine; data
-files `data/towers/*.json`, `data/enemies/*.json`, `data/waves/*.json`, `data/difficulties.json`;
-versioned save format with migrations, export/import, backup. Unit tests for all of it.
+Milestone 3: art pipeline proof. In Blender (MCP) build 3 towers (Rifleman, Ember Adept, Rocket
+Battery) and 3 enemies (Husk, Gloomwing, Ironshell) as modular low-poly GLBs following
+docs/art-style.md; save .blend files under assets/blend; export to assets/models. Check
+assets/packs and assets/incoming for owner-dropped CC0 packs / Mixamo FBX. Meshy: run a dry-run
+for one hero/boss model, show the credit cost, and ASK before generating. Build the in-game asset
+viewer (`?viewer`) with 4-angle screenshots.
 
 ## Known weak spots (honest)
 
