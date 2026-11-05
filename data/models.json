@@ -276,7 +276,7 @@
     "q_blob_orc": {
       "url": "assets/models/quaternius/ultimate-monsters/blob-orc.glb",
       "kind": "enemy",
-      "palette": "blight",
+      "palette": "blight_pale",
       "scale": 0.761,
       "glow": false,
       "clips": {
@@ -285,13 +285,13 @@
         "attack": "Bite_Front",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Orc.gltf, decimated to 1499 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Orc.gltf, decimated to 1499 triangles, 48 glow faces (eyes / accents)"
     },
     "q_blob_mushnub_evolved": {
       "url": "assets/models/quaternius/ultimate-monsters/blob-mushnub-evolved.glb",
       "kind": "enemy",
       "palette": "blight",
-      "scale": 0.361,
+      "scale": 0.358,
       "glow": false,
       "clips": {
         "idle": "Idle",
@@ -299,12 +299,12 @@
         "attack": "Bite_Front",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Mushnub_Evolved.gltf, decimated to 1498 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Mushnub_Evolved.gltf, decimated to 1497 triangles, 48 glow faces (eyes / accents)"
     },
     "q_blob_green_spiky_blob": {
       "url": "assets/models/quaternius/ultimate-monsters/blob-green-spiky-blob.glb",
       "kind": "enemy",
-      "palette": "blight",
+      "palette": "blight_pale",
       "scale": 0.36,
       "glow": false,
       "clips": {
@@ -313,13 +313,13 @@
         "attack": "Bite_Front",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/GreenSpikyBlob.gltf, decimated to 1498 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/GreenSpikyBlob.gltf, decimated to 1499 triangles, 24 glow faces (eyes / accents)"
     },
     "q_blob_ninja": {
       "url": "assets/models/quaternius/ultimate-monsters/blob-ninja.glb",
       "kind": "enemy",
-      "palette": "blight",
-      "scale": 0.531,
+      "palette": "blight_pale",
+      "scale": 0.536,
       "glow": false,
       "clips": {
         "idle": "Idle",
@@ -327,7 +327,7 @@
         "attack": "Bite_Front",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Ninja.gltf, decimated to 1498 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Ninja.gltf, decimated to 1500 triangles, 48 glow faces (eyes / accents)"
     },
     "q_flying_ghost_skull": {
       "url": "assets/models/quaternius/ultimate-monsters/flying-ghost-skull.glb",
@@ -341,7 +341,7 @@
         "attack": "Headbutt",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Ghost_Skull.gltf, decimated to 1497 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Ghost_Skull.gltf, decimated to 1499 triangles, 12 glow faces (eyes / accents)"
     },
     "q_flying_dragon": {
       "url": "assets/models/quaternius/ultimate-monsters/flying-dragon.glb",
@@ -355,7 +355,7 @@
         "attack": "Headbutt",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Dragon.gltf, decimated to 1498 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Dragon.gltf, decimated to 1499 triangles, 48 glow faces (eyes / accents)"
     },
     "q_character_enemy": {
       "url": "assets/models/quaternius/toon-shooter-kit/character-enemy.glb",
@@ -369,7 +369,7 @@
         "attack": "Punch",
         "death": "Death"
       },
-      "source": "pack: Quaternius toon-shooter-kit (CC0, quaternius.com/packs/toonshootergamekit.html), file Characters/glTF/Character_Enemy.gltf (SMG only), decimated to 1497 triangles"
+      "source": "pack: Quaternius toon-shooter-kit (CC0, quaternius.com/packs/toonshootergamekit.html), file Characters/glTF/Character_Enemy.gltf (SMG only), decimated to 1498 triangles, 52 glow faces (eyes / accents)"
     },
     "q_big_orc_skull": {
       "url": "assets/models/quaternius/ultimate-monsters/big-orc-skull.glb",
@@ -383,13 +383,13 @@
         "attack": "Punch",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/Orc_Skull.gltf, decimated to 7443 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/Orc_Skull.gltf, decimated to 7363 triangles, 84 glow faces (eyes / accents)"
     },
     "q_big_demon": {
       "url": "assets/models/quaternius/ultimate-monsters/big-demon.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 1.681,
+      "scale": 1.763,
       "glow": false,
       "clips": {
         "idle": "Idle",
@@ -397,7 +397,7 @@
         "attack": "Punch",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/Demon.gltf, decimated to 6792 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/Demon.gltf, decimated to 6712 triangles, 278 glow faces (eyes / accents)"
     },
     "q_big_mushroom_king": {
       "url": "assets/models/quaternius/ultimate-monsters/big-mushroom-king.glb",
@@ -411,12 +411,12 @@
         "attack": "Punch",
         "death": "Death"
       },
-      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/MushroomKing.gltf, decimated to 6124 triangles"
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/MushroomKing.gltf, decimated to 6044 triangles, 48 glow faces (eyes / accents)"
     },
     "q_tank3": {
       "url": "assets/models/quaternius/animated-tanks/tank3.glb",
       "kind": "boss",
-      "palette": "blight",
+      "palette": "blight_scrap",
       "scale": 0.593,
       "yaw": 1.5708,
       "glow": false,
@@ -424,13 +424,13 @@
         "move": "Tank_Forward"
       },
       "motion": "roll",
-      "source": "pack: Quaternius animated-tanks (CC0, quaternius.com/packs/animatedtanks.html), file FBX/Tank3.fbx, decimated to 6544 triangles"
+      "source": "pack: Quaternius animated-tanks (CC0, quaternius.com/packs/animatedtanks.html), file FBX/Tank3.fbx, decimated to 6544 triangles, 112 glow faces (eyes / accents)"
     },
     "q_stan": {
       "url": "assets/models/quaternius/animated-mech/stan.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 0.923,
+      "scale": 0.924,
       "glow": false,
       "clips": {
         "idle": "Idle",
@@ -438,13 +438,14 @@
         "attack": "Punch",
         "death": "Death"
       },
-      "source": "pack: Quaternius animated-mech (CC0, quaternius.com/packs/animatedmech.html), file Flat Colors/glTF/Stan.gltf, decimated to 6052 triangles"
+      "source": "pack: Quaternius animated-mech (CC0, quaternius.com/packs/animatedmech.html), file Flat Colors/glTF/Stan.gltf, decimated to 5972 triangles, 72 glow faces (eyes / accents)"
     },
     "q_leela": {
       "url": "assets/models/quaternius/animated-mech/leela.glb",
       "kind": "tower",
       "palette": "war",
-      "scale": 0.608,
+      "scale": 0.558,
+      "basePlate": "war",
       "clips": {
         "idle": "Idle",
         "attack": "Shoot"
@@ -455,12 +456,27 @@
       "url": "assets/models/quaternius/toon-shooter-kit/character-soldier.glb",
       "kind": "tower",
       "palette": "war",
-      "scale": 0.867,
+      "scale": 0.728,
+      "basePlate": "war",
       "clips": {
         "idle": "Idle",
         "attack": "Idle_Shoot"
       },
       "source": "pack: Quaternius toon-shooter-kit (CC0, quaternius.com/packs/toonshootergamekit.html), file Characters/glTF/Character_Soldier.gltf (AK only), decimated to 2996 triangles"
+    },
+    "q_zombie": {
+      "url": "assets/models/quaternius/animated-zombie/zombie.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 0.238,
+      "glow": false,
+      "clips": {
+        "idle": "ZombieIdle",
+        "move": "ZombieWalk",
+        "attack": "ZombieBite"
+      },
+      "motion": "waddle",
+      "source": "pack: Quaternius animated-zombie (CC0, quaternius.com/packs/animatedzombie.html), file FBX/Zombie.fbx, decimated to 1500 triangles"
     }
   }
 }

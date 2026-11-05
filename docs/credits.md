@@ -54,15 +54,16 @@ After unzipping only FBX / glTF / OBJ / PNG / JPG / TXT files were kept; .blend 
 | Animated Tanks | https://quaternius.com/packs/animatedtanks.html | https://drive.google.com/drive/folders/1tHX0RF9l4Nw4EZwxH6xWta0HsICU2h-G | CC0 1.0 (License.txt) | 10: 4 FBX, 4 OBJ, 1 PNG, 1 TXT (4 tanks, drive clips only) | 1 |
 | Animated Mech | https://quaternius.com/packs/animatedmech.html | https://drive.google.com/drive/folders/1sueV_4CGMpZC8y30mWfgKK9UaT3mkHBX | CC0 1.0 (License.txt) | 46: 8 glTF, 8 FBX, 8 OBJ, 21 PNG/JPG, 1 TXT (4 mechs, flat and textured) | 2 |
 | Toon Shooter Game Kit | https://quaternius.com/packs/toonshootergamekit.html | https://drive.google.com/drive/folders/1-BDs_EIyd6uiF2XuoyiZEcqnMQIJrE0C | CC0 (pack page) | 225: 74 glTF, 74 FBX, 74 OBJ, 3 PNG/JPG (3 animated characters, weapons, environment) | 2 |
-| Animated Zombie | https://quaternius.com/packs/animatedzombie.html | https://drive.google.com/drive/folders/1AfOPRgr5Gl8gll9KfGDEUSYq_Ag7yPJG | CC0 (pack page) | 6: 2 FBX, 2 OBJ, 2 PNG | 0 |
+| Animated Zombie | https://quaternius.com/packs/animatedzombie.html | https://drive.google.com/drive/folders/1AfOPRgr5Gl8gll9KfGDEUSYq_Ag7yPJG | CC0 (pack page) | 6: 2 FBX, 2 OBJ, 2 PNG | 1 |
 | Cute Animated Monsters | https://quaternius.com/packs/cutemonsters.html | https://drive.google.com/drive/folders/1zLLO_7ZoWgUsS4uooYnVSErQYRu1VdS0 | CC0 (pack page) | 85: 21 glTF, 21 FBX, 21 OBJ, 22 PNG/JPG | 0 |
 | Easy Enemy | https://quaternius.com/packs/easyenemy.html | https://drive.google.com/drive/folders/1VbJIslXPWK-1KybQN6yezZrfJcw608qe | CC0 1.0 (License.txt) | 14: 6 FBX, 6 OBJ, 1 PNG, 1 TXT | 0 |
 | Steampunk Turrets | https://quaternius.com/packs/turretpack.html | https://drive.google.com/drive/folders/1HenXNzxU2HJMDOGQj9LKRHk9eHrBgoya | CC0 1.0 (License.txt) | 76: 37 FBX, 37 OBJ, 1 PNG, 1 TXT | 0 |
 | Ultimate Fantasy RTS | https://quaternius.com/packs/ultimatefantasyrts.html | https://drive.google.com/drive/folders/1h7sztlZyavWla-JDk3jp6KiWDdMh08yd | CC0 1.0 (License.txt) | 524: 128 glTF, 128 FBX, 128 OBJ, 139 PNG/JPG, 1 TXT | 0 |
 | Ultimate Spaceships | https://quaternius.com/packs/ultimatespaceships.html | https://drive.google.com/drive/folders/1NpfT3wqe2k3Jwue2xryi7tzxP4bWzETu | CC0 1.0 (License.txt) | 90: 11 glTF, 11 FBX, 11 OBJ, 56 PNG/JPG, 1 TXT | 0 |
 
-Imported so far: 14 models. Each was converted to GLB in Blender with
-`tools/blender/convert_fbx.py` (decimated to the art-style triangle budget where needed),
+Imported so far: 15 models, listed in `tools/quaternius-models.json`. Each was converted to GLB in
+Blender with `tools/blender/convert_quaternius.py` (decimated to the art-style triangle budget where
+needed; small eye / accent face islands given an emissive material),
 saved in `assets/models/quaternius/<pack>/` and registered by `node tools/import-quaternius.mjs --fit`
 (id `q_<name>`, `source` field names the pack file). Recoloured at load time like the Kenney models.
 
@@ -75,6 +76,7 @@ saved in `assets/models/quaternius/<pack>/` and registered by `node tools/import
 | q_flying_ghost_skull | Ultimate Monsters Flying/Ghost_Skull | enemy (air) | 3,226 -> 1,497 | Flying_Idle / Fast_Flying / Headbutt / Death |
 | q_flying_dragon | Ultimate Monsters Flying/Dragon | enemy (air) | 4,642 -> 1,498 | Flying_Idle / Fast_Flying / Headbutt / Death |
 | q_character_enemy | Toon Shooter Characters/Character_Enemy (SMG kept, 13 spare weapons dropped) | enemy | 19,571 -> 1,497 | Idle / Walk / Punch / Death |
+| q_zombie | Animated Zombie FBX/Zombie | enemy | 2,116 -> 1,500 | ZombieIdle / ZombieWalk / ZombieBite / code |
 | q_big_orc_skull | Ultimate Monsters Big/Orc_Skull | boss | 7,443 | Idle / Walk / Punch / Death |
 | q_big_demon | Ultimate Monsters Big/Demon | boss | 6,792 | Idle / Walk / Punch / Death |
 | q_big_mushroom_king | Ultimate Monsters Big/MushroomKing | boss | 6,124 | Idle / Walk / Punch / Death |

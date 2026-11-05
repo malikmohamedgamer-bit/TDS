@@ -1,83 +1,348 @@
 {
-  "$doc": "Recolour schemes for imported pack models (docs/art-style.md section 3). Every texel of a model's palette texture is sorted into a colour family by hue (neutral = low saturation) and replaced by the scheme's ramp for that family, picked by the texel's lightness (dark -> light). Texels of a family listed in 'glow' become emissive only when they are bright and saturated (eyes, runes, corruption), so large dark areas never glow. A model in data/models.json picks a scheme with 'palette'; content variants can use any scheme.",
-  "families": ["neutral", "red", "orange", "yellow", "green", "cyan", "blue", "purple"],
+  "$doc": "Recolour schemes for imported pack models (docs/art-style.md section 3). Every texel of a model's palette texture is sorted into a colour family by hue (neutral = low saturation) and replaced by the scheme's ramp for that family, picked by the texel's lightness (dark -> light). Texels of a family listed in 'glow' become emissive only when they are bright and saturated (eyes, runes, corruption), so large dark areas never glow. A model in data/models.json picks a scheme with 'palette'; content variants can use any scheme. blight_scrap: Blight war machines (dark slate hull, crimson plates). blight_pale: lighter Blight hides for models that read as black blobs at distance.",
+  "families": [
+    "neutral",
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "cyan",
+    "blue",
+    "purple"
+  ],
   "schemes": {
     "world": {
-      "neutral": ["#6E6E7A", "#8D8D99", "#A9A9B5"],
-      "red": ["#8C6440", "#A97D52"],
-      "orange": ["#A97D52", "#C49A6C"],
-      "yellow": ["#C49A6C", "#D8B184"],
-      "green": ["#4B7F36", "#5A9440", "#6BAA4A", "#7DBE58"],
-      "cyan": ["#2C7DA0", "#3FA7D6"],
-      "blue": ["#2C7DA0", "#3FA7D6"],
-      "purple": ["#6E6E7A", "#8D8D99"],
+      "neutral": [
+        "#6E6E7A",
+        "#8D8D99",
+        "#A9A9B5"
+      ],
+      "red": [
+        "#8C6440",
+        "#A97D52"
+      ],
+      "orange": [
+        "#A97D52",
+        "#C49A6C"
+      ],
+      "yellow": [
+        "#C49A6C",
+        "#D8B184"
+      ],
+      "green": [
+        "#4B7F36",
+        "#5A9440",
+        "#6BAA4A",
+        "#7DBE58"
+      ],
+      "cyan": [
+        "#2C7DA0",
+        "#3FA7D6"
+      ],
+      "blue": [
+        "#2C7DA0",
+        "#3FA7D6"
+      ],
+      "purple": [
+        "#6E6E7A",
+        "#8D8D99"
+      ],
       "glow": []
     },
     "war": {
-      "neutral": ["#3D4451", "#8A939E", "#C2B280"],
-      "red": ["#7A5230", "#F28C28"],
-      "orange": ["#7A5230", "#A0703C"],
-      "yellow": ["#A8976A", "#C2B280"],
-      "green": ["#47552C", "#5B6B3A"],
-      "cyan": ["#3D4451", "#8A939E"],
-      "blue": ["#3D4451", "#5B6B3A"],
-      "purple": ["#3D4451", "#8A939E"],
+      "neutral": [
+        "#3D4451",
+        "#8A939E",
+        "#C2B280"
+      ],
+      "red": [
+        "#7A5230",
+        "#F28C28"
+      ],
+      "orange": [
+        "#7A5230",
+        "#A0703C"
+      ],
+      "yellow": [
+        "#A8976A",
+        "#C2B280"
+      ],
+      "green": [
+        "#47552C",
+        "#5B6B3A"
+      ],
+      "cyan": [
+        "#3D4451",
+        "#8A939E"
+      ],
+      "blue": [
+        "#3D4451",
+        "#5B6B3A"
+      ],
+      "purple": [
+        "#3D4451",
+        "#8A939E"
+      ],
       "glow": []
     },
     "magic": {
-      "neutral": ["#6E6E7A", "#8D8D99", "#A9A9B5"],
-      "red": ["#7B4DFF", "#C9A7FF"],
-      "orange": ["#FFD166"],
-      "yellow": ["#FFD166"],
-      "green": ["#2EC4B6"],
-      "cyan": ["#2EC4B6", "#7FF6FF"],
-      "blue": ["#1E1B4B", "#7B4DFF"],
-      "purple": ["#1E1B4B", "#7B4DFF", "#C9A7FF"],
-      "glow": ["cyan"]
+      "neutral": [
+        "#6E6E7A",
+        "#8D8D99",
+        "#A9A9B5"
+      ],
+      "red": [
+        "#7B4DFF",
+        "#C9A7FF"
+      ],
+      "orange": [
+        "#FFD166"
+      ],
+      "yellow": [
+        "#FFD166"
+      ],
+      "green": [
+        "#2EC4B6"
+      ],
+      "cyan": [
+        "#2EC4B6",
+        "#7FF6FF"
+      ],
+      "blue": [
+        "#1E1B4B",
+        "#7B4DFF"
+      ],
+      "purple": [
+        "#1E1B4B",
+        "#7B4DFF",
+        "#C9A7FF"
+      ],
+      "glow": [
+        "cyan"
+      ]
     },
     "blight": {
-      "neutral": ["#2B2D42", "#3A3D5C", "#D6CFC7"],
-      "red": ["#5A1E2A", "#E63946"],
-      "orange": ["#5A1E2A", "#E63946"],
-      "yellow": ["#D6CFC7"],
-      "green": ["#3A3D5C", "#5A6B4A"],
-      "cyan": ["#3A3D5C", "#8E5BB5"],
-      "blue": ["#2B2D42", "#3A3D5C"],
-      "purple": ["#2B2D42", "#FF3CAC"],
-      "glow": ["red", "orange"]
+      "neutral": [
+        "#2B2D42",
+        "#3A3D5C",
+        "#D6CFC7"
+      ],
+      "red": [
+        "#5A1E2A",
+        "#E63946"
+      ],
+      "orange": [
+        "#5A1E2A",
+        "#E63946"
+      ],
+      "yellow": [
+        "#D6CFC7"
+      ],
+      "green": [
+        "#3A3D5C",
+        "#5A6B4A"
+      ],
+      "cyan": [
+        "#3A3D5C",
+        "#8E5BB5"
+      ],
+      "blue": [
+        "#2B2D42",
+        "#3A3D5C"
+      ],
+      "purple": [
+        "#2B2D42",
+        "#FF3CAC"
+      ],
+      "glow": [
+        "red",
+        "orange"
+      ]
     },
     "blight_frost": {
-      "neutral": ["#2B2D42", "#4A5A7A", "#BDEBFF"],
-      "red": ["#2B3A5A", "#7FDBFF"],
-      "orange": ["#2B3A5A", "#7FDBFF"],
-      "yellow": ["#BDEBFF"],
-      "green": ["#3A3D5C", "#4A5A7A"],
-      "cyan": ["#3A3D5C", "#7FDBFF"],
-      "blue": ["#2B2D42", "#4A5A7A"],
-      "purple": ["#2B2D42", "#7FDBFF"],
-      "glow": ["red", "orange"]
+      "neutral": [
+        "#2B2D42",
+        "#4A5A7A",
+        "#BDEBFF"
+      ],
+      "red": [
+        "#2B3A5A",
+        "#7FDBFF"
+      ],
+      "orange": [
+        "#2B3A5A",
+        "#7FDBFF"
+      ],
+      "yellow": [
+        "#BDEBFF"
+      ],
+      "green": [
+        "#3A3D5C",
+        "#4A5A7A"
+      ],
+      "cyan": [
+        "#3A3D5C",
+        "#7FDBFF"
+      ],
+      "blue": [
+        "#2B2D42",
+        "#4A5A7A"
+      ],
+      "purple": [
+        "#2B2D42",
+        "#7FDBFF"
+      ],
+      "glow": [
+        "red",
+        "orange"
+      ]
     },
     "blight_ember": {
-      "neutral": ["#2B1D22", "#4A2D2C", "#D6CFC7"],
-      "red": ["#4A2D2C", "#FF6B35"],
-      "orange": ["#4A2D2C", "#FF9F1C"],
-      "yellow": ["#FFD27A"],
-      "green": ["#4A2D2C", "#6B3A2C"],
-      "cyan": ["#4A2D2C", "#FF6B35"],
-      "blue": ["#2B1D22", "#4A2D2C"],
-      "purple": ["#2B1D22", "#FF6B35"],
-      "glow": ["red", "orange"]
+      "neutral": [
+        "#2B1D22",
+        "#4A2D2C",
+        "#D6CFC7"
+      ],
+      "red": [
+        "#4A2D2C",
+        "#FF6B35"
+      ],
+      "orange": [
+        "#4A2D2C",
+        "#FF9F1C"
+      ],
+      "yellow": [
+        "#FFD27A"
+      ],
+      "green": [
+        "#4A2D2C",
+        "#6B3A2C"
+      ],
+      "cyan": [
+        "#4A2D2C",
+        "#FF6B35"
+      ],
+      "blue": [
+        "#2B1D22",
+        "#4A2D2C"
+      ],
+      "purple": [
+        "#2B1D22",
+        "#FF6B35"
+      ],
+      "glow": [
+        "red",
+        "orange"
+      ]
     },
     "blight_toxic": {
-      "neutral": ["#1F2A22", "#33463A", "#D6CFC7"],
-      "red": ["#33463A", "#7BD389"],
-      "orange": ["#33463A", "#7BD389"],
-      "yellow": ["#B8F28A"],
-      "green": ["#33463A", "#7BD389"],
-      "cyan": ["#33463A", "#7BD389"],
-      "blue": ["#1F2A22", "#33463A"],
-      "purple": ["#1F2A22", "#7BD389"],
-      "glow": ["red", "orange"]
+      "neutral": [
+        "#1F2A22",
+        "#33463A",
+        "#D6CFC7"
+      ],
+      "red": [
+        "#33463A",
+        "#7BD389"
+      ],
+      "orange": [
+        "#33463A",
+        "#7BD389"
+      ],
+      "yellow": [
+        "#B8F28A"
+      ],
+      "green": [
+        "#33463A",
+        "#7BD389"
+      ],
+      "cyan": [
+        "#33463A",
+        "#7BD389"
+      ],
+      "blue": [
+        "#1F2A22",
+        "#33463A"
+      ],
+      "purple": [
+        "#1F2A22",
+        "#7BD389"
+      ],
+      "glow": [
+        "red",
+        "orange"
+      ]
+    },
+    "blight_scrap": {
+      "neutral": [
+        "#1A1B26",
+        "#2B2D42",
+        "#5A1E2A"
+      ],
+      "red": [
+        "#5A1E2A",
+        "#E63946"
+      ],
+      "orange": [
+        "#5A1E2A",
+        "#8C2F39"
+      ],
+      "yellow": [
+        "#3A3D5C",
+        "#5A1E2A"
+      ],
+      "green": [
+        "#2B2D42",
+        "#3A3D5C"
+      ],
+      "cyan": [
+        "#2B2D42",
+        "#3A3D5C"
+      ],
+      "blue": [
+        "#2B2D42",
+        "#3A3D5C"
+      ],
+      "purple": [
+        "#2B2D42",
+        "#8E5BB5"
+      ],
+      "glow": []
+    },
+    "blight_pale": {
+      "neutral": [
+        "#46496E",
+        "#6A6F9E",
+        "#D6CFC7"
+      ],
+      "red": [
+        "#5A1E2A",
+        "#E63946"
+      ],
+      "orange": [
+        "#5A1E2A",
+        "#E63946"
+      ],
+      "yellow": [
+        "#D6CFC7"
+      ],
+      "green": [
+        "#5A4E86",
+        "#7A6BB0"
+      ],
+      "cyan": [
+        "#4A4E78",
+        "#8E5BB5"
+      ],
+      "blue": [
+        "#4A4E78",
+        "#6A6F9E"
+      ],
+      "purple": [
+        "#4A2E5C",
+        "#FF3CAC"
+      ],
+      "glow": []
     }
   }
 }

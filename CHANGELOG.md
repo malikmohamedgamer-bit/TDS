@@ -143,3 +143,16 @@
   (Quaternius uses no palette texture). New per-model `yaw` and `glow: false` manifest options.
 - Asset viewer shows enemies and bosses through the baked instanced rig, i.e. as matches draw them.
 - Unit test for the rigidifier (matches three.js CPU skinning).
+
+## 0.11.1 - Quaternius polish (2026-11-06)
+- Glowing eyes for the Quaternius enemies and bosses: `mark_glow` in `tools/blender/convert_fbx.py`
+  gives small face islands on the head (dark atlas texels, a named colour or material) an emissive
+  Blight-crimson material and protects them from decimation; 13 of 15 creature / machine models.
+- `blight_pale` palette for the blob orc, spiky blob and ninja (they read as black blobs);
+  `blight_scrap` for Tank3 (dark slate hull, black tracks) with crimson glowing hull lights.
+- Tower `basePlate` (War steel pad / Magic stone plinth) under the Leela mech and the soldier.
+- Animated Zombie imported (`q_zombie`): the FBX armature carries a 90 degree rotation; the
+  engine-measured scale fixes it. No death clip (code death).
+- `tools/quaternius-models.json` is the one list for the Blender conversion
+  (`tools/blender/convert_quaternius.py`) and `tools/import-quaternius.mjs`.
+- Engine: authored emissive parts take the glow path before the flat-colour recolour.

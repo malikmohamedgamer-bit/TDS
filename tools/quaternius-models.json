@@ -1,0 +1,268 @@
+{
+  "$doc": "Curated Quaternius CC0 models. One entry per model, read by tools/blender/convert_quaternius.py (Blender: convert, decimate to tris, drop spare meshes, mark glow faces) and tools/import-quaternius.mjs (register in data/models.json). glow: tools/blender/convert_fbx.py mark_glow spec. clips map game states to clip names; motion supplies code clips for missing states; basePlate adds a tower pad in the engine.",
+  "clipSets": {
+    "big": {
+      "idle": "Idle",
+      "move": "Walk",
+      "attack": "Punch",
+      "death": "Death"
+    },
+    "blob": {
+      "idle": "Idle",
+      "move": "Walk",
+      "attack": "Bite_Front",
+      "death": "Death"
+    },
+    "fly": {
+      "idle": "Flying_Idle",
+      "move": "Fast_Flying",
+      "attack": "Headbutt",
+      "death": "Death"
+    },
+    "shooter": {
+      "idle": "Idle",
+      "move": "Walk",
+      "attack": "Punch",
+      "death": "Death"
+    },
+    "mech": {
+      "idle": "Idle",
+      "move": "Walk",
+      "attack": "Punch",
+      "death": "Death"
+    }
+  },
+  "glowSpecs": {
+    "eyes": {
+      "groups": "Head",
+      "dark": 0.2,
+      "max_share": 0.02
+    }
+  },
+  "weapons": [
+    "AK",
+    "GrenadeLauncher",
+    "Knife_1",
+    "Knife_2",
+    "Pistol",
+    "Revolver",
+    "Revolver_Small",
+    "RocketLauncher",
+    "ShortCannon",
+    "Shotgun",
+    "Shovel",
+    "SMG",
+    "Sniper",
+    "Sniper_2"
+  ],
+  "models": [
+    {
+      "pack": "ultimate-monsters",
+      "file": "blob-orc",
+      "src": "Blob/glTF/Orc.gltf",
+      "kind": "enemy",
+      "palette": "blight_pale",
+      "height": 1.8,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "blob"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "blob-mushnub-evolved",
+      "src": "Blob/glTF/Mushnub_Evolved.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.6,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "blob"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "blob-green-spiky-blob",
+      "src": "Blob/glTF/GreenSpikyBlob.gltf",
+      "kind": "enemy",
+      "palette": "blight_pale",
+      "height": 1.5,
+      "tris": 1500,
+      "glow": {
+        "groups": "",
+        "dark": 0.2,
+        "max_share": 0.02
+      },
+      "clips": "blob",
+      "note": "eyes are a separate small mesh weighted to Body"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "blob-ninja",
+      "src": "Blob/glTF/Ninja.gltf",
+      "kind": "enemy",
+      "palette": "blight_pale",
+      "height": 1.6,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "blob"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "flying-ghost-skull",
+      "src": "Flying/glTF/Ghost_Skull.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.4,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "fly"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "flying-dragon",
+      "src": "Flying/glTF/Dragon.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.8,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "fly"
+    },
+    {
+      "pack": "toon-shooter-kit",
+      "file": "character-enemy",
+      "src": "Characters/glTF/Character_Enemy.gltf",
+      "keepWeapon": "SMG",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.9,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "shooter"
+    },
+    {
+      "pack": "animated-zombie",
+      "file": "zombie",
+      "src": "FBX/Zombie.fbx",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.8,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": {
+        "idle": "ZombieIdle",
+        "move": "ZombieWalk",
+        "attack": "ZombieBite"
+      },
+      "motion": "waddle",
+      "note": "armature rotated 90 deg in the FBX; no death clip (code death)"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "big-orc-skull",
+      "src": "Big/glTF/Orc_Skull.gltf",
+      "kind": "boss",
+      "palette": "blight",
+      "height": 5.5,
+      "tris": 8000,
+      "glow": {
+        "groups": "Head",
+        "colors": [
+          "#738636"
+        ],
+        "max_share": 0.035
+      },
+      "clips": "big",
+      "note": "skull eye sockets are green, not dark"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "big-demon",
+      "src": "Big/glTF/Demon.gltf",
+      "kind": "boss",
+      "palette": "blight",
+      "height": 5.5,
+      "tris": 8000,
+      "glow": "eyes",
+      "clips": "big"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "big-mushroom-king",
+      "src": "Big/glTF/MushroomKing.gltf",
+      "kind": "boss",
+      "palette": "blight",
+      "height": 5.5,
+      "tris": 8000,
+      "glow": "eyes",
+      "clips": "big"
+    },
+    {
+      "pack": "animated-tanks",
+      "file": "tank3",
+      "src": "FBX/Tank3.fbx",
+      "kind": "boss",
+      "palette": "blight_scrap",
+      "height": 4,
+      "tris": 8000,
+      "glow": {
+        "groups": "",
+        "materials": [
+          "Main_Details"
+        ],
+        "max_share": 0.004
+      },
+      "clips": {
+        "move": "Tank_Forward"
+      },
+      "motion": "roll",
+      "yaw": 1.5708,
+      "note": "small hull details glow; drive clips only, code motion for idle / attack / death"
+    },
+    {
+      "pack": "animated-mech",
+      "file": "stan",
+      "src": "Flat Colors/glTF/Stan.gltf",
+      "kind": "boss",
+      "palette": "blight",
+      "height": 6,
+      "tris": 8000,
+      "glow": {
+        "groups": "Head",
+        "materials": [
+          "LightGrey"
+        ],
+        "max_share": 0.03
+      },
+      "clips": "mech"
+    },
+    {
+      "pack": "animated-mech",
+      "file": "leela",
+      "src": "Flat Colors/glTF/Leela.gltf",
+      "kind": "tower",
+      "palette": "war",
+      "height": 3.2,
+      "tris": 3000,
+      "clips": {
+        "idle": "Idle",
+        "attack": "Shoot"
+      },
+      "basePlate": "war"
+    },
+    {
+      "pack": "toon-shooter-kit",
+      "file": "character-soldier",
+      "src": "Characters/glTF/Character_Soldier.gltf",
+      "keepWeapon": "AK",
+      "kind": "tower",
+      "palette": "war",
+      "height": 2,
+      "tris": 3000,
+      "clips": {
+        "idle": "Idle",
+        "attack": "Idle_Shoot"
+      },
+      "basePlate": "war"
+    }
+  ]
+}

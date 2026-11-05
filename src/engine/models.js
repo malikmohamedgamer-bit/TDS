@@ -35,19 +35,26 @@ export function loadGLB(src) {
   // glow: false (data/models.json) keeps a recoloured model matte: for atlases whose big bright red
   // areas (bodies, heads) would otherwise turn emissive under the Blight scheme
   const noGlow = typeof src === 'object' && src.glow === false;
-  const key = `${url}|${palette || ''}|${scale}|${yaw}|${noGlow}`;
+  // basePlate: 'war' | 'magic' puts a tower without its own base on a pad (art style: ground contact)
+  const plate = typeof src === 'object' ? src.basePlate || null : null;
+  const key = `${url}|${palette || ''}|${scale}|${yaw}|${noGlow}|${plate}`;
   if (!cache.has(key)) {
     cache.set(key, new Promise((resolve, reject) => {
       loader.load(url, (gltf) => {
         let scheme = palette ? schemes[palette] : null;
         if (scheme && noGlow) scheme = noGlowScheme(scheme);
         styleScene(gltf.scene, scheme);
-        if (scale !== 1 || yaw) {
+        if (scale !== 1 || yaw || plate) {
           // wrap so node animations (which set the scene's own transforms) keep the scale
           const wrap = new THREE.Group();
           wrap.name = gltf.scene.name || 'scaled';
           gltf.scene.scale.multiplyScalar(scale);
           gltf.scene.rotation.y += yaw;
+          if (plate) {
+            const pad = basePlate(plate);
+            gltf.scene.position.y += pad.userData.height;
+            wrap.add(pad);
+          }
           wrap.add(gltf.scene);
           gltf.scene = wrap;
         }
@@ -56,6 +63,24 @@ export function loadGLB(src) {
     }));
   }
   return cache.get(key);
+}
+
+/** Tower pad (docs/art-style.md "Ground contact"): War = steel pad with a khaki sandbag ring,
+ * Magic = stone plinth with a violet trim. 8 sides, 0.28 m high, about 1 m radius. */
+const PLATES = { war: ['#3D4451', '#C2B280'], magic: ['#8D8D99', '#7B4DFF'] };
+function basePlate(kind) {
+  const [base, trim] = PLATES[kind] || PLATES.war;
+  const grain = sharedMaterials().grain;
+  const mat = (hex) => new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), map: grain, roughness: 0.85, flatShading: true });
+  const g = new THREE.Group();
+  g.name = 'basePlate';
+  const lower = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.0, 0.18, 8), mat(base));
+  lower.position.y = 0.09;
+  const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.84, 0.1, 8), mat(trim));
+  ring.position.y = 0.23;
+  for (const m of [lower, ring]) { m.castShadow = true; m.receiveShadow = true; g.add(m); }
+  g.userData.height = 0.28;
+  return g;
 }
 
 /** Same scheme without glowing families; one object per scheme so the recolour cache still hits. */
@@ -124,6 +149,11 @@ export function styleScene(root, scheme = null) {
           name: m.name, map: rc.map, roughness: 0.85, metalness: 0, flatShading: true, side: m.side,
           emissive: rc.emissiveMap ? new THREE.Color(1, 1, 1) : new THREE.Color(0, 0, 0), emissiveMap: rc.emissiveMap, emissiveIntensity: rc.emissiveMap ? 1.3 : 0,
         });
+      } else if (glow) {
+        // authored glowing parts (Blender eyes / accents, TDS_Glow): unlit and HDR so only they
+        // bloom, same level as the procedural props (geo.js intensity 2.4); never recoloured
+        const c = m.emissive.clone().multiplyScalar(Math.min(2.6, Math.max(1.6, m.emissiveIntensity || 1)));
+        nm = new THREE.MeshBasicMaterial({ color: c, name: m.name });
       } else if (scheme && m.color) {
         // pack model with flat material colours (Quaternius): remap the colour itself
         const s = m.color.getRGB({ r: 0, g: 0, b: 0 }, THREE.SRGBColorSpace);
@@ -134,11 +164,6 @@ export function styleScene(root, scheme = null) {
           name: m.name, color: c, map: grain, roughness: 0.85, metalness: 0, flatShading: true, side: m.side,
           emissive: rc.glow ? c : new THREE.Color(0, 0, 0), emissiveIntensity: rc.glow ? 1.3 : 0,
         });
-      } else if (glow) {
-        // glowing parts: unlit, HDR bright so only they bloom
-        // same HDR level as the procedural props (geo.js intensity 2.4) so glow is consistent
-        const c = m.emissive.clone().multiplyScalar(Math.min(2.6, Math.max(1.6, m.emissiveIntensity || 1)));
-        nm = new THREE.MeshBasicMaterial({ color: c, name: m.name });
       } else {
         nm = new THREE.MeshStandardMaterial({
           name: m.name, color: m.color, map: grain, roughness: Math.max(0.45, m.roughness ?? 0.85),
