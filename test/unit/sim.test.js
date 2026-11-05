@@ -164,9 +164,11 @@ test('waves: counts, difficulty and wave health scaling, boss flagged', () => {
   run(m, 20);
   const ws = C.waves.get('riftline_campaign');
   assert.equal(m.stats.spawned, ws.waves[0].groups[0].count);
-  const husk = m.enemies.find((e) => e.defId === 'husk') || { maxHp: C.enemies.get('husk').hp * 2.25 };
-  assert.ok(Math.abs(husk.maxHp - C.enemies.get('husk').hp * 2.25) < 1e-9);
-  assert.ok(Math.abs(m.enemyHpScale(11) - 2.25 * (1 + ws.hpScalePerWave * 10)) < 1e-9);
+  // health = base x difficulty x tuning preset (data/tuning.json) x wave growth
+  const want = C.enemies.get('husk').hp * 2.25 * m.tune.enemyHp;
+  const husk = m.enemies.find((e) => e.defId === 'husk') || { maxHp: want };
+  assert.ok(Math.abs(husk.maxHp - want) < 1e-9);
+  assert.ok(Math.abs(m.enemyHpScale(11) - 2.25 * m.tune.enemyHp * (1 + ws.hpScalePerWave * 10)) < 1e-9);
   assert.ok(ws.waves[9].boss && ws.waves[19].boss, 'boss on waves 10 and 20');
 });
 

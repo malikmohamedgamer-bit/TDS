@@ -6,8 +6,9 @@
 // match exactly, which is what a server needs to validate results later (docs/online-plan.md).
 import { Rng } from '../core/rng.js';
 import { Path } from './path.js';
-import { towerStats, nextStep, totalSpent, DEFAULT_PROGRESSION } from './stats.js';
+import { towerStats, nextStep, DEFAULT_PROGRESSION } from './stats.js';
 import { resolveDamage, pickTarget, canTarget, TARGET_MODES } from './combat.js';
+import { resolveTuning, roundCost } from './tuning.js';
 
 export const SIM_DT = 1 / 60;
 export const SELL_REFUND = 0.7;
@@ -35,6 +36,8 @@ export class Match {
     this.options = { enemiesHurtHero: false, ...(o.options || {}) };
     this.seed = String(o.seed ?? 'match');
     this.rng = new Rng(`${this.seed}:sim`);
+    // global tuning (data/tuning.json preset) + player assists; everything below reads this.tune
+    this.tune = resolveTuning(this.content.tuning, this.options.preset, this.options.assist);
     this.difficulty = this.content.difficulties.get(o.difficulty || 'normal');
     if (!this.difficulty) throw new Error(`Unknown difficulty ${o.difficulty}`);
     this.waveSet = this.content.waves.get(this.options.waveSet || this.map.waves);
@@ -53,8 +56,8 @@ export class Match {
     // manualStart: the first wave waits for the player's "start" (skip) command
     this.nextWaveAt = this.options.manualStart ? Infinity : this.waveSet.firstWaveDelay ?? 10;
     this.paidWaves = 0;
-    this.cash = Math.round((this.options.startCash ?? this.waveSet.startCash) * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1));
-    this.baseMax = Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1));
+    this.cash = Math.round((this.options.startCash ?? this.waveSet.startCash) * this.tune.startCash * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1)) + this.tune.startCashAdd;
+    this.baseMax = Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1) * this.tune.keepHp);
     this.baseHp = this.baseMax;
     this.enemies = [];
     this.towers = [];
@@ -103,8 +106,9 @@ export class Match {
         const n = nextStep(t.def, t.up, cmd.branch);
         if (!n) return { ok: false, reason: 'Fully upgraded', code: 'max' };
         if (n.needsBranch) return { ok: false, reason: 'Choose a path', code: 'branch', options: n.options };
-        if (this.cash < n.step.cost && !this.options.infiniteCash) return { ok: false, reason: `Need ${n.step.cost - this.cash} more cash`, code: 'cash' };
-        return { ok: true, cost: n.step.cost, step: n.step };
+        const sc = this.stepCost(n.step);
+        if (this.cash < sc && !this.options.infiniteCash) return { ok: false, reason: `Need ${sc - this.cash} more cash`, code: 'cash' };
+        return { ok: true, cost: sc, step: n.step };
       }
       case 'sell': return this.towerById(cmd.uid) ? { ok: true } : { ok: false, reason: 'No such tower', code: 'missing' };
       case 'target': {
@@ -120,9 +124,21 @@ export class Match {
       }
       case 'abilityMode': return this.abilities.some((x) => x.id === cmd.id) && ['manual', 'auto'].includes(cmd.mode) ? { ok: true } : { ok: false, reason: 'Bad ability mode', code: 'mode' };
       case 'skip': return this.phase === 'prep' || this.canSkip() ? { ok: true } : { ok: false, reason: 'Cannot skip yet', code: 'skip' };
+      case 'assistSkip': return this.tune.skipWave && this.phase === 'wave' ? { ok: true } : { ok: false, reason: 'Turn on the Skip wave assist first', code: 'assist' };
       case 'hero': return Number.isFinite(cmd.x) && Number.isFinite(cmd.z) ? { ok: true } : { ok: false, reason: 'Bad position', code: 'pos' };
       default: return { ok: false, reason: `Unknown command ${cmd.type}`, code: 'unknown' };
     }
+  }
+
+  /** Assist: remove the current wave entirely (no rewards for it) and move on. */
+  _assistSkip() {
+    for (const e of this.enemies) e.alive = false;
+    this.spawnQueue = [];
+    this.stats.assistSkips = (this.stats.assistSkips || 0) + 1;
+    this.events.push({ type: 'assistSkip', wave: this.wave });
+    if (this.wave >= this.waveCount()) { this.phase = 'won'; this.events.push({ type: 'won', wave: this.wave }); return; }
+    this.paidWaves = Math.max(this.paidWaves, this.wave); // no bonus for a skipped wave
+    this._startWave(this.wave + 1);
   }
 
   canSkip() {
@@ -134,7 +150,8 @@ export class Match {
     const def = this.content.towers.get(towerId);
     if (!def) return { ok: false, reason: 'Unknown tower', code: 'unknown' };
     if (!isMove && !this.loadout.includes(towerId)) return { ok: false, reason: 'Not in your loadout', code: 'locked' };
-    if (!isMove && !this.options.infiniteCash && this.cash < def.cost) return { ok: false, reason: `Need ${def.cost - this.cash} more cash`, code: 'cash' };
+    const cost = this.costOf(def);
+    if (!isMove && !this.options.infiniteCash && this.cash < cost) return { ok: false, reason: `Need ${cost - this.cash} more cash`, code: 'cash' };
     if (!isMove && def.limit && this.towers.filter((t) => t.defId === towerId).length >= def.limit) return { ok: false, reason: `Limit ${def.limit} reached`, code: 'limit' };
     const b = this.mw.world.bounds;
     const fp = def.footprint ?? 1;
@@ -147,7 +164,22 @@ export class Match {
       if (ignoreUid !== null && c.ref && c.ref.uid === ignoreUid) continue;
       if (this.mw.world.penetration(c, x, z, fp)) return { ok: false, reason: c.tag === 'tower' ? 'Too close to another tower' : 'Something is in the way', code: 'blocked' };
     }
-    return { ok: true, cost: def.cost };
+    return { ok: true, cost };
+  }
+
+  /** Tuned tower price. */
+  costOf(def) {
+    return roundCost(def.cost * this.tune.towerCost);
+  }
+
+  /** Tuned upgrade-step price. */
+  stepCost(step) {
+    return roundCost(step.cost * this.tune.upgradeCost);
+  }
+
+  /** What selling this tower returns right now. */
+  refundOf(t) {
+    return Math.floor(t.spent * this.tune.sellRefund);
   }
 
   towerById(uid) {
@@ -167,6 +199,7 @@ export class Match {
       case 'ability': this._castAbility(cmd.id, cmd.x, cmd.z); break;
       case 'abilityMode': this.abilities.find((a) => a.id === cmd.id).mode = cmd.mode; break;
       case 'skip': this._startWave(this.wave + 1); break;
+      case 'assistSkip': this._assistSkip(); break;
       case 'hero': if (this.hero) { this.hero.x = cmd.x; this.hero.y = cmd.y ?? 0; this.hero.z = cmd.z; } break;
       default: break;
     }
@@ -174,8 +207,10 @@ export class Match {
 
   _place({ tower, x, z, rot = 0 }) {
     const def = this.content.towers.get(tower);
-    if (!this.options.infiniteCash) this.cash -= def.cost;
+    const paid = this.costOf(def);
+    if (!this.options.infiniteCash) this.cash -= paid;
     const t = {
+      spent: paid,
       uid: this.nextId++, defId: tower, def, x, z, y: this.mw.terrain.height(x, z), rot,
       up: { linear: 0, branch: null, branchLevel: 0 }, targeting: def.stats.targeting || 'first',
       cooldown: 0.2, stunUntil: 0, kills: 0, damage: 0, placedAt: this.time, hits: 0,
@@ -205,6 +240,7 @@ export class Match {
     const t = this.towerById(uid);
     const n = nextStep(t.def, t.up, branch);
     if (!this.options.infiniteCash) this.cash -= v.cost;
+    t.spent += v.cost;
     if (n.kind === 'linear') t.up.linear++;
     else { t.up.branch = n.branch; t.up.branchLevel++; }
     const before = t.name;
@@ -215,7 +251,7 @@ export class Match {
 
   _sell({ uid }) {
     const t = this.towerById(uid);
-    const refund = Math.floor(totalSpent(t.def, t.up) * SELL_REFUND);
+    const refund = this.refundOf(t);
     if (!this.options.infiniteCash) this.cash += refund;
     this.mw.world.remove(t.collider.id);
     this.towers = this.towers.filter((x) => x !== t);
@@ -279,7 +315,7 @@ export class Match {
   }
 
   enemyHpScale(waveNo) {
-    return this.difficulty.hpMul * (1 + (this.waveSet.hpScalePerWave ?? 0) * (waveNo - 1));
+    return this.difficulty.hpMul * this.tune.enemyHp * (1 + (this.waveSet.hpScalePerWave ?? 0) * (waveNo - 1));
   }
 
   _startWave(n) {
@@ -291,8 +327,10 @@ export class Match {
     this.nextWaveAt = this.time + (this.waveSet.maxDuration ?? 60);
     const w = this.waveSet.waves[n - 1];
     w.groups.forEach((g, gi) => {
-      for (let i = 0; i < g.count; i++) {
-        this.spawnQueue.push({ at: this.time + (g.delay || 0) + i * (g.interval || 1), enemy: g.enemy, hpMul: g.hpMul || 1, leak: g.leak, pathIdx: g.path ?? (i + gi) % this.paths.length, wave: n, order: gi * 1000 + i });
+      const count = Math.max(1, Math.round(g.count * (this.content.enemies.get(g.enemy)?.boss ? 1 : this.tune.enemyCount)));
+      const interval = (g.interval || 1) * g.count / count; // same group duration, denser or sparser
+      for (let i = 0; i < count; i++) {
+        this.spawnQueue.push({ at: this.time + (g.delay || 0) + i * interval, enemy: g.enemy, hpMul: g.hpMul || 1, leak: g.leak, pathIdx: g.path ?? (i + gi) % this.paths.length, wave: n, order: gi * 1000 + i });
       }
     });
     this.spawnQueue.sort((a, b) => a.at - b.at || a.order - b.order);
@@ -306,13 +344,13 @@ export class Match {
       const bonus = (this.waveSet.bonusBase ?? 100) + (this.waveSet.bonusPerWave ?? 0) * this.paidWaves;
       let income = 0;
       for (const t of this.towers) income += t.base.income || 0;
-      this._gainCash(bonus + income, 'wave');
+      this._gainCash(bonus * this.tune.waveBonus + income, 'wave');
       this.events.push({ type: 'waveReward', wave: this.paidWaves, bonus, income });
     }
   }
 
   _gainCash(n, why) {
-    const v = Math.round(n * (this.options.cashMul ?? 1) * (this.difficulty.cashMul ?? 1));
+    const v = Math.round(n * (this.options.cashMul ?? 1) * (this.difficulty.cashMul ?? 1) * (why === 'kill' ? this.tune.killIncome : 1));
     this.cash += v;
     this.stats.cashEarned += v;
     return v;
@@ -322,13 +360,13 @@ export class Match {
     const def = this.content.enemies.get(id);
     if (!def) throw new Error(`Unknown enemy "${id}"`);
     if (!Number.isFinite(d)) throw new Error(`spawnEnemy: bad path distance ${d}`);
-    const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul;
+    const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul * (def.boss ? this.tune.bossHp : 1);
     const e = {
       id: this.nextId++, defId: id, def, path: this.paths[pathIdx % this.paths.length],
       d, progress: d, x: 0, y: 0, z: 0, hp: def.hp * scale, maxHp: def.hp * scale,
       shield: (def.shield || 0) * scale, maxShield: (def.shield || 0) * scale,
       armor: def.armor || 0, flying: !!def.flying, stealth: !!def.stealth, alive: true,
-      baseSpeed: def.speed * (this.difficulty.speedMul ?? 1), speedMul: 1, curSpeed: def.speed,
+      baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed, speedMul: 1, curSpeed: def.speed,
       slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
       phase: 0, healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
       blocked: false, wave, boss: !!def.boss, heading: 0, spawnedAt: this.time, parent, leak: leak ?? def.leak,
@@ -739,7 +777,7 @@ export class Match {
           e.shield += e.maxHp * a.amount;
           e.maxShield = Math.max(e.maxShield, e.shield);
         } else if (a.type === 'speed') {
-          e.speedMul *= a.mul;
+          e.speedMul *= 1 + (a.mul - 1) * this.tune.bossPhaseSpeed;
         }
       }
     }
@@ -773,7 +811,7 @@ export class Match {
     h.cooldown = 1 / at.rate;
     this.events.push({ type: 'heroAttack', target: target.id, x: h.x, z: h.z, tx: target.x, tz: target.z });
     const before = this.stats.kills;
-    this._hit(target, { amount: at.damage, type: at.damageType, splash: at.splash || 0, targets: { ground: true, air: true }, detection: true }, null, target.x, target.z);
+    this._hit(target, { amount: at.damage * this.tune.heroDamage, type: at.damageType, splash: at.splash || 0, targets: { ground: true, air: true }, detection: true }, null, target.x, target.z);
     h.kills += this.stats.kills - before;
   }
 
@@ -866,6 +904,9 @@ export class Match {
       waveSet: this.waveSet.id,
       seed: this.seed,
       contentVersion: this.content.version,
+      preset: this.tune.id,
+      assists: this.tune.assists.slice(),
+      assisted: this.tune.assisted,
       won: this.phase === 'won',
       lost: this.phase === 'lost',
       wave: this.wave,

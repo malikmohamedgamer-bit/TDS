@@ -66,6 +66,20 @@ export class Hud {
             <label class="row"><input type="checkbox" name="damageNumbers"> Damage numbers</label>
             <label class="row"><input type="checkbox" name="enemiesHurtHero"> Enemies can hurt the Commander (next match)</label>
           </fieldset>
+          <fieldset><legend>Difficulty tuning</legend>
+            <label class="row">Preset <select name="tuningPreset" data-testid="tuning-preset">
+              <option value="default">Default (from tuning.json)</option><option value="standard">Standard (intended challenge)</option>
+              <option value="original">Original (easier slice tuning)</option><option value="relaxed">Relaxed (easiest)</option></select></label>
+            <p class="note">Applies from the next match.</p>
+          </fieldset>
+          <fieldset data-testid="assist"><legend>Assist</legend>
+            <label class="row"><input type="checkbox" name="assistExtraCash"> Extra starting cash (+$400)</label>
+            <label class="row"><input type="checkbox" name="assistSlowEnemies"> Slower enemies (75% speed)</label>
+            <label class="row"><input type="checkbox" name="assistHeroBoost"> Stronger Commander (2.5x damage)</label>
+            <label class="row"><input type="checkbox" name="assistFullRefund"> Selling refunds 100%</label>
+            <label class="row"><input type="checkbox" name="assistSkipWave"> Allow skipping a whole wave</label>
+            <p class="note">Assisted runs are marked ✚ Assist: they still give crowns, but do not set records, complete achievements or count for the daily challenge. Applies from the next match.</p>
+          </fieldset>
           <fieldset><legend>Controls</legend>
             <label class="row">Look sensitivity <input type="range" name="mouseSensitivity" min="0.3" max="2.5" step="0.1"><output name="sensOut"></output></label>
             <label class="row"><input type="checkbox" name="invertY"> Invert look Y</label>
@@ -102,8 +116,9 @@ export class Hud {
     const f = this.form.elements;
     for (const r of f.quality) r.checked = r.value === s.quality;
     f.pixelation.value = String(s.pixelation);
-    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero']) f[k].checked = !!s[k];
+    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) f[k].checked = !!s[k];
     f.masterVolume.value = s.masterVolume;
+    f.tuningPreset.value = s.tuningPreset || 'default';
     f.sfxVolume.value = s.sfxVolume;
     f.textScale.value = s.textScale;
     f.mouseSensitivity.value = s.mouseSensitivity;
@@ -128,8 +143,9 @@ export class Hud {
     const s = this.settings;
     s.quality = [...f.quality].find((r) => r.checked)?.value || s.quality;
     s.pixelation = Number(f.pixelation.value);
-    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero']) s[k] = f[k].checked;
+    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) s[k] = f[k].checked;
     s.masterVolume = Number(f.masterVolume.value);
+    s.tuningPreset = f.tuningPreset.value;
     s.sfxVolume = Number(f.sfxVolume.value);
     s.textScale = Number(f.textScale.value);
     s.mouseSensitivity = Number(f.mouseSensitivity.value);

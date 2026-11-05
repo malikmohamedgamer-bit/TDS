@@ -1,7 +1,6 @@
 // Match HUD: status bar, boss bar, tower hotbar, tower panel (upgrades / targeting / move / sell),
 // abilities, placement hint, loadout + difficulty screen, pause and end screens, captions.
-import { nextStep, towerStats, totalSpent } from '../sim/stats.js';
-import { SELL_REFUND } from '../sim/match.js';
+import { nextStep, towerStats } from '../sim/stats.js';
 import { TARGET_MODES } from '../sim/combat.js';
 import { DAMAGE_COLORS } from '../engine/effects.js';
 
@@ -33,6 +32,7 @@ export class MatchHud {
         <button class="btn skip" data-testid="skip" aria-label="Start next wave (N)">Next wave <kbd>N</kbd></button>
         <div class="st hp"><span class="k">Keep</span><div class="bar" aria-hidden="true"><span></span></div><b data-testid="keep">150</b></div>
         <div class="st cash"><span class="k">Cash</span><b data-testid="cash">$0</b></div>
+        <button class="btn assist-skip" data-testid="assist-skip" hidden aria-label="Assist: skip this whole wave">✚ Skip this wave</button>
         <button class="btn speed" data-testid="speed" aria-label="Game speed">1x</button>
         <button class="icon-btn pause" aria-label="Pause (P)">❚❚</button>
       </div>
@@ -58,6 +58,7 @@ export class MatchHud {
     this.$ = (s) => this.el.querySelector(s);
     this.$('.skip').addEventListener('click', () => cb.onSkip());
     this.$('.speed').addEventListener('click', () => cb.onSpeed());
+    this.$('.assist-skip').addEventListener('click', () => cb.onAssistSkip());
     this.$('.pause').addEventListener('click', () => cb.onPause());
     const pm = this.$('.pause-modal');
     pm.addEventListener('click', (e) => {
@@ -135,13 +136,13 @@ export class MatchHud {
   }
 
   // ------------------------------------------------------------------- hotbar ----------------
-  setLoadout(loadout, thumb) {
+  setLoadout(loadout, thumb, costOf = (d) => d.cost) {
     this.loadout = loadout;
     const bar = this.$('.hotbar');
     bar.innerHTML = loadout.map((id, i) => {
       const t = this.content.towers.get(id);
-      return `<button class="slot f-${t.faction}" data-tower="${id}" aria-label="${esc(t.name)}, $${t.cost}, key ${i + 1}" data-testid="slot-${id}">
-        <img alt="" data-thumb="${id}"><kbd>${i + 1}</kbd><span class="nm">${esc(t.name)}</span><span class="cost">$${t.cost}</span><span class="why"></span></button>`;
+      return `<button class="slot f-${t.faction}" data-tower="${id}" aria-label="${esc(t.name)}, $${costOf(t)}, key ${i + 1}" data-testid="slot-${id}">
+        <img alt="" data-thumb="${id}"><kbd>${i + 1}</kbd><span class="nm">${esc(t.name)}</span><span class="cost">$${costOf(t)}</span><span class="why"></span></button>`;
     }).join('');
     bar.onclick = (e) => {
       const s = e.target.closest('[data-tower]');
@@ -187,6 +188,7 @@ export class MatchHud {
     this.$('.hp').classList.toggle('low', hpf < 0.35);
     this.$('[data-testid="cash"]').textContent = `$${fmt(m.cash)}`;
     this.$('.speed').textContent = `${speed}x`;
+    this.$('.assist-skip').hidden = !(m.tune.skipWave && m.phase === 'wave');
     // boss bar
     const boss = m.enemies.find((e) => e.boss && e.alive);
     const bb = this.$('.bossbar');
@@ -205,12 +207,13 @@ export class MatchHud {
       const def = this.content.towers.get(id);
       const count = m.towers.filter((t) => t.defId === id).length;
       const atLimit = def.limit && count >= def.limit;
-      const poor = m.cash < def.cost;
+      const cost = m.costOf(def);
+      const poor = m.cash < cost;
       s.classList.toggle('poor', poor && !atLimit);
       s.classList.toggle('max', !!atLimit);
       s.classList.toggle('active', placing === id);
       s.setAttribute('aria-pressed', String(placing === id));
-      s.querySelector('.why').textContent = atLimit ? `max ${def.limit}` : poor ? `need $${def.cost - m.cash}` : `${count ? `${count} built` : ''}`;
+      s.querySelector('.why').textContent = atLimit ? `max ${def.limit}` : poor ? `need $${cost - m.cash}` : `${count ? `${count} built` : ''}`;
     }
     // abilities
     for (const a of m.abilities) {
@@ -270,15 +273,17 @@ export class MatchHud {
       upgrade = `<div class="branches">${n.options.map((br) => {
         const bd = t.def.upgrades.branches[br];
         const st = bd.steps[0];
-        const poor = m.cash < st.cost;
-        return `<button class="branch ${poor ? 'poor' : ''}" data-branch="${br}" data-testid="branch-${br}"><b>Path ${br}: ${esc(bd.name)}</b><span>${esc(bd.desc || '')}</span><span class="nx">${esc(st.name)}: ${esc(st.desc || '')}</span><span class="cost">$${st.cost}${poor ? ` · need $${st.cost - m.cash}` : ''}</span></button>`;
+        const sc = m.stepCost(st);
+        const poor = m.cash < sc;
+        return `<button class="branch ${poor ? 'poor' : ''}" data-branch="${br}" data-testid="branch-${br}"><b>Path ${br}: ${esc(bd.name)}</b><span>${esc(bd.desc || '')}</span><span class="nx">${esc(st.name)}: ${esc(st.desc || '')}</span><span class="cost">$${sc}${poor ? ` · need $${sc - m.cash}` : ''}</span></button>`;
       }).join('')}</div>`;
     } else {
-      const poor = m.cash < n.step.cost;
+      const sc = m.stepCost(n.step);
+      const poor = m.cash < sc;
       const after = towerStats(t.def, { ...t.up, ...(n.kind === 'linear' ? { linear: t.up.linear + 1 } : { branch: n.branch, branchLevel: t.up.branchLevel + 1 }) }, t.lobbyLevel, m.progression);
-      upgrade = `<button class="btn primary upgrade ${poor ? 'poor' : ''}" data-act="upgrade" data-testid="upgrade"><b>${esc(n.step.name)}</b><span>${esc(n.step.desc || '')}</span>${n.step.evolve ? `<span class="evo">Evolves into ${esc(after.name)}</span>` : ''}<span class="cost">$${n.step.cost}${poor ? ` · need $${n.step.cost - m.cash}` : ''} <kbd>U</kbd></span></button>`;
+      upgrade = `<button class="btn primary upgrade ${poor ? 'poor' : ''}" data-act="upgrade" data-testid="upgrade"><b>${esc(n.step.name)}</b><span>${esc(n.step.desc || '')}</span>${n.step.evolve ? `<span class="evo">Evolves into ${esc(after.name)}</span>` : ''}<span class="cost">$${sc}${poor ? ` · need $${sc - m.cash}` : ''} <kbd>U</kbd></span></button>`;
     }
-    const refund = Math.floor(totalSpent(t.def, t.up) * SELL_REFUND);
+    const refund = m.refundOf(t);
     p.innerHTML = `
       <header><div><h2 data-testid="tower-name">${esc(t.name)}</h2><div class="pips" aria-label="Tier ${t.tier} of ${totalSteps}">${pips.join('')}</div></div>
       <button class="icon-btn" data-act="close" aria-label="Close">✕</button></header>
@@ -341,6 +346,7 @@ export class MatchHud {
     const d = this.$('.end-modal');
     const won = res.won;
     d.innerHTML = `<h2 class="${won ? 'won' : 'lost'}">${won ? '★ Victory' : '✕ Defeat'}</h2>
+      <p class="sub">${esc(res.presetLabel || res.preset || '')} tuning${res.assisted ? ` · <b class="assisted" data-testid="assisted">✚ Assist: ${esc(res.assists.join(', '))}</b>` : ''}</p>
       <p class="sub">${won ? 'The keep stands. The rift is sealed, for now.' : `The keep fell on wave ${res.wave}.`}</p>
       <dl class="endstats"><dt>Waves</dt><dd>${res.wave}/${res.waves}</dd><dt>Kills</dt><dd>${res.stats.kills}</dd><dt>Leaks</dt><dd>${res.stats.leaks}</dd>
       <dt>Damage</dt><dd>${fmt(res.stats.damage)}</dd><dt>Keep</dt><dd>${Math.max(0, Math.round(res.baseHp))}</dd><dt>Time</dt><dd>${Math.floor(res.ticks / 3600)}:${String(Math.floor(res.ticks / 60) % 60).padStart(2, '0')}</dd></dl>

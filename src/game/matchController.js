@@ -32,6 +32,7 @@ export class MatchController {
     this.mhud = new MatchHud(this.ui, this.content, {
       onPickTower: (id) => this.pickTower(id),
       onSkip: () => this.command({ type: 'skip' }),
+      onAssistSkip: () => this.command({ type: 'assistSkip' }),
       onSpeed: () => { this.speed = this.speed === 1 ? 2 : 1; this.sfx.play('ui'); },
       onPause: () => this.setPaused(true),
       onResume: () => this.setPaused(false),
@@ -53,6 +54,17 @@ export class MatchController {
       if (skipped) this.mhud.banner('Tutorial skipped');
     });
     this.thumb = (id) => towerThumbnail(this.renderer, this.content, id);
+  }
+
+  /** Tuning preset chosen in Settings, or the one data/tuning.json names. */
+  presetId() {
+    const p = this.settings.tuningPreset;
+    return p && p !== 'default' && this.content.tuning?.presets?.[p] ? p : this.content.tuning?.preset;
+  }
+
+  assist() {
+    const s = this.settings;
+    return { extraCash: !!s.assistExtraCash, slowEnemies: !!s.assistSlowEnemies, heroBoost: !!s.assistHeroBoost, fullRefund: !!s.assistFullRefund, skipWave: !!s.assistSkipWave };
   }
 
   persist() {
@@ -88,7 +100,7 @@ export class MatchController {
     this.ready = false;
     const match = new Match({
       content: this.content, mapWorld: mw, difficulty: cfg.difficulty, seed, loadout: cfg.loadout, levels,
-      options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero },
+      options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero, preset: this.presetId(), assist: this.assist() },
     });
     const view = new MatchView(this.renderer, match, this.content, this.settings, this.ui.querySelector('.dmg-layer'));
     await view.preload();
@@ -96,7 +108,7 @@ export class MatchController {
     this.match = match;
     this.view = view;
     this.tutorialStats = { heroMoved: 0, cameraTurned: 0, tutorialTimer: 0, lastHero: { x: this.hero.x, z: this.hero.z }, lastYaw: this.rig.yaw };
-    this.mhud.setLoadout(cfg.loadout, this.thumb);
+    this.mhud.setLoadout(cfg.loadout, this.thumb, (d) => match.costOf(d));
     this.mhud.setAbilities(this.match.abilities);
     this.mhud.select(null, this.match);
     this.speed = 1;
@@ -271,7 +283,7 @@ export class MatchController {
           const v = this.mode === 'moving' ? this.match.canPlace(this.placing, hit.x, hit.z, this.moving, true) : this.match.canPlace(this.placing, hit.x, hit.z);
           const def = this.content.towers.get(this.placing);
           this.view.setPreview(this.placing, hit.x, hit.z, v.ok, def.stats.range || def.footprint * 2);
-          this.mhud.hint(v.ok ? `${def.name} $${def.cost}${this.mode === 'moving' ? ' (move)' : ''}` : v.reason, v.ok);
+          this.mhud.hint(v.ok ? `${def.name} $${this.match.costOf(def)}${this.mode === 'moving' ? ' (move)' : ''}` : v.reason, v.ok);
         }
         this.lastHit = hit;
       } else {
@@ -366,7 +378,7 @@ export class MatchController {
     this.cancelMode();
     const res = m.result();
     const diff = m.difficulty;
-    const crowns = Math.round(((res.won ? 120 : 20) + res.wave * 8) * (diff.metaRewardMul ?? 1));
+    const crowns = Math.round(((res.won ? 120 : 20) + res.wave * 8) * (diff.metaRewardMul ?? 1) * (m.tune.rewardMul ?? 1));
     const xp = res.wave * 10 + (res.won ? 150 : 0);
     const granted = grantReward(this.save, `match:${res.seed}`, { crowns, xp });
     const s = this.save.stats;
@@ -374,9 +386,13 @@ export class MatchController {
     if (res.won) s.wins++;
     s.kills += res.stats.kills;
     s.wavesCleared += Math.max(0, res.won ? res.wave : res.wave - 1);
-    const best = (this.save.progress.best[m.map.id] ||= {});
-    best[diff.id] = Math.max(best[diff.id] || 0, res.won ? res.wave : res.wave - 1);
+    if (!res.assisted) {
+      // records only for unassisted runs
+      const best = (this.save.progress.best[m.map.id] ||= {});
+      best[diff.id] = Math.max(best[diff.id] || 0, res.won ? res.wave : res.wave - 1);
+    }
     this.persist();
+    res.presetLabel = m.tune.label;
     this.lastResult = res;
     setTimeout(() => this.mhud.showEnd(res, { granted, crowns, xp }), 1200);
   }

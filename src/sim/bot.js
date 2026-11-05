@@ -2,6 +2,7 @@
 // reports the result. Pure; used by unit tests and tools/balance.mjs.
 import { Match, SIM_DT } from './match.js';
 import { towerStats, nextStep } from './stats.js';
+import { Rng } from '../core/rng.js';
 
 /** Rough damage-per-second value of a stats object at a spot with path coverage share cov. */
 function value(stats, cov, wavesLeft) {
@@ -22,8 +23,15 @@ function value(stats, cov, wavesLeft) {
   return dps * mul * cov * 2.5; // damage dealt scales with how much road is in range
 }
 
-export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, heroSpot = null, weak = false } = {}) {
+/**
+ * strategy: 'smart' (value-driven), 'lazy' (1-2 tower types, never upgrades), 'weak' (2 towers only).
+ * skill 1 = always the best estimated option; lower skill adds seeded noise to its estimates,
+ * irregular reaction times and occasional hesitation (a sensible but not perfect player).
+ */
+export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, heroSpot = null, weak = false, strategy = weak ? 'weak' : 'smart', skill = 1, seed = 'bot' } = {}) {
   const m = match;
+  const rng = new Rng(`${seed}:bot`);
+  const noise = () => (skill >= 1 ? 1 : 1 + (rng.next() - 0.5) * 2 * (1 - skill) * 1.2);
   const path = m.paths[0];
   const samples = [];
   for (let d = 0; d < path.length; d += 2) samples.push(path.pointAt(d, {}));
@@ -79,7 +87,7 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
     let best = null;
     for (const id of ids) {
       const def = m.content.towers.get(id);
-      if (def.cost > budget) continue;
+      if (m.costOf(def) > budget) continue;
       if (def.limit && m.towers.filter((t) => t.defId === id).length >= def.limit) continue;
       const st = towerStats(def, undefined, m.levels[id] || 1, m.progression).stats;
       const range = st.range || 8;
@@ -87,8 +95,8 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
         if (s.used) continue;
         // each extra tower overlaps and overkills more (diminishing returns), like a real player sees
         const crowd = 0.92 ** m.towers.length;
-        const v = ((st.aura ? auraValue(st.aura, s, range, wavesLeft) : value(st, st.income ? 0.5 : coverage(s, range), wavesLeft)) * crowd) / def.cost;
-        if (!best || v > best.v) best = { kind: 'place', id, s, v, cost: def.cost };
+        const v = ((st.aura ? auraValue(st.aura, s, range, wavesLeft) : value(st, st.income ? 0.5 : coverage(s, range), wavesLeft)) * crowd * noise()) / m.costOf(def);
+        if (!best || v > best.v) best = { kind: 'place', id, s, v, cost: m.costOf(def) };
       }
     }
     return best;
@@ -101,15 +109,15 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
       const options = pick?.needsBranch ? pick.options : [null];
       for (const br of options) {
         const n = nextStep(t.def, t.up, br);
-        if (!n || n.needsBranch || n.step.cost > budget) continue;
+        if (!n || n.needsBranch || m.stepCost(n.step) > budget) continue;
         const up2 = { ...t.up };
         if (n.kind === 'linear') up2.linear++;
         else { up2.branch = n.branch; up2.branchLevel++; }
         const st2 = towerStats(t.def, up2, m.levels[t.defId] || 1, m.progression).stats;
         const before = t.base.aura ? auraValue(t.base.aura, t, t.base.range, wavesLeft) : value(t.base, coverage(t, t.base.range || 8), wavesLeft);
         const after = st2.aura ? auraValue(st2.aura, t, st2.range, wavesLeft) : value(st2, coverage(t, st2.range || 8), wavesLeft);
-        const v = (after - before) / n.step.cost;
-        if (!best || v > best.v) best = { kind: 'upgrade', uid: t.uid, branch: n.branch || null, v, cost: n.step.cost };
+        const v = ((after - before) * noise()) / m.stepCost(n.step);
+        if (!best || v > best.v) best = { kind: 'upgrade', uid: t.uid, branch: n.branch || null, v, cost: m.stepCost(n.step) };
       }
     }
     return best;
@@ -117,7 +125,21 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
 
   function think() {
     if (m.phase === 'won' || m.phase === 'lost') return;
-    if (weak) {
+    if (strategy === 'lazy') {
+      // one or two cheap tower types, spammed, never upgraded
+      const types = ids.filter((id) => m.content.towers.get(id).stats.damage).sort((a, b) => m.content.towers.get(a).cost - m.content.towers.get(b).cost).slice(0, 2);
+      for (let guard = 0; guard < 3; guard++) {
+        const saved = ids.splice(0, ids.length, ...types);
+        const o = bestNewTower(m.waveCount(), m.cash);
+        ids.splice(0, ids.length, ...saved);
+        if (!o || m.cash < o.cost) break;
+        o.s.used = true;
+        if (m.command({ type: 'place', tower: o.id, x: o.s.x, z: o.s.z }).ok) report.placed++;
+        m.step();
+      }
+      return;
+    }
+    if (strategy === 'weak') {
       if (m.towers.length < 2) {
         const o = bestNewTower(m.waveCount(), m.cash);
         if (o && m.cash >= o.cost && m.command({ type: "place", tower: o.id, x: o.s.x, z: o.s.z }).ok) { o.s.used = true; report.placed++; }
@@ -127,12 +149,14 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
     const wavesLeft = m.waveCount() - m.wave + 1;
     // nothing affordable: skip the expensive search
     let minCost = Infinity;
-    for (const id of ids) minCost = Math.min(minCost, m.content.towers.get(id).cost);
+    for (const id of ids) minCost = Math.min(minCost, m.costOf(m.content.towers.get(id)));
     for (const t of m.towers) {
       const n = nextStep(t.def, t.up, 'A');
-      if (n && !n.needsBranch) minCost = Math.min(minCost, n.step.cost);
+      if (n && !n.needsBranch) minCost = Math.min(minCost, m.stepCost(n.step));
     }
     if (m.cash < minCost) return;
+    // an imperfect player sometimes hesitates
+    if (skill < 1 && rng.chance((1 - skill) * 0.35)) return;
     for (let guard = 0; guard < 4; guard++) {
       const place = m.towers.length < maxTowers ? bestNewTower(wavesLeft, Infinity) : null;
       const up = bestUpgrade(wavesLeft, Infinity);
@@ -159,15 +183,15 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
   return {
     report,
     update() {
-      if (m.time >= nextThink) { nextThink = m.time + thinkEvery; think(); }
+      if (m.time >= nextThink) { nextThink = m.time + thinkEvery * (skill < 1 ? 0.6 + rng.next() * (1 + 2 * (1 - skill)) : 1); think(); }
     },
   };
 }
 
 /** Play a full match with the bot. Returns the result plus bot report. */
-export function playBot({ content, mapWorld, difficulty = 'normal', seed = 'bot', loadout, levels, options, weak = false, maxTicks = 60 * 60 * 40 }) {
+export function playBot({ content, mapWorld, difficulty = 'normal', seed = 'bot', loadout, levels, options, weak = false, strategy, skill = 1, maxTicks = 60 * 60 * 40 }) {
   const m = new Match({ content, mapWorld, difficulty, seed, loadout, levels, options });
-  const bot = createBot(m, { loadout, weak });
+  const bot = createBot(m, { loadout, weak, strategy, skill, seed });
   while (m.phase !== 'won' && m.phase !== 'lost' && m.tick < maxTicks) {
     bot.update();
     m.step();

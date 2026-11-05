@@ -1,0 +1,73 @@
+{
+  "$doc": "ALL global difficulty and economy tuning. Every knob is a multiplier on the values in the other data files (1 = as written there). Switch the whole game with the one line below (\"preset\"), or per device in Settings > Tuning. See docs/TUNING.md for what each knob does and safe ranges.",
+  "preset": "standard",
+  "presets": {
+    "standard": {
+      "label": "Standard",
+      "description": "The intended challenge. Normal is won by a good plan, not by any plan.",
+      "enemyHp": 1.1,
+      "enemySpeed": 1.0,
+      "enemyCount": 1.0,
+      "startCash": 1.0,
+      "killIncome": 0.95,
+      "waveBonus": 1.0,
+      "towerCost": 1.0,
+      "upgradeCost": 1.0,
+      "heroDamage": 1.0,
+      "bossHp": 1.0,
+      "bossPhaseSpeed": 1.0,
+      "keepHp": 1.0,
+      "sellRefund": 0.7,
+      "rewardMul": 1.0
+    },
+    "original": {
+      "label": "Original",
+      "description": "The easier tuning of the first playable slice.",
+      "enemyHp": 1.0,
+      "enemySpeed": 1.0,
+      "enemyCount": 1.0,
+      "startCash": 1.0,
+      "killIncome": 1.0,
+      "waveBonus": 1.0,
+      "towerCost": 1.0,
+      "upgradeCost": 1.0,
+      "heroDamage": 1.0,
+      "bossHp": 1.0,
+      "bossPhaseSpeed": 1.0,
+      "keepHp": 1.0,
+      "sellRefund": 0.7,
+      "rewardMul": 0.85
+    },
+    "relaxed": {
+      "label": "Relaxed",
+      "description": "Easier than the slice: for friends, first-timers and testing.",
+      "enemyHp": 0.75,
+      "enemySpeed": 0.9,
+      "enemyCount": 0.85,
+      "startCash": 1.3,
+      "killIncome": 1.2,
+      "waveBonus": 1.2,
+      "towerCost": 0.9,
+      "upgradeCost": 0.9,
+      "heroDamage": 1.5,
+      "bossHp": 0.8,
+      "bossPhaseSpeed": 0.8,
+      "keepHp": 1.5,
+      "sellRefund": 0.8,
+      "rewardMul": 0.6
+    }
+  },
+  "assist": {
+    "$doc": "Player-chosen helpers (Settings > Assist). Assisted runs are flagged: they still give crowns but do not set records, complete achievements or count for the daily challenge.",
+    "extraCash": { "startCashAdd": 400 },
+    "slowEnemies": { "enemySpeed": 0.75 },
+    "heroBoost": { "heroDamage": 2.5 },
+    "fullRefund": { "sellRefund": 1.0 },
+    "skipWave": { "allowed": true }
+  },
+  "safeRanges": {
+    "enemyHp": [0.4, 3], "enemySpeed": [0.6, 1.5], "enemyCount": [0.5, 2], "startCash": [0.5, 3], "killIncome": [0.3, 3],
+    "waveBonus": [0.3, 3], "towerCost": [0.5, 2], "upgradeCost": [0.5, 2], "heroDamage": [0.25, 5], "bossHp": [0.3, 3],
+    "bossPhaseSpeed": [0.5, 2], "keepHp": [0.5, 4], "sellRefund": [0, 1], "rewardMul": [0, 5]
+  }
+}

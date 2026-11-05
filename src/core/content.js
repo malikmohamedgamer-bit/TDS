@@ -40,6 +40,7 @@ export async function loadContent(readJson) {
     abilities: await loadMany(readJson, index.abilities, 'abilities'),
     heroes: await loadMany(readJson, index.heroes, 'heroes'),
     progression: index.progression ? await readJson(index.progression) : null,
+    tuning: index.tuning ? await readJson(index.tuning) : null,
     models: new Map(Object.entries(index.models ? (await readJson(index.models)).models : {})),
   };
   content.version = contentVersion(content);

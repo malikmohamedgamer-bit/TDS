@@ -17,7 +17,17 @@ async function startMatch(page, { tutorial = false, difficulty = 'normal', clear
   return errors;
 }
 const towers = (page) => page.evaluate(() => window.TDS.match.towers.length);
+/** Wait until the camera stops easing (projection must not change between measure and click). */
+async function cameraStill(page) {
+  await page.waitForFunction(() => {
+    const c = window.TDS.camera;
+    const prev = window.__camPrev;
+    window.__camPrev = c;
+    return prev && Math.hypot(c.x - prev.x, c.y - prev.y, c.z - prev.z) < 0.01;
+  }, null, { timeout: 30_000, polling: 150 });
+}
 async function clickGround(page, x, z) {
+  await cameraStill(page);
   const p = await page.evaluate(([x, z]) => window.TDS.toScreen(x, window.TDS.groundAt(x, z), z), [x, z]);
   expect(p.visible).toBe(true);
   await page.mouse.move(p.x, p.y);
@@ -153,4 +163,26 @@ test('tutorial advances on real actions and can be skipped', async ({ page }) =>
   await page.getByRole('button', { name: 'Skip tutorial' }).click();
   await expect(tut).toBeHidden();
   expect(await page.evaluate(() => window.TDS.save.progress.tutorialDone)).toBe(true);
+});
+
+test('tuning preset and assists from settings: skip-wave button, flagged results', async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      localStorage.removeItem('tds.save');
+      localStorage.setItem('tds.settings.v1', JSON.stringify({ tuningPreset: 'relaxed', assistSkipWave: true, assistExtraCash: true }));
+    } catch { /* ignore */ }
+  });
+  await startMatch(page, { clearSave: false });
+  const info = await page.evaluate(() => ({ preset: window.TDS.match.tune.id, cash: window.TDS.match.cash, assisted: window.TDS.match.tune.assisted }));
+  expect(info.preset).toBe('relaxed');
+  expect(info.assisted).toBe(true);
+  expect(info.cash).toBeGreaterThan(1000);
+  await page.getByTestId('skip').click();
+  await expect(page.getByTestId('assist-skip')).toBeVisible();
+  await page.getByTestId('assist-skip').click();
+  await expect.poll(() => page.evaluate(() => window.TDS.match.wave)).toBe(2);
+  await page.evaluate(() => { window.TDS.debug.killAll(); window.TDS.debug.jumpToWave(20); window.TDS.debug.fastForward(1); window.TDS.debug.killAll(); window.TDS.debug.fastForward(2); });
+  await expect(page.getByTestId('end')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('assisted')).toBeVisible();
+  expect(await page.evaluate(() => Object.keys(window.TDS.save.progress.best).length)).toBe(0);
 });

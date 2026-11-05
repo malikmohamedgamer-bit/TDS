@@ -99,6 +99,7 @@ fieldset { border: 1px solid var(--border); border-radius: 10px; margin: 10px 0 
 legend { color: var(--gold); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0 6px; }
 .row { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 600; }
 .row select, .row input[type="range"] { margin-left: auto; }
+.note { margin: 4px 0 0; font-size: 0.78rem; color: var(--text-2); line-height: 1.35; }
 .row output { min-width: 3.4em; text-align: right; color: var(--text-2); font-variant-numeric: tabular-nums; }
 input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--magic); }
 input[type="range"] { accent-color: var(--magic); width: 150px; }

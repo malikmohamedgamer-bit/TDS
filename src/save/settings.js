@@ -24,6 +24,12 @@ export function defaultSettings(env = {}) {
     captions: true,
     enemiesHurtHero: false,
     damageNumbers: true,
+    tuningPreset: 'default', // 'default' = whatever data/tuning.json says
+    assistExtraCash: false,
+    assistSlowEnemies: false,
+    assistHeroBoost: false,
+    assistFullRefund: false,
+    assistSkipWave: false,
   };
 }
 
