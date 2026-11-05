@@ -17,7 +17,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 7. Content batch 1 | **Done (2026-11-05)**: Frostmere Crossing (2 roads), Thornmother boss, 2 legendary towers, map picker |
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
 | 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
-| 10. Asset packs + content growth | **In progress**: 10 Kenney CC0 packs, recolour pipeline, 23 imported models, content batch 1 (18 towers, 18 enemies, 10 bosses). Map generator and further batches not started |
+| 10. Asset packs + content growth | **In progress**: 10 Kenney + 10 Quaternius CC0 packs, recolour pipeline, 37 imported pack models (23 Kenney, 14 Quaternius), content batch 1 (18 towers, 18 enemies, 10 bosses). Quaternius models are imported and reviewed but not yet used by any unit. Map generator and further batches not started |
 
 ## Real content counts (after content batch 1, counted from data/)
 
@@ -26,13 +26,13 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Maps | 2 (Riftline Valley 1 road; Frostmere Crossing 2 roads, unlocks at player level 3); no generated maps yet |
 | Towers | 32: 12 core (7 war, 5 magic; 5 starters) + 2 legendary + 18 generated (batch kenney_b1: 9 Kenney models x 2 stat / colour variants) |
 | Enemies / bosses | 29 / 12: 11 core + 18 generated (9 Kenney models x 2 palettes) / 2 core + 10 generated (5 Kenney models x 2 palettes). Generated enemies appear in Endless (from wave 8) and generated waves; Boss Rush rotates all 12 bosses |
-| Imported pack models | 23 Kenney CC0 (of 1,201 GLBs downloaded) |
+| Imported pack models | 37: 23 Kenney CC0 (of 1,201 GLBs downloaded) + 14 Quaternius CC0 (7 enemies, 5 bosses, 2 War towers; of about 330 models in 10 packs). Distinct models in data/models.json: 44 (7 Blender + 37 pack); 30 are used by towers / enemies / bosses, the 14 Quaternius ones are not used by any unit yet |
 | Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
 | Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
 | Daily login rewards | 7-day streak |
 | Modes / modifiers | 7 / 9 |
 | Music | 4 moods (hub, build, wave, boss), 2 map keys, procedural (no audio files) |
-| Unit tests / E2E tests | 70 / 24 |
+| Unit tests / E2E tests | 72 / 24 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -114,6 +114,12 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   `data/bosses/thornmother.json`, `data/towers/legendary.json`; models in `src/engine/unitModels.js`
   (`titan_railgun`, `starfall_oracle`, rig `thornmother`); hub Map picker reloads on `?map=` and
   remembers `settings.map`; bot coverage is per road.
+- Quaternius packs (2026-11-06): raw packs in `assets/packs/quaternius-*` (git-ignored, links in
+  docs/credits.md), `tools/blender/convert_fbx.py` (FBX / glTF to GLB in a temp scene, decimate to
+  budget, drop spare meshes), `tools/import-quaternius.mjs --fit` (manifest + engine-measured scale),
+  GLBs in `assets/models/quaternius/`. Skinned meshes are drawn instanced as rigid per-bone parts
+  (`rigidifySkinned`); manifest options `yaw` and `glow: false`; the viewer shows enemies and bosses
+  as the baked rig. Contact sheets: docs/screenshots/quaternius.
 - Polish (milestone 8): `data/music.json`, `src/audio/musicPatterns.js` (pure), `src/audio/music.js`;
   portal swirl shader in `src/engine/mapView.js` (`_buildPortalSwirls`); `map.scatterGap`.
 
@@ -125,8 +131,10 @@ Content growth (milestone 10), in this order:
    from `generateWave` stored as data, `scatterGap` 1.3. Soak every map; bot each map to 60-70%.
 2. Fix bug 35 (generated tower menu 42%): give the batch a single-target boss killer, then
    re-measure with a mixed core + generated menu.
-3. Batch 2+: more Kenney models (castle towers, fantasy town, nature props for themes), more
-   palette schemes, then Quaternius packs if the owner downloads them (links in docs/credits.md).
+3. Batch 2+: give the 14 imported Quaternius models units (gen-content templates: 7 enemies incl. 2
+   air, 5 bosses, 2 War towers), then more from the downloaded packs (Ultimate Fantasy RTS units for
+   Magic towers, Steampunk Turrets for War towers, Cute Monsters / Easy Enemy for swarms; all need
+   convert_fbx.py + decimation), more Kenney models and palette schemes.
 Honest scale: 100+ towers / 200+ enemies / 100+ bosses are reachable as variants of about 25-40
 models; 50+ maps need the generator. Every batch: balance bot, counts, commit, push, deploy check.
 
@@ -137,6 +145,13 @@ models; 50+ maps need the generator. Every batch: balance bot, counts, commit, p
 - The hub is a menu over the 3D world, not a separate walkable lobby area.
 - Music is procedural synth loops (4 moods); it is pleasant but simple, and was only checked by
   unit tests and state checks, not listened to by a person yet.
+- Quaternius models (2026-11-06): enemy eyes do not glow (their atlas eyes are white / black; the
+  glow rule is off for them because it lit whole red bodies); several Blight recolours are very dark
+  (blob orc, spiky blob, ninja read as dark blobs at distance); Tank3 recolours mostly to bone beige
+  and reads as an ordinary tank, not Blight; decimated Toon Shooter enemy has stringy sleeves; the
+  soldier and Leela towers have no base plate; skinned models are rigid per bone in matches (small
+  creases at joints, invisible at game distance). The Animated Zombie FBX imported lying / oddly
+  scaled and was not imported.
 - Generated (batch) units are stat and colour variants of 23 Kenney models; two units often share
   a model with different palettes.
 - Code-built towers and enemies (including the new legendaries and Thornmother) are simpler than the

@@ -125,3 +125,21 @@
   balanced templates. Towers are priced with the balance bot's own value estimate; enemies keep
   their template's HP x speed. Generated towers stay out of the Daily Challenge.
 - Balance tests now guard the 12 core towers explicitly (`coreTowers` in test/helpers.js).
+
+## 0.11.0 - Quaternius CC0 packs imported (2026-11-06)
+- 10 Quaternius CC0 packs downloaded from the official Google Drive folders linked on
+  quaternius.com (Drive "Download all" driven by Playwright; per-file gdown hit Drive's download
+  quota). Raw packs git-ignored; only model / texture / licence files kept (.blend, .mtl, .gif, .mp4
+  deleted; no executables or scripts were present). Counts and links in `docs/credits.md`.
+- `tools/blender/convert_fbx.py`: FBX / glTF / OBJ to GLB in a temporary Blender scene (the open
+  .blend is untouched), every clip exported with a clean name, optional decimation to the
+  art-style triangle budget (weights kept) and dropping spare meshes.
+- `tools/import-quaternius.mjs`: 14 models registered in `data/models.json` (7 enemies, 5 bosses,
+  2 War towers) with clip mapping; `--fit` measures each model's idle height in the engine and
+  corrects the scale. Reviewed in docs/screenshots/quaternius.
+- Engine: skinned meshes are now split into rigid per-bone parts for instanced drawing
+  (`rigidifySkinned` in `src/engine/instancedRig.js`; before, skinned enemies would have been
+  frozen in their bind pose in matches). Flat material colours are recoloured to the palettes
+  (Quaternius uses no palette texture). New per-model `yaw` and `glow: false` manifest options.
+- Asset viewer shows enemies and bosses through the baked instanced rig, i.e. as matches draw them.
+- Unit test for the rigidifier (matches three.js CPU skinning).

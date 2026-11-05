@@ -9,7 +9,7 @@ import { HeroView } from '../engine/heroView.js';
 import { loadGLB, ModelInstance, triangleCount, setPalettes } from '../engine/models.js';
 import { createStorage } from '../save/storage.js';
 import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS } from '../engine/unitModels.js';
-import { rigFromProcedural, InstancedRig } from '../engine/instancedRig.js';
+import { rigFromGLB, rigFromProcedural, InstancedRig } from '../engine/instancedRig.js';
 import { loadSettings } from '../save/settings.js';
 
 const VIEWS = {
@@ -44,7 +44,7 @@ async function boot() {
 
   // asset catalogue
   const assets = [];
-  for (const [id, m] of content.models) assets.push({ id: `glb:${id}`, name: id.replace(/_/g, ' '), group: `${m.kind === 'tower' ? 'Towers' : m.kind === 'boss' ? 'Bosses' : 'Enemies'} (${/^pack: Kenney/.test(m.source || '') ? 'Kenney CC0, recoloured' : 'Blender GLB'})`, kind: 'glb', model: m });
+  for (const [id, m] of content.models) assets.push({ id: `glb:${id}`, name: id.replace(/_/g, ' '), group: `${m.kind === 'tower' ? 'Towers' : m.kind === 'boss' ? 'Bosses' : 'Enemies'} (${/^pack: Kenney/.test(m.source || '') ? 'Kenney CC0, recoloured' : /^pack: Quaternius/.test(m.source || '') ? 'Quaternius CC0, recoloured' : 'Blender GLB'})`, kind: 'glb', model: m });
   assets.push({ id: 'hero:commander', name: 'Commander Vale', group: 'Hero (code model)', kind: 'hero' });
   for (const id of Object.keys(TOWER_MODELS)) assets.push({ id: `tower:${id}`, name: id.replace(/_/g, ' '), group: 'Towers (code models)', kind: 'tower', build: TOWER_MODELS[id] });
   for (const [id, def] of Object.entries({ ...ENEMY_RIGS, ...ALLY_RIGS })) assets.push({ id: `rig:${id}`, name: id.replace(/_/g, ' '), group: ENEMY_RIGS[id] ? 'Enemies (code models)' : 'Summons (code models)', kind: 'rig', def });
@@ -114,7 +114,14 @@ async function boot() {
     viewSpin = null;
     let obj;
     let clips = [];
-    if (a.kind === 'glb') {
+    if (a.kind === 'glb' && a.model.kind !== 'tower') {
+      // enemies and bosses: show the baked instanced rig the match draws (skinned meshes rigidified)
+      const asset = await rigFromGLB(a.model, a.model.clips);
+      obj = new THREE.Group();
+      rigInst = new InstancedRig(asset, obj, 1);
+      clips = [...asset.clips.keys()].filter((c) => c !== '_rest');
+      rigState = { state: 'idle', t: 0 };
+    } else if (a.kind === 'glb') {
       const gltf = await loadGLB(a.model);
       inst = new ModelInstance(gltf);
       obj = inst.root;

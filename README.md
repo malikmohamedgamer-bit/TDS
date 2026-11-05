@@ -109,7 +109,9 @@ Every content file is listed in `data/index.json`.
 3. **Check it** in the asset viewer (`viewer.html`) from every angle, then run
    `node tools/review-assets.mjs docs/screenshots/<dir>` for contact sheets.
 4. **Packs**: drop CC0 packs (Kenney, Quaternius) in `assets/packs/<pack>/`, list the GLB in
-   `data/models.json` and record the licence in `docs/credits.md`.
+   `data/models.json` and record the licence in `docs/credits.md`. FBX / glTF packs (Quaternius):
+   convert in Blender with `tools/blender/convert_fbx.py` (decimates to the triangle budget, see its
+   header), then `node tools/import-quaternius.mjs --fit` registers them with engine-measured scale.
 5. **Meshy** (paid plans only): `npm exec --yes --package=meshy-cli@0.4.0 -- meshy make "<prompt>" --dry-run`
    shows the cost first.
 

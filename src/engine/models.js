@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
 import { sharedMaterials } from './mapView.js';
-import { remapPixels } from '../core/palette.js';
+import { remapColor, remapPixels } from '../core/palette.js';
 
 const loader = new GLTFLoader();
 const cache = new Map();
@@ -30,16 +30,24 @@ export function loadGLB(src) {
   const url = typeof src === 'string' ? src : src.url;
   const palette = typeof src === 'string' ? null : src.palette || null;
   const scale = typeof src === 'string' ? 1 : src.scale || 1;
-  const key = `${url}|${palette || ''}|${scale}`;
+  // yaw (radians, data/models.json): turns pack models that do not face +Z like ours do
+  const yaw = typeof src === 'string' ? 0 : src.yaw || 0;
+  // glow: false (data/models.json) keeps a recoloured model matte: for atlases whose big bright red
+  // areas (bodies, heads) would otherwise turn emissive under the Blight scheme
+  const noGlow = typeof src === 'object' && src.glow === false;
+  const key = `${url}|${palette || ''}|${scale}|${yaw}|${noGlow}`;
   if (!cache.has(key)) {
     cache.set(key, new Promise((resolve, reject) => {
       loader.load(url, (gltf) => {
-        styleScene(gltf.scene, palette ? schemes[palette] : null);
-        if (scale !== 1) {
+        let scheme = palette ? schemes[palette] : null;
+        if (scheme && noGlow) scheme = noGlowScheme(scheme);
+        styleScene(gltf.scene, scheme);
+        if (scale !== 1 || yaw) {
           // wrap so node animations (which set the scene's own transforms) keep the scale
           const wrap = new THREE.Group();
           wrap.name = gltf.scene.name || 'scaled';
           gltf.scene.scale.multiplyScalar(scale);
+          gltf.scene.rotation.y += yaw;
           wrap.add(gltf.scene);
           gltf.scene = wrap;
         }
@@ -48,6 +56,13 @@ export function loadGLB(src) {
     }));
   }
   return cache.get(key);
+}
+
+/** Same scheme without glowing families; one object per scheme so the recolour cache still hits. */
+const noGlowSchemes = new WeakMap();
+function noGlowScheme(scheme) {
+  if (!noGlowSchemes.has(scheme)) noGlowSchemes.set(scheme, { ...scheme, glow: [] });
+  return noGlowSchemes.get(scheme);
 }
 
 /** Recolour a palette texture to a scheme. Returns {map, emissiveMap|null}; cached per image. */
@@ -108,6 +123,16 @@ export function styleScene(root, scheme = null) {
         nm = new THREE.MeshStandardMaterial({
           name: m.name, map: rc.map, roughness: 0.85, metalness: 0, flatShading: true, side: m.side,
           emissive: rc.emissiveMap ? new THREE.Color(1, 1, 1) : new THREE.Color(0, 0, 0), emissiveMap: rc.emissiveMap, emissiveIntensity: rc.emissiveMap ? 1.3 : 0,
+        });
+      } else if (scheme && m.color) {
+        // pack model with flat material colours (Quaternius): remap the colour itself
+        const s = m.color.getRGB({ r: 0, g: 0, b: 0 }, THREE.SRGBColorSpace);
+        const [r, g, b] = [s.r, s.g, s.b].map((v) => Math.round(Math.min(1, Math.max(0, v)) * 255));
+        const rc = remapColor(r, g, b, scheme);
+        const c = new THREE.Color().setRGB(rc.rgb[0] / 255, rc.rgb[1] / 255, rc.rgb[2] / 255, THREE.SRGBColorSpace);
+        nm = new THREE.MeshStandardMaterial({
+          name: m.name, color: c, map: grain, roughness: 0.85, metalness: 0, flatShading: true, side: m.side,
+          emissive: rc.glow ? c : new THREE.Color(0, 0, 0), emissiveIntensity: rc.glow ? 1.3 : 0,
         });
       } else if (glow) {
         // glowing parts: unlit, HDR bright so only they bloom
