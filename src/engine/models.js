@@ -4,25 +4,86 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
 import { sharedMaterials } from './mapView.js';
+import { remapPixels } from '../core/palette.js';
 
 const loader = new GLTFLoader();
 const cache = new Map();
 
-/** Load (once) and return {scene, animations}. */
-export function loadGLB(url) {
-  if (!cache.has(url)) {
-    cache.set(url, new Promise((resolve, reject) => {
+let schemes = {};
+/** Register data/palettes.json schemes (call once after content loads). */
+export function setPalettes(p) {
+  schemes = p?.schemes || {};
+}
+
+/**
+ * Load (once per url + palette) and return {scene, animations}. src is a url or a data/models.json
+ * entry {url, palette?}; a palette recolours the model's palette texture (pack models).
+ */
+export function loadGLB(src) {
+  const url = typeof src === 'string' ? src : src.url;
+  const palette = typeof src === 'string' ? null : src.palette || null;
+  const scale = typeof src === 'string' ? 1 : src.scale || 1;
+  const key = `${url}|${palette || ''}|${scale}`;
+  if (!cache.has(key)) {
+    cache.set(key, new Promise((resolve, reject) => {
       loader.load(url, (gltf) => {
-        styleScene(gltf.scene);
+        styleScene(gltf.scene, palette ? schemes[palette] : null);
+        if (scale !== 1) {
+          // wrap so node animations (which set the scene's own transforms) keep the scale
+          const wrap = new THREE.Group();
+          wrap.name = gltf.scene.name || 'scaled';
+          gltf.scene.scale.multiplyScalar(scale);
+          wrap.add(gltf.scene);
+          gltf.scene = wrap;
+        }
         resolve(gltf);
       }, undefined, (err) => reject(new Error(`Failed to load ${url}: ${err?.message || err}`)));
     }));
   }
-  return cache.get(url);
+  return cache.get(key);
+}
+
+/** Recolour a palette texture to a scheme. Returns {map, emissiveMap|null}; cached per image. */
+const recolourCache = new WeakMap();
+function recolour(tex, scheme) {
+  let per = recolourCache.get(tex.image);
+  if (!per) { per = new Map(); recolourCache.set(tex.image, per); }
+  if (per.has(scheme)) return per.get(scheme);
+  const img = tex.image;
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0);
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const glow = remapPixels(data.data, scheme);
+  ctx.putImageData(data, 0, 0);
+  const mk = (c) => {
+    const t = new THREE.CanvasTexture(c);
+    t.flipY = tex.flipY;
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.magFilter = THREE.NearestFilter;
+    t.minFilter = THREE.NearestFilter;
+    t.generateMipmaps = false;
+    t.wrapS = tex.wrapS;
+    t.wrapT = tex.wrapT;
+    return t;
+  };
+  let emissiveMap = null;
+  if (glow) {
+    const gc = document.createElement('canvas');
+    gc.width = canvas.width;
+    gc.height = canvas.height;
+    gc.getContext('2d').putImageData(new ImageData(glow, canvas.width, canvas.height), 0, 0);
+    emissiveMap = mk(gc);
+  }
+  const out = { map: mk(canvas), emissiveMap };
+  per.set(scheme, out);
+  return out;
 }
 
 /** Apply docs/art-style.md to imported materials: flat shading, pixel grain, shadows. */
-export function styleScene(root) {
+export function styleScene(root, scheme = null) {
   const grain = sharedMaterials().grain;
   const seen = new Map();
   root.traverse((o) => {
@@ -34,7 +95,14 @@ export function styleScene(root) {
       if (seen.has(m)) return seen.get(m);
       const glow = m.emissive && (m.emissive.r + m.emissive.g + m.emissive.b) > 0.01;
       let nm;
-      if (glow) {
+      if (scheme && m.map?.image) {
+        // pack model: keep its palette texture, recoloured to the art-style palette
+        const rc = recolour(m.map, scheme);
+        nm = new THREE.MeshStandardMaterial({
+          name: m.name, map: rc.map, roughness: 0.85, metalness: 0, flatShading: true, side: m.side,
+          emissive: rc.emissiveMap ? new THREE.Color(1, 1, 1) : new THREE.Color(0, 0, 0), emissiveMap: rc.emissiveMap, emissiveIntensity: rc.emissiveMap ? 1.3 : 0,
+        });
+      } else if (glow) {
         // glowing parts: unlit, HDR bright so only they bloom
         // same HDR level as the procedural props (geo.js intensity 2.4) so glow is consistent
         const c = m.emissive.clone().multiplyScalar(Math.min(2.6, Math.max(1.6, m.emissiveIntensity || 1)));

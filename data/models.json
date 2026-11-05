@@ -1,12 +1,277 @@
 {
   "$doc": "3D model manifest. key = model id used by towers/enemies/heroes (data 'model.glb'). url is relative to the game root. clips maps game states to clip names inside the GLB. scale multiplies the model. source records where the art came from (blender / pack / meshy) and its .blend or licence.",
   "models": {
-    "gravemaw": { "url": "assets/models/gravemaw.glb", "kind": "boss", "clips": { "idle": "Idle", "move": "Walk", "attack": "Attack", "roar": "Roar", "death": "Death" }, "source": "blender: collection gravemaw" },
-    "husk": { "url": "assets/models/husk.glb", "kind": "enemy", "clips": { "idle": "Idle", "move": "Walk", "attack": "Attack", "death": "Death" }, "source": "blender: assets/blend/tds_assets.blend (collection husk), tools/blender/assets.py" },
-    "gloomwing": { "url": "assets/models/gloomwing.glb", "kind": "enemy", "clips": { "idle": "Idle", "move": "Fly", "attack": "Attack", "death": "Death" }, "source": "blender: collection gloomwing" },
-    "ironshell": { "url": "assets/models/ironshell.glb", "kind": "enemy", "clips": { "idle": "Idle", "move": "Walk", "attack": "Attack", "death": "Death" }, "source": "blender: collection ironshell" },
-    "rifleman": { "url": "assets/models/rifleman.glb", "kind": "tower", "clips": { "idle": "Idle", "attack": "Attack" }, "source": "blender: collection rifleman" },
-    "ember_adept": { "url": "assets/models/ember_adept.glb", "kind": "tower", "clips": { "idle": "Idle", "attack": "Attack" }, "source": "blender: collection ember_adept" },
-    "rocket_battery": { "url": "assets/models/rocket_battery.glb", "kind": "tower", "clips": { "idle": "Idle", "attack": "Attack" }, "source": "blender: collection rocket_battery" }
+    "gravemaw": {
+      "url": "assets/models/gravemaw.glb",
+      "kind": "boss",
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Attack",
+        "roar": "Roar",
+        "death": "Death"
+      },
+      "source": "blender: collection gravemaw"
+    },
+    "husk": {
+      "url": "assets/models/husk.glb",
+      "kind": "enemy",
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Attack",
+        "death": "Death"
+      },
+      "source": "blender: assets/blend/tds_assets.blend (collection husk), tools/blender/assets.py"
+    },
+    "gloomwing": {
+      "url": "assets/models/gloomwing.glb",
+      "kind": "enemy",
+      "clips": {
+        "idle": "Idle",
+        "move": "Fly",
+        "attack": "Attack",
+        "death": "Death"
+      },
+      "source": "blender: collection gloomwing"
+    },
+    "ironshell": {
+      "url": "assets/models/ironshell.glb",
+      "kind": "enemy",
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Attack",
+        "death": "Death"
+      },
+      "source": "blender: collection ironshell"
+    },
+    "rifleman": {
+      "url": "assets/models/rifleman.glb",
+      "kind": "tower",
+      "clips": {
+        "idle": "Idle",
+        "attack": "Attack"
+      },
+      "source": "blender: collection rifleman"
+    },
+    "ember_adept": {
+      "url": "assets/models/ember_adept.glb",
+      "kind": "tower",
+      "clips": {
+        "idle": "Idle",
+        "attack": "Attack"
+      },
+      "source": "blender: collection ember_adept"
+    },
+    "rocket_battery": {
+      "url": "assets/models/rocket_battery.glb",
+      "kind": "tower",
+      "clips": {
+        "idle": "Idle",
+        "attack": "Attack"
+      },
+      "source": "blender: collection rocket_battery"
+    },
+    "k_weapon_ballista": {
+      "url": "assets/models/kenney/tower-defense-kit/weapon-ballista.glb",
+      "kind": "tower",
+      "palette": "magic",
+      "scale": 4.4,
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file weapon-ballista.glb"
+    },
+    "k_weapon_cannon": {
+      "url": "assets/models/kenney/tower-defense-kit/weapon-cannon.glb",
+      "kind": "tower",
+      "palette": "war",
+      "scale": 3.754,
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file weapon-cannon.glb"
+    },
+    "k_weapon_catapult": {
+      "url": "assets/models/kenney/tower-defense-kit/weapon-catapult.glb",
+      "kind": "tower",
+      "palette": "war",
+      "scale": 4.757,
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file weapon-catapult.glb"
+    },
+    "k_weapon_turret": {
+      "url": "assets/models/kenney/tower-defense-kit/weapon-turret.glb",
+      "kind": "tower",
+      "palette": "war",
+      "scale": 3.774,
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file weapon-turret.glb"
+    },
+    "k_siege_ballista": {
+      "url": "assets/models/kenney/castle-kit/siege-ballista.glb",
+      "kind": "tower",
+      "palette": "war",
+      "scale": 2.636,
+      "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-ballista.glb"
+    },
+    "k_siege_catapult": {
+      "url": "assets/models/kenney/castle-kit/siege-catapult.glb",
+      "kind": "tower",
+      "palette": "magic",
+      "scale": 1.805,
+      "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-catapult.glb"
+    },
+    "k_siege_trebuchet": {
+      "url": "assets/models/kenney/castle-kit/siege-trebuchet.glb",
+      "kind": "tower",
+      "palette": "war",
+      "scale": 1.736,
+      "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-trebuchet.glb"
+    },
+    "k_tower_round_build_c": {
+      "url": "assets/models/kenney/tower-defense-kit/tower-round-build-c.glb",
+      "kind": "tower",
+      "palette": "magic",
+      "scale": 3.4,
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file tower-round-build-c.glb"
+    },
+    "k_tower_square_build_c": {
+      "url": "assets/models/kenney/tower-defense-kit/tower-square-build-c.glb",
+      "kind": "tower",
+      "palette": "war",
+      "scale": 3.4,
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file tower-square-build-c.glb"
+    },
+    "k_character_zombie": {
+      "url": "assets/models/kenney/graveyard-kit/character-zombie.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 2.06,
+      "clips": {
+        "idle": "idle",
+        "move": "walk",
+        "attack": "attack-melee-right",
+        "death": "die"
+      },
+      "source": "pack: Kenney graveyard-kit (CC0, kenney.nl/assets/graveyard-kit), file character-zombie.glb"
+    },
+    "k_character_skeleton": {
+      "url": "assets/models/kenney/graveyard-kit/character-skeleton.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 2.428,
+      "clips": {
+        "idle": "idle",
+        "move": "walk",
+        "attack": "attack-melee-right",
+        "death": "die"
+      },
+      "source": "pack: Kenney graveyard-kit (CC0, kenney.nl/assets/graveyard-kit), file character-skeleton.glb"
+    },
+    "k_character_ghost": {
+      "url": "assets/models/kenney/graveyard-kit/character-ghost.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 2.416,
+      "clips": {
+        "idle": "idle",
+        "move": "walk",
+        "attack": "attack-melee-right",
+        "death": "die"
+      },
+      "source": "pack: Kenney graveyard-kit (CC0, kenney.nl/assets/graveyard-kit), file character-ghost.glb"
+    },
+    "k_character_vampire": {
+      "url": "assets/models/kenney/graveyard-kit/character-vampire.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 2.306,
+      "clips": {
+        "idle": "idle",
+        "move": "walk",
+        "attack": "attack-melee-right",
+        "death": "die"
+      },
+      "source": "pack: Kenney graveyard-kit (CC0, kenney.nl/assets/graveyard-kit), file character-vampire.glb"
+    },
+    "k_character_keeper": {
+      "url": "assets/models/kenney/graveyard-kit/character-keeper.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 2.087,
+      "clips": {
+        "idle": "idle",
+        "move": "walk",
+        "attack": "attack-melee-right",
+        "death": "die"
+      },
+      "source": "pack: Kenney graveyard-kit (CC0, kenney.nl/assets/graveyard-kit), file character-keeper.glb"
+    },
+    "k_enemy_ufo_a": {
+      "url": "assets/models/kenney/tower-defense-kit/enemy-ufo-a.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 1.475,
+      "motion": "hover",
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file enemy-ufo-a.glb"
+    },
+    "k_enemy_ufo_b": {
+      "url": "assets/models/kenney/tower-defense-kit/enemy-ufo-b.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 1.738,
+      "motion": "hover",
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file enemy-ufo-b.glb"
+    },
+    "k_enemy_ufo_c": {
+      "url": "assets/models/kenney/tower-defense-kit/enemy-ufo-c.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 1.903,
+      "motion": "hover",
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file enemy-ufo-c.glb"
+    },
+    "k_enemy_ufo_d": {
+      "url": "assets/models/kenney/tower-defense-kit/enemy-ufo-d.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 1.837,
+      "motion": "hover",
+      "source": "pack: Kenney tower-defense-kit (CC0, kenney.nl/assets/tower-defense-kit), file enemy-ufo-d.glb"
+    },
+    "k_truck": {
+      "url": "assets/models/kenney/car-kit/truck.glb",
+      "kind": "boss",
+      "palette": "blight",
+      "scale": 1.538,
+      "motion": "roll",
+      "source": "pack: Kenney car-kit (CC0, kenney.nl/assets/car-kit), file truck.glb"
+    },
+    "k_tractor_shovel": {
+      "url": "assets/models/kenney/car-kit/tractor-shovel.glb",
+      "kind": "boss",
+      "palette": "blight",
+      "scale": 1.323,
+      "motion": "roll",
+      "source": "pack: Kenney car-kit (CC0, kenney.nl/assets/car-kit), file tractor-shovel.glb"
+    },
+    "k_garbage_truck": {
+      "url": "assets/models/kenney/car-kit/garbage-truck.glb",
+      "kind": "boss",
+      "palette": "blight",
+      "scale": 1.375,
+      "motion": "roll",
+      "source": "pack: Kenney car-kit (CC0, kenney.nl/assets/car-kit), file garbage-truck.glb"
+    },
+    "k_siege_tower": {
+      "url": "assets/models/kenney/castle-kit/siege-tower.glb",
+      "kind": "boss",
+      "palette": "blight",
+      "scale": 1.119,
+      "motion": "roll",
+      "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-tower.glb"
+    },
+    "k_siege_ram": {
+      "url": "assets/models/kenney/castle-kit/siege-ram.glb",
+      "kind": "boss",
+      "palette": "blight",
+      "scale": 1.858,
+      "motion": "roll",
+      "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-ram.glb"
+    }
   }
 }

@@ -62,7 +62,7 @@ export class MatchView {
     for (const id of Object.keys(ALLY_RIGS)) this._allyAsset(id);
     for (const def of this.content.towers.values()) {
       const glb = def.model?.glb && this.content.models.get(def.model.glb);
-      if (glb) tasks.push(loadGLB(glb.url));
+      if (glb) tasks.push(loadGLB(glb));
     }
     await Promise.all(tasks);
   }
@@ -71,7 +71,7 @@ export class MatchView {
     if (this.enemyRigs.has(def.id)) return this.enemyRigs.get(def.id);
     const glb = def.model?.glb && this.content.models.get(def.model.glb);
     let asset;
-    if (glb) asset = await rigFromGLB(glb.url, glb.clips, { transparent: def.stealth ? 0.45 : 0 });
+    if (glb) asset = await rigFromGLB(glb, glb.clips, { transparent: def.stealth ? 0.45 : 0 });
     else {
       const rd = ENEMY_RIGS[def.id] || ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;
       asset = rigFromProcedural(rd, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: rd.height, transparent: rd.transparent || 0 });
@@ -175,7 +175,7 @@ export class MatchView {
     const vis = { uid: t.uid, defId: def.id, root: new THREE.Group(), inst: null, parts: {}, unit: null, yaw: t.rot || 0, recoil: 0, attackT: 9, scale: 1, evolved: false, muzzle: new THREE.Vector3(0, 1.4, 0.8) };
     const glb = def.model?.glb && this.content.models.get(def.model.glb);
     if (glb) {
-      loadGLB(glb.url).then((gltf) => {
+      loadGLB(glb).then((gltf) => {
         if (!this.towerVis.has(t.uid)) return;
         vis.inst = new ModelInstance(gltf);
         vis.inst.play(glb.clips.idle);
@@ -381,7 +381,7 @@ export class MatchView {
       g.add(src);
     } else {
       const glb = def.model?.glb && this.content.models.get(def.model.glb);
-      if (glb) loadGLB(glb.url).then((gltf) => {
+      if (glb) loadGLB(glb).then((gltf) => {
         const inst = new ModelInstance(gltf);
         inst.root.traverse((o) => { if (o.isMesh) o.material = mat; });
         g.add(inst.root);

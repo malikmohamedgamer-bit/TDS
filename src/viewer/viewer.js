@@ -6,7 +6,7 @@ import { Renderer } from '../engine/renderer.js';
 import { sharedMaterials } from '../engine/mapView.js';
 import { propGeometry } from '../engine/propModels.js';
 import { HeroView } from '../engine/heroView.js';
-import { loadGLB, ModelInstance, triangleCount } from '../engine/models.js';
+import { loadGLB, ModelInstance, triangleCount, setPalettes } from '../engine/models.js';
 import { createStorage } from '../save/storage.js';
 import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS } from '../engine/unitModels.js';
 import { rigFromProcedural, InstancedRig } from '../engine/instancedRig.js';
@@ -21,6 +21,7 @@ async function boot() {
   const settings = loadSettings(createStorage(), {});
   settings.quality = new URLSearchParams(location.search).get('quality') || 'high';
   const content = await loadContent(browserReadJson('data/'));
+  setPalettes(content.palettes);
   const canvas = document.getElementById('scene');
   const r = new Renderer(canvas, settings);
   r.setSun({ azimuth: 215, elevation: 50 }, { w: 14, d: 14 });
@@ -43,7 +44,7 @@ async function boot() {
 
   // asset catalogue
   const assets = [];
-  for (const [id, m] of content.models) assets.push({ id: `glb:${id}`, name: id.replace(/_/g, ' '), group: m.kind === 'tower' ? 'Towers (Blender GLB)' : 'Enemies (Blender GLB)', kind: 'glb', model: m });
+  for (const [id, m] of content.models) assets.push({ id: `glb:${id}`, name: id.replace(/_/g, ' '), group: `${m.kind === 'tower' ? 'Towers' : m.kind === 'boss' ? 'Bosses' : 'Enemies'} (${/^pack: Kenney/.test(m.source || '') ? 'Kenney CC0, recoloured' : 'Blender GLB'})`, kind: 'glb', model: m });
   assets.push({ id: 'hero:commander', name: 'Commander Vale', group: 'Hero (code model)', kind: 'hero' });
   for (const id of Object.keys(TOWER_MODELS)) assets.push({ id: `tower:${id}`, name: id.replace(/_/g, ' '), group: 'Towers (code models)', kind: 'tower', build: TOWER_MODELS[id] });
   for (const [id, def] of Object.entries({ ...ENEMY_RIGS, ...ALLY_RIGS })) assets.push({ id: `rig:${id}`, name: id.replace(/_/g, ' '), group: ENEMY_RIGS[id] ? 'Enemies (code models)' : 'Summons (code models)', kind: 'rig', def });
@@ -114,7 +115,7 @@ async function boot() {
     let obj;
     let clips = [];
     if (a.kind === 'glb') {
-      const gltf = await loadGLB(a.model.url);
+      const gltf = await loadGLB(a.model);
       inst = new ModelInstance(gltf);
       obj = inst.root;
       clips = [...inst.clips.keys()];

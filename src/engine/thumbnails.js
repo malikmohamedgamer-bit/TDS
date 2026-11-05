@@ -12,7 +12,7 @@ export async function towerThumbnail(renderer, content, towerId, size = 128, sil
   const def = content.towers.get(towerId);
   const obj = new THREE.Group();
   const glb = def.model?.glb && content.models.get(def.model.glb);
-  if (glb) obj.add(new ModelInstance(await loadGLB(glb.url)).root);
+  if (glb) obj.add(new ModelInstance(await loadGLB(glb)).root);
   else if (TOWER_MODELS[towerId]) {
     const built = TOWER_MODELS[towerId]();
     obj.add(built.group);
@@ -30,7 +30,7 @@ export async function enemyThumbnail(renderer, content, enemyId, size = 128, sil
   const def = content.enemies.get(enemyId);
   const obj = new THREE.Group();
   const glb = def.model?.glb && content.models.get(def.model.glb);
-  if (glb) obj.add(new ModelInstance(await loadGLB(glb.url)).root);
+  if (glb) obj.add(new ModelInstance(await loadGLB(glb)).root);
   else {
     const rd = ENEMY_RIGS[enemyId] || ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;
     const asset = rigFromProcedural(rd, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: rd.height });

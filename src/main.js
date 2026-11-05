@@ -18,6 +18,7 @@ import { loadSave } from './save/save.js';
 import { ensureStarters, dailyChallenge } from './meta/meta.js';
 import { Sfx } from './audio/sfx.js';
 import { Music } from './audio/music.js';
+import { setPalettes } from './engine/models.js';
 import { MatchController } from './game/matchController.js';
 import { SIM_DT } from './sim/match.js';
 
@@ -50,6 +51,7 @@ async function boot() {
 
   setLoading('Loading content…', 15);
   const content = await loadContent(browserReadJson('data/'));
+  setPalettes(content.palettes);
   const { save } = loadSave(storage, content, Date.now());
   ensureStarters(save, content.meta);
   // ?map= (links, tests) wins; otherwise the map last picked in the hub, if it is still unlocked

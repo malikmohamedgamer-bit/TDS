@@ -10,3 +10,7 @@ assets/incoming/*
 .DS_Store
 Thumbs.db
 _site/
+
+# raw downloaded asset packs (re-fetch: tools/fetch-kenney.mjs, links in docs/credits.md)
+assets/packs/*
+!assets/packs/.gitkeep

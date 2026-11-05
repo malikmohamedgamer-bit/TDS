@@ -33,9 +33,21 @@ export class RigAsset {
   }
 }
 
-/** Bake a GLB (rigid parts bound to bones) into a RigAsset. */
-export async function rigFromGLB(url, states, opts = {}) {
-  const gltf = await loadGLB(url);
+/** Code motion for pack models without clips (data/models.json "motion"): pose(root, u 0-1). */
+const MOTIONS = {
+  hover: { move: [1.6, (r, u) => { r.position.y = 0.6 + 0.15 * Math.sin(u * Math.PI * 2); r.rotation.y = u * Math.PI * 2; }],
+    idle: [2, (r, u) => { r.position.y = 0.6 + 0.1 * Math.sin(u * Math.PI * 2); }] },
+  waddle: { move: [0.7, (r, u) => { r.rotation.z = 0.12 * Math.sin(u * Math.PI * 2); r.position.y = 0.06 * Math.abs(Math.sin(u * Math.PI * 2)); }],
+    idle: [1.6, (r, u) => { r.rotation.x = 0.04 * Math.sin(u * Math.PI * 2); }] },
+  roll: { move: [0.5, (r, u) => { r.position.y = 0.03 * Math.abs(Math.sin(u * Math.PI * 4)); r.rotation.x = 0.02 * Math.sin(u * Math.PI * 2); }],
+    idle: [1.5, (r, u) => { r.position.y = 0.01 * Math.sin(u * Math.PI * 2); }] },
+};
+const DEATH = [0.8, (r, u) => { r.position.y = -0.6 * u; r.rotation.z = 0.9 * u; r.scale.setScalar(Math.max(0.05, 1 - u * 0.6)); }];
+const ATTACK = [0.5, (r, u) => { r.position.z = 0.35 * Math.sin(u * Math.PI); }];
+
+/** Bake a GLB (rigid parts bound to bones) into a RigAsset. src: url or data/models.json entry. */
+export async function rigFromGLB(src, states, opts = {}) {
+  const gltf = await loadGLB(src);
   const inst = new ModelInstance(gltf);
   const root = inst.root;
   const meshes = [];
@@ -59,6 +71,19 @@ export async function rigFromGLB(url, states, opts = {}) {
     const loop = !/death|attack|roar/i.test(clip.name);
     record(clip.name, clip.duration, loop, (t) => inst.mixer.setTime(t));
     action.stop();
+  }
+  states = { ...(states || {}) };
+  const motion = typeof src === 'object' && MOTIONS[src.motion];
+  if (motion) {
+    // no clips in the file: synthesize idle / move / attack / death by moving the whole model
+    const base = { p: root.position.clone(), r: root.rotation.clone(), s: root.scale.clone() };
+    const reset = () => { root.position.copy(base.p); root.rotation.copy(base.r); root.scale.copy(base.s); };
+    for (const [state, [dur, pose]] of Object.entries({ ...motion, attack: ATTACK, death: DEATH })) {
+      if (states[state] && clips.has(states[state])) continue;
+      record(`code:${state}`, dur, state !== 'death' && state !== 'attack', (t) => { reset(); pose(root, t / dur); });
+      states[state] = `code:${state}`;
+    }
+    reset();
   }
   const box = new THREE.Box3().setFromObject(root);
   return new RigAsset(parts, clips, states, { height: box.max.y, ...opts });

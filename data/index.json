@@ -11,6 +11,7 @@
   "quests": "quests.json",
   "modes": "modes.json",
   "music": "music.json",
+  "palettes": "palettes.json",
   "models": "models.json",
   "towers": ["towers/war.json", "towers/magic.json", "towers/legendary.json"],
   "enemies": ["enemies/blight.json", "bosses/gravemaw.json", "bosses/thornmother.json"],
