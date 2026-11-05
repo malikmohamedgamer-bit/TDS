@@ -1,17 +1,18 @@
 // Zero-dependency static dev server. `npm run dev` -> http://localhost:5173
-// Options: --port 5173, --host 0.0.0.0 (to test on a phone on the same Wi-Fi).
+// Options: --port 5173, --host 0.0.0.0 (to test on a phone on the same Wi-Fi), --root _site.
 import { createServer } from 'node:http';
 import { stat, readFile } from 'node:fs/promises';
 import { extname, join, normalize, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { networkInterfaces } from 'node:os';
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const arg = (name, def) => {
   const i = args.indexOf(`--${name}`);
   return i >= 0 && args[i + 1] ? args[i + 1] : def;
 };
+// --root _site serves the built static site (what GitHub Pages hosts)
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', arg('root', '.'));
 const port = Number(arg('port', process.env.PORT || 5173));
 const host = arg('host', process.env.HOST || '127.0.0.1');
 

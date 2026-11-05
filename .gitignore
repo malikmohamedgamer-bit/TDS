@@ -9,3 +9,4 @@ assets/incoming/*
 !assets/incoming/.gitkeep
 .DS_Store
 Thumbs.db
+_site/
