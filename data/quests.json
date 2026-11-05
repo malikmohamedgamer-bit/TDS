@@ -1,0 +1,31 @@
+{
+  "$doc": "Quests (3 daily picked from 'daily' by date, plus permanent 'story' quests) and achievements (one-time). Conditions: stat (match stat summed per match: kills, placed, upgrades, evolutions, abilities, bossKills, wavesCleared, wins), kills of an enemy id (enemy), win on a difficulty or harder (winDifficulty), summons (summons), towerLevel (any tower at this permanent level), owned (towers owned). Assisted runs never count. Each reward is granted exactly once.",
+  "daily": [
+    { "id": "d_kills_150", "name": "Pest control", "desc": "Defeat 150 enemies", "stat": "kills", "target": 150, "reward": { "sigils": 30, "crowns": 100 } },
+    { "id": "d_upgrades_12", "name": "Engineer", "desc": "Buy 12 tower upgrades", "stat": "upgrades", "target": 12, "reward": { "sigils": 30 } },
+    { "id": "d_waves_15", "name": "Hold the line", "desc": "Clear 15 waves", "stat": "wavesCleared", "target": 15, "reward": { "sigils": 30, "crowns": 80 } },
+    { "id": "d_abilities_6", "name": "Call it in", "desc": "Use abilities 6 times", "stat": "abilities", "target": 6, "reward": { "sigils": 25 } },
+    { "id": "d_place_15", "name": "Builder", "desc": "Place 15 towers", "stat": "placed", "target": 15, "reward": { "crowns": 150 } },
+    { "id": "d_evolve_1", "name": "Metamorphosis", "desc": "Evolve a tower in a match", "stat": "evolutions", "target": 1, "reward": { "sigils": 40 } },
+    { "id": "d_win_1", "name": "Victory", "desc": "Win a match", "stat": "wins", "target": 1, "reward": { "sigils": 40, "crowns": 150 } },
+    { "id": "d_boss_1", "name": "Giant slayer", "desc": "Defeat a boss", "stat": "bossKills", "target": 1, "reward": { "sigils": 35 } }
+  ],
+  "story": [
+    { "id": "s_first_win", "name": "First stand", "desc": "Win on Easy or harder", "winDifficulty": "easy", "reward": { "sigils": 150, "crowns": 300 } },
+    { "id": "s_normal_win", "name": "Seasoned", "desc": "Win on Normal or harder", "winDifficulty": "normal", "reward": { "sigils": 250 } },
+    { "id": "s_hard_win", "name": "Veteran commander", "desc": "Win on Hard or harder", "winDifficulty": "hard", "reward": { "sigils": 500 } },
+    { "id": "s_summon_10", "name": "Feeling lucky", "desc": "Summon 10 times", "summons": 10, "reward": { "crowns": 500 } },
+    { "id": "s_level_5", "name": "Veteran", "desc": "Raise any tower to permanent level 5", "towerLevel": 5, "reward": { "sigils": 150 } },
+    { "id": "s_own_8", "name": "Arsenal", "desc": "Own 8 towers", "owned": 8, "reward": { "sigils": 200 } }
+  ],
+  "achievements": [
+    { "id": "a_kills_1000", "name": "Thousand cuts", "desc": "Defeat 1,000 enemies in total", "stat": "kills", "target": 1000, "reward": { "sigils": 100 } },
+    { "id": "a_kills_10000", "name": "Blightbane", "desc": "Defeat 10,000 enemies in total", "stat": "kills", "target": 10000, "reward": { "sigils": 400 } },
+    { "id": "a_boss_5", "name": "Colossus hunter", "desc": "Defeat 5 bosses", "stat": "bossKills", "target": 5, "reward": { "sigils": 150 } },
+    { "id": "a_evolve_10", "name": "Evolutionist", "desc": "Evolve 10 towers in matches", "stat": "evolutions", "target": 10, "reward": { "sigils": 120 } },
+    { "id": "a_wins_10", "name": "Decorated", "desc": "Win 10 matches", "stat": "wins", "target": 10, "reward": { "sigils": 250 } },
+    { "id": "a_impossible", "name": "Impossible", "desc": "Win on Impossible", "winDifficulty": "impossible", "reward": { "sigils": 2000 } },
+    { "id": "a_legendary", "name": "Struck gold", "desc": "Own a legendary tower", "ownRarity": "legendary", "reward": { "crowns": 2000 } },
+    { "id": "a_level_15", "name": "Legend", "desc": "Raise a tower to permanent level 15", "towerLevel": 15, "reward": { "sigils": 600 } }
+  ]
+}

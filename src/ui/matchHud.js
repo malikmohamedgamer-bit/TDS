@@ -5,10 +5,6 @@ import { TARGET_MODES } from '../sim/combat.js';
 import { DAMAGE_COLORS } from '../engine/effects.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const RARITY = {
-  common: { label: 'Common', badge: '■' }, uncommon: { label: 'Uncommon', badge: '❯' }, rare: { label: 'Rare', badge: '❯❯' },
-  epic: { label: 'Epic', badge: '◆' }, legendary: { label: 'Legendary', badge: '★' }, mythic: { label: 'Mythic', badge: '♛' },
-};
 const TARGET_LABEL = { first: 'First', last: 'Last', strongest: 'Strongest', weakest: 'Weakest', fastest: 'Fastest', closest: 'Closest', flying: 'Flying only' };
 const ABILITY_KEYS = ['Z', 'X', 'G'];
 const ABILITY_ICON = { airstrike: '✈', frost_nova: '❄', commanders_rally: '⚑' };
@@ -43,7 +39,6 @@ export class MatchHud {
       <div class="place-hint" hidden data-testid="place-hint"></div>
       <div class="captions" aria-live="polite" data-testid="captions"></div>
       <div class="banner" aria-live="assertive" data-testid="banner"></div>
-      <dialog class="modal panel lobby-modal" data-testid="lobby"></dialog>
       <dialog class="modal panel pause-modal" data-testid="pause">
         <h2>Paused</h2>
         <div class="col">
@@ -72,67 +67,6 @@ export class MatchHud {
     pm.addEventListener('cancel', (e) => { e.preventDefault(); cb.onResume(); });
     this.lastPanel = '';
     this.selectedUid = null;
-  }
-
-  // ------------------------------------------------------------------- lobby / loadout -------
-  async openLobby({ difficulties, defaultDifficulty = 'normal', loadout = DEFAULT_LOADOUT, thumb, tutorialDone }) {
-    const dlg = this.$('.lobby-modal');
-    const towers = [...this.content.towers.values()];
-    let picked = loadout.filter((id) => this.content.towers.has(id)).slice(0, 6);
-    let diff = defaultDifficulty;
-    const render = () => {
-      dlg.innerHTML = `
-        <h2>Prepare for battle</h2>
-        <p class="sub">Riftline Valley · 20 waves · bosses on waves 10 and 20</p>
-        <fieldset><legend>Difficulty</legend><div class="diffs" role="radiogroup" aria-label="Difficulty">
-          ${difficulties.map((d) => `<label><input type="radio" name="diff" value="${d.id}" ${d.id === diff ? 'checked' : ''}><span><b>${esc(d.name)}</b><small>${d.id === 'relaxed' ? 'slower enemies, 2x keep' : `${d.hpMul}x enemy health`}</small></span></label>`).join('')}
-        </div></fieldset>
-        <fieldset><legend>Loadout <span class="count" data-testid="loadout-count">${picked.length}/6</span></legend><div class="cards" data-testid="loadout">
-          ${towers.map((t) => {
-            const on = picked.includes(t.id);
-            const r = RARITY[t.rarity] || RARITY.common;
-            return `<button class="card ${on ? 'on' : ''} f-${t.faction} r-${t.rarity}" data-tower="${t.id}" aria-pressed="${on}">
-              <img alt="" data-thumb="${t.id}" ${this.thumbs.get(t.id) ? `src="${this.thumbs.get(t.id)}"` : ''}>
-              <span class="nm">${esc(t.name)}</span><span class="meta">${esc(t.faction === 'magic' ? 'Magic' : 'War')} · ${esc(t.class)}</span>
-              <span class="cost">$${t.cost}</span><span class="rar" title="${r.label}">${r.badge} ${r.label}</span>
-              ${on ? `<span class="slot">${picked.indexOf(t.id) + 1}</span>` : ''}</button>`;
-          }).join('')}
-        </div></fieldset>
-        <div class="row-end">
-          <label class="row"><input type="checkbox" name="tutorial" ${tutorialDone ? '' : 'checked'}> Tutorial</label>
-          <button class="btn primary big" data-act="start" ${picked.length ? '' : 'disabled'} data-testid="start">Start match</button>
-        </div>`;
-    };
-    render();
-    if (!dlg.open) dlg.showModal();
-    // thumbnails arrive asynchronously
-    (async () => {
-      for (const t of towers) {
-        if (!this.thumbs.has(t.id)) this.thumbs.set(t.id, await thumb(t.id));
-        const img = dlg.querySelector(`[data-thumb="${t.id}"]`);
-        if (img) img.src = this.thumbs.get(t.id);
-      }
-    })();
-    return new Promise((resolve) => {
-      dlg.onclick = (e) => {
-        const card = e.target.closest('[data-tower]');
-        if (card) {
-          const id = card.dataset.tower;
-          if (picked.includes(id)) picked = picked.filter((x) => x !== id);
-          else if (picked.length < 6) picked.push(id);
-          render();
-          dlg.querySelector(`[data-tower="${id}"]`)?.focus();
-          return;
-        }
-        if (e.target.closest('[data-act="start"]') && picked.length) {
-          const tutorial = dlg.querySelector('[name="tutorial"]').checked;
-          dlg.close();
-          resolve({ difficulty: diff, loadout: picked.slice(), tutorial });
-        }
-      };
-      dlg.onchange = (e) => { if (e.target.name === 'diff') diff = e.target.value; };
-      dlg.oncancel = (e) => e.preventDefault();
-    });
   }
 
   // ------------------------------------------------------------------- hotbar ----------------

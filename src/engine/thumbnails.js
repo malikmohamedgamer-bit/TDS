@@ -1,12 +1,14 @@
 // Renders small portraits of 3D models (towers, enemies) into data URLs for UI icons.
 import * as THREE from 'three';
 import { loadGLB, ModelInstance } from './models.js';
-import { TOWER_MODELS } from './unitModels.js';
+import { TOWER_MODELS, ENEMY_RIGS } from './unitModels.js';
+import { rigFromProcedural, InstancedRig } from './instancedRig.js';
 
 const cache = new Map();
 
-export async function towerThumbnail(renderer, content, towerId, size = 128) {
-  if (cache.has(towerId)) return cache.get(towerId);
+export async function towerThumbnail(renderer, content, towerId, size = 128, silhouette = false) {
+  const key = `t:${towerId}:${silhouette}`;
+  if (cache.has(key)) return cache.get(key);
   const def = content.towers.get(towerId);
   const obj = new THREE.Group();
   const glb = def.model?.glb && content.models.get(def.model.glb);
@@ -16,12 +18,38 @@ export async function towerThumbnail(renderer, content, towerId, size = 128) {
     obj.add(built.group);
     if (built.unit) { built.unit.position.set(0, 1.6, 0); built.unit.scale.setScalar(0.55); obj.add(built.unit); }
   }
-  const url = renderObject(renderer, obj, size, def.faction === 'magic' ? '#2a2766' : '#2f3a22');
-  cache.set(towerId, url);
+  const url = renderObject(renderer, obj, size, silhouette ? '#4a5168' : def.faction === 'magic' ? '#2a2766' : '#2f3a22', silhouette);
+  cache.set(key, url);
   return url;
 }
 
-export function renderObject(renderer, obj, size = 128, bg = '#20243a') {
+/** Enemy portrait (GLB or code rig at its idle pose); silhouette for undiscovered Index entries. */
+export async function enemyThumbnail(renderer, content, enemyId, size = 128, silhouette = false) {
+  const key = `e:${enemyId}:${silhouette}`;
+  if (cache.has(key)) return cache.get(key);
+  const def = content.enemies.get(enemyId);
+  const obj = new THREE.Group();
+  const glb = def.model?.glb && content.models.get(def.model.glb);
+  if (glb) obj.add(new ModelInstance(await loadGLB(glb.url)).root);
+  else {
+    const rd = ENEMY_RIGS[enemyId] || ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;
+    const asset = rigFromProcedural(rd, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: rd.height });
+    const rig = new InstancedRig(asset, obj, 1);
+    rig.begin();
+    rig.add(new THREE.Matrix4().makeRotationY(0), 'idle', 0);
+    rig.end();
+    for (const m of rig.meshes) { m.frustumCulled = false; m.computeBoundingBox(); m.computeBoundingSphere(); }
+  }
+  const url = renderObject(renderer, obj, size, silhouette ? '#4a5168' : '#3a1f2a', silhouette);
+  cache.set(key, url);
+  return url;
+}
+
+export function renderObject(renderer, obj, size = 128, bg = '#20243a', silhouette = false) {
+  if (silhouette) {
+    const black = new THREE.MeshBasicMaterial({ color: '#05060a' });
+    obj.traverse((o) => { if (o.isMesh) o.material = black; });
+  }
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(bg);
   scene.add(new THREE.HemisphereLight('#dfe9ff', '#3a3226', 1.6));

@@ -3,7 +3,7 @@
 
 const CAPTIONS = {
   waveStart: 'Horn: wave incoming', boss: 'Boss roars', leak: 'Alarm: the keep is hit', telegraph: 'Warning: ground slam',
-  win: 'Victory fanfare', lose: 'Defeat', evolve: 'Tower evolved',
+  win: 'Victory fanfare', lose: 'Defeat', evolve: 'Tower evolved', jackpot: 'Jackpot!', nearMiss: 'So close',
 };
 
 export class Sfx {
@@ -80,7 +80,7 @@ export class Sfx {
   }
 
   /** Play a named sound. pos {x, z} attenuates by distance from the listener (camera / hero). */
-  play(name, pos = null, { gap = 0.04 } = {}) {
+  play(name, pos = null, { gap = 0.04 } = {}, variant = 0) {
     if (CAPTIONS[name] && this.settings.captions && this.onCaption) this.onCaption(CAPTIONS[name]);
     if (!this.ctx || this.settings.muted) return;
     const now = this.ctx.currentTime;
@@ -125,6 +125,12 @@ export class Sfx {
       case 'jet': this._noiseBurst(t, 1.3, 0.45, out, { type: 'bandpass', f0: 300, f1: 1800, q: 0.6 }); break;
       case 'slash': this._noiseBurst(t, 0.12, 0.25, out, { type: 'highpass', f0: 2500, f1: 6000 }); break;
       case 'heal': [880, 1175].forEach((f, i) => this._osc('sine', f, f, t + i * 0.08, 0.2, 0.06, out)); break;
+      case 'spin': for (let i = 0; i < 10; i++) this._osc('square', 900 + (i % 3) * 120, 900, t + i * 0.08, 0.025, 0.03, out); break;
+      case 'reel': this._osc('triangle', 440 * 2 ** (variant * 4 / 12), 440 * 2 ** (variant * 4 / 12), t, 0.12, 0.14, out); this._noiseBurst(t, 0.05, 0.15, out, { type: 'highpass', f0: 3000, f1: 2000 }); break;
+      case 'jackpot': [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => this._osc('square', f, f, t + i * 0.08, 0.22, 0.09, out)); this._noiseBurst(t, 1.2, 0.15, out, { type: 'highpass', f0: 5000, f1: 9000 }); break;
+      case 'nearMiss': this._osc('sawtooth', 392, 330, t, 0.35, 0.08, out); this._osc('sawtooth', 330, 262, t + 0.3, 0.4, 0.08, out); break;
+      case 'claim': [784, 988, 1175].forEach((f, i) => this._osc('triangle', f, f, t + i * 0.05, 0.15, 0.12, out)); break;
+      case 'purchase': [659, 880].forEach((f, i) => this._osc('square', f, f, t + i * 0.08, 0.12, 0.08, out)); break;
       case 'win': [523, 659, 784, 1047].forEach((f, i) => this._osc('triangle', f, f, t + i * 0.15, 0.5, 0.18, out)); break;
       case 'lose': [392, 330, 262, 196].forEach((f, i) => this._osc('sawtooth', f, f, t + i * 0.22, 0.4, 0.1, out)); break;
       default: break;

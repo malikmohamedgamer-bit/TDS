@@ -41,6 +41,8 @@ export async function loadContent(readJson) {
     heroes: await loadMany(readJson, index.heroes, 'heroes'),
     progression: index.progression ? await readJson(index.progression) : null,
     tuning: index.tuning ? await readJson(index.tuning) : null,
+    meta: index.meta ? await readJson(index.meta) : null,
+    quests: index.quests ? await readJson(index.quests) : null,
     models: new Map(Object.entries(index.models ? (await readJson(index.models)).models : {})),
   };
   content.version = contentVersion(content);
@@ -98,6 +100,8 @@ export function validateContent(c) {
     dmg(h.attack?.damageType, `hero ${h.id}`);
   }
   for (const a of c.abilities.values()) dmg(a.effects?.damageType, `ability ${a.id}`);
+  for (const id of c.meta?.starterTowers || []) if (!c.towers.has(id)) errs.push(`meta: unknown starter tower "${id}"`);
+  for (const t of c.towers.values()) if (c.meta && !(t.rarity in c.meta.shop.towerPrices)) errs.push(`tower ${t.id}: rarity "${t.rarity}" has no shop price`);
   for (const [kind, map] of [['tower', c.towers], ['enemy', c.enemies]]) {
     for (const x of map.values()) if (x.model?.glb && c.models && !c.models.has(x.model.glb)) errs.push(`${kind} ${x.id}: unknown model "${x.model.glb}"`);
   }

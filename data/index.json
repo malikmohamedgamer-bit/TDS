@@ -7,6 +7,8 @@
   "heroes": "heroes.json",
   "progression": "progression.json",
   "tuning": "tuning.json",
+  "meta": "meta.json",
+  "quests": "quests.json",
   "models": "models.json",
   "towers": ["towers/war.json", "towers/magic.json"],
   "enemies": ["enemies/blight.json", "bosses/gravemaw.json"],

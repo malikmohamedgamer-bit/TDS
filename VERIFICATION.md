@@ -92,3 +92,30 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 | Soak / unit / lint | `npm run soak -- --minutes 30`, `npm test` (36), `npm run lint` | pass | 0 failures, 0 rescues |
 | Sound effects audible and pleasant | not testable headless | unverified | owner to check while playing |
 | Real-GPU frame time with a full wave | headless only (~10 fps software, ~320 draw calls) | unverified | needs the owner's machine |
+
+## Tuning presets and Assist (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| One tuning file, all knobs, 3 presets, safe ranges | unit tuning.test.js | pass | |
+| Knobs change the simulation (HP, costs, cash, keep) | unit tuning.test.js | pass | |
+| Assists (cash, slow, hero, refund, skip wave) + flagged runs | unit tuning.test.js; e2e "tuning preset and assists from settings" | pass | assisted runs set no records |
+| Standard Normal win rate 60-70% for a sensible imperfect bot | `npm run balance -- --preset standard --seeds 40` | pass | 27/40 = 68% |
+| Lazy strategy always loses on Standard | `npm run balance -- --strategy lazy` + unit test | pass | 0/8 |
+| Every preset stays winnable | unit "balance: every preset ..." (3 seeds each) | pass | |
+
+## Milestone 5: meta progression (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Starter towers, locked towers excluded from the loadout | unit meta "starters"; e2e hub "locked towers ..." | pass | |
+| Player XP, levels, level rewards once, speed unlocks | unit meta; e2e hub (speed stays below 2x at level 1) | pass | |
+| Slot-machine summons: deterministic, cost, duplicates to crowns, pity | unit meta "summons"; e2e hub "slot-machine summon" | pass | skip + reveal exercised |
+| Shop: buy once, daily deal, bundles | unit meta "shop"; e2e hub (buy Gunship) | pass | |
+| Permanent tower levels and evolutions at 5/10/15 | unit meta; e2e hub (Veteran Rifleman, persists after reload) | pass | |
+| Quests, achievements, daily login: claim exactly once | unit meta; e2e hub | pass | |
+| Match results: rewards once, stats, records, index, assisted rules | unit meta "match results ..." | pass | |
+| Save v2 -> v3 migration, export/import keeps meta | unit meta | pass | |
+| Index silhouettes for undiscovered entries | screenshot docs/screenshots/m5/hub-index.png | pass | |
+| Slot machine visuals | screenshots docs/screenshots/m5/hub-summon-*.png | pass | sounds not verifiable headless |
+| Regression: all earlier e2e + soak | full e2e (18 passed), soak 30 min (0 failures) | pass | |

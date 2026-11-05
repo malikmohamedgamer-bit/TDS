@@ -71,7 +71,8 @@ export class Match {
     this.log = [];
     this.queue = [];
     this.nextId = 1;
-    this.stats = { kills: 0, leaks: 0, cashEarned: 0, damage: 0, spawned: 0, bossesKilled: 0 };
+    this.stats = { kills: 0, leaks: 0, cashEarned: 0, damage: 0, spawned: 0, bossesKilled: 0, placed: 0, upgrades: 0, evolutions: 0, abilities: 0 };
+    this.seen = new Set();
     this.auraDirty = true;
 
     const heroDef = this.content.heroes.get(o.hero || [...this.content.heroes.keys()][0]);
@@ -220,6 +221,7 @@ export class Match {
     if (def.air) t.unit = { x, y: t.y + def.air.altitude, z, angle: this.rng.range(0, Math.PI * 2) };
     t.collider = this.mw.world.add({ shape: 'circle', x, z, r: def.footprint ?? 1, h: 2.6, tag: 'tower', ref: t });
     this.towers.push(t);
+    this.stats.placed++;
     this.auraDirty = true;
     this.events.push({ type: 'place', uid: t.uid, tower, x, z });
   }
@@ -245,6 +247,8 @@ export class Match {
     else { t.up.branch = n.branch; t.up.branchLevel++; }
     const before = t.name;
     this._refreshTower(t);
+    this.stats.upgrades++;
+    if (n.step.evolve) this.stats.evolutions++;
     this.auraDirty = true;
     this.events.push({ type: 'upgrade', uid, step: n.step.name, evolved: n.step.evolve ? { from: before, to: t.name } : null });
   }
@@ -373,6 +377,7 @@ export class Match {
     };
     this._placeEnemy(e);
     this.enemies.push(e);
+    this.seen.add(id);
     this.stats.spawned++;
     this.events.push({ type: 'spawn', id: e.id, enemy: id, boss: e.boss });
     if (e.boss) this.events.push({ type: 'bossSpawn', id: e.id, enemy: id, name: def.name });
@@ -820,6 +825,7 @@ export class Match {
     const a = this.abilities.find((ab) => ab.id === id);
     const def = a.def;
     a.ready = this.time + def.cooldown;
+    this.stats.abilities++;
     if (def.target === 'self' && this.hero) { x = this.hero.x; z = this.hero.z; }
     this.pendingAbilities.push({ id, def, x, z, at: this.time + (def.delay || 0) });
     this.events.push({ type: 'abilityCast', id, x, z, delay: def.delay || 0, radius: def.radius });
@@ -915,6 +921,10 @@ export class Match {
       baseHp: this.baseHp,
       stats: { ...this.stats },
       log: this.log.slice(),
+      seen: [...this.seen].sort(),
+      loadout: this.loadout.slice(),
+      mode: this.options.mode || 'campaign',
+      rewardMul: this.tune.rewardMul,
       hash: this.hash(),
     };
   }

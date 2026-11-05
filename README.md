@@ -68,6 +68,13 @@ All numbers live in `data/` and can be changed without touching code.
   (`data/progression.json`) add damage, rate and range per level and evolve the tower at levels 5,
   10 and 15.
 
+## Tuning and progression
+
+- Make the game easier or harder: `data/tuning.json` (see `docs/TUNING.md`), or in game
+  Settings > Difficulty tuning / Assist.
+- Meta progression data: `data/meta.json` (starter towers, XP curve, speed unlocks, summon odds,
+  pity, shop prices, daily rewards) and `data/quests.json` (daily, story, achievements).
+
 ## Adding content (data only)
 
 Every content file is listed in `data/index.json`.

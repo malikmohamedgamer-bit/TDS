@@ -1,0 +1,267 @@
+// Meta progression (pure, deterministic, no DOM): player XP / levels, speed unlocks, summoning,
+// shop, permanent tower levels, quests, achievements and daily login rewards.
+// Every reward goes through grantReward(), which records an id so it is granted exactly once.
+import { Rng, hashString } from '../core/rng.js';
+import { grantReward } from '../save/save.js';
+
+const DIFF_ORDER = ['relaxed', 'easy', 'normal', 'medium', 'hard', 'extra_hard', 'extreme', 'impossible'];
+
+// ------------------------------------------------------------------ player level ------------
+export function xpToNext(meta, level) {
+  return meta.player.xpBase + meta.player.xpPerLevel * (level - 1);
+}
+
+/** Level reached for a total XP amount. */
+export function levelForXp(meta, xp) {
+  let level = 1;
+  let need = xpToNext(meta, 1);
+  let left = xp;
+  while (left >= need && level < meta.player.maxLevel) { left -= need; level++; need = xpToNext(meta, level); }
+  return { level, into: left, need };
+}
+
+/** Add XP; grants each level-up reward once. Returns the list of new levels. */
+export function addXp(save, meta, xp) {
+  const before = save.profile.level;
+  save.profile.xp += Math.max(0, Math.floor(xp));
+  const { level } = levelForXp(meta, save.profile.xp);
+  save.profile.level = level;
+  const gained = [];
+  for (let l = before + 1; l <= level; l++) {
+    const r = { ...meta.player.levelReward };
+    const extra = meta.player.milestones?.[String(l)];
+    if (extra) for (const [k, v] of Object.entries(extra)) r[k] = (r[k] || 0) + v;
+    if (grantReward(save, `level:${l}`, r)) gained.push({ level: l, reward: r });
+  }
+  return gained;
+}
+
+export function unlockedSpeeds(save, meta) {
+  return meta.speeds.filter((s) => save.profile.level >= s.level).map((s) => s.speed);
+}
+
+// ------------------------------------------------------------------ ownership ---------------
+export function ensureStarters(save, meta) {
+  for (const id of meta.starterTowers) if (!save.towers.owned[id]) save.towers.owned[id] = { level: 1 };
+  if (grantReward(save, 'starter-wallet', meta.starterWallet)) return true;
+  return false;
+}
+
+export const owns = (save, id) => !!save.towers.owned[id];
+
+// ------------------------------------------------------------------ summoning ---------------
+function rarityPool(content, rarity) {
+  return [...content.towers.values()].filter((t) => t.rarity === rarity).map((t) => t.id).sort();
+}
+
+/**
+ * Pull `count` times on a banner. Deterministic from the save's summon seed and pull counter, so a
+ * server can verify results later. Returns results [{tower, rarity, duplicate, crowns, pity}].
+ */
+export function summon(save, content, meta, bannerId, count = 1) {
+  const banner = meta.summon.banners.find((b) => b.id === bannerId);
+  if (!banner) throw new Error(`Unknown banner ${bannerId}`);
+  const cost = count === 10 ? banner.cost10 : banner.cost * count;
+  const cur = banner.currency;
+  if ((save.wallet[cur] || 0) < cost) return { ok: false, reason: `Need ${cost - (save.wallet[cur] || 0)} more ${cur}` };
+  save.wallet[cur] -= cost;
+  if (!save.summon.seed) save.summon.seed = (hashString(`${save.createdAt}:${save.profile.name}`) || 1) >>> 0;
+  const order = meta.rarityOrder;
+  const weights = meta.summon.rarityWeights;
+  const pityMin = order.indexOf(meta.summon.pity.minRarity);
+  const results = [];
+  for (let i = 0; i < count; i++) {
+    const rng = new Rng((save.summon.seed ^ hashString(`pull:${save.summon.pulls}`)) >>> 0);
+    save.summon.pulls++;
+    save.summon.pity++;
+    let rarity = rng.weighted(Object.keys(weights), (r) => weights[r]);
+    const forced = save.summon.pity >= meta.summon.pity.pulls && order.indexOf(rarity) < pityMin;
+    if (forced) rarity = meta.summon.pity.minRarity;
+    // fall back to the nearest lower rarity that has towers
+    let ri = order.indexOf(rarity);
+    let pool = rarityPool(content, order[ri]);
+    while (!pool.length && ri > 0) pool = rarityPool(content, order[--ri]);
+    rarity = order[ri];
+    if (ri >= pityMin) save.summon.pity = 0;
+    const tower = pool[Math.floor(rng.next() * pool.length)];
+    const duplicate = owns(save, tower);
+    let crowns = 0;
+    if (duplicate) {
+      crowns = meta.summon.duplicateCrowns[rarity] || 0;
+      save.wallet.crowns += crowns;
+    } else save.towers.owned[tower] = { level: 1 };
+    results.push({ tower, rarity, duplicate, crowns, forced });
+  }
+  save.stats.summons = (save.stats.summons || 0) + count;
+  return { ok: true, cost, currency: cur, results };
+}
+
+// ------------------------------------------------------------------ shop --------------------
+export function towerPrice(meta, def) {
+  return meta.shop.towerPrices[def.rarity] ?? 99999;
+}
+
+/** Deterministic daily deal: one tower the player does not own yet, discounted. */
+export function dailyDeal(save, content, meta, date) {
+  const notOwned = [...content.towers.keys()].filter((id) => !owns(save, id)).sort();
+  if (!notOwned.length) return null;
+  const id = notOwned[hashString(`deal:${date}`) % notOwned.length];
+  const def = content.towers.get(id);
+  return { tower: id, price: Math.round(towerPrice(meta, def) * (1 - meta.shop.dailyDealDiscount) / 10) * 10, full: towerPrice(meta, def) };
+}
+
+export function buyTower(save, content, meta, id, date) {
+  const def = content.towers.get(id);
+  if (!def) return { ok: false, reason: 'Unknown tower' };
+  if (owns(save, id)) return { ok: false, reason: 'Already owned' };
+  const deal = dailyDeal(save, content, meta, date);
+  const price = deal && deal.tower === id ? deal.price : towerPrice(meta, def);
+  if (save.wallet.crowns < price) return { ok: false, reason: `Need ${price - save.wallet.crowns} more crowns` };
+  save.wallet.crowns -= price;
+  save.towers.owned[id] = { level: 1 };
+  return { ok: true, price };
+}
+
+export function buyBundle(save, meta, bundleId) {
+  const b = meta.shop.bundles.find((x) => x.id === bundleId);
+  if (!b) return { ok: false, reason: 'Unknown item' };
+  for (const [k, v] of Object.entries(b.price)) if ((save.wallet[k] || 0) < v) return { ok: false, reason: `Need ${v - (save.wallet[k] || 0)} more ${k}` };
+  for (const [k, v] of Object.entries(b.price)) save.wallet[k] -= v;
+  for (const [k, v] of Object.entries(b.gives)) save.wallet[k] = (save.wallet[k] || 0) + v;
+  return { ok: true };
+}
+
+// ------------------------------------------------------------------ permanent tiers ---------
+export function levelUpCost(prog, level) {
+  return prog.costs?.[level] ?? null; // cost to go from `level` to level + 1
+}
+
+export function levelUpTower(save, prog, id) {
+  const t = save.towers.owned[id];
+  if (!t) return { ok: false, reason: 'Tower locked' };
+  if (t.level >= prog.maxLevel) return { ok: false, reason: 'Max level' };
+  const cost = levelUpCost(prog, t.level);
+  if (save.wallet.crowns < cost) return { ok: false, reason: `Need ${cost - save.wallet.crowns} more crowns` };
+  save.wallet.crowns -= cost;
+  t.level++;
+  const evo = prog.evolutions.find((e) => e.level === t.level);
+  return { ok: true, level: t.level, cost, evolved: evo || null };
+}
+
+// ------------------------------------------------------------------ quests / achievements ---
+export function dailyQuestIds(quests, date) {
+  const ids = quests.daily.map((q) => q.id).sort();
+  const rng = new Rng(`quests:${date}`);
+  return rng.shuffle(ids).slice(0, 3);
+}
+
+/** Ensure today's quest board exists (resets daily progress at the date change). */
+export function questBoard(save, quests, date) {
+  if (!save.quests.daily || save.quests.daily.date !== date) save.quests.daily = { date, ids: dailyQuestIds(quests, date), progress: {} };
+  save.quests.story ||= {};
+  return save.quests.daily;
+}
+
+function condDone(q, save, content, prog = null) {
+  const s = save.stats;
+  if (q.stat) return (s[q.stat] || 0) >= q.target;
+  if (q.winDifficulty) return (save.progress.bestDifficultyWon ?? -1) >= DIFF_ORDER.indexOf(q.winDifficulty);
+  if (q.summons) return (s.summons || 0) >= q.summons;
+  if (q.towerLevel) return Object.values(save.towers.owned).some((t) => t.level >= q.towerLevel);
+  if (q.owned) return Object.keys(save.towers.owned).length >= q.owned;
+  if (q.ownRarity) return Object.keys(save.towers.owned).some((id) => content.towers.get(id)?.rarity === q.ownRarity);
+  return false;
+}
+
+/** Status of every quest for the UI: {id, name, desc, progress, target, done, claimed, reward, kind}. */
+export function questStatus(save, quests, content, date) {
+  const board = questBoard(save, quests, date);
+  const out = [];
+  for (const id of board.ids) {
+    const q = quests.daily.find((x) => x.id === id);
+    if (!q) continue;
+    const p = board.progress[id] || 0;
+    out.push({ kind: 'daily', ...q, progress: Math.min(p, q.target), done: p >= q.target, claimed: save.claimed.includes(`quest:${date}:${id}`), claimId: `quest:${date}:${id}` });
+  }
+  for (const q of quests.story) {
+    out.push({ kind: 'story', ...q, progress: condDone(q, save, content) ? 1 : 0, target: 1, done: condDone(q, save, content), claimed: save.claimed.includes(`story:${q.id}`), claimId: `story:${q.id}` });
+  }
+  for (const q of quests.achievements) {
+    const target = q.target || 1;
+    const progress = q.stat ? Math.min(save.stats[q.stat] || 0, target) : condDone(q, save, content) ? 1 : 0;
+    out.push({ kind: 'achievement', ...q, progress, target, done: condDone(q, save, content), claimed: save.claimed.includes(`ach:${q.id}`), claimId: `ach:${q.id}` });
+  }
+  return out;
+}
+
+export function claimQuest(save, quests, content, date, claimId) {
+  const q = questStatus(save, quests, content, date).find((x) => x.claimId === claimId);
+  if (!q) return { ok: false, reason: 'Unknown quest' };
+  if (!q.done) return { ok: false, reason: 'Not finished yet' };
+  if (!grantReward(save, claimId, q.reward)) return { ok: false, reason: 'Already claimed' };
+  return { ok: true, reward: q.reward };
+}
+
+// ------------------------------------------------------------------ match results ----------
+/**
+ * Apply a finished match: stats, records, quest progress, index, rewards (once per match id).
+ * Assisted runs: crowns and XP only (no records, quest or achievement progress).
+ */
+export function applyMatchResult(save, result, content, meta, date) {
+  const mr = meta.matchRewards;
+  const diff = content.difficulties.get(result.difficulty);
+  const rewardMul = (diff?.metaRewardMul ?? 1) * (result.rewardMul ?? 1);
+  const cleared = result.won ? result.wave : Math.max(0, result.wave - 1);
+  const crowns = Math.round(((result.won ? mr.winCrowns : mr.lossCrowns) + cleared * mr.crownsPerWave) * rewardMul);
+  const xp = cleared * mr.xpPerWave + (result.won ? mr.winXp : 0);
+  const granted = grantReward(save, `match:${result.seed}`, { crowns });
+  const out = { granted, crowns: granted ? crowns : 0, xp: 0, levels: [], firstClear: false, sigils: 0 };
+  if (!granted) return out;
+  out.levels = addXp(save, meta, xp);
+  out.xp = xp;
+  for (const id of result.seen || []) if (!save.index.enemies.includes(id)) save.index.enemies.push(id);
+  for (const id of result.loadout || []) if (!save.index.towers.includes(id)) save.index.towers.push(id);
+  const s = save.stats;
+  s.matches++;
+  if (result.assisted) return out;
+  const st = result.stats;
+  const add = { kills: st.kills, placed: st.placed || 0, upgrades: st.upgrades || 0, evolutions: st.evolutions || 0, abilities: st.abilities || 0, bossKills: st.bossesKilled || 0, wavesCleared: cleared, wins: result.won ? 1 : 0 };
+  for (const [k, v] of Object.entries(add)) s[k] = (s[k] || 0) + v;
+  if (result.won) {
+    save.progress.bestDifficultyWon = Math.max(save.progress.bestDifficultyWon ?? -1, DIFF_ORDER.indexOf(result.difficulty));
+    if (grantReward(save, `firstclear:${result.map}:${result.difficulty}:${result.mode || 'campaign'}`, { sigils: mr.firstClearSigils })) { out.firstClear = true; out.sigils = mr.firstClearSigils; }
+  }
+  const best = (save.progress.best[result.map] ||= {});
+  best[result.difficulty] = Math.max(best[result.difficulty] || 0, cleared);
+  const board = questBoard(save, content.quests, date);
+  for (const id of board.ids) {
+    const q = content.quests.daily.find((x) => x.id === id);
+    if (q?.stat) board.progress[id] = (board.progress[id] || 0) + (add[q.stat] || 0);
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ daily login ------------
+export function dailyStatus(save, meta, date) {
+  const d = save.daily || { last: null, streak: 0 };
+  const claimedToday = d.last === date;
+  const yesterday = new Date(`${date}T00:00:00Z`);
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const y = yesterday.toISOString().slice(0, 10);
+  const nextStreak = claimedToday ? d.streak : d.last === y ? d.streak + 1 : 1;
+  const day = ((nextStreak - 1) % meta.daily.rewards.length) + 1;
+  return { claimedToday, streak: d.streak, nextDay: day, reward: meta.daily.rewards[day - 1], rewards: meta.daily.rewards, nextStreak };
+}
+
+export function claimDaily(save, meta, date) {
+  const st = dailyStatus(save, meta, date);
+  if (st.claimedToday) return { ok: false, reason: 'Already claimed today' };
+  if (!grantReward(save, `daily:${date}`, st.reward)) return { ok: false, reason: 'Already claimed today' };
+  save.daily = { last: date, streak: st.nextStreak };
+  return { ok: true, reward: st.reward, day: st.nextDay };
+}
+
+/** Local calendar date YYYY-MM-DD (the caller passes it so tests are deterministic). */
+export function localDate(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}

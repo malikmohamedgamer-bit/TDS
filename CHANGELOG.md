@@ -41,3 +41,15 @@
 - Instanced animated enemies, VFX (particles, rings, lightning, damage numbers), health bars.
 - Synthesized sound effects with volume, mute and captions; damage numbers toggle.
 - First-match tutorial driven by real actions.
+
+## 0.5.0 - Tuning presets and Milestone 5: meta progression (2026-11-05)
+- `data/tuning.json`: all global difficulty / economy knobs, presets Standard (harder default),
+  Original, Relaxed; Settings > Difficulty tuning and Assist (extra cash, slower enemies,
+  stronger Commander, 100% refund, skip wave). Assisted runs are flagged. `docs/TUNING.md`.
+- Balance bot: seeded imperfect player, lazy strategy, win-rate reports per preset.
+- Lobby hub: Play, Towers (locked / unlocked, permanent levels 1-15, evolutions at 5/10/15),
+  Summon (slot machine: reels, near miss, jackpot, rare-item reveal, sound per reel stop, always
+  skippable, pity, free sigils only), Shop (towers, daily deal, sigil bundles), Index (silhouettes
+  until discovered), Quests (3 daily, story), Achievements, 7-day daily login streak.
+- Player level and XP with level-up rewards; game speed 2x / 3x unlocked by level.
+- Save schema v3 (migration from v2); every reward granted exactly once.

@@ -10,21 +10,34 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 1. Art style, scaffold, 3D scene, character, cameras, collision | Done (2026-11-05) |
 | 2. Simulation core: paths, towers, targeting, damage, waves, economy, saves, tests | Done (2026-11-05) |
 | 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | Done (2026-11-05), Meshy blocked (see below) |
-| 4. Vertical slice, then STOP for the owner to play | **Done (2026-11-05): waiting for the owner's playtest** |
-| 5-9 | Not started |
+| 4. Vertical slice | Done (2026-11-05), deployed to GitHub Pages |
+| Tuning presets + Assist (owner request) | Done (2026-11-05) |
+| 5. Meta progression | **Done (2026-11-05)** |
+| 6. Modes and difficulties | Next |
+| 7-9 | Not started |
 
-## Real content counts (end of milestone 4, vertical slice)
+## Real content counts (end of milestone 5)
 
 | Content | Count |
 |---|---|
-| Maps | 1 (Riftline Valley, 20-wave campaign) |
-| Towers (playable, modelled, animated) | 11: 3 Blender GLB + 8 code-built |
-| Enemies (playable, modelled, animated) | 11: 3 Blender GLB + 8 code-built |
-| Bosses | 1 (Gravemaw, Blender GLB, 3 phases, telegraphed stomps) |
-| Summoned allies | 2 (spirit wolf, spirit drake) |
-| Heroes / abilities | 1 / 3 (manual or AUTO) |
-| Difficulties | 8 |
-| Unit tests / E2E tests | 36 / 14 |
+| Maps | 1 |
+| Towers | 11 (5 starters, 6 unlockable by shop or summon) |
+| Enemies / bosses | 11 / 1 |
+| Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
+| Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
+| Daily login rewards | 7-day streak |
+| Unit tests / E2E tests | 48 / 18 |
+
+## Balance evidence (bot skill 0.7, Standard preset unless noted)
+
+| Setup | Win rate |
+|---|---|
+| All 11 towers, Normal, Standard | 27/40 (68%) |
+| All 11 towers, Normal, Original | 10/12 (83%) |
+| All 11 towers, Normal, Relaxed | 12/12 (100%) |
+| Lazy (1-2 tower types, no upgrades), Normal, Standard / Original | 0/8 / 0/8 |
+| Starters only, level 1: Easy / Normal | 10/12 (83%) / 0/12 |
+| Starters only, Normal, permanent level 3 / 5 | 3/12 (25%) / 12/12 (100%) |
 
 ## What exists
 
@@ -76,19 +89,31 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   lightning, damage numbers), `src/engine/thumbnails.js` (UI portraits rendered from the models),
   `src/ui/matchHud.js`, `src/ui/tutorial.js`, `src/audio/sfx.js` (synthesized sound + captions).
 
+- Tuning: `data/tuning.json` (all global knobs, 3 presets, assist amounts), `src/sim/tuning.js`,
+  Settings > Difficulty tuning + Assist, `docs/TUNING.md`, `npm run balance -- --preset all`.
+- Meta (milestone 5): `data/meta.json` (starters, player XP curve, speed unlocks, summon odds and
+  pity, shop prices, daily rewards, match rewards), `data/quests.json`, `src/meta/meta.js` (pure,
+  every reward once), `src/ui/hub.js` (Play / Towers / Summon / Shop / Index / Quests / Daily),
+  `src/ui/slotMachine.js` (reels, near miss, jackpot, reveal, always skippable), save schema v3.
+
 ## Next exact action
 
-STOP: the owner playtests the vertical slice (`npm run dev`). Collect feedback first. Then
-milestone 5: lobby (walkable lobby area or menu), permanent tower levels with crowns, slot-machine
-summoning (gacha + shop, free currency only, skippable animations), Index, account level / XP,
-quests and achievements (rewards once), using `data/progression.json` and `src/save/save.js`.
+Milestone 6: modes. Add `data/modes.json` (campaign, endless, boss rush, daily challenge, time
+attack, sandbox, challenge modifiers), extend `src/sim/match.js` with a wave generator for
+endless (`generateWave`), boss-rush wave set, modifiers (applied like tuning knobs), sandbox
+(infinite cash, spawn any wave), time attack (score = time), daily challenge (seeded by date,
+fixed loadout/modifiers, reward once per day). Show modes in the hub Play tab (`ctx.modes`).
+Polish the tutorial. Then balance-bot every mode + preset.
 
 ## Known weak spots (honest)
 
-- Vertical slice: no lobby / shop / summoning yet (milestone 5); all 11 towers are free to pick.
+- New players cannot win Standard Normal with starters at level 1 (0/12); Easy first, then levels or
+  unlocks (by design; Original / Relaxed presets or Assist make it easier).
+- No legendary towers exist yet: legendary summon results fall back to epic (shown in the odds table).
+- The hub is a menu over the 3D world, not a separate walkable lobby area.
 - No music yet (sound effects only); music comes with the polish milestone.
 - Code-built towers and enemies are simpler than the Blender ones and animate by code poses.
-- Game speed 2x is available from the start (unlock rules are milestone 6).
+- Game speeds: 0.5x / 1x / 1.5x free; 2x at player level 3, 3x at level 8.
 
 - Enemy portal void is static concentric rings (reads a bit like a target); animate a swirl shader in the VFX milestone.
 - Hero is still the code-built model with code animation (Meshy was blocked); a Blender version can replace it.

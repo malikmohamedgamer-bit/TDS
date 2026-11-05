@@ -1,4 +1,4 @@
-// npm run balance -- [--preset standard|original|relaxed|all] [--difficulty normal|all|a,b]
+// npm run balance -- [--preset standard|original|relaxed|all] [--difficulty normal|all|a,b] [--loadout all|starters|a,b]
 //   [--seeds 20] [--skill 0.7] [--strategy smart|lazy|weak] [--level 1] [--map id] [--verbose]
 // Plays whole matches headlessly and prints win rates. "smart" with skill < 1 is a sensible but
 // imperfect player; "lazy" uses 1-2 cheap tower types and never upgrades.
@@ -25,6 +25,8 @@ const skill = Number(opt('skill', 0.7));
 const strategy = opt('strategy', 'smart');
 const level = Number(opt('level', 1));
 const verbose = args.includes('--verbose');
+const loadoutArg = opt('loadout', 'all');
+const loadout = loadoutArg === 'all' ? undefined : loadoutArg === 'starters' ? content.meta.starterTowers : loadoutArg.split(',');
 const levels = Object.fromEntries([...content.towers.keys()].map((id) => [id, level]));
 
 const summary = [];
@@ -37,7 +39,7 @@ for (const mapId of maps) {
       let keep = 0;
       const t0 = performance.now();
       for (let s = 0; s < seeds; s++) {
-        const r = playBot({ content, mapWorld: buildMapWorld(map, content.props), difficulty: d, seed: `bal-${s}`, levels, strategy, skill, options: { preset } });
+        const r = playBot({ content, mapWorld: buildMapWorld(map, content.props), difficulty: d, seed: `bal-${s}`, levels, loadout, strategy, skill, options: { preset } });
         if (r.won) { wins++; keep += r.baseHp; }
         waves += r.won ? r.waves : r.wave - 1;
         if (verbose) console.log(`  ${preset} ${d} seed ${s}: ${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.waves} keep ${Math.round(r.baseHp)} placed ${r.bot.placed} upg ${r.bot.upgrades}`);

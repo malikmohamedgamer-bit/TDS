@@ -8,7 +8,10 @@ import { MatchHud, HOTBAR_KEYS, DEFAULT_LOADOUT } from '../ui/matchHud.js';
 import { Tutorial } from '../ui/tutorial.js';
 import { towerThumbnail } from '../engine/thumbnails.js';
 import { FIRE_SOUND } from '../audio/sfx.js';
-import { grantReward, writeSave } from '../save/save.js';
+import { writeSave } from '../save/save.js';
+import { applyMatchResult, localDate, unlockedSpeeds } from '../meta/meta.js';
+import { Hub } from '../ui/hub.js';
+import { towerThumbnail as tThumb, enemyThumbnail } from '../engine/thumbnails.js';
 import { buildMapWorld } from '../core/mapLayout.js';
 
 const ABILITY_CODES = ['KeyZ', 'KeyX', 'KeyG'];
@@ -33,7 +36,7 @@ export class MatchController {
       onPickTower: (id) => this.pickTower(id),
       onSkip: () => this.command({ type: 'skip' }),
       onAssistSkip: () => this.command({ type: 'assistSkip' }),
-      onSpeed: () => { this.speed = this.speed === 1 ? 2 : 1; this.sfx.play('ui'); },
+      onSpeed: () => this.cycleSpeed(),
       onPause: () => this.setPaused(true),
       onResume: () => this.setPaused(false),
       onSettings: () => { this.hud.openSettings(); },
@@ -54,6 +57,32 @@ export class MatchController {
       if (skipped) this.mhud.banner('Tutorial skipped');
     });
     this.thumb = (id) => towerThumbnail(this.renderer, this.content, id);
+    this.hub = new Hub(this.ui, {
+      content: this.content,
+      get save() { return ctx.save; },
+      settings: this.settings,
+      sfx: this.sfx,
+      persist: () => this.persist(),
+      persistSettings: () => ctx.persistSettings?.(),
+      towerThumb: (id, sil) => tThumb(this.renderer, this.content, id, 128, sil),
+      enemyThumb: (id, sil) => enemyThumbnail(this.renderer, this.content, id, 128, sil),
+      date: () => ctx.date?.() || localDate(),
+      modes: ctx.modes,
+    });
+  }
+
+  /** Speeds the player has unlocked (slow speeds are always free). */
+  speeds() {
+    return unlockedSpeeds(this.save, this.content.meta);
+  }
+
+  cycleSpeed() {
+    const list = this.speeds();
+    const i = list.indexOf(this.speed);
+    this.speed = list[(i + 1) % list.length];
+    this.sfx.play('ui');
+    const locked = this.content.meta.speeds.find((s) => !list.includes(s.speed));
+    if (this.speed === list[list.length - 1] && locked) this.mhud.banner(`${locked.speed}x: ${locked.label}`, 'info');
   }
 
   /** Tuning preset chosen in Settings, or the one data/tuning.json names. */
@@ -75,12 +104,10 @@ export class MatchController {
   async toLobby() {
     this.end();
     this.mhud.setVisible(true);
-    const cfg = await this.mhud.openLobby({
-      difficulties: [...this.content.difficulties.values()].sort((a, b) => a.order - b.order),
-      defaultDifficulty: this.lastConfig?.difficulty || 'normal',
-      loadout: this.lastConfig?.loadout || (this.save.towers.loadout?.length >= 6 ? this.save.towers.loadout : DEFAULT_LOADOUT),
-      thumb: this.thumb,
-      tutorialDone: this.save.progress.tutorialDone,
+    const cfg = await this.hub.open({
+      difficulty: this.lastConfig?.difficulty || 'normal',
+      mode: this.lastConfig?.mode || 'campaign',
+      loadout: this.lastConfig?.loadout || (this.save.towers.loadout?.length ? this.save.towers.loadout : DEFAULT_LOADOUT),
     });
     this.sfx.unlock();
     await this.start(cfg);
@@ -315,7 +342,9 @@ export class MatchController {
   /** One fixed simulation tick (called by the main loop). */
   step() {
     if (!this.match || !this.ready || this.paused) return;
-    for (let i = 0; i < this.speed; i++) this.match.step();
+    // fractional speeds (0.5x, 1.5x) accumulate whole simulation steps
+    this.speedAcc = (this.speedAcc || 0) + this.speed;
+    while (this.speedAcc >= 1) { this.speedAcc -= 1; this.match.step(); }
     this.heroSync += 1;
     if (this.heroSync >= 15) {
       this.heroSync = 0;
@@ -377,23 +406,11 @@ export class MatchController {
     this.rewarded = true;
     this.cancelMode();
     const res = m.result();
-    const diff = m.difficulty;
-    const crowns = Math.round(((res.won ? 120 : 20) + res.wave * 8) * (diff.metaRewardMul ?? 1) * (m.tune.rewardMul ?? 1));
-    const xp = res.wave * 10 + (res.won ? 150 : 0);
-    const granted = grantReward(this.save, `match:${res.seed}`, { crowns, xp });
-    const s = this.save.stats;
-    s.matches++;
-    if (res.won) s.wins++;
-    s.kills += res.stats.kills;
-    s.wavesCleared += Math.max(0, res.won ? res.wave : res.wave - 1);
-    if (!res.assisted) {
-      // records only for unassisted runs
-      const best = (this.save.progress.best[m.map.id] ||= {});
-      best[diff.id] = Math.max(best[diff.id] || 0, res.won ? res.wave : res.wave - 1);
-    }
+    const rewards = applyMatchResult(this.save, res, this.content, this.content.meta, localDate());
     this.persist();
+    this.onProgress?.();
     res.presetLabel = m.tune.label;
     this.lastResult = res;
-    setTimeout(() => this.mhud.showEnd(res, { granted, crowns, xp }), 1200);
+    setTimeout(() => this.mhud.showEnd(res, rewards), 1200);
   }
 }

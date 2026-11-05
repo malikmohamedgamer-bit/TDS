@@ -2,7 +2,7 @@
 // backup, and safe loading (falls back to the backup, then to a fresh save). Pure apart from the
 // injected storage, so Node tests and a future server can use the same code.
 
-export const SAVE_SCHEMA = 2;
+export const SAVE_SCHEMA = 3;
 export const SAVE_KEY = 'tds.save';
 export const BACKUP_KEY = 'tds.save.backup';
 export const MAX_TOWER_LEVEL = 10;
@@ -14,15 +14,16 @@ export function newSave(now = 0) {
     updatedAt: now,
     profile: { name: 'Commander', xp: 0, level: 1 },
     wallet: { crowns: 0, sigils: 0 },
-    towers: { owned: { rifleman: { level: 1 }, ember_adept: { level: 1 } }, loadout: ['rifleman', 'ember_adept'] },
+    towers: { owned: {}, loadout: [] }, // starter towers are granted from data/meta.json at boot
     heroes: { owned: ['commander_vale'], selected: 'commander_vale' },
-    progress: { best: {}, unlockedMaps: ['riftline'], tutorialDone: false },
-    stats: { matches: 0, wins: 0, kills: 0, wavesCleared: 0 },
+    progress: { best: {}, unlockedMaps: ['riftline'], tutorialDone: false, bestDifficultyWon: -1 },
+    stats: { matches: 0, wins: 0, kills: 0, wavesCleared: 0, placed: 0, upgrades: 0, evolutions: 0, abilities: 0, bossKills: 0, summons: 0 },
+    daily: { last: null, streak: 0 },
     claimed: [],
     quests: {},
     achievements: {},
     index: { towers: [], enemies: [] },
-    summon: { pity: 0, pulls: 0 },
+    summon: { pity: 0, pulls: 0, seed: 0 },
   };
 }
 
@@ -40,6 +41,8 @@ export const MIGRATIONS = {
     out.claimed = Array.isArray(s.claimed) ? s.claimed : [];
     return out;
   },
+  // v2 -> v3: meta progression fields (daily login, more stats, summon seed); keeps everything else
+  2: (s) => ({ ...s, daily: s.daily || { last: null, streak: 0 }, summon: { seed: 0, ...(s.summon || {}) } }),
 };
 
 export function migrate(raw) {
@@ -80,7 +83,9 @@ export function sanitize(s, content) {
   for (const k of Object.keys(out.stats)) out.stats[k] = nonNeg(out.stats[k]);
   out.progress = { ...base.progress, ...(isObj(s.progress) ? s.progress : {}) };
   out.heroes = { ...base.heroes, ...(isObj(s.heroes) ? s.heroes : {}) };
-  out.summon = { pity: nonNeg(s.summon?.pity), pulls: nonNeg(s.summon?.pulls) };
+  out.summon = { pity: nonNeg(s.summon?.pity), pulls: nonNeg(s.summon?.pulls), seed: nonNeg(s.summon?.seed) };
+  out.daily = { last: typeof s.daily?.last === 'string' ? s.daily.last : null, streak: nonNeg(s.daily?.streak) };
+  out.progress.bestDifficultyWon = Number.isFinite(out.progress.bestDifficultyWon) ? out.progress.bestDifficultyWon : -1;
   out.quests = isObj(s.quests) ? s.quests : {};
   out.achievements = isObj(s.achievements) ? s.achievements : {};
   out.index = { towers: [...new Set(s.index?.towers || [])], enemies: [...new Set(s.index?.enemies || [])] };

@@ -15,6 +15,7 @@ import { Hud } from './ui/hud.js';
 import { createStorage } from './save/storage.js';
 import { loadSettings, saveSettings } from './save/settings.js';
 import { loadSave } from './save/save.js';
+import { ensureStarters } from './meta/meta.js';
 import { Sfx } from './audio/sfx.js';
 import { MatchController } from './game/matchController.js';
 import { SIM_DT } from './sim/match.js';
@@ -49,6 +50,7 @@ async function boot() {
   setLoading('Loading content…', 15);
   const content = await loadContent(browserReadJson('data/'));
   const { save } = loadSave(storage, content, Date.now());
+  ensureStarters(save, content.meta);
   const mapId = params.get('map') || 'riftline';
   const map = content.maps.get(mapId);
   if (!map) throw new Error(`Unknown map "${mapId}"`);
@@ -125,6 +127,7 @@ async function boot() {
 
   ctrl = new MatchController({
     content, map, mapWorld: mw, renderer, mapView, rig, hero, input, hud, sfx, save, storage, settings, ui,
+    persistSettings: persist,
     swapWorld(next) {
       // the match adds tower colliders to its own collision world; the hero must collide with it too
       mw = next;
