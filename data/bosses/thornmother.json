@@ -1,0 +1,27 @@
+{
+  "$doc": "Second boss (content batch 1). Same schema as gravemaw.json. A slow, regenerating brood queen: burst her or burn her; she spawns swarms and slams the keep if she gets close.",
+  "enemies": [
+    {
+      "id": "thornmother", "name": "Thornmother, Brood Queen", "archetype": "boss", "boss": true,
+      "hp": 3400, "speed": 1.6, "armor": 0.1, "regen": 0.004, "reward": 300, "leak": 1000, "size": 3,
+      "resist": { "poison": 0.4, "ice": 0.8, "fire": 1.3, "arcane": 1.1 },
+      "model": { "builder": "thornmother" },
+      "description": "A thorned matriarch who regrows wounds and births the swarm. Fire and burst damage stop her healing from mattering.",
+      "phases": [
+        { "at": 0.7, "name": "Brood Burst", "actions": [
+          { "type": "summon", "into": "brood_sac", "count": 3 },
+          { "type": "summon", "into": "skitter", "count": 6 }
+        ] },
+        { "at": 0.45, "name": "Thorn Carapace", "actions": [
+          { "type": "shield", "amount": 0.2 },
+          { "type": "telegraph", "effect": "stunTowers", "radius": 10, "duration": 2.5, "delay": 2 }
+        ] },
+        { "at": 0.2, "name": "Frenzy", "actions": [
+          { "type": "speed", "mul": 1.5 },
+          { "type": "summon", "into": "husk", "count": 6 },
+          { "type": "summon", "into": "mite", "count": 10 }
+        ] }
+      ]
+    }
+  ]
+}

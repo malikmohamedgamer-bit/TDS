@@ -41,6 +41,21 @@ test('locked modes show their unlock level; Endless runs past wave 20 and record
   expect(errors).toEqual([]);
 });
 
+test('music follows the game: hub, build phase, wave, boss wave, back to the hub', async ({ page }) => {
+  const errors = await openHub(page);
+  expect(await page.evaluate(() => window.TDS.music.mood)).toBe('hub');
+  await startMode(page, 'sandbox');
+  await expect.poll(() => page.evaluate(() => window.TDS.music.mood)).toBe('build');
+  await page.getByTestId('skip').click();
+  await expect.poll(() => page.evaluate(() => window.TDS.music.mood)).toBe('wave');
+  await page.evaluate(() => { window.TDS.debug.jumpToWave(10); });
+  await expect.poll(() => page.evaluate(() => window.TDS.music.mood)).toBe('boss');
+  expect(await page.evaluate(() => window.TDS.music.key)).toBe('riftline');
+  await page.evaluate(() => { window.TDS.ctrl.toLobby(); });
+  await expect.poll(() => page.evaluate(() => window.TDS.music.mood)).toBe('hub');
+  expect(errors).toEqual([]);
+});
+
 test('Sandbox: every tower, free building, Next wave any time, no rewards', async ({ page }) => {
   const errors = await openHub(page);
   await page.getByTestId('mode-sandbox').check({ force: true });

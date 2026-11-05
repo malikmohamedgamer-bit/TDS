@@ -10,9 +10,10 @@
   "meta": "meta.json",
   "quests": "quests.json",
   "modes": "modes.json",
+  "music": "music.json",
   "models": "models.json",
-  "towers": ["towers/war.json", "towers/magic.json"],
-  "enemies": ["enemies/blight.json", "bosses/gravemaw.json"],
-  "waves": ["waves/riftline_campaign.json", "waves/boss_rush.json"],
-  "maps": ["maps/riftline.json"]
+  "towers": ["towers/war.json", "towers/magic.json", "towers/legendary.json"],
+  "enemies": ["enemies/blight.json", "bosses/gravemaw.json", "bosses/thornmother.json"],
+  "waves": ["waves/riftline_campaign.json", "waves/boss_rush.json", "waves/frostmere_campaign.json"],
+  "maps": ["maps/riftline.json", "maps/frostmere.json"]
 }

@@ -70,3 +70,34 @@
 - `npm run balance -- --daily 10` measures the Daily Challenge; `tools/mode-shots.mjs`.
 - Fixed: elements with the `hidden` attribute could still show (the Assist "Skip this wave"
   button was visible to everyone).
+
+## 0.7.0 - Milestone 7: content batch 1 (2026-11-05)
+- New map **Frostmere Crossing** (`data/maps/frostmere.json`, unlocks at player level 3): two
+  Blight portals, two roads that merge before the keep, cold autumn palette, its own 20-wave
+  campaign (`data/waves/frostmere_campaign.json`, Gravemaw on 10, Thornmother on 20).
+- New boss **Thornmother, Brood Queen** (`data/bosses/thornmother.json`): regenerates, Brood Burst
+  (brood sacs + skitters), Thorn Carapace (shield + tower-stun telegraph), Frenzy (speed, swarm).
+  Code-built rig with walk / idle / attack / death clips. Boss Rush now rotates both bosses.
+- First **legendary towers** (`data/towers/legendary.json`): Titan Railgun (war sniper: armour-
+  ignoring slugs, hits air and hidden; branches Executioner / Arc Rail) and Starfall Oracle (magic
+  area: falling stars that splash and mark; branches Cometfall / Constellation). Code-built models,
+  new projectiles. Legendary summons no longer fall back to epic.
+- Hub: Map picker (records per map, unlock level); a map switch rebuilds the world by reloading on
+  that map; the choice is remembered. Modes can be bound to a map (Daily Challenge: Riftline).
+- Balance: bot values road coverage per road (two-road maps), Boss Rush economy retuned for two
+  bosses (start 2000, +90 per wave), Daily loaners capped at epic.
+- Fixed: Sandbox hotbar and upgrade buttons said "need $..." although cash is infinite (now ∞).
+
+## 0.8.0 - Milestone 8: polish (2026-11-05)
+- **Music**: procedural soundtrack, no audio files. `data/music.json` (scales, a key per map,
+  moods hub / build / wave / boss with tempo, chord progression, arpeggio, 16-step drums, layer
+  volumes), `src/audio/musicPatterns.js` (pure, deterministic, unit-tested), `src/audio/music.js`
+  (WebAudio scheduler on the master bus; mood changes land on the next bar with a short dip).
+  Riftline plays in D dorian, Frostmere in A minor, bosses switch to phrygian. Settings > Audio >
+  Music volume.
+- **Portal**: the enemy portal void is an animated, pixel-quantised Blight vortex (frozen when
+  Reduced motion is on) instead of static rings that read like a target.
+- **Collision**: maps can set `scatterGap` so scattered props never leave a slot narrower than the
+  hero (between props or against the map boundary). Frostmere uses 1.3 m.
+- `tools/screenshots.mjs` uses `nolobby` (the hub had been covering every world shot since M5) and
+  accepts `--map`.

@@ -59,6 +59,7 @@ export class Hud {
           <fieldset><legend>Audio</legend>
             <label class="row"><input type="checkbox" name="muted"> Mute all sound</label>
             <label class="row">Master volume <input type="range" name="masterVolume" min="0" max="1" step="0.05"><output name="masterOut"></output></label>
+            <label class="row">Music volume <input type="range" name="musicVolume" min="0" max="1" step="0.05"><output name="musicOut"></output></label>
             <label class="row">Effects volume <input type="range" name="sfxVolume" min="0" max="1" step="0.05"><output name="sfxOut"></output></label>
             <label class="row"><input type="checkbox" name="captions"> Sound captions</label>
           </fieldset>
@@ -120,6 +121,7 @@ export class Hud {
     f.masterVolume.value = s.masterVolume;
     f.tuningPreset.value = s.tuningPreset || 'default';
     f.sfxVolume.value = s.sfxVolume;
+    f.musicVolume.value = s.musicVolume;
     f.textScale.value = s.textScale;
     f.mouseSensitivity.value = s.mouseSensitivity;
     this._outputs();
@@ -136,6 +138,7 @@ export class Hud {
     f.sensOut.value = `${Number(f.mouseSensitivity.value).toFixed(1)}x`;
     f.masterOut.value = `${Math.round(f.masterVolume.value * 100)}%`;
     f.sfxOut.value = `${Math.round(f.sfxVolume.value * 100)}%`;
+    f.musicOut.value = `${Math.round(f.musicVolume.value * 100)}%`;
   }
 
   _readForm() {
@@ -147,6 +150,7 @@ export class Hud {
     s.masterVolume = Number(f.masterVolume.value);
     s.tuningPreset = f.tuningPreset.value;
     s.sfxVolume = Number(f.sfxVolume.value);
+    s.musicVolume = Number(f.musicVolume.value);
     s.textScale = Number(f.textScale.value);
     s.mouseSensitivity = Number(f.mouseSensitivity.value);
     this._outputs();

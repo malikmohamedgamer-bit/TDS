@@ -69,6 +69,15 @@ export class MatchController {
       enemyThumb: (id, sil) => enemyThumbnail(this.renderer, this.content, id, 128, sil),
       date: () => ctx.date?.() || localDate(),
       modes: ctx.modes,
+      mapId: this.map.id,
+      switchMap: (id) => {
+        // a different map is a different world: rebuild it cleanly by reloading on that map
+        this.settings.map = id;
+        ctx.persistSettings?.();
+        const u = new URL(location.href);
+        u.searchParams.set('map', id);
+        location.assign(u.toString());
+      },
     });
   }
 
@@ -104,6 +113,7 @@ export class MatchController {
   // ------------------------------------------------------------------------ lifecycle ------
   async toLobby() {
     this.end();
+    this.music?.setMood('hub', this.map.id);
     this.mhud.setVisible(true);
     const cfg = await this.hub.open({
       difficulty: this.lastConfig?.difficulty || 'normal',
@@ -111,6 +121,8 @@ export class MatchController {
       loadout: this.lastConfig?.loadout || (this.save.towers.loadout?.length ? this.save.towers.loadout : DEFAULT_LOADOUT),
     });
     this.sfx.unlock();
+    this.music?.resume();
+    this.music?.setMood('build', this.map.id);
     await this.start(cfg);
   }
 
@@ -383,7 +395,7 @@ export class MatchController {
         case 'death': sfx.play(e.boss ? 'bossDeath' : 'death', e, { gap: 0.05 }); if (e.boss) this.mhud.banner('The boss falls!', 'good'); break;
         case 'upgrade': sfx.play(e.evolved ? 'evolve' : 'upgrade'); if (e.evolved) this.mhud.banner(`Evolved: ${e.evolved.to}!`, 'good'); break;
         case 'sell': sfx.play('sell'); break;
-        case 'waveStart': sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;
+        case 'waveStart': this.music?.setMood(e.boss ? 'boss' : 'wave', this.map.id); sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;
         case 'bossSpawn': sfx.play('boss'); break;
         case 'bossPhase': sfx.play('boss'); this.mhud.banner(`${e.name}!`, 'boss'); break;
         case 'telegraph': sfx.play('telegraph'); break;
@@ -392,11 +404,11 @@ export class MatchController {
         case 'abilityCast': sfx.play(e.id === 'airstrike' ? 'jet' : 'ability'); break;
         case 'heroAttack': sfx.play('slash', e, { gap: 0.1 }); break;
         case 'heal': sfx.play('heal', e, { gap: 0.3 }); break;
-        case 'waveCleared': this.mhud.banner(`Wave ${e.wave} cleared`, 'good'); break;
+        case 'waveCleared': if (!this.match?.enemies.some((x) => x.alive && x.def.boss)) this.music?.setMood('build', this.map.id); this.mhud.banner(`Wave ${e.wave} cleared`, 'good'); break;
         case 'waveReward': sfx.play('cash'); break;
         case 'heroDown': this.mhud.banner('Commander down! Back in 6 s', 'warn'); break;
-        case 'won': sfx.play('win'); break;
-        case 'lost': sfx.play('lose'); break;
+        case 'won': this.music?.setMood('hub', this.map.id); sfx.play('win'); break;
+        case 'lost': this.music?.setMood('hub', this.map.id); sfx.play('lose'); break;
         default: break;
       }
     }

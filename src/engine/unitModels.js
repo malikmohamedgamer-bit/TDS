@@ -243,6 +243,42 @@ export const ENEMY_RIGS = {
       death: { duration: 1.0, loop: false, pose: (u, o) => { deathPose(u, o, 'x'); o.ring = { p: [0, 1.5 * u, 0], s: Math.max(0.01, 1 - u) }; } },
     },
   },
+
+  thornmother: {
+    height: 2.2,
+    parts: [
+      { name: 'body', pivot: [0, 1.1, 0], build: (b) => {
+        b.ico(1.0, 1, C.slate2, { pos: [0, 1.15, -0.35], scale: [1.1, 0.8, 1.5] });
+        b.ico(0.7, 1, C.night, { pos: [0, 1.0, -1.25], scale: [1.1, 0.9, 1.1] });
+        for (let i = 0; i < 7; i++) {
+          const z = -1.6 + i * 0.4;
+          b.cone(0.12, 0.55 + (i % 2) * 0.2, 4, C.bone, { pos: [0, 1.75 - Math.abs(z + 0.4) * 0.15, z], rot: [-0.3, 0, 0] });
+          for (const s of [-1, 1]) b.cone(0.08, 0.35, 4, C.bone, { pos: [s * 0.65, 1.45, z], rot: [-0.2, 0, s * -0.9] });
+        }
+        for (const [x, z] of [[0.45, -1.2], [-0.4, -1.4], [0.1, -1.7], [-0.15, -0.9]]) b.ico(0.14, 0, C.magenta, { glow: true, pos: [x, 1.25, z] });
+      } },
+      { name: 'head', pivot: [0, 1.2, 0.8], build: (b) => {
+        b.box(0.8, 0.6, 0.8, C.slate, { pos: [0, 1.25, 1.0] });
+        b.box(0.7, 0.18, 0.5, C.bone, { pos: [0, 0.98, 1.3] });
+        for (const s of [-1, 1]) b.cone(0.1, 0.6, 4, C.bone, { pos: [s * 0.3, 1.7, 0.85], rot: [-0.5, 0, s * -0.4] });
+        for (const x of [-0.2, 0, 0.2]) b.box(0.1, 0.07, 0.04, C.crimson, { glow: true, pos: [x, 1.35, 1.41] });
+      } },
+      ...['A', 'B'].map((g) => ({ name: `legs${g}`, pivot: [0, 1.0, 0], build: (b) => {
+        const legs = g === 'A' ? [[1, 0.6], [-1, -0.1], [1, -0.8]] : [[-1, 0.6], [1, -0.1], [-1, -0.8]];
+        for (const [s, z] of legs) {
+          b.box(0.9, 0.16, 0.16, C.slate, { pos: [s * 0.95, 1.1, z], rot: [0, 0, s * 0.5] });
+          b.box(0.16, 1.0, 0.16, C.slate2, { pos: [s * 1.4, 0.5, z], rot: [0, 0, s * -0.2] });
+          b.cone(0.09, 0.25, 4, C.bone, { pos: [s * 1.48, 0.02, z], rot: [P, 0, 0] });
+        }
+      } })),
+    ],
+    clips: {
+      move: { duration: 1.1, pose: (u, o) => { o.legsA = { r: [0, 0.3 * S(u), 0] }; o.legsB = { r: [0, -0.3 * S(u), 0] }; o.body = { p: [0, 0.05 * Math.abs(S(u)), 0], r: [0, 0, 0.03 * S(u)] }; o.head = { r: [0.06 * S(u, 2), 0.08 * S(u), 0] }; } },
+      idle: { duration: 2.2, pose: (u, o) => { o.body = { r: [0.03 * S(u), 0, 0] }; o.head = { r: [0.08 * S(u), 0, 0] }; } },
+      attack: { duration: 0.8, loop: false, pose: (u, o) => { o.head = { p: [0, 0, 0.4 * Math.sin(u * P)], r: [-0.3 * Math.sin(u * P), 0, 0] }; } },
+      death: { duration: 1.4, loop: false, pose: (u, o) => deathPose(u, o) },
+    },
+  },
 };
 
 // =============================================================================== allies (rigs)
@@ -559,6 +595,56 @@ export const TOWER_MODELS = {
     }, [0, 1.3, 0]);
     g.add(turret, spin);
     return { group: g, parts: { turret, spinY: [spin], bob: spin }, muzzle: new THREE.Vector3(-0.38, 2.1, 0.2) };
+  },
+  titan_railgun() {
+    const g = new THREE.Group();
+    g.add(part('base', (b) => {
+      b.cyl(1.15, 1.25, 0.3, 8, C.gunmetal, { pos: [0, -0.05, 0] });
+      b.cyl(0.95, 1.05, 0.25, 8, C.steel, { pos: [0, 0.22, 0] });
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * TAU;
+        b.box(0.34, 0.08, 0.08, i % 2 ? C.hazard : C.black, { pos: [Math.cos(a) * 1.08, 0.12, Math.sin(a) * 1.08], rot: [0, -a + P / 2, 0] });
+      }
+      for (const s of [-1, 1]) b.box(0.4, 0.5, 1.2, C.gunmetal, { pos: [s * 0.7, 0.55, -0.2] });
+      b.box(0.2, 0.14, 0.2, C.cyan, { glow: true, pos: [0.7, 0.85, 0.3] });
+    }));
+    const turret = part('turret', (b) => {
+      b.box(1.05, 0.55, 1.25, C.gunmetal, { pos: [0, 1.15, -0.25] });
+      b.box(0.9, 0.12, 1.1, C.steel, { pos: [0, 1.48, -0.25] });
+      // twin rails with glowing coils
+      for (const s of [-1, 1]) b.box(0.12, 0.2, 2.6, C.black, { pos: [s * 0.2, 1.25, 1.15] });
+      for (let i = 0; i < 5; i++) b.box(0.62, 0.36, 0.1, i % 2 ? C.gunmetal : C.steel, { pos: [0, 1.25, 0.45 + i * 0.42] });
+      for (let i = 0; i < 4; i++) b.box(0.1, 0.06, 0.06, C.cyan, { glow: true, pos: [0, 1.25, 0.66 + i * 0.42] });
+      b.box(0.38, 0.3, 0.5, C.hazard, { pos: [0, 1.2, -0.95] });
+      b.cyl(0.07, 0.07, 0.6, 6, C.steel, { pos: [0.42, 1.65, -0.5] });
+      b.box(0.08, 0.08, 0.08, C.crimson, { glow: true, pos: [0.42, 1.98, -0.5] });
+    }, [0, 1.15, 0]);
+    g.add(turret);
+    return { group: g, parts: { turret, recoil: turret }, muzzle: new THREE.Vector3(0, 1.25, 2.45) };
+  },
+
+  starfall_oracle() {
+    const g = new THREE.Group();
+    g.add(part('base', (b) => {
+      stonePlinth(b, C.glowViolet);
+      b.cyl(0.42, 0.58, 0.5, 6, C.stoneLight, { pos: [0, 0.45, 0] });
+      // robed oracle
+      b.cone(0.55, 1.5, 8, C.night, { pos: [0, 0.7, 0] });
+      b.cyl(0.36, 0.5, 0.25, 8, C.violet, { pos: [0, 1.2, 0] });
+      b.sphere(0.24, 8, 6, C.skin, { pos: [0, 1.92, 0.02] });
+      b.cone(0.34, 0.55, 8, C.night, { pos: [0, 2.15, -0.04], rot: [-0.15, 0, 0] });
+      for (const x of [-0.08, 0.08]) b.box(0.06, 0.05, 0.03, C.cyan, { glow: true, pos: [x, 1.94, 0.22] });
+      for (const s of [-1, 1]) b.box(0.14, 0.62, 0.14, C.night, { pos: [s * 0.42, 1.5, 0.12], rot: [0.6, 0, s * -0.5] });
+      for (let i = 0; i < 5; i++) b.octa(0.05, C.gold, { glow: true, pos: [Math.cos(i * 1.26) * 0.34, 1.0 + (i % 2) * 0.3, Math.sin(i * 1.26) * 0.34] });
+    }));
+    const orb = part('orb', (b) => {
+      b.octa(0.3, C.gold, { glow: true, intensity: 1.6, pos: [0, 2.95, 0], scale: [1, 1.4, 1] });
+      b.torus(0.62, 0.035, 3, 18, C.glowViolet, { glow: true, pos: [0, 2.95, 0], rot: [P / 2, 0, 0.3] });
+      b.torus(0.5, 0.03, 3, 18, C.cyan, { glow: true, pos: [0, 2.95, 0], rot: [0.5, 0.2, 0] });
+      for (let i = 0; i < 4; i++) b.octa(0.08, C.pink, { glow: true, pos: [Math.cos(i * P / 2) * 0.62, 2.95, Math.sin(i * P / 2) * 0.62] });
+    }, [0, 2.95, 0]);
+    g.add(orb);
+    return { group: g, parts: { spinY: [orb], bob: orb }, muzzle: new THREE.Vector3(0, 2.95, 0) };
   },
 };
 

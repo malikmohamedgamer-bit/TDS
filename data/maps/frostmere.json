@@ -1,0 +1,98 @@
+{
+  "id": "frostmere",
+  "name": "Frostmere Crossing",
+  "description": "A frost-bitten valley with two Blight portals. Their roads wind apart and meet at the old Ironhold supply line before your keep.",
+  "seed": "frostmere-v1",
+  "scatterGap": 1.3,
+  "waves": "frostmere_campaign",
+  "unlockLevel": 3,
+  "size": { "w": 110, "d": 80 },
+  "sky": { "top": "#7E9CC4", "horizon": "#E6EDF5", "fog": "#D4DEEA", "fogNear": 85, "fogFar": 210 },
+  "sun": { "azimuth": 160, "elevation": 36, "color": "#FFE4C2", "intensity": 2.3 },
+  "ground": {
+    "grass": ["#8FA270", "#7E9162", "#A4B583", "#6E8053"],
+    "path": ["#8A7A68", "#776655", "#9E8D78", "#625346"],
+    "rim": ["#8D9AA6", "#6C7480"]
+  },
+  "terrain": {
+    "baseHeight": 0,
+    "pathBlend": 3,
+    "rim": { "height": 8, "width": 8 },
+    "flats": [
+      { "x": 50.5, "z": 2, "r": 8, "height": 0, "blend": 5 },
+      { "x": -51.5, "z": 24, "r": 5.5, "height": 0, "blend": 4 },
+      { "x": -51.5, "z": -24, "r": 5.5, "height": 0, "blend": 4 }
+    ],
+    "hills": [
+      { "x": -27, "z": 33, "r": 7, "h": 2.2 },
+      { "x": 14, "z": 31, "r": 8, "h": 2.4 },
+      { "x": 31, "z": -27, "r": 9, "h": 2.6 },
+      { "x": 40, "z": 25, "r": 9, "h": 2.6 },
+      { "x": -28, "z": -1, "r": 5, "h": 1 },
+      { "x": 10, "z": -18, "r": 5, "h": 0.9 },
+      { "x": -10, "z": 14, "r": 4.5, "h": 0.8 }
+    ]
+  },
+  "paths": [
+    {
+      "id": "north",
+      "width": 5,
+      "points": [[-57, 24], [-36, 24], [-36, 8], [-16, 8], [-16, 24], [6, 24], [6, 2], [45, 2]]
+    },
+    {
+      "id": "south",
+      "width": 5,
+      "points": [[-57, -24], [-38, -24], [-38, -10], [-20, -10], [-20, -26], [-2, -26], [-2, -8], [22, -8], [22, 2], [45, 2]]
+    }
+  ],
+  "base": { "x": 50, "z": 2 },
+  "playerSpawn": { "x": -4, "z": -2, "yaw": 1.5708 },
+  "props": [
+    { "kind": "enemy_portal", "x": -51.5, "z": 24, "rot": 0 },
+    { "kind": "enemy_portal", "x": -51.5, "z": -24, "rot": 0 },
+    { "kind": "base_keep", "x": 50.5, "z": 2, "rot": 0 },
+    { "kind": "ruin_arch", "x": -16, "z": 16, "rot": 0 },
+    { "kind": "ruin_pillar", "x": -28, "z": 16, "rot": 0.4 },
+    { "kind": "ruin_pillar", "x": -12, "z": -18, "rot": 1.2, "scale": 0.85 },
+    { "kind": "ruin_pillar", "x": -44, "z": -15, "rot": 2.3, "scale": 0.9 },
+    { "kind": "runestone", "x": -46, "z": -4, "rot": 0.2 },
+    { "kind": "runestone", "x": -42, "z": 0, "rot": 1.4 },
+    { "kind": "runestone", "x": -46, "z": 4, "rot": 2.6 },
+    { "kind": "runestone", "x": -50, "z": 0, "rot": 4.0 },
+    { "kind": "crystal_cluster", "x": -46, "z": 0, "rot": 0, "scale": 1.3 },
+    { "kind": "crystal_cluster", "x": -27, "z": 31, "rot": 0.8 },
+    { "kind": "crystal_cluster", "x": -30, "z": -31, "rot": 2.1, "scale": 0.8 },
+    { "kind": "tree_magic", "x": -6, "z": 31, "rot": 0.5, "scale": 1.2 },
+    { "kind": "lamp_post", "x": -32.5, "z": 4.5, "rot": 0 },
+    { "kind": "lamp_post", "x": -12.5, "z": 4.5, "rot": 0 },
+    { "kind": "lamp_post", "x": 9.5, "z": 6, "rot": 0 },
+    { "kind": "lamp_post", "x": 25.5, "z": -2, "rot": 0 },
+    { "kind": "lamp_post", "x": 42, "z": 6, "rot": 0 },
+    { "kind": "lamp_post", "x": 42, "z": -2, "rot": 0 },
+    { "kind": "watchtower", "x": 36, "z": 13, "rot": 0.15 },
+    { "kind": "tank_wreck", "x": 16, "z": -31, "rot": 0.45 },
+    { "kind": "tent", "x": 40, "z": 30, "rot": 0.1 },
+    { "kind": "tent", "x": 47, "z": 22, "rot": -0.5 },
+    { "kind": "sandbag_wall", "x": 31, "z": -5, "rot": 0 },
+    { "kind": "sandbag_wall", "x": 35, "z": -6.5, "rot": -0.35 },
+    { "kind": "sandbag_wall", "x": 14, "z": 12, "rot": 0 },
+    { "kind": "crate_stack", "x": 14, "z": -14, "rot": 0.3 },
+    { "kind": "crate", "x": 16.5, "z": -15.8, "rot": 0.7 },
+    { "kind": "barrel", "x": 12.3, "z": -13, "rot": 0 },
+    { "kind": "barrel", "x": 38.5, "z": 8, "rot": 0 },
+    { "kind": "barbed_fence", "x": 33, "z": -33, "rot": 0.1 },
+    { "kind": "barbed_fence", "x": 36.3, "z": -32.5, "rot": 0.2 },
+    { "kind": "fence_wood", "x": -8, "z": -31, "rot": 0 },
+    { "kind": "fence_wood", "x": -4.9, "z": -31.2, "rot": 0.1 }
+  ],
+  "scatter": [
+    { "kind": "tree_pine", "count": 70, "area": [-55, -40, 55, 40], "edgeBand": 12, "minPathDist": 5, "spacing": 2.6, "scale": [0.8, 1.4] },
+    { "kind": "tree_magic", "count": 5, "area": [-55, -40, -10, 40], "edgeBand": 14, "minPathDist": 5, "spacing": 4, "scale": [0.9, 1.2] },
+    { "kind": "tree_round", "count": 18, "area": [5, -40, 55, 40], "edgeBand": 11, "minPathDist": 5, "spacing": 3, "scale": [0.85, 1.2] },
+    { "kind": "bush", "count": 26, "area": [-55, -40, 55, 40], "minPathDist": 4, "spacing": 2, "scale": [0.7, 1.2] },
+    { "kind": "rock", "count": 26, "area": [-55, -40, 55, 40], "minPathDist": 4.5, "spacing": 3.5, "scale": [0.7, 1.5] },
+    { "kind": "rock_small", "count": 34, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2, "scale": [0.7, 1.3] },
+    { "kind": "mushroom_glow", "count": 8, "area": [-55, -40, -10, 40], "minPathDist": 3.6, "spacing": 1.6, "scale": [0.7, 1.2] },
+    { "kind": "crystal_cluster", "count": 7, "area": [-55, -40, 0, 40], "edgeBand": 16, "minPathDist": 5, "spacing": 5, "scale": [0.7, 1.1] }
+  ]
+}

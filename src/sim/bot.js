@@ -32,9 +32,10 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
   const m = match;
   const rng = new Rng(`${seed}:bot`);
   const noise = () => (skill >= 1 ? 1 : 1 + (rng.next() - 0.5) * 2 * (1 - skill) * 1.2);
-  const path = m.paths[0];
+  // road samples from every path (maps can have several roads; shared stretches count twice,
+  // which is right: more enemies walk them)
   const samples = [];
-  for (let d = 0; d < path.length; d += 2) samples.push(path.pointAt(d, {}));
+  for (const path of m.paths) for (let d = 0; d < path.length; d += 2) samples.push(path.pointAt(d, {}));
   // candidate spots on a grid, scored by path coverage per range
   const spots = [];
   const b = m.mw.world.bounds;
@@ -52,7 +53,7 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
     if (v === undefined) {
       let n = 0;
       for (const p of samples) if ((p.x - s.x) ** 2 + (p.z - s.z) ** 2 <= r * r) n++;
-      v = n / samples.length;
+      v = (n * m.paths.length) / samples.length; // 1 = one whole road (traps and income are valued per road too)
       covCache.set(key, v);
     }
     return v;

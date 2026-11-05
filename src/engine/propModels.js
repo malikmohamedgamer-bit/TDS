@@ -257,11 +257,8 @@ export const BUILDERS = {
     }
     b.torus(3.15, 0.32, 6, 20, C.blight, { pos: [0, 3.7, 0], rot: [0, PI / 2, 0] });
     b.torus(2.85, 0.12, 4, 24, C.blightMagenta, { glow: true, intensity: 2.2, pos: [0, 3.7, 0], rot: [0, PI / 2, 0] });
-    // the void: a dark disc with glowing inner rings (both faces, so it reads from either side)
+    // the void: a dark backing disc; the animated swirl on both faces is added by MapView
     b.cyl(2.9, 2.9, 0.12, 24, '#14061F', { centered: true, pos: [0, 3.7, 0], rot: [0, 0, PI / 2] });
-    for (const [r, c, k] of [[2.2, C.blightGlow, 1.4], [1.45, C.blightMagenta, 1.2], [0.7, '#FF9AD5', 1.6]]) {
-      for (const side of [-1, 1]) b.torus(r, 0.06, 3, 20, c, { glow: true, intensity: k, pos: [side * 0.08, 3.7, 0], rot: [0, PI / 2, 0] });
-    }
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * PI * 2;
       b.cone(0.22, 0.9, 4, C.blight, { centered: true, pos: [0, 3.7 + Math.sin(a) * 3.6, Math.cos(a) * 3.6], rot: [a - PI / 2, 0, 0] });

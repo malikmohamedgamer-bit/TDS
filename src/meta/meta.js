@@ -220,7 +220,9 @@ export function dailyChallenge(content, date) {
     if (spent + cost <= budget) { mods.push(id); spent += cost; }
     if (spent >= budget) break;
   }
-  const all = [...content.towers.values()].sort((a, b) => (a.id < b.id ? -1 : 1));
+  const order = content.meta?.rarityOrder || [];
+  const maxR = mode?.loanerMaxRarity ? order.indexOf(mode.loanerMaxRarity) : Infinity;
+  const all = [...content.towers.values()].filter((t) => !(order.indexOf(t.rarity) > maxR)).sort((a, b) => (a.id < b.id ? -1 : 1));
   const loadout = [];
   const take = (pred) => {
     const pool = rng.shuffle(all.filter((t) => pred(t) && !loadout.includes(t.id)));

@@ -103,6 +103,10 @@ export class Hub {
   _play() {
     const diffs = [...this.c.difficulties.values()].sort((a, b) => a.order - b.order);
     const modes = [...(this.c.modes?.values() || [])].map((m) => ({ ...m, locked: m.unlockLevel && this.save.profile.level < m.unlockLevel ? `Reach player level ${m.unlockLevel}` : null }));
+    const mapId = this.ctx.mapId || 'riftline';
+    const maps = [...this.c.maps.values()].map((m) => ({ ...m, locked: m.unlockLevel && this.save.profile.level < m.unlockLevel ? `Reach player level ${m.unlockLevel}` : null }));
+    for (const m of modes) if (!m.locked && m.map && m.map !== mapId) m.locked = `Played on ${this.c.maps.get(m.map)?.name || m.map}`;
+    if (modes.find((m) => m.id === this.cfg.mode)?.locked) this.cfg.mode = 'campaign';
     const mode = this.c.modes?.get(this.cfg.mode) || { id: 'campaign' };
     const daily = mode.daily ? dailyChallenge(this.c, this.date()) : null;
     const anyTower = !!mode.allTowers;
@@ -113,12 +117,13 @@ export class Hub {
     if (daily) this.cfg.loadout = daily.loadout.slice();
     const usable = (id) => anyTower || owns(this.save, id);
     return `
+      ${maps.length > 1 ? `<fieldset><legend>Map</legend><div class="diffs maps" role="radiogroup" aria-label="Map">${maps.map((m) => `<label><input type="radio" name="map" value="${m.id}" data-testid="map-${m.id}" ${m.id === mapId ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked || `${m.paths.length} road${m.paths.length > 1 ? 's' : ''}${this.save.progress.bestDifficultyWon >= 0 && this.save.progress.best?.[m.id] ? ` · best ${Math.max(...Object.values(this.save.progress.best[m.id]))} waves` : ''}`)}</small></span></label>`).join('')}</div></fieldset>` : ''}
       ${modes.length > 1 ? `<fieldset><legend>Mode</legend><div class="diffs modes" role="radiogroup" aria-label="Mode">${modes.map((m) => `<label><input type="radio" name="mode" value="${m.id}" data-testid="mode-${m.id}" ${m.id === this.cfg.mode ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked ? m.locked : m.desc)}</small></span></label>`).join('')}</div></fieldset>` : ''}
       ${mode.modifiers ? `<fieldset><legend>Modifiers <span class="count">reward x${modMul.toFixed(2)}</span></legend><div class="mods">${mods.map((x) => `<label class="row"><input type="checkbox" name="mod" value="${x.id}" ${this.cfg.modifiers.includes(x.id) ? 'checked' : ''}> <b>${esc(x.name)}</b> <small>${esc(x.desc)} · x${x.rewardMul}</small></label>`).join('')}</div></fieldset>` : ''}
       ${daily ? `<fieldset data-testid="daily-challenge"><legend>Today (${daily.date})</legend><p class="note">Difficulty: ${esc(this.c.difficulties.get(daily.difficulty).name)} (fixed). Modifiers: ${daily.modifiers.map((id) => `<b>${esc(this.c.modifiers.get(id).name)}</b> (${esc(this.c.modifiers.get(id).desc)})`).join(', ')}. Loaner loadout below, every tower at level ${Object.values(daily.levels)[0]}. Win for ${Object.entries(daily.reward).map(([k, v]) => `${v} ${k}`).join(' + ')}${this.save.claimed.includes(daily.rewardId) ? ' (already claimed today)' : ''}.</p></fieldset>` : ''}
       ${mode.sandbox ? '<p class="note">Sandbox: infinite cash, every tower, press Next wave any time. No rewards, no records.</p>' : ''}
       <fieldset><legend>Difficulty</legend><div class="diffs" role="radiogroup" aria-label="Difficulty">
-        ${diffs.map((d) => `<label><input type="radio" name="diff" value="${d.id}" ${(daily ? d.id === daily.difficulty : d.id === this.cfg.difficulty) ? 'checked' : ''} ${daily ? 'disabled' : ''}><span><b>${esc(d.name)}</b><small>${d.id === 'relaxed' ? 'slower enemies, 2x keep' : `${d.hpMul}x enemy health`}${this.save.progress.best?.riftline?.[d.id] ? ` · best ${this.save.progress.best.riftline[d.id]}` : ''}</small></span></label>`).join('')}
+        ${diffs.map((d) => `<label><input type="radio" name="diff" value="${d.id}" ${(daily ? d.id === daily.difficulty : d.id === this.cfg.difficulty) ? 'checked' : ''} ${daily ? 'disabled' : ''}><span><b>${esc(d.name)}</b><small>${d.id === 'relaxed' ? 'slower enemies, 2x keep' : `${d.hpMul}x enemy health`}${this.save.progress.best?.[mapId]?.[d.id] ? ` · best ${this.save.progress.best[mapId][d.id]}` : ''}</small></span></label>`).join('')}
       </div></fieldset>
       <fieldset><legend>Loadout <span class="count" data-testid="loadout-count">${this.cfg.loadout.length}/6</span></legend><div class="cards" data-testid="loadout">
         ${towers.map((t) => {
@@ -225,6 +230,12 @@ export class Hub {
 
   onChange(e) {
     if (e.target.name === 'diff') this.cfg.difficulty = e.target.value;
+    if (e.target.name === 'map' && e.target.value !== this.ctx.mapId) {
+      this.toast(`Travelling to ${this.c.maps.get(e.target.value)?.name || e.target.value}…`, 'info');
+      this.saved();
+      this.ctx.switchMap?.(e.target.value);
+      return;
+    }
     if (e.target.name === 'mode') {
       this.cfg.mode = e.target.value;
       const m = this.c.modes.get(this.cfg.mode);

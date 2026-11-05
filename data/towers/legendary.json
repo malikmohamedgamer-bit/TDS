@@ -1,0 +1,72 @@
+{
+  "$doc": "Legendary towers (content batch 1, milestone 7). Same schema as war.json / magic.json. Rare from summons (legendary weight) or expensive in the shop; limit 2 per match.",
+  "towers": [
+    {
+      "id": "titan_railgun", "name": "Titan Railgun", "faction": "war", "class": "sniper", "rarity": "legendary",
+      "description": "Magnetic rail cannon. One slug every few seconds that ignores armour, sees hidden enemies and hits air.",
+      "cost": 2000, "limit": 2, "footprint": 1.2, "placement": "ground",
+      "model": { "builder": "titanRailgun" },
+      "stats": {
+        "damage": 260, "damageType": "physical", "rate": 0.25, "range": 34, "armorPierce": 1,
+        "targets": { "ground": true, "air": true }, "detection": true,
+        "projectile": { "kind": "railslug", "speed": 420 }, "targeting": "strongest"
+      },
+      "upgrades": {
+        "linear": [
+          { "name": "Capacitor Bank", "cost": 600, "mul": { "damage": 1.35 }, "desc": "+35% damage" },
+          { "name": "Coil Cooling", "cost": 700, "mul": { "rate": 1.3 }, "desc": "+30% fire rate" }
+        ],
+        "branches": {
+          "A": {
+            "name": "Executioner", "desc": "Bigger slugs for bosses.",
+            "steps": [
+              { "name": "Overload Slugs", "cost": 1800, "mul": { "damage": 1.6 }, "set": { "stun": 0.3 }, "desc": "+60% damage, hits stun briefly" },
+              { "name": "Titan Lance", "cost": 3600, "mul": { "damage": 1.8 }, "add": { "range": 6 }, "evolve": "Titan Lance", "desc": "+80% damage, +6 range" }
+            ]
+          },
+          "B": {
+            "name": "Arc Rail", "desc": "Slugs arc through a line of enemies.",
+            "steps": [
+              { "name": "Split Coils", "cost": 1500, "set": { "chain": { "count": 3, "falloff": 0.7, "range": 7 } }, "desc": "Each slug jumps to 2 more enemies" },
+              { "name": "Storm Rail", "cost": 3200, "mul": { "rate": 1.6 }, "set": { "chain.count": 5 }, "evolve": "Storm Rail", "desc": "+60% fire rate, jumps to 4 more" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "starfall_oracle", "name": "Starfall Oracle", "faction": "magic", "class": "area", "rarity": "legendary",
+      "description": "Calls falling stars on crowds, ground or air. Struck enemies are marked and take more damage from every tower.",
+      "cost": 1900, "limit": 2, "footprint": 1.1, "placement": "ground",
+      "model": { "builder": "starfallOracle" },
+      "stats": {
+        "damage": 48, "damageType": "arcane", "rate": 0.6, "range": 24, "splash": 3.6,
+        "mark": { "amount": 0.15, "duration": 3 },
+        "targets": { "ground": true, "air": true }, "detection": true,
+        "projectile": { "kind": "starshard", "speed": 30 }
+      },
+      "upgrades": {
+        "linear": [
+          { "name": "Astral Focus", "cost": 550, "mul": { "damage": 1.3 }, "desc": "+30% damage" },
+          { "name": "Wider Heavens", "cost": 650, "add": { "range": 4, "splash": 0.8 }, "desc": "+4 range, bigger impacts" }
+        ],
+        "branches": {
+          "A": {
+            "name": "Cometfall", "desc": "Burning comets.",
+            "steps": [
+              { "name": "Comet Core", "cost": 1700, "mul": { "damage": 1.7 }, "set": { "burn": { "dps": 22, "duration": 3 } }, "desc": "+70% damage, impacts burn" },
+              { "name": "Cometfall", "cost": 3400, "mul": { "damage": 1.6 }, "add": { "splash": 1.5 }, "evolve": "Cometfall", "desc": "+60% damage, huge craters" }
+            ]
+          },
+          "B": {
+            "name": "Constellation", "desc": "Faster stars, stronger marks.",
+            "steps": [
+              { "name": "Binary Star", "cost": 1500, "mul": { "rate": 1.6 }, "desc": "+60% cast speed" },
+              { "name": "Supernova", "cost": 3300, "set": { "mark.amount": 0.3, "stun": 0.3 }, "evolve": "Supernova", "desc": "Marks +30%, impacts stun briefly" }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

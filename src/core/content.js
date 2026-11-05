@@ -43,6 +43,7 @@ export async function loadContent(readJson) {
     tuning: index.tuning ? await readJson(index.tuning) : null,
     meta: index.meta ? await readJson(index.meta) : null,
     quests: index.quests ? await readJson(index.quests) : null,
+    music: index.music ? await readJson(index.music) : null,
     ...(await (async () => {
       const m = index.modes ? await readJson(index.modes) : { modes: [], modifiers: [] };
       return { modes: new Map(m.modes.map((x) => [x.id, x])), modifiers: new Map(m.modifiers.map((x) => [x.id, x])) };

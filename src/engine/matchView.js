@@ -25,6 +25,8 @@ const PROJECTILES = {
   fireball: { color: '#FF6B35', size: [0.34, 0.34, 0.34], glow: 2.6 },
   frostbolt: { color: '#7FDBFF', size: [0.16, 0.16, 0.6], glow: 2.4 },
   sunbolt: { color: '#FFF3B0', size: [0.3, 0.3, 0.3], glow: 2.8 },
+  railslug: { color: '#7FF6FF', size: [0.09, 0.09, 2.4], glow: 3.2 },
+  starshard: { color: '#C9A7FF', size: [0.32, 0.32, 0.32], glow: 3 },
 };
 
 export class MatchView {
@@ -94,7 +96,7 @@ export class MatchView {
       const color = new THREE.Color(p.color);
       if (p.glow) color.multiplyScalar(p.glow);
       const mat = p.glow ? new THREE.MeshBasicMaterial({ color }) : new THREE.MeshStandardMaterial({ color, flatShading: true });
-      const geo = kind === 'fireball' || kind === 'sunbolt' || kind === 'grenade' ? new THREE.IcosahedronGeometry(0.5, 0) : new THREE.BoxGeometry(1, 1, 1);
+      const geo = kind === 'fireball' || kind === 'sunbolt' || kind === 'grenade' || kind === 'starshard' ? new THREE.IcosahedronGeometry(0.5, 0) : new THREE.BoxGeometry(1, 1, 1);
       const im = new THREE.InstancedMesh(geo, mat, 256);
       im.frustumCulled = false;
       im.count = 0;

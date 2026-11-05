@@ -134,3 +134,31 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 | Tutorial glows the control per step, device wording, skips impossible steps | e2e "tutorial advances on real actions ..." (hotbar slot glow, then Start wave glow); screenshots docs/screenshots/m6/04-05 | pass | touch wording not screenshot-checked on a phone |
 | Assist skip button hidden unless Assist is on | screenshot docs/screenshots/m6/04-tutorial-pick.png; e2e assists test | pass | bug 20 |
 | Regression: full e2e + soak | 22 passed (4.1 min); soak 30 simulated min, 0 rescues, 0 failures; unit 56/56; lint clean | pass | |
+
+## Milestone 7: content batch 1 (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Content loads and validates (2 legendaries, Thornmother, Frostmere, its waves) | unit content7 "content batch 1 is loaded"; `validateContent` in unit tests | pass | |
+| Titan Railgun: armour pierce, air, detection, Arc Rail chain | unit content7 | pass | full damage through 50% armour |
+| Starfall Oracle: splash, mark | unit content7 | pass | |
+| Thornmother phases (Brood Burst, Thorn Carapace with telegraph, Frenzy), no healers | unit content7 | pass | bug 25 |
+| Frostmere: 2 roads reach the keep, waves use both, soak walker never stuck | unit content7; e2e maps (enemies on both roads); soak 30 min and 120 min | pass | 0 rescues after bug 28 fix |
+| Map picker: locked until level 3, travels to Frostmere, Daily locked there, legendaries + boss render without errors | e2e maps.spec.js | pass | |
+| Legendary summons possible (no epic fallback) | unit content7 (400 pulls) | pass | |
+| Daily loaners stay at epic or below (measured Daily unchanged) | unit content7; `--daily 1` reproduces the 2026-11-05 loadout | pass | |
+| Frostmere balance 60-70% (12 regular towers, Standard Normal) | `npm run balance -- --map frostmere --loadout <12 ids> --seeds 20` | pass | 13/20 = 65%; starters Easy 11/12; lazy 0/8 |
+| Boss Rush with two bosses | scratch bot runs, 12 seeds | pass | 8/12 without legendaries; ~12/12 with the Titan Railgun affordable at start |
+| Visual review | docs/screenshots/m7 (hub maps, overview, west, legendaries, Thornmother, two-road combat) | pass, with notes | Frostmere reuses Riftline props |
+| Regression | M7 run: 22/23 e2e (bug 30: one timing flake while screenshot jobs ran in parallel and M8 files were being edited, so that run was not on a clean tree); clean combined run below | see M8 | |
+
+## Milestone 8: polish (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Music data complete, patterns deterministic, in key, inside the bar, sane range | unit music.test.js | pass | bug 29 |
+| Music follows the game (hub, build, wave, boss, back to hub; map key) | e2e modes "music follows the game ..." | pass | no page errors with the audio graph running in headless Chromium; **not listened to by a person** |
+| Music volume setting | settings dialog field wired to `musicVolume` | partial | not covered by an automated test |
+| Animated portal vortex, frozen with Reduced motion | screenshot docs/screenshots/m8/portal.png | pass | reduced-motion freeze checked by code reading only |
+| Collision gap fix | soak 120 simulated min on both maps | pass | 0 rescues, 0 failures |
+| Regression (clean tree, M7 + M8) | unit 67/67, lint clean, e2e 24/24 (4.6 min), soak 30 min: Riftline and Frostmere 0 rescues 0 failures | pass | |

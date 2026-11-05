@@ -86,7 +86,12 @@ Every content file is listed in `data/index.json`.
   regen, heal, split, summon, attack (hexes towers), resist.
 - **Boss**: an enemy with `"boss": true` and `phases` (telegraph, summon, shield, speed).
 - **Wave set**: add `data/waves/<id>.json` and point a map's `waves` at it.
-- **Map**: add `data/maps/<id>.json` (size, terrain hills / rim / flats, paths, props, scatter rules).
+- **Map**: add `data/maps/<id>.json` (size, terrain hills / rim / flats, one or more paths, props,
+  scatter rules, optional `unlockLevel` and `scatterGap`), give it a wave set and a music key in
+  `data/music.json`. It appears in the hub's Map picker automatically.
+- **Mode / modifier**: `data/modes.json` (waves override, endless, tune multipliers, flags, `map`
+  to bind a mode to one map; modifiers with `rewardMul`, `dailyCost`, `inDaily`).
+- **Music**: `data/music.json` (scales, a key per map, moods with tempo, chords, arpeggio, drums).
 - **Difficulty / ability / hero**: `data/difficulties.json`, `data/abilities.json`, `data/heroes.json`.
 
 `npm test` validates all cross references (unknown enemy ids, damage types, props, abilities).
@@ -130,12 +135,24 @@ npm run soak -- --minutes 30
 npm run balance -- --difficulty normal --level 1 --verbose
 ```
 
+```bash
+npm run balance -- --map frostmere --loadout starters --difficulty easy
+```
+
+```bash
+npm run balance -- --daily 10 --seeds 6
+```
+
 - Unit tests (Node test runner) cover the pure simulation, saves, collision and soak.
 - E2E tests (Playwright, desktop and an emulated Pixel 7) run the real game in headless Chromium.
   Headless uses software WebGL, so they wait on game state rather than wall-clock time.
 - The balance bot plays whole matches headlessly; `--level` sets permanent tower levels,
   `--weak` plays a deliberately poor 2-tower strategy (should lose).
-- `node tools/screenshots.mjs docs/screenshots/<name>` captures review shots from fixed angles.
+- `node tools/screenshots.mjs docs/screenshots/<name> [--map id]` captures world review shots;
+  `tools/match-shots.mjs`, `tools/mode-shots.mjs` and `tools/content-shots.mjs` capture match,
+  mode and new-content shots.
+- `--daily N` measures the Daily Challenge over N dates; `--map`, `--loadout starters|all|a,b`,
+  `--strategy lazy|weak`, `--preset` pick what to measure. See `docs/TUNING.md`.
 
 ## Project layout
 
@@ -144,6 +161,9 @@ data/           all game content (JSON)
 src/core/       pure: RNG, fixed loop, terrain, collision, map layout, character, soak bot
 src/sim/        pure: match simulation, stats, combat, balance bot
 src/save/       settings and versioned progress saves
+src/meta/       pure: meta progression (summons, shop, quests, daily challenge, rewards once)
+src/game/       match controller (lifecycle, input, events to view / audio / HUD)
+src/audio/      synthesized sound effects and procedural music
 src/engine/     Three.js rendering (map, props, hero, cameras, post-processing)
 src/input/      keyboard, mouse, touch
 src/ui/         HUD and menus

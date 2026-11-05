@@ -27,7 +27,8 @@ const shots = [
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-  await page.goto(`http://localhost:${PORT}/?quality=${quality}`);
+  // nolobby: the hub opens on boot since milestone 5; these are world shots
+  await page.goto(`http://localhost:${PORT}/?quality=${quality}&nolobby${args.includes('--map') ? `&map=${args[args.indexOf('--map') + 1]}` : ''}`);
   await page.waitForFunction(() => window.TDS?.ready && window.TDS.stats.fps > 0, null, { timeout: 90_000 });
   await page.evaluate(() => { document.querySelector('.controls-card')?.setAttribute('hidden', ''); });
   for (const s of shots) {

@@ -71,3 +71,17 @@ Fixed for everyone on a date: Easy difficulty, seeded modifiers and a loaner loa
 Measured with `npm run balance -- --daily 10 --seeds 6` (add `--from 2027-01-10` for other dates,
 `--loaner` / `--budget` to try values without editing data): 39/60 = 65% on 2026-11-05..14,
 45/60 = 75% on 2027-01-10..19. Days with Swift Blight are the hardest (1-3/6 wins).
+
+## Per map and per mode economy
+
+Each wave set has its own `startCash`, `bonusBase`, `bonusPerWave` (data/waves/*.json). Measured
+with the 12 non-legendary towers, Standard, Normal, bot skill 0.7:
+
+| Wave set | startCash / bonus | Bot win rate |
+|---|---|---|
+| Riftline campaign | 650 / 100 + 20 per wave | 7/12 this milestone (27/40 = 68% earlier) |
+| Frostmere campaign (two roads) | 800 / 130 + 26 per wave | 13/20 (65%); starters on Easy 11/12; lazy 0/8 |
+| Boss Rush (both bosses rotate) | 2000 / 300 + 90 per wave | 8/12 (67%) without legendaries; about 100% with a Titan Railgun (it is the anti-boss legendary) |
+
+Boss Rush has a sharp edge around 1950-2000 starting cash: the Titan Railgun costs 2000, so a
+player who owns it can open with it. Tune Boss Rush with `bonusPerWave`, not `startCash`.

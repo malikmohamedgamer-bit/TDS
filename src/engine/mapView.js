@@ -61,6 +61,7 @@ export class MapView {
     this._buildPathStones(map, terrain);
     this._buildClouds(map);
     this._buildMountains(map);
+    this._buildPortalSwirls(terrain);
     this.applyQuality();
   }
 
@@ -321,8 +322,56 @@ export class MapView {
     if (this.grass) this.grass.visible = this.settings.quality !== 'low';
   }
 
+  /** Animated Blight vortex in every enemy portal (pixel-quantised spiral, glow via colour only). */
+  _buildPortalSwirls(terrain) {
+    const portals = this.mw.layout.filter((p) => p.kind === 'enemy_portal');
+    if (!portals.length) return;
+    this.swirlUniforms = { uTime: { value: 0 } };
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        ...this.swirlUniforms,
+        cDark: { value: new THREE.Color('#14061F') },
+        cArm: { value: new THREE.Color('#FF3CAC').multiplyScalar(1.5) },
+        cEdge: { value: new THREE.Color('#E63946').multiplyScalar(1.6) },
+        cCore: { value: new THREE.Color('#FF9AD5').multiplyScalar(1.8) },
+      },
+      vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `uniform float uTime; uniform vec3 cDark, cArm, cEdge, cCore; varying vec2 vUv;
+        void main() {
+          vec2 p = floor((vUv * 2.0 - 1.0) * 23.0) / 23.0; // ~16 texels per metre, like the rest of the art
+          float r = length(p);
+          if (r > 1.0) discard;
+          float a = atan(p.y, p.x);
+          float arms = sin(a * 3.0 + r * 10.0 - uTime * 1.7) * 0.5 + 0.5;
+          arms = floor(arms * 4.0) / 4.0 * smoothstep(1.0, 0.25, r);
+          vec3 col = mix(cDark, cArm, arms * 0.85);
+          col += cEdge * step(0.86, r) * 0.7;
+          col = mix(col, cCore, step(r, 0.22 + 0.04 * sin(uTime * 2.3)));
+          gl_FragColor = vec4(col, 1.0);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }`,
+    });
+    const geo = new THREE.CircleGeometry(2.75, 40);
+    for (const p of portals) {
+      const g = new THREE.Group();
+      g.position.set(p.x, terrain.height(p.x, p.z) - 0.02 + 3.7 * (p.scale || 1), p.z);
+      g.rotation.y = p.rot || 0;
+      g.scale.setScalar(p.scale || 1);
+      for (const side of [1, -1]) {
+        const disc = new THREE.Mesh(geo, mat);
+        disc.position.x = side * 0.075;
+        disc.rotation.y = side * Math.PI / 2;
+        g.add(disc);
+      }
+      g.name = 'portal-swirl';
+      this.group.add(g);
+    }
+  }
+
   update(dt, cameraPos) {
     this.time += dt;
+    if (this.swirlUniforms && !this.settings.reducedMotion) this.swirlUniforms.uTime.value = this.time;
     if (this.clouds) this._updateClouds(dt);
     if (this.sky && cameraPos) this.sky.position.copy(cameraPos);
   }

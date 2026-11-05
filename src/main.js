@@ -17,6 +17,7 @@ import { loadSettings, saveSettings } from './save/settings.js';
 import { loadSave } from './save/save.js';
 import { ensureStarters, dailyChallenge } from './meta/meta.js';
 import { Sfx } from './audio/sfx.js';
+import { Music } from './audio/music.js';
 import { MatchController } from './game/matchController.js';
 import { SIM_DT } from './sim/match.js';
 
@@ -51,7 +52,9 @@ async function boot() {
   const content = await loadContent(browserReadJson('data/'));
   const { save } = loadSave(storage, content, Date.now());
   ensureStarters(save, content.meta);
-  const mapId = params.get('map') || 'riftline';
+  // ?map= (links, tests) wins; otherwise the map last picked in the hub, if it is still unlocked
+  const unlocked = (m) => m && !(m.unlockLevel && save.profile.level < m.unlockLevel);
+  const mapId = params.get('map') || (unlocked(content.maps.get(settings.map)) ? settings.map : 'riftline');
   const map = content.maps.get(mapId);
   if (!map) throw new Error(`Unknown map "${mapId}"`);
 
@@ -78,6 +81,7 @@ async function boot() {
   let hud;
   let ctrl;
   const sfx = new Sfx(settings, (text) => ctrl?.mhud.caption(text));
+  const music = new Music(sfx, settings, content.music);
   const setCamera = (mode) => {
     if (mode === rig.mode) return;
     rig.setMode(mode, hero);
@@ -114,6 +118,7 @@ async function boot() {
       mapView.applyQuality();
       ctrl?.view?.setQuality(renderer.q);
       sfx.applyVolume();
+      music.applyVolume();
       persist();
     },
   });
@@ -121,12 +126,12 @@ async function boot() {
   hud.toggleHelp(false);
   document.addEventListener('pointerlockchange', () => hud.setCameraMode(rig.mode, input.locked));
   // first user gesture unlocks audio
-  const unlock = () => sfx.unlock();
+  const unlock = () => { sfx.unlock(); music.resume(); };
   window.addEventListener('pointerdown', unlock, { once: true });
   window.addEventListener('keydown', unlock, { once: true });
 
   ctrl = new MatchController({
-    content, map, mapWorld: mw, renderer, mapView, rig, hero, input, hud, sfx, save, storage, settings, ui,
+    content, map, mapWorld: mw, renderer, mapView, rig, hero, input, hud, sfx, music, save, storage, settings, ui,
     persistSettings: persist,
     swapWorld(next) {
       // the match adds tower colliders to its own collision world; the hero must collide with it too
@@ -236,6 +241,7 @@ async function boot() {
     get match() { return ctrl.match; },
     get ctrl() { return ctrl; },
     get save() { return save; },
+    get music() { return { mood: music.mood, key: music.key, bar: music.bar, playing: !!music.timer }; },
     content,
     dailyChallenge: (date) => dailyChallenge(content, date),
     settings,

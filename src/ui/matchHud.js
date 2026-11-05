@@ -120,7 +120,7 @@ export class MatchHud {
     const bar = this.$('.hp .bar span');
     bar.style.width = `${hpf * 100}%`;
     this.$('.hp').classList.toggle('low', hpf < 0.35);
-    this.$('[data-testid="cash"]').textContent = `$${fmt(m.cash)}`;
+    this.$('[data-testid="cash"]').textContent = m.options.infiniteCash ? '∞' : `$${fmt(m.cash)}`;
     this.$('.speed').textContent = `${speed}x`;
     this.$('.assist-skip').hidden = !(m.tune.skipWave && m.phase === 'wave');
     // boss bar
@@ -142,7 +142,7 @@ export class MatchHud {
       const count = m.towers.filter((t) => t.defId === id).length;
       const atLimit = def.limit && count >= def.limit;
       const cost = m.costOf(def);
-      const poor = m.cash < cost;
+      const poor = m.cash < cost && !m.options.infiniteCash;
       s.classList.toggle('poor', poor && !atLimit);
       s.classList.toggle('max', !!atLimit);
       s.classList.toggle('active', placing === id);
@@ -208,12 +208,12 @@ export class MatchHud {
         const bd = t.def.upgrades.branches[br];
         const st = bd.steps[0];
         const sc = m.stepCost(st);
-        const poor = m.cash < sc;
+        const poor = m.cash < sc && !m.options.infiniteCash;
         return `<button class="branch ${poor ? 'poor' : ''}" data-branch="${br}" data-testid="branch-${br}"><b>Path ${br}: ${esc(bd.name)}</b><span>${esc(bd.desc || '')}</span><span class="nx">${esc(st.name)}: ${esc(st.desc || '')}</span><span class="cost">$${sc}${poor ? ` · need $${sc - m.cash}` : ''}</span></button>`;
       }).join('')}</div>`;
     } else {
       const sc = m.stepCost(n.step);
-      const poor = m.cash < sc;
+      const poor = m.cash < sc && !m.options.infiniteCash;
       const after = towerStats(t.def, { ...t.up, ...(n.kind === 'linear' ? { linear: t.up.linear + 1 } : { branch: n.branch, branchLevel: t.up.branchLevel + 1 }) }, t.lobbyLevel, m.progression);
       upgrade = `<button class="btn primary upgrade ${poor ? 'poor' : ''}" data-act="upgrade" data-testid="upgrade"><b>${esc(n.step.name)}</b><span>${esc(n.step.desc || '')}</span>${n.step.evolve ? `<span class="evo">Evolves into ${esc(after.name)}</span>` : ''}<span class="cost">$${sc}${poor ? ` · need $${sc - m.cash}` : ''} <kbd>U</kbd></span></button>`;
     }

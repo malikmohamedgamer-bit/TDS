@@ -31,6 +31,7 @@ export function defaultSettings(env = {}) {
     assistHeroBoost: false,
     assistFullRefund: false,
     assistSkipWave: false,
+    map: 'riftline', // last map picked in the hub (?map= in the URL wins)
   };
 }
 

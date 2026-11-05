@@ -14,28 +14,34 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Tuning presets + Assist (owner request) | Done (2026-11-05) |
 | 5. Meta progression | **Done (2026-11-05)** |
 | 6. Modes and difficulties | **Done (2026-11-05)**: 7 modes, 9 modifiers, fair Daily Challenge (bot 65%), mode e2e, tutorial polish |
-| 7-9 | Not started |
+| 7. Content batch 1 | **Done (2026-11-05)**: Frostmere Crossing (2 roads), Thornmother boss, 2 legendary towers, map picker |
+| 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
+| 9. Final docs + online plan | In progress: docs/online-plan.md written; final balance pass and docs next |
 
-## Real content counts (end of milestone 6)
+## Real content counts (end of milestone 8, counted from data/)
 
 | Content | Count |
 |---|---|
-| Maps | 1 |
-| Towers | 11 (5 starters, 6 unlockable by shop or summon) |
-| Enemies / bosses | 11 / 1 |
+| Maps | 2 (Riftline Valley 1 road; Frostmere Crossing 2 roads, unlocks at player level 3) |
+| Towers | 14: 12 regular (7 war, 5 magic; 5 starters) + 2 legendary (earlier docs said 11; it was 12) |
+| Enemies / bosses | 11 / 2 (Gravemaw, Thornmother) |
 | Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
 | Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
 | Daily login rewards | 7-day streak |
 | Modes / modifiers | 7 / 9 |
-| Unit tests / E2E tests | 56 / 22 |
+| Music | 4 moods (hub, build, wave, boss), 2 map keys, procedural (no audio files) |
+| Unit tests / E2E tests | 67 / 24 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
 | Setup | Win rate |
 |---|---|
-| All 11 towers, Normal, Standard | 27/40 (68%) |
-| All 11 towers, Normal, Original | 10/12 (83%) |
-| All 11 towers, Normal, Relaxed | 12/12 (100%) |
+| All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
+| Frostmere, 12 regular towers, Normal, Standard | 13/20 (65%); starters Easy 11/12; lazy 0/8 |
+| Daily Challenge, fixed Easy, 10 dates x 6 seeds | 39/60 (65%); held-out dates 45/60 (75%) |
+| Boss Rush, 12 regular towers | 8/12 (67%); about 100% with a Titan Railgun |
+| All 12 regular towers, Normal, Original | 10/12 (83%) |
+| All 12 regular towers, Normal, Relaxed | 12/12 (100%) |
 | Lazy (1-2 tower types, no upgrades), Normal, Standard / Original | 0/8 / 0/8 |
 | Starters only, level 1: Easy / Normal | 10/12 (83%) / 0/12 |
 | Starters only, Normal, permanent level 3 / 5 | 3/12 (25%) / 12/12 (100%) |
@@ -97,26 +103,37 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   every reward once), `src/ui/hub.js` (Play / Towers / Summon / Shop / Index / Quests / Daily),
   `src/ui/slotMachine.js` (reels, near miss, jackpot, reveal, always skippable), save schema v3.
 
+- Modes (milestone 6): `data/modes.json`, `src/sim/waveGen.js`, Daily Challenge rules in
+  `src/meta/meta.js` (`dailyChallenge`: modifier budget, role-slot loaners), `npm run balance -- --daily N`.
+- Content batch 1 (milestone 7): `data/maps/frostmere.json` + `data/waves/frostmere_campaign.json`,
+  `data/bosses/thornmother.json`, `data/towers/legendary.json`; models in `src/engine/unitModels.js`
+  (`titan_railgun`, `starfall_oracle`, rig `thornmother`); hub Map picker reloads on `?map=` and
+  remembers `settings.map`; bot coverage is per road.
+- Polish (milestone 8): `data/music.json`, `src/audio/musicPatterns.js` (pure), `src/audio/music.js`;
+  portal swirl shader in `src/engine/mapView.js` (`_buildPortalSwirls`); `map.scatterGap`.
+
 ## Next exact action
 
-Finish milestone 6: (1) daily challenge balance is 13/20 bot wins on Easy with level-5 loaners
-(target ~60-70%: try 0 modifiers on some days or loanerLevel 6); (2) add an e2e test that starts
-Endless and Sandbox from the hub; (3) tutorial polish (highlight the hotbar / Next wave / ability
-buttons per step); (4) screenshots docs/screenshots/m6, VERIFICATION rows, CHANGELOG 0.6.0, full
-e2e once, commit, push, check the Pages deploy. Then milestones 7-9 (content batches, polish,
-final docs, docs/online-plan.md).
+Milestone 9: (1) final balance pass for Medium L3 / Hard L6 (they lost at the final boss in
+milestone 2 measurements); (2) final docs (README, VERIFICATION, PLAYTEST); (3) full e2e + soak,
+commit, push, check Pages. Later ideas: more content batches (a third map, more enemies),
+walkable lobby, real-GPU frame-time measurement, online phases from docs/online-plan.md.
 
 ## Known weak spots (honest)
 
 - New players cannot win Standard Normal with starters at level 1 (0/12); Easy first, then levels or
   unlocks (by design; Original / Relaxed presets or Assist make it easier).
-- No legendary towers exist yet: legendary summon results fall back to epic (shown in the odds table).
 - The hub is a menu over the 3D world, not a separate walkable lobby area.
-- No music yet (sound effects only); music comes with the polish milestone.
-- Code-built towers and enemies are simpler than the Blender ones and animate by code poses.
+- Music is procedural synth loops (4 moods); it is pleasant but simple, and was only checked by
+  unit tests and state checks, not listened to by a person yet.
+- Code-built towers and enemies (including the new legendaries and Thornmother) are simpler than the
+  Blender ones and animate by code poses.
+- Frostmere Crossing reuses Riftline's prop set with a colder palette; no snow-specific props yet.
+- The Titan Railgun makes Boss Rush very easy (about 100% bot wins) for players who own it.
+- e2e "place towers by clicking from three camera angles" can time out under heavy parallel CPU
+  load (seen once); passes alone.
 - Game speeds: 0.5x / 1x / 1.5x free; 2x at player level 3, 3x at level 8.
 
-- Enemy portal void is static concentric rings (reads a bit like a target); animate a swirl shader in the VFX milestone.
 - Hero is still the code-built model with code animation (Meshy was blocked); a Blender version can replace it.
 - Rocket Battery radar dish reads as a grey blob from behind; Gloomwing wing spars overshoot slightly.
 - Blender models use flat palette colours plus the shared grain texture, not per-asset pixel textures.

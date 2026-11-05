@@ -46,9 +46,13 @@ export function buildLayout(map, props, terrain) {
       if (pi.d < (rule.minPathDist ?? 4) + r) continue;
       if (spawn && Math.hypot(x - spawn.x, z - spawn.z) < 5 + r) continue;
       const spacing = rule.spacing ?? 2;
+      // map.scatterGap: smallest walkable gap between solid props (and the map boundary), so the
+      // hero never wedges into a slot narrower than itself
+      const gap = map.scatterGap ?? 0;
+      if (gap && edge - BOUNDS_MARGIN - r < gap) continue;
       let ok = true;
       for (const q of placed) {
-        const min = Math.max(spacing, r + q.r);
+        const min = Math.max(spacing, r + q.r + gap);
         if ((q.x - x) ** 2 + (q.z - z) ** 2 < min * min) { ok = false; break; }
       }
       if (!ok) continue;
@@ -59,9 +63,12 @@ export function buildLayout(map, props, terrain) {
   return placed;
 }
 
+/** Distance from the map edge to the walkable boundary. */
+const BOUNDS_MARGIN = 1.2;
+
 /** Adds colliders for every placed prop. Returns the CollisionWorld. */
 export function buildCollisionWorld(map, props, terrain, layout) {
-  const margin = 1.2;
+  const margin = BOUNDS_MARGIN;
   const world = new CollisionWorld({
     terrain,
     bounds: {
