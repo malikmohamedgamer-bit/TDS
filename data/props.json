@@ -1,0 +1,28 @@
+{
+  "$doc": "Decoration / prop catalogue. collider: circle {r} or box {hw, hd}, or colliders: [{shape, x, z, ...}] for compound shapes (local offsets); h = height in metres (scaled by the instance scale). solid=false means the hero walks through it, blocksPlacement=false allows towers on it. builder names a procedural model in src/engine/propModels.js; set model to a GLB path to use an asset instead.",
+  "props": [
+    { "id": "tree_pine", "builder": "treePine", "collider": { "shape": "circle", "r": 0.55 }, "h": 6.5, "castShadow": true },
+    { "id": "tree_round", "builder": "treeRound", "collider": { "shape": "circle", "r": 0.6 }, "h": 5.5, "castShadow": true },
+    { "id": "tree_magic", "builder": "treeMagic", "collider": { "shape": "circle", "r": 0.6 }, "h": 6, "castShadow": true },
+    { "id": "bush", "builder": "bush", "collider": { "shape": "circle", "r": 0.7 }, "h": 0.9, "solid": false },
+    { "id": "rock", "builder": "rock", "collider": { "shape": "circle", "r": 1.0 }, "h": 1.3, "castShadow": true },
+    { "id": "rock_small", "builder": "rockSmall", "collider": { "shape": "circle", "r": 0.5 }, "h": 0.5 },
+    { "id": "crystal_cluster", "builder": "crystalCluster", "collider": { "shape": "circle", "r": 0.85 }, "h": 2.4, "castShadow": true },
+    { "id": "mushroom_glow", "builder": "mushroomGlow", "collider": { "shape": "circle", "r": 0.45 }, "h": 1.1, "solid": false },
+    { "id": "runestone", "builder": "runestone", "collider": { "shape": "box", "hw": 0.55, "hd": 0.32 }, "h": 2.7, "castShadow": true },
+    { "id": "ruin_pillar", "builder": "ruinPillar", "collider": { "shape": "circle", "r": 0.65 }, "h": 3.6, "castShadow": true },
+    { "id": "ruin_arch", "builder": "ruinArch", "colliders": [{ "shape": "box", "x": -3.3, "z": 0, "hw": 0.6, "hd": 0.6 }, { "shape": "box", "x": 3.3, "z": 0, "hw": 0.6, "hd": 0.6 }], "h": 4.6, "castShadow": true },
+    { "id": "sandbag_wall", "builder": "sandbagWall", "collider": { "shape": "box", "hw": 1.7, "hd": 0.5 }, "h": 1.0, "castShadow": true },
+    { "id": "crate", "builder": "crate", "collider": { "shape": "box", "hw": 0.6, "hd": 0.6 }, "h": 1.2, "castShadow": true },
+    { "id": "crate_stack", "builder": "crateStack", "collider": { "shape": "box", "hw": 1.25, "hd": 0.65 }, "h": 2.4, "castShadow": true },
+    { "id": "barrel", "builder": "barrel", "collider": { "shape": "circle", "r": 0.45 }, "h": 1.1, "castShadow": true },
+    { "id": "tent", "builder": "tent", "collider": { "shape": "box", "hw": 1.9, "hd": 1.6 }, "h": 2.4, "castShadow": true },
+    { "id": "tank_wreck", "builder": "tankWreck", "collider": { "shape": "box", "hw": 2.3, "hd": 1.5 }, "h": 2.1, "castShadow": true },
+    { "id": "barbed_fence", "builder": "barbedFence", "collider": { "shape": "box", "hw": 1.6, "hd": 0.18 }, "h": 1.1 },
+    { "id": "watchtower", "builder": "watchtower", "collider": { "shape": "box", "hw": 1.5, "hd": 1.5 }, "h": 6.5, "castShadow": true },
+    { "id": "lamp_post", "builder": "lampPost", "collider": { "shape": "circle", "r": 0.2 }, "h": 3.3 },
+    { "id": "fence_wood", "builder": "fenceWood", "collider": { "shape": "box", "hw": 1.5, "hd": 0.12 }, "h": 1.0 },
+    { "id": "enemy_portal", "builder": "enemyPortal", "colliders": [{ "shape": "box", "x": 0, "z": -3.6, "hw": 0.8, "hd": 0.7 }, { "shape": "box", "x": 0, "z": 3.6, "hw": 0.8, "hd": 0.7 }], "h": 7, "castShadow": true, "landmark": true },
+    { "id": "base_keep", "builder": "baseKeep", "colliders": [{ "shape": "box", "x": 0, "z": 0, "hw": 3.4, "hd": 4.6 }, { "shape": "circle", "x": -1.6, "z": -4.8, "r": 2.0 }, { "shape": "circle", "x": -1.6, "z": 4.8, "r": 2.0 }], "h": 9, "castShadow": true, "landmark": true }
+  ]
+}

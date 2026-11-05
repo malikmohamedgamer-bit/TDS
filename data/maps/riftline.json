@@ -1,0 +1,91 @@
+{
+  "id": "riftline",
+  "name": "Riftline Valley",
+  "description": "Where the Arcane Grove meets the Ironhold outpost. One winding road, a Blight portal in the west and your keep in the east.",
+  "seed": "riftline-v1",
+  "size": { "w": 110, "d": 80 },
+  "sky": { "top": "#7FB8F5", "horizon": "#E3F1FF", "fog": "#CFE6FA", "fogNear": 70, "fogFar": 190 },
+  "sun": { "azimuth": 215, "elevation": 52, "color": "#FFF1D6", "intensity": 2.6 },
+  "ground": {
+    "grass": ["#6BAA4A", "#5A9440", "#7DBE58", "#4B7F36"],
+    "path": ["#C49A6C", "#A97D52", "#D8B184", "#8C6440"],
+    "rim": ["#7A8A55", "#6E6E7A"]
+  },
+  "terrain": {
+    "baseHeight": 0,
+    "pathBlend": 3,
+    "rim": { "height": 7, "width": 8 },
+    "flats": [
+      { "x": 50.5, "z": -4, "r": 8, "height": 0, "blend": 5 },
+      { "x": -51.5, "z": -22, "r": 5.5, "height": 0, "blend": 4 }
+    ],
+    "hills": [
+      { "x": -46, "z": 22, "r": 10, "h": 3 },
+      { "x": -24, "z": -33, "r": 8, "h": 2 },
+      { "x": 17, "z": -33, "r": 9, "h": 2.5 },
+      { "x": 40, "z": 24, "r": 10, "h": 2.8 },
+      { "x": -4, "z": 31, "r": 8, "h": 1.6 },
+      { "x": 41, "z": -27, "r": 8, "h": 2 },
+      { "x": -24, "z": -4, "r": 5, "h": 0.9 },
+      { "x": 16, "z": 2, "r": 5, "h": 0.8 }
+    ]
+  },
+  "paths": [
+    {
+      "id": "main",
+      "width": 5,
+      "points": [[-57, -22], [-34, -22], [-34, 12], [-14, 12], [-14, -18], [6, -18], [6, 20], [26, 20], [26, -4], [45, -4]]
+    }
+  ],
+  "base": { "x": 50, "z": -4 },
+  "playerSpawn": { "x": -4, "z": -2, "yaw": 1.5708 },
+  "props": [
+    { "kind": "enemy_portal", "x": -51.5, "z": -22, "rot": 0 },
+    { "kind": "base_keep", "x": 50.5, "z": -4, "rot": 0 },
+    { "kind": "ruin_arch", "x": -34, "z": -4, "rot": 0 },
+    { "kind": "ruin_pillar", "x": -45, "z": -31, "rot": 0.3 },
+    { "kind": "ruin_pillar", "x": -42, "z": -13, "rot": 1.1, "scale": 0.8 },
+    { "kind": "ruin_pillar", "x": -27, "z": 19, "rot": 2.2, "scale": 0.9 },
+    { "kind": "runestone", "x": -46, "z": 4, "rot": 0.2 },
+    { "kind": "runestone", "x": -42, "z": 7.5, "rot": 1.4 },
+    { "kind": "runestone", "x": -46.5, "z": 10.5, "rot": 2.6 },
+    { "kind": "runestone", "x": -50, "z": 7, "rot": 4.0 },
+    { "kind": "crystal_cluster", "x": -45.8, "z": 7.2, "rot": 0, "scale": 1.3 },
+    { "kind": "crystal_cluster", "x": -24, "z": 25, "rot": 0.8 },
+    { "kind": "crystal_cluster", "x": -20, "z": -27, "rot": 2.1, "scale": 0.8 },
+    { "kind": "tree_magic", "x": -8, "z": 26, "rot": 0.5, "scale": 1.2 },
+    { "kind": "lamp_post", "x": -30.5, "z": 15.5, "rot": 0 },
+    { "kind": "lamp_post", "x": -10.5, "z": -21.5, "rot": 0 },
+    { "kind": "lamp_post", "x": 9.5, "z": 23.5, "rot": 0 },
+    { "kind": "lamp_post", "x": 29.5, "z": -7.5, "rot": 0 },
+    { "kind": "lamp_post", "x": 42, "z": 0, "rot": 0 },
+    { "kind": "lamp_post", "x": 42, "z": -8, "rot": 0 },
+    { "kind": "watchtower", "x": 37, "z": 9, "rot": 0.15 },
+    { "kind": "tank_wreck", "x": 18, "z": -31, "rot": 0.45 },
+    { "kind": "tent", "x": 41, "z": 31, "rot": 0.1 },
+    { "kind": "tent", "x": 47, "z": 25, "rot": -0.5 },
+    { "kind": "sandbag_wall", "x": 31, "z": -11, "rot": 0 },
+    { "kind": "sandbag_wall", "x": 35, "z": -12.5, "rot": -0.35 },
+    { "kind": "sandbag_wall", "x": 21, "z": 26.5, "rot": 0 },
+    { "kind": "crate_stack", "x": 19, "z": 8, "rot": 0.3 },
+    { "kind": "crate", "x": 21.5, "z": 6.2, "rot": 0.7 },
+    { "kind": "barrel", "x": 17.3, "z": 9.8, "rot": 0 },
+    { "kind": "barrel", "x": 22.6, "z": 9.2, "rot": 0 },
+    { "kind": "barrel", "x": 38.5, "z": 6.2, "rot": 0 },
+    { "kind": "crate", "x": 44, "z": 28.6, "rot": 0.2 },
+    { "kind": "barbed_fence", "x": 34, "z": -31, "rot": 0.1 },
+    { "kind": "barbed_fence", "x": 37.3, "z": -30.5, "rot": 0.2 },
+    { "kind": "fence_wood", "x": -2, "z": -24, "rot": 0 },
+    { "kind": "fence_wood", "x": 1.1, "z": -24.2, "rot": 0.1 }
+  ],
+  "scatter": [
+    { "kind": "tree_pine", "count": 46, "area": [-55, -40, 0, 40], "edgeBand": 11, "minPathDist": 5, "spacing": 2.8, "scale": [0.8, 1.35] },
+    { "kind": "tree_magic", "count": 7, "area": [-55, -40, -5, 40], "edgeBand": 14, "minPathDist": 5, "spacing": 4, "scale": [0.9, 1.2] },
+    { "kind": "tree_round", "count": 40, "area": [0, -40, 55, 40], "edgeBand": 11, "minPathDist": 5, "spacing": 3, "scale": [0.85, 1.3] },
+    { "kind": "bush", "count": 34, "area": [-55, -40, 55, 40], "minPathDist": 4, "spacing": 2, "scale": [0.7, 1.3] },
+    { "kind": "rock", "count": 16, "area": [-55, -40, 55, 40], "minPathDist": 4.5, "spacing": 4, "scale": [0.7, 1.4] },
+    { "kind": "rock_small", "count": 26, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2, "scale": [0.7, 1.3] },
+    { "kind": "mushroom_glow", "count": 20, "area": [-55, -40, -2, 40], "minPathDist": 3.6, "spacing": 1.6, "scale": [0.7, 1.4] },
+    { "kind": "crystal_cluster", "count": 5, "area": [-55, -40, -5, 40], "edgeBand": 16, "minPathDist": 5, "spacing": 5, "scale": [0.7, 1.1] }
+  ]
+}

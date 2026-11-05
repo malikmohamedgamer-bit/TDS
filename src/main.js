@@ -1,0 +1,204 @@
+// TDS bootstrap: loads content, builds the world, runs the fixed-timestep simulation and renders.
+import { loadContent, browserReadJson } from './core/content.js';
+import { buildMapWorld } from './core/mapLayout.js';
+import { Character } from './core/character.js';
+import { FixedLoop } from './core/fixedLoop.js';
+import { lerp } from './core/math.js';
+import { Renderer } from './engine/renderer.js';
+import { MapView } from './engine/mapView.js';
+import { HeroView } from './engine/heroView.js';
+import { CameraRig, CAMERA_LABELS } from './engine/cameraRig.js';
+import { Input } from './input/input.js';
+import { TouchControls } from './input/touch.js';
+import { Hud } from './ui/hud.js';
+import { createStorage } from './save/storage.js';
+import { loadSettings, saveSettings } from './save/settings.js';
+
+const $ = (sel) => document.querySelector(sel);
+
+function setLoading(text, pct) {
+  const el = $('#loading');
+  if (!el) return;
+  el.querySelector('.load-text').textContent = text;
+  if (pct !== undefined) el.querySelector('.load-bar span').style.width = `${pct}%`;
+}
+
+function fail(err) {
+  console.error(err);
+  const el = $('#loading');
+  if (el) {
+    el.classList.add('error');
+    el.querySelector('.load-text').textContent = `Could not start: ${err.message || err}`;
+  }
+}
+
+async function boot() {
+  const params = new URLSearchParams(location.search);
+  const storage = createStorage();
+  const settings = loadSettings(storage, {
+    coarsePointer: matchMedia('(pointer: coarse)').matches,
+    prefersReducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+  });
+  if (params.get('quality')) settings.quality = params.get('quality');
+
+  setLoading('Loading content…', 15);
+  const content = await loadContent(browserReadJson('data/'));
+  const mapId = params.get('map') || 'riftline';
+  const map = content.maps.get(mapId);
+  if (!map) throw new Error(`Unknown map "${mapId}"`);
+
+  setLoading('Raising the valley…', 40);
+  await new Promise((r) => setTimeout(r, 0));
+  const mw = buildMapWorld(map, content.props);
+
+  const canvas = $('#scene');
+  const renderer = new Renderer(canvas, settings);
+  setLoading('Planting trees…', 65);
+  await new Promise((r) => setTimeout(r, 0));
+  const mapView = new MapView(renderer, mw, content.props, settings);
+
+  const hero = new Character(mw.world, map.playerSpawn);
+  const heroView = new HeroView(renderer.scene);
+  const rig = new CameraRig(renderer.camera, mw, settings);
+  rig.yaw = (map.playerSpawn.yaw ?? 0) + Math.PI;
+
+  const ui = $('#ui');
+  const input = new Input(canvas, settings);
+  const persist = () => saveSettings(storage, settings);
+
+  let hud;
+  const setCamera = (mode) => {
+    if (mode === rig.mode) return;
+    rig.setMode(mode, hero);
+    hud.setCameraMode(rig.mode, input.locked);
+    touch.setMode(rig.mode);
+    const tips = {
+      free: 'Free camera: WASD to fly, Q/E down/up, wheel = speed, C to return',
+      top: 'Overview: WASD to pan, wheel to zoom, C to return',
+      first: 'First person: V to switch back',
+      orbit: 'Third person',
+    };
+    hud.toast(tips[mode] || CAMERA_LABELS[mode]);
+  };
+  const doAction = (act) => {
+    switch (act) {
+      case 'firstPerson': setCamera(rig.mode === 'first' ? 'orbit' : 'first'); break;
+      case 'freeCam': setCamera(rig.mode === 'free' ? 'orbit' : 'free'); break;
+      case 'overview': setCamera(rig.mode === 'top' ? 'orbit' : 'top'); break;
+      case 'toCharacter': setCamera('orbit'); break;
+      case 'help': hud.toggleHelp(); break;
+      case 'menu': hud.openSettings(); break;
+      case 'slower': rig.zoom(300); break;
+      case 'faster': rig.zoom(-300); break;
+      default: break;
+    }
+  };
+  const touch = new TouchControls(ui, canvas, input, doAction);
+  hud = new Hud(ui, {
+    settings,
+    mapName: map.name,
+    onCamera: setCamera,
+    onSettings: () => {
+      renderer.applySettings();
+      mapView.applyQuality();
+      persist();
+    },
+  });
+  hud.setCameraMode(rig.mode, false);
+  if (touch.visible) hud.toggleHelp(false);
+  document.addEventListener('pointerlockchange', () => hud.setCameraMode(rig.mode, input.locked));
+
+  // ---- main loop -------------------------------------------------------------------------
+  const loop = new FixedLoop({ step: 1 / 60, maxSteps: 6 });
+  let prev = hero.snapshot();
+  let cur = prev;
+  let last = performance.now();
+  const stats = { frames: 0, acc: 0, fps: 0, frameMs: 0, samples: [] };
+
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    const f = input.frame();
+    for (const a of f.actions) doAction(a);
+    if (!hud.settingsOpen) {
+      rig.rotate(f.look.dx, f.look.dy);
+      if (f.zoom) rig.zoom(f.zoom);
+    }
+    const controlsHero = rig.mode === 'orbit' || rig.mode === 'first';
+    const bas = rig.basis();
+    const heroIn = controlsHero
+      ? {
+        mx: bas.fx * f.move.y + bas.rx * f.move.x,
+        mz: bas.fz * f.move.y + bas.rz * f.move.x,
+        jump: f.jump,
+        sprint: f.sprint,
+        faceYaw: rig.mode === 'first' ? rig.faceYaw() : null,
+      }
+      : { mx: 0, mz: 0, jump: false, sprint: false };
+    let jumpOnce = heroIn.jump;
+    const alpha = loop.advance(dt, (step) => {
+      prev = cur;
+      hero.step(step, { ...heroIn, jump: jumpOnce });
+      jumpOnce = false;
+      cur = hero.snapshot();
+    });
+    const st = {
+      x: lerp(prev.x, cur.x, alpha),
+      y: lerp(prev.y, cur.y, alpha),
+      z: lerp(prev.z, cur.z, alpha),
+      yaw: cur.yaw,
+      grounded: cur.grounded,
+      sprinting: cur.sprinting,
+      hSpeed: Math.hypot(hero.vx, hero.vz),
+    };
+    heroView.setVisible(rig.mode !== 'first');
+    heroView.update(dt, st, mw.world.groundHeight(st.x, st.z, 0.2, st.y + 0.1), settings.reducedMotion);
+    rig.update(dt, st, { x: f.move.x, y: f.move.y, up: f.up }, f.sprint);
+    mapView.update(dt, renderer.camera.position);
+    renderer.render();
+
+    stats.frames++;
+    stats.acc += dt;
+    stats.samples.push(dt * 1000);
+    if (stats.samples.length > 600) stats.samples.shift();
+    if (stats.acc >= 0.5) {
+      stats.fps = stats.frames / stats.acc;
+      stats.frameMs = (stats.acc / stats.frames) * 1000;
+      stats.frames = 0;
+      stats.acc = 0;
+      hud.setFps(stats.fps, stats.frameMs, renderer.frameMs);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // ---- debug / test hooks (read-mostly; used by Playwright e2e and the soak test) --------
+  window.TDS = {
+    ready: true,
+    get hero() { return { ...hero.snapshot(), hSpeed: Math.hypot(hero.vx, hero.vz), rescues: hero.rescues, jumps: hero.jumps }; },
+    get camera() { return { mode: rig.mode, x: rig.pos.x, y: rig.pos.y, z: rig.pos.z, yaw: rig.yaw, pitch: rig.pitch, distance: rig.distance, locked: input.locked }; },
+    get stats() {
+      const s = [...stats.samples].sort((a, b) => a - b);
+      const pct = (p) => s[Math.min(s.length - 1, Math.floor(s.length * p))] || 0;
+      return { fps: stats.fps, frameMs: stats.frameMs, p50: pct(0.5), p95: pct(0.95), p99: pct(0.99), cpuRenderMs: renderer.frameMs, ...renderer.info() };
+    },
+    settings,
+    map: { id: map.id, size: map.size, bounds: mw.world.bounds, props: mw.layout.length, colliders: mw.world.colliders.size },
+    setCamera,
+    teleport(x, z) { hero.reset({ x, z, yaw: hero.yaw }); prev = cur = hero.snapshot(); },
+    get simTime() { return loop.ticks * loop.step; },
+    /** True if the hero currently overlaps a solid collider (must never happen). */
+    insideSolid() { return mw.world.overlapsWall(hero.x, hero.z, hero.p.radius * 0.9, hero.y, hero.p.height, hero.p.stepUp); },
+    setDistance(d) { rig.distance = d; },
+    setView(yaw, pitch) { rig.yaw = yaw; if (pitch !== undefined) rig.pitch = pitch; },
+    groundAt(x, z) { return mw.terrain.height(x, z); },
+    colliderNear(x, z, r = 3) { return [...mw.world.query(x, z, r)].map((c) => ({ x: c.x, z: c.z, shape: c.shape, r: c.r, hw: c.hw, hd: c.hd, rot: c.rot, top: c.top, solid: c.solid, kind: c.ref?.kind })); },
+    solids() { return [...mw.world.colliders.values()].filter((c) => c.solid).map((c) => ({ x: c.x, z: c.z, shape: c.shape, r: c.r, hw: c.hw, hd: c.hd, rot: c.rot, top: c.top, kind: c.ref?.kind })); },
+  };
+
+  setLoading('Ready', 100);
+  $('#loading').classList.add('done');
+  setTimeout(() => $('#loading')?.remove(), 600);
+  requestAnimationFrame((t) => { last = t; frame(t); });
+}
+
+boot().catch(fail);

@@ -10,9 +10,11 @@
   },
   "scripts": {
     "dev": "node tools/dev-server.mjs",
-    "test": "node --test test/unit",
+    "test": "node --test \"test/unit/**/*.test.js\"",
     "test:e2e": "playwright test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "soak": "node tools/soak.mjs",
+    "vendor": "node tools/vendor-three.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

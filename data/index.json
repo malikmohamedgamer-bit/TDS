@@ -1,0 +1,5 @@
+{
+  "$doc": "Content manifest. Every content file the game loads is listed here; add a file and list it to add content without code changes.",
+  "props": "props.json",
+  "maps": ["maps/riftline.json"]
+}
