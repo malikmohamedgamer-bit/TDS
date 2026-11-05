@@ -1,0 +1,23 @@
+{
+  "name": "tds",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TDS (working title): a 3D browser tower defense game with Magic and Modern War factions.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node tools/dev-server.mjs",
+    "test": "node --test test/unit",
+    "test:e2e": "playwright test",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
+    "three": "0.187.0"
+  }
+}

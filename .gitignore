@@ -1,0 +1,11 @@
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+.cache/
+*.blend1
+*.blend2
+assets/incoming/*
+!assets/incoming/.gitkeep
+.DS_Store
+Thumbs.db
