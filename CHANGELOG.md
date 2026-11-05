@@ -30,3 +30,14 @@
 - GLB loader with the game's material style and animation mixers.
 - Asset viewer (`viewer.html`) and contact-sheet review script (`tools/review-assets.mjs`).
 - Meshy dry-run done (30 credits per model); generation blocked by the free plan (no credits spent).
+
+## 0.4.0 - Milestone 4: vertical slice (2026-11-05)
+- Playable 20-wave match on Riftline Valley: loadout + difficulty screen, build anywhere off the
+  road from any camera (orbit, overview, first person crosshair, touch tap), select / upgrade
+  (linear, then path A or B, evolutions) / move / sell / targeting modes, 3 abilities (manual or
+  AUTO), next-wave skip, 1x / 2x speed, pause, victory / defeat screens with rewards saved once.
+- Gravemaw boss modelled in Blender (Walk, Idle, Attack, Roar, Death) with boss bar, phase
+  banners and telegraphed stomps; 8 code-built towers, 8 code-built enemies, 2 summons.
+- Instanced animated enemies, VFX (particles, rings, lightning, damage numbers), health bars.
+- Synthesized sound effects with volume, mute and captions; damage numbers toggle.
+- First-match tutorial driven by real actions.

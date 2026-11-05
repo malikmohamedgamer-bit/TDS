@@ -18,3 +18,8 @@ Status is **Fixed** only after a test proves it.
 | 12 | Gloomwing GLB exported empty: its collection was hidden during review, hidden objects cannot be selected | glb-info after export | Fixed | export_glb unhides and refuses partial selections; unit test checks every GLB parses with its clips |
 | 13 | Rebuilding an asset while its collection was hidden produced zero-scale parts (world matrices not evaluated) | viewer contact sheet (model invisible) | Fixed | collection() always unhides; export refuses zero scale; unit test rejects zero-scale nodes |
 | 14 | Imported emissive parts bloomed far too strongly (emission strength 6) | viewer contact sheet | Fixed | glow clamped to the procedural props' HDR level (max 2.6) |
+| 15 | The game loop stopped for good when the match was exposed before its models finished loading (one exception killed requestAnimationFrame) | e2e (simulation never advanced) + page error capture | Fixed | match exposed only when ready; frame loop schedules first and survives errors; e2e match tests |
+| 16 | Clicks on the 3D view never reached it: the full-screen damage-number layer captured them (CSS specificity) | e2e placement by mouse click | Fixed | e2e "place towers by clicking from three camera angles" |
+| 17 | Boss bar intercepted clicks aimed at the ground behind it | e2e ability aiming | Fixed | boss bar is click-through; e2e boss/ability test |
+| 18 | Default loadout had only 2 towers on a new save | screenshot review | Fixed | defaults to 6 towers |
+| 19 | Phone HUD: brand badge and camera buttons overlapped the status bar | phone screenshot | Fixed | in-match phone layout rules (match.css) |

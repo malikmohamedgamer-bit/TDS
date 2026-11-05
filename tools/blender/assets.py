@@ -413,7 +413,106 @@ def build_rocket_battery():
     return coll, arm
 
 
+# ------------------------------------------------------------------------------- Gravemaw (boss)
+def build_gravemaw():
+    coll = collection('gravemaw')
+    slate, slate2, bone, eye, crack = M('slate'), M('slate2'), M('bone'), M('crimson', emit=6), M('crimson', emit=3)
+    core, coreRing = M('magenta', emit=6), M('bone')
+    stone = M('stoneDark')
+    arm = armature(coll, 'gravemaw_rig', [
+        ('root', (0, 0, 0), (0, 0, 0.8), None),
+        ('body', (0, 1.2, 2.6), (0, -1.2, 2.8), 'root'),
+        ('head', (0, -1.7, 3.0), (0, -3.0, 3.1), 'body'),
+        ('jaw', (0, -1.9, 2.55), (0, -2.9, 2.35), 'head'),
+        ('leg.FL', (1.1, -1.0, 2.2), (1.25, -1.1, 0.2), 'body'),
+        ('leg.FR', (-1.1, -1.0, 2.2), (-1.25, -1.1, 0.2), 'body'),
+        ('leg.BL', (1.0, 1.1, 2.1), (1.15, 1.2, 0.2), 'body'),
+        ('leg.BR', (-1.0, 1.1, 2.1), (-1.15, 1.2, 0.2), 'body'),
+        ('tail', (0, 1.6, 2.5), (0, 2.8, 1.9), 'body'),
+    ])
+    p = Part('gravemaw_body')
+    p.box((2.4, 3.2, 1.6), loc=(0, 0, 2.6), rot=(math.radians(-6), 0, 0), mat=slate)
+    p.box((2.7, 1.3, 1.9), loc=(0, -0.9, 2.95), rot=(math.radians(-10), 0, 0), mat=slate2)
+    for i, (y, z, s) in enumerate(((-1.0, 3.95, 1.0), (0.0, 3.65, 0.9), (0.9, 3.45, 0.8))):
+        p.box((2.0 * s + 0.4, 0.9, 0.45), loc=(0, y, z), rot=(math.radians(-8), 0, 0), mat=stone if i % 2 else slate2)
+        for x in (-0.7 * s, 0, 0.7 * s):
+            p.cyl(0.16, 0, 0.75 + (0.35 if x == 0 else 0), 4, loc=(x, y, z + 0.18), rot=(math.radians(-20), 0, 0), mat=bone)
+    # chest core: a glowing rift held in a ring of bone
+    p.torus(0.6, 0.13, seg=14, rseg=5, loc=(0, -1.72, 1.95), rot=(math.radians(90), 0, 0), mat=coreRing)
+    p.ico(0.5, loc=(0, -1.66, 1.95), mat=core, sub=1, scale=(1, 0.6, 1))
+    for a in range(6):
+        ang = a / 6 * math.tau
+        p.box((0.06, 0.04, 0.45), loc=(math.cos(ang) * 0.88, -1.62, 1.95 + math.sin(ang) * 0.75), rot=(0, ang, 0), mat=crack)
+    p.box((1.6, 0.5, 0.7), loc=(0, -1.45, 1.95), mat=slate2)
+    for x in (-1.21, 1.21):
+        p.box((0.04, 2.2, 0.08), loc=(x, 0.1, 2.45), rot=(math.radians(-4), 0, 0), mat=crack)
+        p.box((0.04, 0.08, 0.9), loc=(x, -0.4, 2.7), rot=(0, 0, 0), mat=crack)
+    bind(p.build(coll), arm, 'body')
+    p = Part('gravemaw_head')
+    p.box((1.5, 1.4, 1.0), loc=(0, -2.2, 3.15), mat=slate2)
+    p.box((1.3, 0.5, 0.35), loc=(0, -2.8, 3.55), mat=stone)
+    for x in (-0.38, 0.38):
+        p.box((0.32, 0.06, 0.16), loc=(x, -2.91, 3.25), rot=(0, 0, math.radians(-x * 30)), mat=eye)
+        p.cyl(0.2, 0, 1.2, 5, loc=(x * 1.7, -2.0, 3.55), rot=(math.radians(-45), math.radians(x * 70), 0), mat=bone)
+    p.box((1.32, 0.2, 0.18), loc=(0, -2.85, 2.86), mat=bone)
+    bind(p.build(coll), arm, 'head')
+    p = Part('gravemaw_jaw')
+    p.box((1.3, 1.1, 0.4), loc=(0, -2.35, 2.5), mat=slate)
+    for i in range(5):
+        p.cyl(0.08, 0, 0.32, 4, loc=(-0.48 + i * 0.24, -2.85, 2.68), mat=bone)
+    bind(p.build(coll), arm, 'jaw')
+    for name, x, y in (('leg.FL', 1.15, -1.05), ('leg.FR', -1.15, -1.05), ('leg.BL', 1.05, 1.15), ('leg.BR', -1.05, 1.15)):
+        p = Part(f'gravemaw_{name}')
+        s = 1 if x > 0 else -1
+        p.box((0.85, 0.95, 1.3), loc=(x + s * 0.12, y, 1.7), mat=slate2)
+        p.box((0.75, 0.8, 1.2), loc=(x + s * 0.18, y - 0.05, 0.75), mat=slate)
+        p.box((1.0, 1.05, 0.3), loc=(x + s * 0.18, y - 0.1, 0.15), mat=stone)
+        for k in (-0.3, 0, 0.3):
+            p.cyl(0.1, 0, 0.35, 4, loc=(x + s * 0.18 + k, y - 0.6, 0.12), rot=(math.radians(100), 0, 0), mat=bone)
+        p.box((0.05, 0.6, 0.06), loc=(x + s * 0.62, y, 1.4), mat=crack)
+        bind(p.build(coll), arm, name)
+    p = Part('gravemaw_tail')
+    p.cyl(0.55, 0.25, 1.5, 6, loc=(0, 1.55, 2.45), rot=(math.radians(-120), 0, 0), mat=slate)
+    p.cyl(0.25, 0, 0.6, 5, loc=(0, 2.85, 1.7), rot=(math.radians(-120), 0, 0), mat=bone)
+    bind(p.build(coll), arm, 'tail')
+
+    def legs(fl, fr, bl, br):
+        return {'leg.FL': {'rot': (fl, 0, 0)}, 'leg.FR': {'rot': (fr, 0, 0)}, 'leg.BL': {'rot': (bl, 0, 0)}, 'leg.BR': {'rot': (br, 0, 0)}}
+    walk = {}
+    for f, a, bob in ((1, 18, 0), (13, 0, 0.12), (25, -18, 0), (37, 0, 0.12), (49, 18, 0)):
+        k = legs(a, -a, -a, a)
+        k['body'] = {'loc': (0, bob, 0), 'rot': (0, 0, a * 0.15)}
+        k['head'] = {'rot': (a * 0.2, 0, 0)}
+        k['tail'] = {'rot': (0, 0, -a * 0.6)}
+        walk[f] = k
+    action(arm, 'Walk', walk)
+    action(arm, 'Idle', {
+        1: {'body': {'loc': (0, 0, 0)}, 'head': {'rot': (0, 0, 0)}, 'jaw': {'rot': (0, 0, 0)}},
+        30: {'body': {'loc': (0, 0.08, 0)}, 'head': {'rot': (-6, 0, 5)}, 'jaw': {'rot': (8, 0, 0)}},
+        60: {'body': {'loc': (0, 0, 0)}, 'head': {'rot': (0, 0, 0)}, 'jaw': {'rot': (0, 0, 0)}},
+    })
+    action(arm, 'Attack', {
+        1: {**legs(0, 0, 0, 0), 'body': {'rot': (0, 0, 0)}, 'head': {'rot': (0, 0, 0)}},
+        12: {**legs(-35, -35, 10, 10), 'body': {'rot': (-18, 0, 0)}, 'head': {'rot': (-20, 0, 0)}},
+        18: {**legs(25, 25, -5, -5), 'body': {'rot': (10, 0, 0)}, 'head': {'rot': (15, 0, 0)}},
+        30: {**legs(0, 0, 0, 0), 'body': {'rot': (0, 0, 0)}, 'head': {'rot': (0, 0, 0)}},
+    }, loop=False)
+    action(arm, 'Roar', {
+        1: {'head': {'rot': (0, 0, 0)}, 'jaw': {'rot': (0, 0, 0)}, 'body': {'rot': (0, 0, 0)}},
+        10: {'head': {'rot': (-30, 0, 0)}, 'jaw': {'rot': (35, 0, 0)}, 'body': {'rot': (-8, 0, 0)}},
+        28: {'head': {'rot': (-26, 6, 0)}, 'jaw': {'rot': (38, 0, 0)}, 'body': {'rot': (-8, 0, 0)}},
+        40: {'head': {'rot': (0, 0, 0)}, 'jaw': {'rot': (0, 0, 0)}, 'body': {'rot': (0, 0, 0)}},
+    }, loop=False)
+    action(arm, 'Death', {
+        1: {'root': {'rot': (0, 0, 0), 'loc': (0, 0, 0)}, **legs(0, 0, 0, 0), 'head': {'rot': (0, 0, 0)}, 'jaw': {'rot': (0, 0, 0)}},
+        14: {'root': {'rot': (0, 10, 0), 'loc': (0, 0, 0)}, **legs(-20, 30, 0, 20), 'head': {'rot': (-25, 0, 0)}, 'jaw': {'rot': (35, 0, 0)}},
+        34: {'root': {'rot': (0, 75, 0), 'loc': (0, 0, -0.9)}, **legs(-40, 50, -30, 45), 'head': {'rot': (20, 0, 20)}, 'jaw': {'rot': (20, 0, 0)}},
+    }, loop=False)
+    return coll, arm
+
+
 BUILDERS = {
+    'gravemaw': build_gravemaw,
     'husk': build_husk, 'gloomwing': build_gloomwing, 'ironshell': build_ironshell,
     'rifleman': build_rifleman, 'ember_adept': build_ember_adept, 'rocket_battery': build_rocket_battery,
 }

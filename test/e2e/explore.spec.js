@@ -4,7 +4,7 @@ import { openGame, hero, camera, holdUntil, YAW_PLUS_X } from './util.js';
 
 test.describe('exploration', () => {
   test('loads the map without errors and shows the HUD', async ({ page }) => {
-    const errors = await openGame(page);
+    const errors = await openGame(page, '?nolobby');
     await expect(page.locator('#scene')).toBeVisible();
     await expect(page.getByTestId('map-name')).toHaveText('Riftline Valley');
     await expect(page.getByTestId('camera-mode')).toContainText('Third person');
@@ -16,7 +16,7 @@ test.describe('exploration', () => {
   });
 
   test('walks, sprints faster than walking, and jumps', async ({ page }) => {
-    await openGame(page, '?quality=low');
+    await openGame(page, '?quality=low&nolobby');
     await page.evaluate((y) => { window.TDS.teleport(-4, -2); window.TDS.setView(y, 0.4); }, YAW_PLUS_X);
     await page.locator('#scene').focus();
     const a = await hero(page);
@@ -37,7 +37,7 @@ test.describe('exploration', () => {
   });
 
   test('never walks through solid props (watchtower, crate stack, keep)', async ({ page }) => {
-    await openGame(page, '?quality=low');
+    await openGame(page, '?quality=low&nolobby');
     // record any overlap on every animation frame while walking straight at each obstacle
     await page.evaluate(() => {
       window.__overlaps = 0;
@@ -62,7 +62,7 @@ test.describe('exploration', () => {
   });
 
   test('cannot leave the map', async ({ page }) => {
-    await openGame(page, '?quality=low');
+    await openGame(page, '?quality=low&nolobby');
     const bounds = await page.evaluate(() => window.TDS.map.bounds);
     await page.evaluate((y) => { window.TDS.teleport(30, -16); window.TDS.setView(y, 0.4); }, YAW_PLUS_X);
     // keep pushing against the edge until the hero has been stopped there
@@ -75,7 +75,7 @@ test.describe('exploration', () => {
   });
 
   test('camera modes: first person, free fly, overview, back to character', async ({ page }) => {
-    await openGame(page, '?quality=low');
+    await openGame(page, '?quality=low&nolobby');
     await page.locator('#scene').focus();
     await page.keyboard.press('KeyV');
     await expect.poll(async () => (await camera(page)).mode).toBe('first');
@@ -109,7 +109,7 @@ test.describe('exploration', () => {
   });
 
   test('settings dialog opens, changes quality and persists', async ({ page }) => {
-    await openGame(page);
+    await openGame(page, '?nolobby');
     await page.getByRole('button', { name: 'Settings' }).click();
     const dlg = page.getByTestId('settings');
     await expect(dlg).toBeVisible();

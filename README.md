@@ -32,7 +32,13 @@ printed network address.
 | Free camera (fly) | F, then WASD + Q/E, wheel = speed | Free, Up / Down |
 | Map overview | T | Map |
 | Back to character | C | Me |
-| Settings | Esc or the gear | gear |
+| Settings | the gear (Esc pauses in a match) | gear |
+| Pick a tower to build | 1-6, or click the hotbar | tap the hotbar |
+| Build / select / cast | left click on the ground or a tower (crosshair in first person) | tap |
+| Upgrade / move / sell | U / M / tower panel buttons | tower panel |
+| Abilities | Z, X, G (then click to aim); AUTO toggles | ability buttons |
+| Start next wave / pause | N / P or Esc | buttons at the top |
+| Cancel building or aiming | Esc | tap the slot again |
 
 ## Rules and formulas
 

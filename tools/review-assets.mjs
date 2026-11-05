@@ -20,7 +20,7 @@ try {
   await page.goto(`http://localhost:${PORT}/viewer.html`);
   await page.waitForFunction(() => window.VIEWER?.ready, null, { timeout: 90_000 });
   await page.addStyleTag({ content: '.v-list,.v-info,.v-views{display:none!important}' });
-  let ids = await page.evaluate(() => window.VIEWER.assets.filter((a) => a.startsWith('glb:') || a.startsWith('hero:')));
+  let ids = await page.evaluate(() => window.VIEWER.assets.filter((a) => /^(glb|hero|tower|rig):/.test(a)));
   if (only) ids = ids.filter((id) => only.some((o) => id.endsWith(o)));
   const sheet = await browser.newPage({ viewport: { width: 1290, height: 690 } });
   for (const id of ids) {
@@ -32,7 +32,7 @@ try {
       await settle();
       shots.push({ label: v.replace('_', ' '), data: (await page.screenshot({ type: 'png' })).toString('base64') });
     }
-    const move = info.clips.find((c) => /walk|fly/i.test(c)) || info.clips.find((c) => /attack/i.test(c));
+    const move = info.clips.find((c) => /walk|fly|move/i.test(c)) || info.clips.find((c) => /attack/i.test(c));
     if (move) {
       await page.evaluate(([v, c]) => { window.VIEWER.setView(v); window.VIEWER.play(c); }, ['three_quarter', move]);
       await page.waitForTimeout(450);

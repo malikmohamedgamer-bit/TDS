@@ -70,3 +70,25 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 | Meshy cost shown and asked before spending | dry-run (30 credits/model), owner approved boss + hero | pass | |
 | Meshy generation | `meshy text-to-3d create --mode preview` | fail (external) | HTTP 402: free plan cannot create tasks; balance still 100 |
 | CC0 packs / Mixamo animations | assets/packs and assets/incoming checked | unverified | nothing dropped in yet; loader accepts any GLB listed in data/models.json |
+
+## Milestone 4: vertical slice (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Lobby: difficulty + 6-tower loadout with model thumbnails | e2e (all match tests start through it); screenshot docs/screenshots/m4/01-lobby.png | pass | |
+| Place towers by mouse from orbit, overview and first person | e2e "place towers by clicking from three camera angles" | pass | real mouse clicks on projected ground points |
+| Invalid placement explained (shape + text) | same e2e: hint contains "road", click refused | pass | dashed red ring + cross + text |
+| Towers attack, kills earn cash, wave clears, bonus paid | same e2e | pass | |
+| Select by clicking, upgrade, path A, evolution, targeting, sell with confirm | e2e "select a tower by clicking it ..." | pass | Rifleman -> Commando |
+| Boss wave + boss bar | e2e "boss wave shows the boss bar ..." | pass | Gravemaw |
+| Ability aimed and cast through the UI | same e2e (X, click ground) | pass | |
+| Victory, rewards once, save survives reload | same e2e | pass | crowns and wins persisted |
+| Defeat screen | e2e "losing" | pass | |
+| Tutorial steps advance on real actions; skippable; saved | e2e "tutorial ..." | pass | |
+| Phone: hotbar tap, ground tap to build, start wave | e2e phone "tap a tower ..." (Pixel 7) | pass | |
+| Exploration regressions (walk, collision, bounds, cameras, settings, touch) | e2e explore + touch | pass | all 14 e2e pass |
+| Every new asset reviewed from 4+ angles | `node tools/review-assets.mjs` sheets in docs/screenshots/m4/assets (boss + 19 code models) | pass, with fixes | Shade wisps re-attached, Storm Caller glow toned down |
+| Match screenshots | `node tools/match-shots.mjs docs/screenshots/m4` | pass | lobby, build, panel, combat, boss |
+| Soak / unit / lint | `npm run soak -- --minutes 30`, `npm test` (36), `npm run lint` | pass | 0 failures, 0 rescues |
+| Sound effects audible and pleasant | not testable headless | unverified | owner to check while playing |
+| Real-GPU frame time with a full wave | headless only (~10 fps software, ~320 draw calls) | unverified | needs the owner's machine |

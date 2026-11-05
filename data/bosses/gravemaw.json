@@ -5,7 +5,7 @@
       "id": "gravemaw", "name": "Gravemaw, the Rift Colossus", "archetype": "boss", "boss": true,
       "hp": 4200, "speed": 1.6, "armor": 0.25, "reward": 300, "leak": 1000, "size": 3.2,
       "resist": { "dark": 0.5, "poison": 0.7, "holy": 1.35, "lightning": 1.15 },
-      "model": { "builder": "gravemaw" },
+      "model": { "glb": "gravemaw", "builder": "gravemaw" },
       "description": "A walking rift wrapped in Blight-stone. Stomps towers into silence and calls the swarm.",
       "phases": [
         { "at": 0.75, "name": "Rift Stomp", "actions": [

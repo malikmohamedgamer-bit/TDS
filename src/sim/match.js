@@ -50,7 +50,8 @@ export class Match {
     this.phase = 'prep'; // prep | wave | won | lost
     this.wave = 0; // last started wave (1-based), 0 = none yet
     this.waveStartTime = 0;
-    this.nextWaveAt = this.waveSet.firstWaveDelay ?? 10;
+    // manualStart: the first wave waits for the player's "start" (skip) command
+    this.nextWaveAt = this.options.manualStart ? Infinity : this.waveSet.firstWaveDelay ?? 10;
     this.paidWaves = 0;
     this.cash = Math.round((this.options.startCash ?? this.waveSet.startCash) * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1));
     this.baseMax = Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1));

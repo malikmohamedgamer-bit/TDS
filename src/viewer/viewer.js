@@ -8,6 +8,8 @@ import { propGeometry } from '../engine/propModels.js';
 import { HeroView } from '../engine/heroView.js';
 import { loadGLB, ModelInstance, triangleCount } from '../engine/models.js';
 import { createStorage } from '../save/storage.js';
+import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS } from '../engine/unitModels.js';
+import { rigFromProcedural, InstancedRig } from '../engine/instancedRig.js';
 import { loadSettings } from '../save/settings.js';
 
 const VIEWS = {
@@ -43,6 +45,8 @@ async function boot() {
   const assets = [];
   for (const [id, m] of content.models) assets.push({ id: `glb:${id}`, name: id.replace(/_/g, ' '), group: m.kind === 'tower' ? 'Towers (Blender GLB)' : 'Enemies (Blender GLB)', kind: 'glb', model: m });
   assets.push({ id: 'hero:commander', name: 'Commander Vale', group: 'Hero (code model)', kind: 'hero' });
+  for (const id of Object.keys(TOWER_MODELS)) assets.push({ id: `tower:${id}`, name: id.replace(/_/g, ' '), group: 'Towers (code models)', kind: 'tower', build: TOWER_MODELS[id] });
+  for (const [id, def] of Object.entries({ ...ENEMY_RIGS, ...ALLY_RIGS })) assets.push({ id: `rig:${id}`, name: id.replace(/_/g, ' '), group: ENEMY_RIGS[id] ? 'Enemies (code models)' : 'Summons (code models)', kind: 'rig', def });
   for (const p of content.props.values()) assets.push({ id: `prop:${p.id}`, name: p.id.replace(/_/g, ' '), group: 'Props (code models)', kind: 'prop', def: p });
 
   const list = document.querySelector('.v-groups');
@@ -75,6 +79,10 @@ async function boot() {
 
   let current = null;
   let inst = null;
+  let rigInst = null;
+  let rigState = null;
+  let viewSpin = null;
+  const ident = new THREE.Matrix4();
   let spin = false;
   let wire = false;
   const cam = { yaw: 0.6, pitch: 0.35, dist: 6, target: new THREE.Vector3(0, 1, 0) };
@@ -101,6 +109,8 @@ async function boot() {
     for (const b of list.querySelectorAll('button')) b.setAttribute('aria-current', String(b.dataset.id === id));
     stage.clear();
     inst = null;
+    rigInst = null;
+    viewSpin = null;
     let obj;
     let clips = [];
     if (a.kind === 'glb') {
@@ -110,6 +120,18 @@ async function boot() {
       clips = [...inst.clips.keys()];
       const idle = a.model.clips?.idle || clips[0];
       if (idle) inst.play(idle);
+    } else if (a.kind === 'tower') {
+      const built = a.build();
+      obj = new THREE.Group();
+      obj.add(built.group);
+      if (built.unit) { built.unit.position.set(0, 3.2, 0); obj.add(built.unit); }
+      viewSpin = built.parts;
+    } else if (a.kind === 'rig') {
+      const asset = rigFromProcedural(a.def, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: a.def.height, transparent: a.def.transparent || 0 });
+      obj = new THREE.Group();
+      rigInst = new InstancedRig(asset, obj, 1);
+      rigState = { state: 'move', t: 0 };
+      clips = [...asset.clips.keys()];
     } else if (a.kind === 'prop') {
       const geo = propGeometry(a.def, 7);
       obj = new THREE.Group();
@@ -120,6 +142,7 @@ async function boot() {
       obj = new THREE.Group();
     }
     stage.add(obj);
+    if (rigInst) { rigInst.begin(); rigInst.add(ident, 'idle', 0); rigInst.end(); for (const im of rigInst.meshes) im.computeBoundingBox?.(); }
     applyWire();
     const box = new THREE.Box3().setFromObject(a.kind === 'hero' ? hero.root : obj);
     size = box.getSize(new THREE.Vector3());
@@ -145,6 +168,7 @@ async function boot() {
   }
 
   function play(name) {
+    if (rigInst) { rigState = { state: name, t: 0 }; for (const b of document.querySelectorAll('[data-clip]')) b.setAttribute('aria-pressed', String(b.dataset.clip === name)); return true; }
     if (!inst) return false;
     const once = /death|attack/i.test(name);
     inst.play(name, { once });
@@ -173,6 +197,8 @@ async function boot() {
     r.camera.position.set(cam.target.x + Math.sin(cam.yaw) * cp * cam.dist, cam.target.y + Math.sin(cam.pitch) * cam.dist, cam.target.z + Math.cos(cam.yaw) * cp * cam.dist);
     r.camera.lookAt(cam.target);
     inst?.update(dt);
+    if (rigInst) { rigState.t += dt; rigInst.begin(); rigInst.add(ident, rigState.state, rigState.t); rigInst.end(); }
+    for (const p of viewSpin?.spinY || []) p.rotation.y += dt * (p.name === 'rotor' ? 18 : 1.2);
     const heroHere = current?.kind === 'hero';
     hero.root.visible = showHero || heroHere;
     hero.blob.visible = hero.root.visible;

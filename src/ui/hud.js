@@ -56,6 +56,16 @@ export class Hud {
             <label class="row"><input type="checkbox" name="highContrast"> High contrast UI</label>
             <label class="row">Text size <input type="range" name="textScale" min="0.85" max="1.5" step="0.05"><output name="textScaleOut"></output></label>
           </fieldset>
+          <fieldset><legend>Audio</legend>
+            <label class="row"><input type="checkbox" name="muted"> Mute all sound</label>
+            <label class="row">Master volume <input type="range" name="masterVolume" min="0" max="1" step="0.05"><output name="masterOut"></output></label>
+            <label class="row">Effects volume <input type="range" name="sfxVolume" min="0" max="1" step="0.05"><output name="sfxOut"></output></label>
+            <label class="row"><input type="checkbox" name="captions"> Sound captions</label>
+          </fieldset>
+          <fieldset><legend>Gameplay</legend>
+            <label class="row"><input type="checkbox" name="damageNumbers"> Damage numbers</label>
+            <label class="row"><input type="checkbox" name="enemiesHurtHero"> Enemies can hurt the Commander (next match)</label>
+          </fieldset>
           <fieldset><legend>Controls</legend>
             <label class="row">Look sensitivity <input type="range" name="mouseSensitivity" min="0.3" max="2.5" step="0.1"><output name="sensOut"></output></label>
             <label class="row"><input type="checkbox" name="invertY"> Invert look Y</label>
@@ -92,7 +102,9 @@ export class Hud {
     const f = this.form.elements;
     for (const r of f.quality) r.checked = r.value === s.quality;
     f.pixelation.value = String(s.pixelation);
-    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY']) f[k].checked = !!s[k];
+    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero']) f[k].checked = !!s[k];
+    f.masterVolume.value = s.masterVolume;
+    f.sfxVolume.value = s.sfxVolume;
     f.textScale.value = s.textScale;
     f.mouseSensitivity.value = s.mouseSensitivity;
     this._outputs();
@@ -107,6 +119,8 @@ export class Hud {
     const f = this.form.elements;
     f.textScaleOut.value = `${Math.round(f.textScale.value * 100)}%`;
     f.sensOut.value = `${Number(f.mouseSensitivity.value).toFixed(1)}x`;
+    f.masterOut.value = `${Math.round(f.masterVolume.value * 100)}%`;
+    f.sfxOut.value = `${Math.round(f.sfxVolume.value * 100)}%`;
   }
 
   _readForm() {
@@ -114,7 +128,9 @@ export class Hud {
     const s = this.settings;
     s.quality = [...f.quality].find((r) => r.checked)?.value || s.quality;
     s.pixelation = Number(f.pixelation.value);
-    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY']) s[k] = f[k].checked;
+    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero']) s[k] = f[k].checked;
+    s.masterVolume = Number(f.masterVolume.value);
+    s.sfxVolume = Number(f.sfxVolume.value);
     s.textScale = Number(f.textScale.value);
     s.mouseSensitivity = Number(f.mouseSensitivity.value);
     this._outputs();

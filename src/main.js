@@ -1,4 +1,5 @@
-// TDS bootstrap: loads content, builds the world, runs the fixed-timestep simulation and renders.
+// TDS bootstrap: loads content and the save, builds the world (map, hero, cameras), then runs the
+// match flow (loadout -> match -> results) on a fixed-timestep loop.
 import { loadContent, browserReadJson } from './core/content.js';
 import { buildMapWorld } from './core/mapLayout.js';
 import { Character } from './core/character.js';
@@ -13,6 +14,10 @@ import { TouchControls } from './input/touch.js';
 import { Hud } from './ui/hud.js';
 import { createStorage } from './save/storage.js';
 import { loadSettings, saveSettings } from './save/settings.js';
+import { loadSave } from './save/save.js';
+import { Sfx } from './audio/sfx.js';
+import { MatchController } from './game/matchController.js';
+import { SIM_DT } from './sim/match.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -43,13 +48,14 @@ async function boot() {
 
   setLoading('Loading content…', 15);
   const content = await loadContent(browserReadJson('data/'));
+  const { save } = loadSave(storage, content, Date.now());
   const mapId = params.get('map') || 'riftline';
   const map = content.maps.get(mapId);
   if (!map) throw new Error(`Unknown map "${mapId}"`);
 
   setLoading('Raising the valley…', 40);
   await new Promise((r) => setTimeout(r, 0));
-  const mw = buildMapWorld(map, content.props);
+  let mw = buildMapWorld(map, content.props);
 
   const canvas = $('#scene');
   const renderer = new Renderer(canvas, settings);
@@ -63,10 +69,13 @@ async function boot() {
   rig.yaw = (map.playerSpawn.yaw ?? 0) + Math.PI;
 
   const ui = $('#ui');
+  ui.insertAdjacentHTML('afterbegin', '<div class="dmg-layer" aria-hidden="true"></div>');
   const input = new Input(canvas, settings);
   const persist = () => saveSettings(storage, settings);
 
   let hud;
+  let ctrl;
+  const sfx = new Sfx(settings, (text) => ctrl?.mhud.caption(text));
   const setCamera = (mode) => {
     if (mode === rig.mode) return;
     rig.setMode(mode, hero);
@@ -87,7 +96,7 @@ async function boot() {
       case 'overview': setCamera(rig.mode === 'top' ? 'orbit' : 'top'); break;
       case 'toCharacter': setCamera('orbit'); break;
       case 'help': hud.toggleHelp(); break;
-      case 'menu': hud.openSettings(); break;
+      case 'menu': if (!ctrl?.match) hud.openSettings(); break; // in a match Esc pauses / cancels
       case 'slower': rig.zoom(300); break;
       case 'faster': rig.zoom(-300); break;
       default: break;
@@ -101,30 +110,62 @@ async function boot() {
     onSettings: () => {
       renderer.applySettings();
       mapView.applyQuality();
+      ctrl?.view?.setQuality(renderer.q);
+      sfx.applyVolume();
       persist();
     },
   });
   hud.setCameraMode(rig.mode, false);
-  if (touch.visible) hud.toggleHelp(false);
+  hud.toggleHelp(false);
   document.addEventListener('pointerlockchange', () => hud.setCameraMode(rig.mode, input.locked));
+  // first user gesture unlocks audio
+  const unlock = () => sfx.unlock();
+  window.addEventListener('pointerdown', unlock, { once: true });
+  window.addEventListener('keydown', unlock, { once: true });
+
+  ctrl = new MatchController({
+    content, map, mapWorld: mw, renderer, mapView, rig, hero, input, hud, sfx, save, storage, settings, ui,
+    swapWorld(next) {
+      // the match adds tower colliders to its own collision world; the hero must collide with it too
+      mw = next;
+      hero.world = next.world;
+      rig.mw = next;
+      hero.reset({ x: hero.x, z: hero.z, yaw: hero.yaw });
+      prev = cur = hero.snapshot();
+    },
+  });
 
   // ---- main loop -------------------------------------------------------------------------
-  const loop = new FixedLoop({ step: 1 / 60, maxSteps: 6 });
+  const loop = new FixedLoop({ step: SIM_DT, maxSteps: 6 });
   let prev = hero.snapshot();
   let cur = prev;
   let last = performance.now();
   const stats = { frames: 0, acc: 0, fps: 0, frameMs: 0, samples: [] };
 
+  let errorShown = false;
   function frame(now) {
+    // schedule first: one failing frame must never stop the game loop
+    requestAnimationFrame(frame);
+    try {
+      tick(now);
+    } catch (err) {
+      console.error(err);
+      if (!errorShown) { errorShown = true; hud.toast(`Something went wrong: ${err.message}`, 6000); }
+    }
+  }
+
+  function tick(now) {
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
     const f = input.frame();
     for (const a of f.actions) doAction(a);
-    if (!hud.settingsOpen) {
+    const blocked = hud.settingsOpen || ctrl.paused || ctrl.mhud.modalOpen;
+    if (!hud.settingsOpen) ctrl.handleInput(f);
+    if (!blocked) {
       rig.rotate(f.look.dx, f.look.dy);
       if (f.zoom) rig.zoom(f.zoom);
     }
-    const controlsHero = rig.mode === 'orbit' || rig.mode === 'first';
+    const controlsHero = !blocked && (rig.mode === 'orbit' || rig.mode === 'first');
     const bas = rig.basis();
     const heroIn = controlsHero
       ? {
@@ -136,11 +177,12 @@ async function boot() {
       }
       : { mx: 0, mz: 0, jump: false, sprint: false };
     let jumpOnce = heroIn.jump;
-    const alpha = loop.advance(dt, (step) => {
+    const alpha = loop.advance(blocked ? 0 : dt, (step) => {
       prev = cur;
       hero.step(step, { ...heroIn, jump: jumpOnce });
       jumpOnce = false;
       cur = hero.snapshot();
+      ctrl.step();
     });
     const st = {
       x: lerp(prev.x, cur.x, alpha),
@@ -153,7 +195,14 @@ async function boot() {
     };
     heroView.setVisible(rig.mode !== 'first');
     heroView.update(dt, st, mw.world.groundHeight(st.x, st.z, 0.2, st.y + 0.1), settings.reducedMotion);
-    rig.update(dt, st, { x: f.move.x, y: f.move.y, up: f.up }, f.sprint);
+    rig.update(blocked ? 0 : dt, st, blocked ? { x: 0, y: 0, up: 0 } : { x: f.move.x, y: f.move.y, up: f.up }, f.sprint);
+    if (ctrl.view?.shake) {
+      renderer.camera.position.x += (Math.random() - 0.5) * ctrl.view.shake;
+      renderer.camera.position.y += (Math.random() - 0.5) * ctrl.view.shake;
+      ctrl.view.shake = Math.max(0, ctrl.view.shake - dt * 2);
+    }
+    sfx.setListener(renderer.camera.position.x, renderer.camera.position.z);
+    ctrl.update(dt);
     mapView.update(dt, renderer.camera.position);
     renderer.render();
 
@@ -168,10 +217,9 @@ async function boot() {
       stats.acc = 0;
       hud.setFps(stats.fps, stats.frameMs, renderer.frameMs);
     }
-    requestAnimationFrame(frame);
   }
 
-  // ---- debug / test hooks (read-mostly; used by Playwright e2e and the soak test) --------
+  // ---- debug / test hooks (used by Playwright e2e, screenshots and the soak test) ---------
   window.TDS = {
     ready: true,
     get hero() { return { ...hero.snapshot(), hSpeed: Math.hypot(hero.vx, hero.vz), rescues: hero.rescues, jumps: hero.jumps }; },
@@ -181,24 +229,48 @@ async function boot() {
       const pct = (p) => s[Math.min(s.length - 1, Math.floor(s.length * p))] || 0;
       return { fps: stats.fps, frameMs: stats.frameMs, p50: pct(0.5), p95: pct(0.95), p99: pct(0.99), cpuRenderMs: renderer.frameMs, ...renderer.info() };
     },
+    get simTime() { return loop.ticks * loop.step; },
+    get match() { return ctrl.match; },
+    get ctrl() { return ctrl; },
+    get save() { return save; },
     settings,
-    map: { id: map.id, size: map.size, bounds: mw.world.bounds, props: mw.layout.length, colliders: mw.world.colliders.size },
+    map: { id: map.id, size: map.size, get bounds() { return mw.world.bounds; }, props: mw.layout.length, colliders: mw.world.colliders.size },
     setCamera,
     teleport(x, z) { hero.reset({ x, z, yaw: hero.yaw }); prev = cur = hero.snapshot(); },
-    get simTime() { return loop.ticks * loop.step; },
-    /** True if the hero currently overlaps a solid collider (must never happen). */
-    insideSolid() { return mw.world.overlapsWall(hero.x, hero.z, hero.p.radius * 0.9, hero.y, hero.p.height, hero.p.stepUp); },
     setDistance(d) { rig.distance = d; },
+    /** Aim the camera so it looks from the hero towards (x, z). */
+    lookAt(x, z, pitch) { rig.yaw = Math.atan2(-(x - hero.x), -(z - hero.z)); if (pitch !== undefined) rig.pitch = pitch; rig.snap(); },
     setView(yaw, pitch) { rig.yaw = yaw; if (pitch !== undefined) rig.pitch = pitch; },
+    insideSolid() { return mw.world.overlapsWall(hero.x, hero.z, hero.p.radius * 0.9, hero.y, hero.p.height, hero.p.stepUp); },
     groundAt(x, z) { return mw.terrain.height(x, z); },
-    colliderNear(x, z, r = 3) { return [...mw.world.query(x, z, r)].map((c) => ({ x: c.x, z: c.z, shape: c.shape, r: c.r, hw: c.hw, hd: c.hd, rot: c.rot, top: c.top, solid: c.solid, kind: c.ref?.kind })); },
-    solids() { return [...mw.world.colliders.values()].filter((c) => c.solid).map((c) => ({ x: c.x, z: c.z, shape: c.shape, r: c.r, hw: c.hw, hd: c.hd, rot: c.rot, top: c.top, kind: c.ref?.kind })); },
+    /** Project a world point to screen pixels (for clicking on things in e2e tests). */
+    toScreen(x, y, z) {
+      const v = renderer.camera.position.clone();
+      v.set(x, y, z).project(renderer.camera);
+      const r = canvas.getBoundingClientRect();
+      return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height, visible: v.z < 1 && Math.abs(v.x) < 1 && Math.abs(v.y) < 1 };
+    },
+    debug: {
+      /** Run the simulation forward without rendering (deterministic). */
+      fastForward(seconds) { const m = ctrl.match; for (let i = 0; i < seconds / SIM_DT && m.phase !== 'won' && m.phase !== 'lost'; i++) m.step(); },
+      setCash(n) { ctrl.match.cash = n; },
+      setBaseHp(n) { ctrl.match.baseHp = n; },
+      killAll() {
+        const m = ctrl.match;
+        m.spawnQueue = [];
+        // bosses summon minions as they die, so repeat until nothing is left
+        for (let i = 0; i < 10 && m.enemies.some((e) => e.alive); i++) for (const e of [...m.enemies]) if (e.alive) m._damage(e, { amount: 1e12, type: 'holy' }, null);
+      },
+      jumpToWave(n) { const m = ctrl.match; m.spawnQueue = []; for (const e of m.enemies) e.alive = false; m.wave = n - 1; m.paidWaves = n - 1; m.command({ type: 'skip' }); },
+    },
   };
 
   setLoading('Ready', 100);
   $('#loading').classList.add('done');
   setTimeout(() => $('#loading')?.remove(), 600);
   requestAnimationFrame((t) => { last = t; frame(t); });
+  if (params.has('nolobby')) return;
+  ctrl.toLobby();
 }
 
 boot().catch(fail);

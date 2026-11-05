@@ -30,6 +30,7 @@ export class Input {
     this.canvas = canvas;
     this.settings = settings;
     this.keys = new Set();
+    this.keyEdges = new Set();
     this.actions = new Set();
     this.jumpEdge = false;
     this.look = { dx: 0, dy: 0 };
@@ -53,6 +54,7 @@ export class Input {
       if (isTyping(e)) return;
       if (e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
       if (!e.repeat) {
+        this.keyEdges.add(e.code);
         if (e.code === 'Space') this.jumpEdge = true;
         const act = ACTION_KEYS[e.code];
         // pointer lock must be requested inside the user-gesture handler itself
@@ -118,7 +120,9 @@ export class Input {
       zoom: this.wheel,
       actions: this.actions,
       clicks: this.clicks,
+      keyEdges: this.keyEdges,
     };
+    this.keyEdges = new Set();
     this.jumpEdge = false;
     this.touch.jump = false;
     this.look.dx = this.look.dy = 0;

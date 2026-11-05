@@ -23,6 +23,7 @@ export function defaultSettings(env = {}) {
     muted: false,
     captions: true,
     enemiesHurtHero: false,
+    damageNumbers: true,
   };
 }
 

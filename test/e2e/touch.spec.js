@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { openGame, hero, camera } from './util.js';
 
 test('virtual joystick, jump button and camera buttons work on a phone', async ({ page }) => {
-  await openGame(page, '?quality=low');
+  await openGame(page, '?quality=low&nolobby');
   const joy = page.getByTestId('joystick');
   await expect(joy).toBeVisible();
   const box = await joy.boundingBox();
@@ -41,4 +41,24 @@ test('virtual joystick, jump button and camera buttons work on a phone', async (
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await page.waitForFunction((y) => Math.abs(window.TDS.camera.yaw - y) > 0.1, yaw0, { timeout: 20_000 });
   await page.screenshot({ path: 'test-results/m1-phone.png' });
+});
+
+test('phone: tap a tower in the hotbar, tap the ground to build, tap Start wave', async ({ page }) => {
+  await page.addInitScript(() => { try { localStorage.removeItem('tds.save'); } catch { /* ignore */ } });
+  await page.goto('./?quality=low');
+  await expect(page.getByTestId('lobby')).toBeVisible({ timeout: 60_000 });
+  await page.locator('[name="tutorial"]').uncheck();
+  await page.getByTestId('start').tap();
+  await page.waitForFunction(() => window.TDS.match && window.TDS.ctrl.view, null, { timeout: 60_000 });
+  await page.evaluate(() => { window.TDS.teleport(-4, 2); window.TDS.setDistance(14); window.TDS.lookAt(-10, -12, 0.65); });
+  await page.waitForFunction(() => window.TDS.stats.fps > 0);
+  await page.waitForTimeout(800);
+  await page.getByTestId('slot-rifleman').tap();
+  const p = await page.evaluate(() => window.TDS.toScreen(-10, window.TDS.groundAt(-10, -12), -12));
+  expect(p.visible).toBe(true);
+  await page.touchscreen.tap(p.x, p.y);
+  await expect.poll(() => page.evaluate(() => window.TDS.match.towers.length)).toBe(1);
+  await page.getByTestId('skip').tap();
+  await expect.poll(() => page.evaluate(() => window.TDS.match.wave)).toBe(1);
+  await page.screenshot({ path: 'test-results/m4-phone-match.png' });
 });

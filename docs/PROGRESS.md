@@ -9,23 +9,22 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 0. Setup check | Done (2026-11-05) |
 | 1. Art style, scaffold, 3D scene, character, cameras, collision | Done (2026-11-05) |
 | 2. Simulation core: paths, towers, targeting, damage, waves, economy, saves, tests | Done (2026-11-05) |
-| 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | **Done (2026-11-05)**, Meshy blocked (see below) |
-| 4. Vertical slice, then STOP for the owner to play | Next |
+| 3. Art pipeline proof (Blender, packs, Meshy), asset viewer | Done (2026-11-05), Meshy blocked (see below) |
+| 4. Vertical slice, then STOP for the owner to play | **Done (2026-11-05): waiting for the owner's playtest** |
 | 5-9 | Not started |
 
-## Real content counts (end of milestone 3)
+## Real content counts (end of milestone 4, vertical slice)
 
 | Content | Count |
 |---|---|
-| Maps | 1 (Riftline Valley) |
-| Towers (data + sim) | 11 (6 War, 5 Magic) |
-| Enemies | 11 + 1 boss |
-| Rigged, animated GLB models (Blender) | 6: Rifleman, Ember Adept, Rocket Battery (towers); Husk, Gloomwing, Ironshell (enemies) |
-| Procedural (code) models | 23 props + hero |
-| Meshy models | 0 (API refuses task creation on the free plan; 100 credits untouched) |
-| Asset packs / Mixamo | 0 (none dropped into assets/packs or assets/incoming yet) |
-| Unit tests | 36 |
-| E2E tests | 8 |
+| Maps | 1 (Riftline Valley, 20-wave campaign) |
+| Towers (playable, modelled, animated) | 11: 3 Blender GLB + 8 code-built |
+| Enemies (playable, modelled, animated) | 11: 3 Blender GLB + 8 code-built |
+| Bosses | 1 (Gravemaw, Blender GLB, 3 phases, telegraphed stomps) |
+| Summoned allies | 2 (spirit wolf, spirit drake) |
+| Heroes / abilities | 1 / 3 (manual or AUTO) |
+| Difficulties | 8 |
+| Unit tests / E2E tests | 36 / 14 |
 
 ## What exists
 
@@ -68,17 +67,28 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   animations, wireframe, hero for scale. `node tools/review-assets.mjs docs/screenshots/<dir>`
   writes a contact sheet per asset.
 
+- Vertical slice (milestone 4): `src/game/matchController.js` (match lifecycle, input routing,
+  events to VFX / audio / banners, rewards once), `src/engine/matchView.js` (instanced enemies
+  and allies, tower models with aim / recoil / spin, gunship flight, projectiles, mines, health
+  bars, telegraph rings, placement ghost + range ring with check / cross), `src/engine/instancedRig.js`
+  (bakes GLB clips and code animations into per-frame part matrices; one draw call per part per
+  enemy type), `src/engine/unitModels.js`, `src/engine/effects.js` (pixel particles, rings,
+  lightning, damage numbers), `src/engine/thumbnails.js` (UI portraits rendered from the models),
+  `src/ui/matchHud.js`, `src/ui/tutorial.js`, `src/audio/sfx.js` (synthesized sound + captions).
+
 ## Next exact action
 
-Milestone 4 (vertical slice): connect `src/sim/match.js` to the renderer in `src/main.js`
-(match view: enemies from GLB / procedural models with clips, towers with idle/attack, projectiles,
-explosions, damage numbers, range rings), placement preview from any camera (raycast to terrain,
-range circle, valid/invalid by shape + text), tower select / upgrade (A/B branches) / move / sell /
-targeting UI, abilities bar (manual / auto), wave + cash + keep HP HUD, game over / victory,
-tutorial, and Blender models for the remaining 8 towers, 8 enemies and the Gravemaw boss (code
-models are acceptable for the less important ones). Then STOP and ask the owner to play.
+STOP: the owner playtests the vertical slice (`npm run dev`). Collect feedback first. Then
+milestone 5: lobby (walkable lobby area or menu), permanent tower levels with crowns, slot-machine
+summoning (gacha + shop, free currency only, skippable animations), Index, account level / XP,
+quests and achievements (rewards once), using `data/progression.json` and `src/save/save.js`.
 
 ## Known weak spots (honest)
+
+- Vertical slice: no lobby / shop / summoning yet (milestone 5); all 11 towers are free to pick.
+- No music yet (sound effects only); music comes with the polish milestone.
+- Code-built towers and enemies are simpler than the Blender ones and animate by code poses.
+- Game speed 2x is available from the start (unlock rules are milestone 6).
 
 - Enemy portal void is static concentric rings (reads a bit like a target); animate a swirl shader in the VFX milestone.
 - Hero is still the code-built model with code animation (Meshy was blocked); a Blender version can replace it.
