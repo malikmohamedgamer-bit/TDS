@@ -612,7 +612,7 @@ export class Match {
       t.hits++;
       const packet = {
         amount: eff.damage, type: b.damageType || 'physical', splash: b.splash || 0, armorPierce: b.armorPierce || 0,
-        burn: b.burn, slow: b.slow, stun: b.stun, mark: b.mark, airBonus: b.airBonus,
+        burn: b.burn, slow: b.slow, stun: b.stun, mark: b.mark, airBonus: b.airBonus, bossDamage: b.bossDamage,
         freeze: b.freeze && t.hits % b.freeze.every === 0 ? b.freeze.duration : 0,
         chain: b.chain, targets: b.targets, detection: eff.detection,
       };

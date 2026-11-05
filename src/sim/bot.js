@@ -20,6 +20,8 @@ export function value(stats, cov, wavesLeft) {
   if (stats.slow) mul += stats.slow.amount * 0.8;
   if (stats.targets?.air) mul *= 1.12;
   if (stats.detection) mul *= 1.08;
+  // extra damage against bosses counts for a third: most targets are not bosses
+  if (stats.bossDamage) mul *= 1 + (stats.bossDamage - 1) / 3;
   return dps * mul * cov * 2.5; // damage dealt scales with how much road is in range
 }
 

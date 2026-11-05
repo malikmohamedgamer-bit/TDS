@@ -43,6 +43,8 @@ const TOWERS = [
   ['sun_spire', 'Sun Spire', 'storm_caller', 'k_tower_round_build_c', 'magic', 'magic', 'hybrid', 'Holy light, fewer leaps, much harder hits.', { mul: { damage: 1.9 }, set: { damageType: 'holy', 'chain.count': 2 } }],
   ['guard_tower', 'Guard Tower', 'rifleman', 'k_tower_square_build_c', 'war', 'war', 'ground', 'Riflemen behind stone walls: steady, long reach.', { mul: { damage: 1.25, rate: 1.0 }, add: { range: 3 } }],
   ['watch_tower', 'Watch Tower', 'rifleman', 'k_tower_square_build_c', 'war', 'war', 'ground', 'Spotters see hidden enemies and hit flyers.', { set: { detection: true, 'targets.air': true } }],
+  // boss killer (BUGS.md #35): the batch had splash and chip damage but nothing that deletes a boss
+  ['lancer_mech', 'Lancer Mech', 'marksman', 'q_leela', 'war', 'war', 'sniper', 'Walking rail lance: armour-piercing shots at the strongest enemy, triple damage to bosses. Ground only.', { mul: { damage: 1.6, rate: 0.6 }, set: { armorPierce: 0.8, bossDamage: 3 }, add: { range: 2 }, price: 500 }],
 ];
 
 function setPath(o, path, v) {
@@ -62,7 +64,9 @@ const outTowers = TOWERS.map(([id, name, tpl, glb, faction, palette, cls, desc, 
   for (const [k, v] of Object.entries(ops.set || {})) setPath(t.stats, k, v);
   // priced by the bot's own value estimate: every variant is exactly as cost-efficient as its template
   // to the balance bot (PRICE_MUL stays 1; it exists for experiments)
-  const ratio = (towerValue(t.stats) / towerValue(T.stats)) * PRICE_MUL;
+  // ops.price: a deliberate role price instead (the boss killer is efficient on purpose, like the
+  // core Marksman; the bot buys greedily and never saves up for an expensive specialist)
+  const ratio = ops.price ? ops.price / T.cost : (towerValue(t.stats) / towerValue(T.stats)) * PRICE_MUL;
   t.cost = round25(T.cost * ratio);
   const scaleUp = (st) => { st.cost = round25(st.cost * ratio); };
   for (const st of t.upgrades.linear) scaleUp(st);

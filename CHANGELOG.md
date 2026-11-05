@@ -156,3 +156,11 @@
 - `tools/quaternius-models.json` is the one list for the Blender conversion
   (`tools/blender/convert_quaternius.py`) and `tools/import-quaternius.mjs`.
 - Engine: authored emissive parts take the glow path before the flat-colour recolour.
+
+## 0.11.2 - Boss killer for the generated towers (2026-11-06)
+- New tower stat `bossDamage` (damage multiplier against bosses; the bot values it at a third).
+- Lancer Mech (generated, War, on the Quaternius Leela mech with a War pad): armour-piercing
+  sniper, 3x damage to bosses, ground only, fixed role price $500 (`price` op in gen-content).
+- Generated menu alone: Riftline Normal 5/12 -> 12/12, Frostmere 12/12 -> 12/12 (above target,
+  BUGS.md #37). Daily Challenge unchanged (62/100). `tools/dev/tower-usage.mjs` shows what the bot
+  builds in won and lost runs.

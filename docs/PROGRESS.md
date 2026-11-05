@@ -42,7 +42,10 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Frostmere, 12 regular towers, Normal, Standard | 13/20 (65%); starters Easy 11/12; lazy 0/8 |
 | Daily Challenge, fixed Easy, 10 dates x 6 seeds | 39/60 (65%); held-out dates 45/60 (75%) |
 | Boss Rush, 12 regular towers | 8/12 (67%) before batch 1; 9/12 (75%) with the 12 bosses rotating; about 100% with a Titan Railgun |
-| Generated towers only (18), Riftline Normal | 5/12 (42%): **below the 60-70% target** (bug 35) |
+| Generated towers only (18), Riftline Normal | 5/12 (42%) before the boss killer (bug 35) |
+| Generated towers only (19, with Lancer Mech), Riftline / Frostmere Normal | 12/12 / 12/12 (100%): **above the 60-70% target** (bug 37; Frostmere was already 12/12 before) |
+| Core 12 towers, Riftline / Frostmere Normal (same run) | 7/12 (58%) / 6/12 (50%) |
+| Daily Challenge, 10 dates x 10 seeds | 62/100 (62%), identical before and after the boss killer |
 | Random 6-tower loadouts, Riftline Normal | core 4/16, generated 0/16 before the pricing fix (the final boss decides) |
 | All 12 regular towers, Normal, Original | 10/12 (83%) |
 | All 12 regular towers, Normal, Relaxed | 12/12 (100%) |

@@ -2189,6 +2189,132 @@
     "template": "rifleman",
     "valueRatio": 1.21
    }
+  },
+  {
+   "id": "lancer_mech",
+   "name": "Lancer Mech",
+   "faction": "war",
+   "class": "sniper",
+   "rarity": "uncommon",
+   "description": "Walking rail lance: armour-piercing shots at the strongest enemy, triple damage to bosses. Ground only.",
+   "cost": 500,
+   "limit": 6,
+   "footprint": 0.9,
+   "placement": "ground",
+   "model": {
+    "glb": "q_leela",
+    "palette": "war"
+   },
+   "stats": {
+    "damage": 64,
+    "damageType": "physical",
+    "rate": 0.24,
+    "range": 32,
+    "armorPierce": 0.8,
+    "targets": {
+     "ground": true,
+     "air": false
+    },
+    "detection": false,
+    "projectile": {
+     "kind": "tracer",
+     "speed": 260
+    },
+    "targeting": "strongest",
+    "bossDamage": 3
+   },
+   "upgrades": {
+    "linear": [
+     {
+      "name": "Hollow Points",
+      "cost": 200,
+      "mul": {
+       "damage": 1.4
+      },
+      "desc": "+40% damage"
+     },
+     {
+      "name": "Thermal Scope",
+      "cost": 250,
+      "add": {
+       "range": 6
+      },
+      "set": {
+       "detection": true
+      },
+      "desc": "+6 range, sees hidden enemies"
+     }
+    ],
+    "branches": {
+     "A": {
+      "name": "Deadeye",
+      "desc": "Ignores armour, deletes elites.",
+      "steps": [
+       {
+        "name": "AP Rounds",
+        "cost": 775,
+        "mul": {
+         "damage": 1.8
+        },
+        "set": {
+         "armorPierce": 1
+        },
+        "desc": "+80% damage, ignores armour"
+       },
+       {
+        "name": "Deadeye",
+        "cost": 1775,
+        "mul": {
+         "damage": 1.5,
+         "rate": 1.5
+        },
+        "set": {
+         "targets.air": true
+        },
+        "evolve": "Lancer Mech Deadeye",
+        "desc": "+50% damage and fire rate, hits air"
+       }
+      ]
+     },
+     "B": {
+      "name": "Spotter",
+      "desc": "Marks targets so every tower hits harder.",
+      "steps": [
+       {
+        "name": "Laser Designator",
+        "cost": 550,
+        "set": {
+         "mark": {
+          "amount": 0.25,
+          "duration": 4
+         }
+        },
+        "desc": "Marked enemies take +25% damage for 4 s"
+       },
+       {
+        "name": "Recon Sniper",
+        "cost": 1100,
+        "mul": {
+         "rate": 1.6
+        },
+        "set": {
+         "mark.amount": 0.4,
+         "aura": {
+          "detection": true
+         }
+        },
+        "evolve": "Lancer Mech Spotter",
+        "desc": "+60% fire rate, +40% mark, gives detection to nearby towers"
+       }
+      ]
+     }
+    }
+   },
+   "generated": {
+    "batch": "kenney_b1",
+    "template": "marksman",
+    "valueRatio": 1.111
+   }
   }
  ]
 }
