@@ -1,0 +1,22 @@
+{
+  "$doc": "Boss Rush wave set: every wave is a boss with escorts. Bosses rotate through every enemy marked boss (see the 'bossPool' option); hpMul grows each wave.",
+  "id": "boss_rush",
+  "name": "Boss Rush",
+  "bossRotate": true,
+  "startCash": 1600,
+  "baseHp": 150,
+  "hpScalePerWave": 0.05,
+  "intermission": 8,
+  "firstWaveDelay": 15,
+  "maxDuration": 120,
+  "bonusBase": 300,
+  "bonusPerWave": 60,
+  "waves": [
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 0.35, "leak": 50 }, { "enemy": "husk", "count": 10, "interval": 1, "delay": 3 }] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 0.5, "leak": 50 }, { "enemy": "skitter", "count": 12, "interval": 0.6, "delay": 3 }] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 0.65, "leak": 60 }, { "enemy": "gloomwing", "count": 8, "interval": 1, "delay": 4 }] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 0.8, "leak": 60 }, { "enemy": "bulwark", "count": 4, "interval": 2.5, "delay": 4 }] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 0.95, "leak": 80 }, { "enemy": "shade", "count": 8, "interval": 1, "delay": 3 }, { "enemy": "mender", "count": 2, "interval": 4, "delay": 6 }] },
+    { "boss": true, "groups": [{ "enemy": "gravemaw", "count": 1, "hpMul": 1.15 }, { "enemy": "mossback", "count": 3, "interval": 4, "delay": 4 }, { "enemy": "ironshell", "count": 6, "interval": 1.5, "delay": 8 }] }
+  ]
+}

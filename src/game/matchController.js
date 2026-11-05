@@ -9,7 +9,7 @@ import { Tutorial } from '../ui/tutorial.js';
 import { towerThumbnail } from '../engine/thumbnails.js';
 import { FIRE_SOUND } from '../audio/sfx.js';
 import { writeSave } from '../save/save.js';
-import { applyMatchResult, localDate, unlockedSpeeds } from '../meta/meta.js';
+import { applyMatchResult, localDate, unlockedSpeeds, dailyChallenge } from '../meta/meta.js';
 import { Hub } from '../ui/hub.js';
 import { towerThumbnail as tThumb, enemyThumbnail } from '../engine/thumbnails.js';
 import { buildMapWorld } from '../core/mapLayout.js';
@@ -122,12 +122,13 @@ export class MatchController {
     this.swapWorld(mw);
     const levels = {};
     for (const [id, t] of Object.entries(this.save.towers.owned || {})) levels[id] = t.level;
+    if (cfg.mode === 'daily' && cfg.dailyDate) Object.assign(levels, dailyChallenge(this.content, cfg.dailyDate).levels);
     this.matchCount++;
     const seed = `${Date.now().toString(36)}-${this.matchCount}`;
     this.ready = false;
     const match = new Match({
       content: this.content, mapWorld: mw, difficulty: cfg.difficulty, seed, loadout: cfg.loadout, levels,
-      options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero, preset: this.presetId(), assist: this.assist() },
+      options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero, preset: this.presetId(), assist: this.assist(), mode: cfg.mode || 'campaign', modifiers: cfg.modifiers || [], dailyDate: cfg.dailyDate },
     });
     const view = new MatchView(this.renderer, match, this.content, this.settings, this.ui.querySelector('.dmg-layer'));
     await view.preload();

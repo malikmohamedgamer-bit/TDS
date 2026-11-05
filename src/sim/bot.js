@@ -130,7 +130,7 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
       const types = ids.filter((id) => m.content.towers.get(id).stats.damage).sort((a, b) => m.content.towers.get(a).cost - m.content.towers.get(b).cost).slice(0, 2);
       for (let guard = 0; guard < 3; guard++) {
         const saved = ids.splice(0, ids.length, ...types);
-        const o = bestNewTower(m.waveCount(), m.cash);
+        const o = bestNewTower(Math.min(20, m.waveCount()), m.cash);
         ids.splice(0, ids.length, ...saved);
         if (!o || m.cash < o.cost) break;
         o.s.used = true;
@@ -141,12 +141,12 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
     }
     if (strategy === 'weak') {
       if (m.towers.length < 2) {
-        const o = bestNewTower(m.waveCount(), m.cash);
+        const o = bestNewTower(Math.min(20, m.waveCount()), m.cash);
         if (o && m.cash >= o.cost && m.command({ type: "place", tower: o.id, x: o.s.x, z: o.s.z }).ok) { o.s.used = true; report.placed++; }
       }
       return;
     }
-    const wavesLeft = m.waveCount() - m.wave + 1;
+    const wavesLeft = Math.min(20, m.waveCount() - m.wave + 1);
     // nothing affordable: skip the expensive search
     let minCost = Infinity;
     for (const id of ids) minCost = Math.min(minCost, m.costOf(m.content.towers.get(id)));

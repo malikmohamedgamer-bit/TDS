@@ -9,6 +9,7 @@ import { Path } from './path.js';
 import { towerStats, nextStep, DEFAULT_PROGRESSION } from './stats.js';
 import { resolveDamage, pickTarget, canTarget, TARGET_MODES } from './combat.js';
 import { resolveTuning, roundCost } from './tuning.js';
+import { generateWave, bossPool } from './waveGen.js';
 
 export const SIM_DT = 1 / 60;
 export const SELL_REFUND = 0.7;
@@ -38,9 +39,22 @@ export class Match {
     this.rng = new Rng(`${this.seed}:sim`);
     // global tuning (data/tuning.json preset) + player assists; everything below reads this.tune
     this.tune = resolveTuning(this.content.tuning, this.options.preset, this.options.assist);
+    // game mode + challenge modifiers fold into the same knobs
+    this.mode = this.content.modes?.get(this.options.mode || 'campaign') || { id: this.options.mode || 'campaign' };
+    this.modifiers = (this.options.modifiers || []).map((id) => this.content.modifiers?.get(id)).filter(Boolean);
+    this.rules = { armorAdd: 0, towerRange: 1, noAbilities: false, rewardMul: 1 };
+    for (const src of [this.mode, ...this.modifiers]) {
+      for (const [k, v] of Object.entries(src.tune || {})) if (typeof this.tune[k] === 'number') this.tune[k] *= v;
+      if (src.armorAdd) this.rules.armorAdd += src.armorAdd;
+      if (src.towerRange) this.rules.towerRange *= src.towerRange;
+      if (src.noAbilities) this.rules.noAbilities = true;
+      if (src.rewardMul) this.rules.rewardMul *= src.rewardMul;
+    }
+    if (this.mode.infiniteCash) this.options.infiniteCash = true;
     this.difficulty = this.content.difficulties.get(o.difficulty || 'normal');
     if (!this.difficulty) throw new Error(`Unknown difficulty ${o.difficulty}`);
-    this.waveSet = this.content.waves.get(this.options.waveSet || this.map.waves);
+    this.waveSet = this.content.waves.get(this.options.waveSet || this.mode.waves || this.map.waves);
+    this.genWaves = new Map();
     if (!this.waveSet) throw new Error(`Map ${this.map.id} has no wave set`);
     this.loadout = o.loadout ? [...o.loadout] : [...this.content.towers.keys()];
     this.levels = { ...(o.levels || {}) };
@@ -56,7 +70,7 @@ export class Match {
     // manualStart: the first wave waits for the player's "start" (skip) command
     this.nextWaveAt = this.options.manualStart ? Infinity : this.waveSet.firstWaveDelay ?? 10;
     this.paidWaves = 0;
-    this.cash = Math.round((this.options.startCash ?? this.waveSet.startCash) * this.tune.startCash * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1)) + this.tune.startCashAdd;
+    this.cash = Math.round((this.options.startCash ?? this.mode.startCash ?? this.waveSet.startCash) * this.tune.startCash * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1)) + this.tune.startCashAdd;
     this.baseMax = Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1) * this.tune.keepHp);
     this.baseHp = this.baseMax;
     this.enemies = [];
@@ -80,7 +94,7 @@ export class Match {
       def: heroDef, x: this.map.playerSpawn.x, y: 0, z: this.map.playerSpawn.z,
       hp: heroDef.hp, maxHp: heroDef.hp, cooldown: 0, downUntil: 0, kills: 0,
     } : null;
-    this.abilities = (heroDef?.abilities || []).map((id) => ({ id, def: this.content.abilities.get(id), ready: 0, mode: 'manual' }));
+    this.abilities = (this.rules.noAbilities ? [] : heroDef?.abilities || []).map((id) => ({ id, def: this.content.abilities.get(id), ready: 0, mode: 'manual' }));
   }
 
   // ---------------------------------------------------------------- commands ---------------
@@ -143,7 +157,8 @@ export class Match {
   }
 
   canSkip() {
-    return this.phase === 'wave' && this.spawnQueue.length === 0 && this.wave < this.waveSet.waves.length && this.nextWaveAt > this.time;
+    if (this.mode.sandbox) return this.phase === 'wave' || this.phase === 'prep';
+    return this.phase === 'wave' && this.spawnQueue.length === 0 && this.wave < this.waveCount() && this.nextWaveAt > this.time;
   }
 
   /** Placement check used by the preview and by the command itself. */
@@ -307,7 +322,7 @@ export class Match {
     for (const bf of t.buffs) if (bf.until > this.time) rate *= 1 + (bf.rate || 0);
     return {
       damage: (b.damage || 0) * (1 + a.damage),
-      range: (b.range || 0) * (1 + a.range),
+      range: (b.range || 0) * (1 + a.range) * this.rules.towerRange,
       rate,
       detection: !!b.detection || a.detection,
     };
@@ -315,7 +330,30 @@ export class Match {
 
   // ---------------------------------------------------------------- waves ------------------
   waveCount() {
-    return this.waveSet.waves.length;
+    return this.mode.endless ? Infinity : this.waveSet.waves.length;
+  }
+
+  /** Wave n (1-based): from the table, or generated (endless), with boss rotation for boss rush. */
+  waveDef(n) {
+    let w = this.waveSet.waves[n - 1];
+    if (!w && this.mode.endless) {
+      if (!this.genWaves.has(n)) this.genWaves.set(n, generateWave(n, { seed: this.seed, content: this.content, waveSet: this.waveSet }));
+      w = this.genWaves.get(n);
+    }
+    if (w && this.waveSet.bossRotate) {
+      const pool = bossPool(this.content);
+      const id = pool[(n - 1) % pool.length];
+      w = { ...w, groups: w.groups.map((g) => (this.content.enemies.get(g.enemy)?.boss ? { ...g, enemy: id } : g)) };
+    }
+    return w;
+  }
+
+  get maxDuration() {
+    return this.mode.maxDuration ?? this.waveSet.maxDuration ?? 60;
+  }
+
+  get intermission() {
+    return this.mode.intermission ?? this.waveSet.intermission ?? 5;
   }
 
   enemyHpScale(waveNo) {
@@ -328,8 +366,8 @@ export class Match {
     this.wave = n;
     this.phase = 'wave';
     this.waveStartTime = this.time;
-    this.nextWaveAt = this.time + (this.waveSet.maxDuration ?? 60);
-    const w = this.waveSet.waves[n - 1];
+    this.nextWaveAt = this.time + this.maxDuration;
+    const w = this.waveDef(n);
     w.groups.forEach((g, gi) => {
       const count = Math.max(1, Math.round(g.count * (this.content.enemies.get(g.enemy)?.boss ? 1 : this.tune.enemyCount)));
       const interval = (g.interval || 1) * g.count / count; // same group duration, denser or sparser
@@ -369,7 +407,7 @@ export class Match {
       id: this.nextId++, defId: id, def, path: this.paths[pathIdx % this.paths.length],
       d, progress: d, x: 0, y: 0, z: 0, hp: def.hp * scale, maxHp: def.hp * scale,
       shield: (def.shield || 0) * scale, maxShield: (def.shield || 0) * scale,
-      armor: def.armor || 0, flying: !!def.flying, stealth: !!def.stealth, alive: true,
+      armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd), flying: !!def.flying, stealth: !!def.stealth, alive: true,
       baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed, speedMul: 1, curSpeed: def.speed,
       slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
       phase: 0, healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
@@ -444,7 +482,7 @@ export class Match {
       if (!this._clearedAt || this._clearedWave !== this.wave) {
         this._clearedAt = this.time;
         this._clearedWave = this.wave;
-        this.nextWaveAt = Math.min(this.nextWaveAt, this.time + (this.waveSet.intermission ?? 5));
+        this.nextWaveAt = Math.min(this.nextWaveAt, this.time + this.intermission);
         this.events.push({ type: 'waveCleared', wave: this.wave });
       }
     }
@@ -923,8 +961,11 @@ export class Match {
       log: this.log.slice(),
       seen: [...this.seen].sort(),
       loadout: this.loadout.slice(),
-      mode: this.options.mode || 'campaign',
-      rewardMul: this.tune.rewardMul,
+      mode: this.mode.id,
+      dailyDate: this.options.dailyDate || null,
+      modifiers: this.modifiers.map((x) => x.id),
+      score: this.mode.score === 'time' ? Math.round(this.time) : this.mode.score === 'waves' ? Math.max(0, this.wave - 1) : null,
+      rewardMul: this.tune.rewardMul * this.rules.rewardMul * (this.mode.noRewards ? 0 : 1),
       hash: this.hash(),
     };
   }

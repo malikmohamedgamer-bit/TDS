@@ -122,3 +122,6 @@
   .trow img { width: 56px; height: 44px; }
   .trow > .btn, .trow > .maxed { grid-column: 1 / -1; }
 }
+
+.mods { display: grid; gap: 2px; }
+.mods small { color: var(--text-2); }

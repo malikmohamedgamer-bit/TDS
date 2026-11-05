@@ -43,6 +43,10 @@ export async function loadContent(readJson) {
     tuning: index.tuning ? await readJson(index.tuning) : null,
     meta: index.meta ? await readJson(index.meta) : null,
     quests: index.quests ? await readJson(index.quests) : null,
+    ...(await (async () => {
+      const m = index.modes ? await readJson(index.modes) : { modes: [], modifiers: [] };
+      return { modes: new Map(m.modes.map((x) => [x.id, x])), modifiers: new Map(m.modifiers.map((x) => [x.id, x])) };
+    })()),
     models: new Map(Object.entries(index.models ? (await readJson(index.models)).models : {})),
   };
   content.version = contentVersion(content);
@@ -100,6 +104,7 @@ export function validateContent(c) {
     dmg(h.attack?.damageType, `hero ${h.id}`);
   }
   for (const a of c.abilities.values()) dmg(a.effects?.damageType, `ability ${a.id}`);
+  for (const mo of c.modes?.values() || []) if (mo.waves && !c.waves.has(mo.waves)) errs.push(`mode ${mo.id}: unknown wave set "${mo.waves}"`);
   for (const id of c.meta?.starterTowers || []) if (!c.towers.has(id)) errs.push(`meta: unknown starter tower "${id}"`);
   for (const t of c.towers.values()) if (c.meta && !(t.rarity in c.meta.shop.towerPrices)) errs.push(`tower ${t.id}: rarity "${t.rarity}" has no shop price`);
   for (const [kind, map] of [['tower', c.towers], ['enemy', c.enemies]]) {

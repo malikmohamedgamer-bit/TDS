@@ -13,7 +13,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 4. Vertical slice | Done (2026-11-05), deployed to GitHub Pages |
 | Tuning presets + Assist (owner request) | Done (2026-11-05) |
 | 5. Meta progression | **Done (2026-11-05)** |
-| 6. Modes and difficulties | Next |
+| 6. Modes and difficulties | **In progress (stopped at usage limit)**: 7 modes + 9 modifiers in data and sim, hub Play tab, unit tests pass; e2e for modes, tutorial polish, docs and screenshots not done |
 | 7-9 | Not started |
 
 ## Real content counts (end of milestone 5)
@@ -98,12 +98,12 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-Milestone 6: modes. Add `data/modes.json` (campaign, endless, boss rush, daily challenge, time
-attack, sandbox, challenge modifiers), extend `src/sim/match.js` with a wave generator for
-endless (`generateWave`), boss-rush wave set, modifiers (applied like tuning knobs), sandbox
-(infinite cash, spawn any wave), time attack (score = time), daily challenge (seeded by date,
-fixed loadout/modifiers, reward once per day). Show modes in the hub Play tab (`ctx.modes`).
-Polish the tutorial. Then balance-bot every mode + preset.
+Finish milestone 6: (1) daily challenge balance is 13/20 bot wins on Easy with level-5 loaners
+(target ~60-70%: try 0 modifiers on some days or loanerLevel 6); (2) add an e2e test that starts
+Endless and Sandbox from the hub; (3) tutorial polish (highlight the hotbar / Next wave / ability
+buttons per step); (4) screenshots docs/screenshots/m6, VERIFICATION rows, CHANGELOG 0.6.0, full
+e2e once, commit, push, check the Pages deploy. Then milestones 7-9 (content batches, polish,
+final docs, docs/online-plan.md).
 
 ## Known weak spots (honest)
 

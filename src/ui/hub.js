@@ -3,7 +3,7 @@
 // Daily rewards. All state changes go through src/meta/meta.js and are saved immediately.
 import {
   levelForXp, summon, dailyDeal, buyTower, buyBundle, levelUpTower, levelUpCost, towerPrice, questStatus, claimQuest,
-  dailyStatus, claimDaily, localDate, owns, unlockedSpeeds,
+  dailyStatus, claimDaily, localDate, owns, unlockedSpeeds, dailyChallenge,
 } from '../meta/meta.js';
 import { towerStats } from '../sim/stats.js';
 import { SlotMachine, RARITY_SYMBOL, RARITY_LABEL, revealCutscene } from './slotMachine.js';
@@ -39,7 +39,7 @@ export class Hub {
 
   /** Opens the hub; resolves with the chosen match config when the player presses Start. */
   open({ difficulty = 'normal', loadout, mode = 'campaign', tutorial = !this.save.progress.tutorialDone } = {}) {
-    this.cfg = { difficulty, mode, loadout: (loadout || []).filter((id) => owns(this.save, id)).slice(0, 6), tutorial };
+    this.cfg = { difficulty, mode, modifiers: [], loadout: (loadout || []).filter((id) => owns(this.save, id)).slice(0, 6), tutorial };
     if (!this.cfg.loadout.length) this.cfg.loadout = Object.keys(this.save.towers.owned).slice(0, 6);
     this.render();
     if (!this.el.open) this.el.showModal();
@@ -102,19 +102,29 @@ export class Hub {
   // ------------------------------------------------------------------------- tabs ----------
   _play() {
     const diffs = [...this.c.difficulties.values()].sort((a, b) => a.order - b.order);
-    const modes = this.ctx.modes || [{ id: 'campaign', name: 'Campaign', desc: '20 waves, bosses on 10 and 20' }];
+    const modes = [...(this.c.modes?.values() || [])].map((m) => ({ ...m, locked: m.unlockLevel && this.save.profile.level < m.unlockLevel ? `Reach player level ${m.unlockLevel}` : null }));
+    const mode = this.c.modes?.get(this.cfg.mode) || { id: 'campaign' };
+    const daily = mode.daily ? dailyChallenge(this.c, this.date()) : null;
+    const anyTower = !!mode.allTowers;
+    const mods = [...(this.c.modifiers?.values() || [])];
+    const modMul = this.cfg.modifiers.reduce((a, id) => a * (this.c.modifiers.get(id)?.rewardMul || 1), 1);
     const towers = [...this.c.towers.values()].sort((a, b) => ORDER.indexOf(a.rarity) - ORDER.indexOf(b.rarity) || a.cost - b.cost);
     const speeds = unlockedSpeeds(this.save, this.meta);
+    if (daily) this.cfg.loadout = daily.loadout.slice();
+    const usable = (id) => anyTower || owns(this.save, id);
     return `
-      ${modes.length > 1 ? `<fieldset><legend>Mode</legend><div class="diffs modes" role="radiogroup" aria-label="Mode">${modes.map((m) => `<label><input type="radio" name="mode" value="${m.id}" ${m.id === this.cfg.mode ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${esc(m.name)}</b><small>${esc(m.locked ? m.locked : m.desc)}</small></span></label>`).join('')}</div></fieldset>` : ''}
+      ${modes.length > 1 ? `<fieldset><legend>Mode</legend><div class="diffs modes" role="radiogroup" aria-label="Mode">${modes.map((m) => `<label><input type="radio" name="mode" value="${m.id}" data-testid="mode-${m.id}" ${m.id === this.cfg.mode ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked ? m.locked : m.desc)}</small></span></label>`).join('')}</div></fieldset>` : ''}
+      ${mode.modifiers ? `<fieldset><legend>Modifiers <span class="count">reward x${modMul.toFixed(2)}</span></legend><div class="mods">${mods.map((x) => `<label class="row"><input type="checkbox" name="mod" value="${x.id}" ${this.cfg.modifiers.includes(x.id) ? 'checked' : ''}> <b>${esc(x.name)}</b> <small>${esc(x.desc)} · x${x.rewardMul}</small></label>`).join('')}</div></fieldset>` : ''}
+      ${daily ? `<fieldset data-testid="daily-challenge"><legend>Today (${daily.date})</legend><p class="note">Difficulty: ${esc(this.c.difficulties.get(daily.difficulty).name)} (fixed). Modifier: ${daily.modifiers.map((id) => esc(this.c.modifiers.get(id).name)).join(', ')}. Loaner loadout below. Win for ${Object.entries(daily.reward).map(([k, v]) => `${v} ${k}`).join(' + ')}${this.save.claimed.includes(daily.rewardId) ? ' (already claimed today)' : ''}.</p></fieldset>` : ''}
+      ${mode.sandbox ? '<p class="note">Sandbox: infinite cash, every tower, press Next wave any time. No rewards, no records.</p>' : ''}
       <fieldset><legend>Difficulty</legend><div class="diffs" role="radiogroup" aria-label="Difficulty">
         ${diffs.map((d) => `<label><input type="radio" name="diff" value="${d.id}" ${d.id === this.cfg.difficulty ? 'checked' : ''}><span><b>${esc(d.name)}</b><small>${d.id === 'relaxed' ? 'slower enemies, 2x keep' : `${d.hpMul}x enemy health`}${this.save.progress.best?.riftline?.[d.id] ? ` · best ${this.save.progress.best.riftline[d.id]}` : ''}</small></span></label>`).join('')}
       </div></fieldset>
       <fieldset><legend>Loadout <span class="count" data-testid="loadout-count">${this.cfg.loadout.length}/6</span></legend><div class="cards" data-testid="loadout">
         ${towers.map((t) => {
-          const own = owns(this.save, t.id);
+          const own = usable(t.id);
           const on = this.cfg.loadout.includes(t.id);
-          const lvl = own ? this.save.towers.owned[t.id].level : 0;
+          const lvl = this.save.towers.owned[t.id]?.level || 1;
           return `<button class="card ${on ? 'on' : ''} ${own ? '' : 'locked'} f-${t.faction} r-${t.rarity}" data-tower="${t.id}" aria-pressed="${on}" ${own ? '' : 'aria-disabled="true"'}>
             <img alt="" data-thumb="t:${t.id}:${own ? 0 : 1}"><span class="nm">${own ? esc(t.name) : `🔒 ${esc(t.name)}`}</span>
             <span class="meta">${t.faction === 'magic' ? 'Magic' : 'War'} · ${esc(t.class)}${own ? ` · Lv ${lvl}` : ''}</span>
@@ -215,7 +225,16 @@ export class Hub {
 
   onChange(e) {
     if (e.target.name === 'diff') this.cfg.difficulty = e.target.value;
-    if (e.target.name === 'mode') this.cfg.mode = e.target.value;
+    if (e.target.name === 'mode') {
+      this.cfg.mode = e.target.value;
+      const m = this.c.modes.get(this.cfg.mode);
+      if (!m?.allTowers) this.cfg.loadout = (this.save.towers.loadout?.length ? this.save.towers.loadout : this.cfg.loadout).filter((id) => owns(this.save, id)).slice(0, 6);
+      this.render();
+    }
+    if (e.target.name === 'mod') {
+      this.cfg.modifiers = [...this.el.querySelectorAll('[name="mod"]:checked')].map((x) => x.value);
+      this.render();
+    }
     if (e.target.name === 'tutorial') this.cfg.tutorial = e.target.checked;
     if (e.target.name === 'alwaysSkip') { this.ctx.settings.skipSummonAnim = e.target.checked; this.ctx.persistSettings?.(); }
   }
@@ -226,7 +245,9 @@ export class Hub {
     const d = t.dataset;
     const sfx = this.ctx.sfx;
     if (d.tower) {
-      if (!owns(this.save, d.tower)) { this.toast('Locked: unlock it in the Shop or by summoning', 'warn'); sfx?.play('error'); return; }
+      const m = this.c.modes?.get(this.cfg.mode);
+      if (m?.daily) { this.toast('The daily challenge uses a fixed loaner loadout', 'warn'); return; }
+      if (!m?.allTowers && !owns(this.save, d.tower)) { this.toast('Locked: unlock it in the Shop or by summoning', 'warn'); sfx?.play('error'); return; }
       const lo = this.cfg.loadout;
       if (lo.includes(d.tower)) this.cfg.loadout = lo.filter((x) => x !== d.tower);
       else if (lo.length < 6) lo.push(d.tower);
@@ -237,7 +258,10 @@ export class Hub {
       return;
     }
     if (d.act === 'start') {
-      this.save.towers.loadout = this.cfg.loadout.slice();
+      const m = this.c.modes?.get(this.cfg.mode);
+      if (!m?.allTowers) this.save.towers.loadout = this.cfg.loadout.slice();
+      if (m?.daily) { const dc = dailyChallenge(this.c, this.date()); this.cfg.modifiers = dc.modifiers; this.cfg.dailyDate = dc.date; this.cfg.difficulty = dc.difficulty; }
+      if (!m?.modifiers && !m?.daily) this.cfg.modifiers = [];
       this.saved();
       this.close();
       this.resolve?.({ ...this.cfg, loadout: this.cfg.loadout.slice() });

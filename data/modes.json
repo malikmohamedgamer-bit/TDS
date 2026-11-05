@@ -1,0 +1,23 @@
+{
+  "$doc": "Game modes and challenge modifiers. A mode can override the wave set (waves), generate waves (endless), change tuning knobs (tune: multipliers like data/tuning.json), and set flags: infiniteCash, allTowers (loadout may use any tower), noRewards, maxDuration/intermission (seconds), score ('waves' | 'time'). Modifiers stack; each multiplies the crowns reward by rewardMul.",
+  "modes": [
+    { "id": "campaign", "name": "Campaign", "desc": "20 waves, bosses on 10 and 20", "score": "win" },
+    { "id": "endless", "name": "Endless", "desc": "Waves never stop. A boss every 10. How far can you go?", "endless": true, "score": "waves", "unlockLevel": 2, "rewardPerWave": 10 },
+    { "id": "boss_rush", "name": "Boss Rush", "desc": "Six bosses, back to back, growing stronger", "waves": "boss_rush", "startCash": 1600, "score": "win", "unlockLevel": 4 },
+    { "id": "daily", "name": "Daily Challenge", "desc": "Today's modifier and veteran loaner towers (level 5). Reward once per day.", "daily": true, "allTowers": true, "score": "win", "dailyModifiers": 1, "difficulty": "easy", "loanerLevel": 5 },
+    { "id": "time_attack", "name": "Time Attack", "desc": "Short wave timers: clear the campaign as fast as you can", "maxDuration": 32, "intermission": 1, "score": "time", "unlockLevel": 3, "tune": { "startCash": 1.3 } },
+    { "id": "challenge", "name": "Challenge", "desc": "Pick your own modifiers for bigger rewards", "modifiers": true, "score": "win", "unlockLevel": 2 },
+    { "id": "sandbox", "name": "Sandbox", "desc": "Infinite cash, every tower, start any wave. No rewards.", "infiniteCash": true, "allTowers": true, "noRewards": true, "sandbox": true, "score": "none" }
+  ],
+  "modifiers": [
+    { "id": "horde", "name": "Horde", "desc": "25% more enemies", "tune": { "enemyCount": 1.25 }, "rewardMul": 1.3 },
+    { "id": "swift", "name": "Swift Blight", "desc": "Enemies move 12% faster", "tune": { "enemySpeed": 1.12 }, "rewardMul": 1.3 },
+    { "id": "ironhide", "name": "Ironhide", "desc": "Every enemy gains 12% armour", "armorAdd": 0.12, "rewardMul": 1.3 },
+    { "id": "tough", "name": "Tough", "desc": "Enemies have 20% more health", "tune": { "enemyHp": 1.2 }, "rewardMul": 1.35 },
+    { "id": "poor", "name": "Lean times", "desc": "30% less starting cash, 10% less kill cash", "tune": { "startCash": 0.7, "killIncome": 0.9 }, "rewardMul": 1.3 },
+    { "id": "myopia", "name": "Short sight", "desc": "Tower range -10%", "towerRange": 0.9, "rewardMul": 1.3 },
+    { "id": "no_abilities", "name": "No support", "desc": "Abilities are disabled", "noAbilities": true, "rewardMul": 1.2 },
+    { "id": "giants", "name": "Giant bosses", "desc": "Bosses have 60% more health", "tune": { "bossHp": 1.6 }, "rewardMul": 1.4 },
+    { "id": "fragile", "name": "Fragile keep", "desc": "Keep health -40%", "tune": { "keepHp": 0.6 }, "rewardMul": 1.25 }
+  ]
+}

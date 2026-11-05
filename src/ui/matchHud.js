@@ -107,10 +107,10 @@ export class MatchHud {
   // ------------------------------------------------------------------- per frame -------------
   update(m, { placing, speed }) {
     const ws = m.waveCount();
-    this.$('[data-testid="wave"]').textContent = `${m.wave}/${ws}`;
+    this.$('[data-testid="wave"]').textContent = Number.isFinite(ws) ? `${m.wave}/${ws}` : `${m.wave}/∞`;
     const left = m.nextWaveAt - m.time;
     const timer = this.$('[data-testid="timer"]');
-    timer.textContent = m.phase === 'won' || m.phase === 'lost' ? '-' : m.wave >= ws ? 'Final' : Number.isFinite(left) ? `${Math.max(0, Math.ceil(left))}s` : 'Ready';
+    timer.textContent = m.mode.score === 'time' && m.phase === 'wave' ? `⏱ ${Math.floor(m.time / 60)}:${String(Math.floor(m.time) % 60).padStart(2, '0')}` : m.phase === 'won' || m.phase === 'lost' ? '-' : m.wave >= ws ? 'Final' : Number.isFinite(left) ? `${Math.max(0, Math.ceil(left))}s` : 'Ready';
     const canSkip = m.phase === 'prep' || m.canSkip();
     const skip = this.$('.skip');
     skip.disabled = !canSkip;
@@ -281,10 +281,10 @@ export class MatchHud {
     const won = res.won;
     d.innerHTML = `<h2 class="${won ? 'won' : 'lost'}">${won ? '★ Victory' : '✕ Defeat'}</h2>
       <p class="sub">${esc(res.presetLabel || res.preset || '')} tuning${res.assisted ? ` · <b class="assisted" data-testid="assisted">✚ Assist: ${esc(res.assists.join(', '))}</b>` : ''}</p>
-      <p class="sub">${won ? 'The keep stands. The rift is sealed, for now.' : `The keep fell on wave ${res.wave}.`}</p>
+      <p class="sub">${res.mode === 'endless' ? `Endless: you survived ${res.score} waves.` : res.mode === 'time_attack' && won ? `Time: ${Math.floor(res.score / 60)}:${String(res.score % 60).padStart(2, '0')}` : won ? 'The keep stands. The rift is sealed, for now.' : `The keep fell on wave ${res.wave}.`}</p>
       <dl class="endstats"><dt>Waves</dt><dd>${res.wave}/${res.waves}</dd><dt>Kills</dt><dd>${res.stats.kills}</dd><dt>Leaks</dt><dd>${res.stats.leaks}</dd>
       <dt>Damage</dt><dd>${fmt(res.stats.damage)}</dd><dt>Keep</dt><dd>${Math.max(0, Math.round(res.baseHp))}</dd><dt>Time</dt><dd>${Math.floor(res.ticks / 3600)}:${String(Math.floor(res.ticks / 60) % 60).padStart(2, '0')}</dd></dl>
-      <div class="rewards" data-testid="rewards">${rewards.granted ? `+${rewards.crowns} Crowns · +${rewards.xp} XP` : 'Rewards already claimed for this match'}</div>
+      <div class="rewards" data-testid="rewards">${rewards.sandbox ? 'Sandbox: no rewards' : rewards.granted ? `+${rewards.crowns} Crowns · +${rewards.xp} XP${rewards.sigils ? ` · +${rewards.sigils} Sigils` : ''}${rewards.daily ? ' · Daily challenge complete!' : ''}${rewards.levels?.length ? ` · Level ${rewards.levels[rewards.levels.length - 1].level}!` : ''}` : 'Rewards already claimed for this match'}</div>
       <div class="row2"><button class="btn primary" data-act="again" data-testid="again">Play again</button><button class="btn" data-act="lobby">Change loadout</button></div>`;
     if (!d.open) d.showModal();
     d.onclick = (e) => {

@@ -202,6 +202,31 @@ export function claimQuest(save, quests, content, date, claimId) {
   return { ok: true, reward: q.reward };
 }
 
+// ------------------------------------------------------------------ daily challenge --------
+/**
+ * Today's challenge (same for everyone): fixed difficulty, modifiers and a 6-tower loaner loadout
+ * built from roles (area, anti-air, long range, two damage dealers, support) so every day is fair.
+ */
+export function dailyChallenge(content, date) {
+  const mode = content.modes?.get('daily');
+  const rng = new Rng(`daily:${date}`);
+  const mods = rng.shuffle([...content.modifiers.keys()].sort()).slice(0, mode?.dailyModifiers ?? 1);
+  const all = [...content.towers.values()].sort((a, b) => (a.id < b.id ? -1 : 1));
+  const loadout = [];
+  const take = (pred) => {
+    const pool = rng.shuffle(all.filter((t) => pred(t) && !loadout.includes(t.id)));
+    if (pool.length) loadout.push(pool[0].id);
+  };
+  take((t) => t.stats.splash > 0 && t.stats.damage);
+  take((t) => t.stats.targets?.air && t.stats.damage);
+  take((t) => (t.stats.range || 0) >= 20 && t.stats.damage);
+  take((t) => t.stats.damage);
+  take((t) => t.stats.damage);
+  take((t) => !t.stats.damage);
+  const levels = Object.fromEntries(loadout.map((id) => [id, mode?.loanerLevel ?? 5]));
+  return { date, difficulty: mode?.difficulty || 'easy', modifiers: mods, loadout, levels, rewardId: `dailychallenge:${date}`, reward: { sigils: 120, crowns: 300 } };
+}
+
 // ------------------------------------------------------------------ match results ----------
 /**
  * Apply a finished match: stats, records, quest progress, index, rewards (once per match id).
@@ -213,9 +238,13 @@ export function applyMatchResult(save, result, content, meta, date) {
   const rewardMul = (diff?.metaRewardMul ?? 1) * (result.rewardMul ?? 1);
   const cleared = result.won ? result.wave : Math.max(0, result.wave - 1);
   const crowns = Math.round(((result.won ? mr.winCrowns : mr.lossCrowns) + cleared * mr.crownsPerWave) * rewardMul);
-  const xp = cleared * mr.xpPerWave + (result.won ? mr.winXp : 0);
-  const granted = grantReward(save, `match:${result.seed}`, { crowns });
-  const out = { granted, crowns: granted ? crowns : 0, xp: 0, levels: [], firstClear: false, sigils: 0 };
+  const modeDef = content.modes?.get(result.mode || 'campaign');
+  const sandbox = !!modeDef?.noRewards;
+  const endlessCrowns = modeDef?.rewardPerWave ? cleared * modeDef.rewardPerWave * rewardMul : 0;
+  const finalCrowns = sandbox ? 0 : crowns + Math.round(endlessCrowns);
+  const xp = sandbox ? 0 : cleared * mr.xpPerWave + (result.won ? mr.winXp : 0);
+  const granted = grantReward(save, `match:${result.seed}`, { crowns: finalCrowns });
+  const out = { granted, crowns: granted ? finalCrowns : 0, xp: 0, levels: [], firstClear: false, sigils: 0, daily: false, sandbox };
   if (!granted) return out;
   out.levels = addXp(save, meta, xp);
   out.xp = xp;
@@ -223,7 +252,18 @@ export function applyMatchResult(save, result, content, meta, date) {
   for (const id of result.loadout || []) if (!save.index.towers.includes(id)) save.index.towers.push(id);
   const s = save.stats;
   s.matches++;
-  if (result.assisted) return out;
+  if (result.assisted || sandbox) return out;
+  if (result.mode === 'daily' && result.won && result.dailyDate) {
+    const dc = dailyChallenge(content, result.dailyDate);
+    if (grantReward(save, dc.rewardId, dc.reward)) { out.daily = true; out.sigils += dc.reward.sigils || 0; out.crowns += dc.reward.crowns || 0; }
+  }
+  if (modeDef?.score === 'time' && result.won) {
+    const prev = save.progress.bestTime?.[result.map];
+    save.progress.bestTime = { ...(save.progress.bestTime || {}), [result.map]: prev ? Math.min(prev, result.score) : result.score };
+  }
+  if (modeDef?.endless) {
+    save.progress.bestEndless = { ...(save.progress.bestEndless || {}), [result.map]: Math.max(save.progress.bestEndless?.[result.map] || 0, cleared) };
+  }
   const st = result.stats;
   const add = { kills: st.kills, placed: st.placed || 0, upgrades: st.upgrades || 0, evolutions: st.evolutions || 0, abilities: st.abilities || 0, bossKills: st.bossesKilled || 0, wavesCleared: cleared, wins: result.won ? 1 : 0 };
   for (const [k, v] of Object.entries(add)) s[k] = (s[k] || 0) + v;
