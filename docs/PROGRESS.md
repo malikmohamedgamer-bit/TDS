@@ -16,7 +16,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 6. Modes and difficulties | **Done (2026-11-05)**: 7 modes, 9 modifiers, fair Daily Challenge (bot 65%), mode e2e, tutorial polish |
 | 7. Content batch 1 | **Done (2026-11-05)**: Frostmere Crossing (2 roads), Thornmother boss, 2 legendary towers, map picker |
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
-| 9. Final docs + online plan | In progress: docs/online-plan.md written; final balance pass and docs next |
+| 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
 
 ## Real content counts (end of milestone 8, counted from data/)
 
@@ -30,7 +30,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Daily login rewards | 7-day streak |
 | Modes / modifiers | 7 / 9 |
 | Music | 4 moods (hub, build, wave, boss), 2 map keys, procedural (no audio files) |
-| Unit tests / E2E tests | 67 / 24 |
+| Unit tests / E2E tests | 68 / 24 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -44,7 +44,8 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | All 12 regular towers, Normal, Relaxed | 12/12 (100%) |
 | Lazy (1-2 tower types, no upgrades), Normal, Standard / Original | 0/8 / 0/8 |
 | Starters only, level 1: Easy / Normal | 10/12 (83%) / 0/12 |
-| Starters only, Normal, permanent level 3 / 5 | 3/12 (25%) / 12/12 (100%) |
+| Starters only, Normal, permanent level 3 / 5 | 3/12 (25%) / 12/12 (100%) (measured before milestone 9) |
+| Ladder at gate levels (12 regular towers) | Medium L3 8/12, Hard L6 7/12, Extra Hard L9 6/8, Extreme L12 4/6, Impossible L15 6/6 |
 
 ## What exists
 
@@ -114,10 +115,10 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-Milestone 9: (1) final balance pass for Medium L3 / Hard L6 (they lost at the final boss in
-milestone 2 measurements); (2) final docs (README, VERIFICATION, PLAYTEST); (3) full e2e + soak,
-commit, push, check Pages. Later ideas: more content batches (a third map, more enemies),
-walkable lobby, real-GPU frame-time measurement, online phases from docs/online-plan.md.
+All planned milestones (0-9) are done. Suggested next work, in order: (1) owner playtest using
+docs/PLAYTEST.md (music by ear, real-GPU fps, phone); (2) content batch 2 (a third map with its
+own props, e.g. snow / desert kit, 2-3 new enemies); (3) Blender models for the legendaries,
+Thornmother and the hero; (4) online phase 1 from docs/online-plan.md if the owner wants it.
 
 ## Known weak spots (honest)
 

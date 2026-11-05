@@ -114,3 +114,12 @@ test('balance smoke: Frostmere Normal is winnable with the non-legendary towers;
   assert.ok(won.length >= 1, 'at least one of three seeds wins');
   assert.equal(playBot({ content: C, mapWorld: world('frostmere'), difficulty: 'normal', seed: 'bal-1', skill: 0.7, strategy: 'lazy' }).won, false);
 });
+
+test('difficulty bossHpMul softens bosses only, on that difficulty only', () => {
+  const mk = (difficulty) => new Match({ content: C, mapWorld: world('riftline'), seed: 'bh', difficulty });
+  const ratio = (d) => { const m = mk(d); return m.spawnEnemy('gravemaw', { d: 5 }).maxHp / m.spawnEnemy('husk', { d: 5 }).maxHp; };
+  const med = C.difficulties.get('medium');
+  assert.ok(med.bossHpMul > 0 && med.bossHpMul < 1);
+  assert.ok(Math.abs(ratio('medium') / ratio('normal') - med.bossHpMul) < 1e-9);
+  assert.equal(C.difficulties.get('normal').bossHpMul ?? 1, 1, 'Normal is unchanged');
+});

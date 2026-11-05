@@ -1,12 +1,12 @@
 {
-  "$doc": "Enemy health (and shields) are multiplied by hpMul; each step is 1.5x the previous (rounded). cashMul = sqrt(hpMul) scales in-match kill rewards and wave bonuses (starting cash is not scaled). metaRewardMul scales crowns earned. Relaxed is an accessibility option: Easy health, slower enemies, double keep health.",
+  "$doc": "Enemy health (and shields) are multiplied by hpMul; each step is 1.5x the previous (rounded). cashMul = sqrt(hpMul) scales in-match kill rewards and wave bonuses (starting cash is not scaled). metaRewardMul scales crowns earned. bossHpMul (optional) softens boss health on that difficulty only. Relaxed is an accessibility option: Easy health, slower enemies, double keep health.",
   "difficulties": [
     {"id": "relaxed", "name": "Relaxed", "hpMul": 0.67, "speedMul": 0.8, "baseHpMul": 2, "cashMul": 1.15, "metaRewardMul": 0.5, "order": 0},
     {"id": "easy", "name": "Easy", "hpMul": 0.67, "metaRewardMul": 0.67, "order": 1, "cashMul": 0.82},
     {"id": "normal", "name": "Normal", "hpMul": 1, "metaRewardMul": 1, "order": 2, "cashMul": 1.0},
-    {"id": "medium", "name": "Medium", "hpMul": 1.5, "metaRewardMul": 1.5, "order": 3, "cashMul": 1.22},
-    {"id": "hard", "name": "Hard", "hpMul": 2.25, "metaRewardMul": 2.25, "order": 4, "cashMul": 1.5},
-    {"id": "extra_hard", "name": "Extra Hard", "hpMul": 3.4, "metaRewardMul": 3.4, "order": 5, "cashMul": 1.84},
+    {"id": "medium", "name": "Medium", "hpMul": 1.5, "bossHpMul": 0.72, "metaRewardMul": 1.5, "order": 3, "cashMul": 1.22},
+    {"id": "hard", "name": "Hard", "hpMul": 2.25, "bossHpMul": 0.85, "metaRewardMul": 2.25, "order": 4, "cashMul": 1.5},
+    {"id": "extra_hard", "name": "Extra Hard", "hpMul": 3.4, "bossHpMul": 0.85, "metaRewardMul": 3.4, "order": 5, "cashMul": 1.84},
     {"id": "extreme", "name": "Extreme", "hpMul": 5.1, "metaRewardMul": 5.1, "order": 6, "cashMul": 2.26},
     {"id": "impossible", "name": "Impossible", "hpMul": 7.6, "metaRewardMul": 7.6, "order": 7, "cashMul": 2.76}
   ]

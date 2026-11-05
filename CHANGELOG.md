@@ -101,3 +101,11 @@
   hero (between props or against the map boundary). Frostmere uses 1.3 m.
 - `tools/screenshots.mjs` uses `nolobby` (the hub had been covering every world shot since M5) and
   accepts `--map`.
+
+## 0.9.0 - Milestone 9: final balance pass and docs (2026-11-05)
+- Difficulty ladder: optional `bossHpMul` per difficulty (Medium 0.72, Hard 0.85, Extra Hard
+  0.85). Bot wins at the intended gates: Medium L3 67%, Hard L6 58%, Extra Hard L9 75%,
+  Extreme L12 67% (before: Medium L3, Hard L6 0/8 and Extra Hard L9 1/6, all at the final boss).
+- `docs/online-plan.md` (accounts and cloud save, server-verified rewards by replay, Daily
+  leaderboard, optional co-op; trading and real-money summons not planned), README, TUNING,
+  PROGRESS, PLAYTEST, VERIFICATION brought up to date.

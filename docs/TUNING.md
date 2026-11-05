@@ -56,6 +56,22 @@ give crowns, but do not set records, complete achievements or count for the dail
 `data/difficulties.json`: Easy 0.67x, Normal 1x, Medium 1.5x, Hard 2.25x, Extra Hard 3.4x,
 Extreme 5.1x, Impossible 7.6x enemy health, multiplied with the preset.
 
+Bosses are the cliff (a final-boss leak loses the match), so a difficulty can soften bosses only
+with `bossHpMul`: Medium 0.72, Hard 0.85, Extra Hard 0.85. Bot (12 regular towers, Standard,
+Riftline) at each gate level:
+
+| Difficulty | Permanent tower level | Bot win rate |
+|---|---|---|
+| Normal | 1 | 7/12 (58%) this pass; 27/40 (68%) earlier |
+| Medium | 2 / 3 | 2/8 (25%) / 8/12 (67%) |
+| Hard | 6 | 7/12 (58%) |
+| Extra Hard | 9 | 6/8 (75%) |
+| Extreme | 12 | 4/6 (67%) |
+| Impossible | 15 (max) | 6/6 (100%) |
+
+Frostmere is a little easier at the same gates (Medium L3 8/8, Hard L6 6/8). Medium is a knife
+edge around `bossHpMul` 0.65-0.8 (12/12 at 0.65, 1/8 at 0.8); change it in steps of 0.03.
+
 ## Daily Challenge (data/modes.json, mode "daily")
 
 Fixed for everyone on a date: Easy difficulty, seeded modifiers and a loaner loadout.

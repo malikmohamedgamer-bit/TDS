@@ -402,7 +402,8 @@ export class Match {
     const def = this.content.enemies.get(id);
     if (!def) throw new Error(`Unknown enemy "${id}"`);
     if (!Number.isFinite(d)) throw new Error(`spawnEnemy: bad path distance ${d}`);
-    const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul * (def.boss ? this.tune.bossHp : 1);
+    // difficulty.bossHpMul softens boss scaling on a difficulty (bosses are the cliff: a leak loses)
+    const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul * (def.boss ? this.tune.bossHp * (this.difficulty.bossHpMul ?? 1) : 1);
     const e = {
       id: this.nextId++, defId: id, def, path: this.paths[pathIdx % this.paths.length],
       d, progress: d, x: 0, y: 0, z: 0, hp: def.hp * scale, maxHp: def.hp * scale,

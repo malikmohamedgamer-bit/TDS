@@ -162,3 +162,18 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 | Animated portal vortex, frozen with Reduced motion | screenshot docs/screenshots/m8/portal.png | pass | reduced-motion freeze checked by code reading only |
 | Collision gap fix | soak 120 simulated min on both maps | pass | 0 rescues, 0 failures |
 | Regression (clean tree, M7 + M8) | unit 67/67, lint clean, e2e 24/24 (4.6 min), soak 30 min: Riftline and Frostmere 0 rescues 0 failures | pass | |
+
+## Milestone 9: final balance pass and docs (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| `bossHpMul` softens bosses only, on that difficulty only | unit content7 "difficulty bossHpMul ..." | pass | |
+| Difficulty ladder winnable at gate levels (closes the milestone 2 "partial" row) | `npm run balance -- --loadout <12 regular> --difficulty X --level N` | pass | Medium L3 8/12, Hard L6 7/12, Extra Hard L9 6/8, Extreme L12 4/6, Impossible L15 6/6; Medium L2 2/8 |
+| Same gates on Frostmere | balance tool | pass | Medium L3 8/8, Hard L6 6/8 (a bit easier) |
+| Online plan | docs/online-plan.md | written | plan only, nothing implemented |
+| Regression | unit 68/68, lint clean, e2e 24/24 (4.6 min), soak 30 min both maps 0 rescues 0 failures | pass | |
+
+## Still not verified (honest)
+- Music by ear (only pattern and state tests); Music volume slider has no automated test.
+- Real-GPU and real-phone frame times (only software rendering measured).
+- Pointer-lock look (headless cannot grant it).
