@@ -17,20 +17,22 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 7. Content batch 1 | **Done (2026-11-05)**: Frostmere Crossing (2 roads), Thornmother boss, 2 legendary towers, map picker |
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
 | 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
+| 10. Asset packs + content growth | **In progress**: 10 Kenney CC0 packs, recolour pipeline, 23 imported models, content batch 1 (18 towers, 18 enemies, 10 bosses). Map generator and further batches not started |
 
-## Real content counts (end of milestone 8, counted from data/)
+## Real content counts (after content batch 1, counted from data/)
 
 | Content | Count |
 |---|---|
-| Maps | 2 (Riftline Valley 1 road; Frostmere Crossing 2 roads, unlocks at player level 3) |
-| Towers | 14: 12 regular (7 war, 5 magic; 5 starters) + 2 legendary (earlier docs said 11; it was 12) |
-| Enemies / bosses | 11 / 2 (Gravemaw, Thornmother) |
+| Maps | 2 (Riftline Valley 1 road; Frostmere Crossing 2 roads, unlocks at player level 3); no generated maps yet |
+| Towers | 32: 12 core (7 war, 5 magic; 5 starters) + 2 legendary + 18 generated (batch kenney_b1: 9 Kenney models x 2 stat / colour variants) |
+| Enemies / bosses | 29 / 12: 11 core + 18 generated (9 Kenney models x 2 palettes) / 2 core + 10 generated (5 Kenney models x 2 palettes). Generated enemies appear in Endless (from wave 8) and generated waves; Boss Rush rotates all 12 bosses |
+| Imported pack models | 23 Kenney CC0 (of 1,201 GLBs downloaded) |
 | Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
 | Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
 | Daily login rewards | 7-day streak |
 | Modes / modifiers | 7 / 9 |
 | Music | 4 moods (hub, build, wave, boss), 2 map keys, procedural (no audio files) |
-| Unit tests / E2E tests | 68 / 24 |
+| Unit tests / E2E tests | 70 / 24 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -39,7 +41,9 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
 | Frostmere, 12 regular towers, Normal, Standard | 13/20 (65%); starters Easy 11/12; lazy 0/8 |
 | Daily Challenge, fixed Easy, 10 dates x 6 seeds | 39/60 (65%); held-out dates 45/60 (75%) |
-| Boss Rush, 12 regular towers | 8/12 (67%); about 100% with a Titan Railgun |
+| Boss Rush, 12 regular towers | 8/12 (67%) before batch 1; 9/12 (75%) with the 12 bosses rotating; about 100% with a Titan Railgun |
+| Generated towers only (18), Riftline Normal | 5/12 (42%): **below the 60-70% target** (bug 35) |
+| Random 6-tower loadouts, Riftline Normal | core 4/16, generated 0/16 before the pricing fix (the final boss decides) |
 | All 12 regular towers, Normal, Original | 10/12 (83%) |
 | All 12 regular towers, Normal, Relaxed | 12/12 (100%) |
 | Lazy (1-2 tower types, no upgrades), Normal, Standard / Original | 0/8 / 0/8 |
@@ -115,10 +119,16 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-All planned milestones (0-9) are done. Suggested next work, in order: (1) owner playtest using
-docs/PLAYTEST.md (music by ear, real-GPU fps, phone); (2) content batch 2 (a third map with its
-own props, e.g. snow / desert kit, 2-3 new enemies); (3) Blender models for the legendaries,
-Thornmother and the hero; (4) online phase 1 from docs/online-plan.md if the owner wants it.
+Content growth (milestone 10), in this order:
+1. Map generator (`tools/gen-maps.mjs`): seeded serpentine 1-road layouts on the 110 x 80 frame
+   (columns 12+ m apart, keep at x 50.5), themes (palette, sky, scatter, music key), wave sets
+   from `generateWave` stored as data, `scatterGap` 1.3. Soak every map; bot each map to 60-70%.
+2. Fix bug 35 (generated tower menu 42%): give the batch a single-target boss killer, then
+   re-measure with a mixed core + generated menu.
+3. Batch 2+: more Kenney models (castle towers, fantasy town, nature props for themes), more
+   palette schemes, then Quaternius packs if the owner downloads them (links in docs/credits.md).
+Honest scale: 100+ towers / 200+ enemies / 100+ bosses are reachable as variants of about 25-40
+models; 50+ maps need the generator. Every batch: balance bot, counts, commit, push, deploy check.
 
 ## Known weak spots (honest)
 
@@ -127,6 +137,8 @@ Thornmother and the hero; (4) online phase 1 from docs/online-plan.md if the own
 - The hub is a menu over the 3D world, not a separate walkable lobby area.
 - Music is procedural synth loops (4 moods); it is pleasant but simple, and was only checked by
   unit tests and state checks, not listened to by a person yet.
+- Generated (batch) units are stat and colour variants of 23 Kenney models; two units often share
+  a model with different palettes.
 - Code-built towers and enemies (including the new legendaries and Thornmother) are simpler than the
   Blender ones and animate by code poses.
 - Frostmere Crossing reuses Riftline's prop set with a colder palette; no snow-specific props yet.

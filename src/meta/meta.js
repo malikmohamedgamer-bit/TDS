@@ -222,7 +222,8 @@ export function dailyChallenge(content, date) {
   }
   const order = content.meta?.rarityOrder || [];
   const maxR = mode?.loanerMaxRarity ? order.indexOf(mode.loanerMaxRarity) : Infinity;
-  const all = [...content.towers.values()].filter((t) => !(order.indexOf(t.rarity) > maxR)).sort((a, b) => (a.id < b.id ? -1 : 1));
+  // generated batches stay out of the daily, so its measured balance does not shift
+  const all = [...content.towers.values()].filter((t) => !(order.indexOf(t.rarity) > maxR) && !t.generated).sort((a, b) => (a.id < b.id ? -1 : 1));
   const loadout = [];
   const take = (pred) => {
     const pool = rng.shuffle(all.filter((t) => pred(t) && !loadout.includes(t.id)));

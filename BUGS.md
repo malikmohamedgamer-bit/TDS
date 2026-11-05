@@ -35,3 +35,8 @@ Status is **Fixed** only after a test proves it.
 | 29 | Music arpeggio on phrase-lift bars reached MIDI 103 (about 3 kHz, shrill) | unit music test | Fixed | arpeggio one octave lower; unit "patterns are ... in key" checks MIDI 24-100 |
 | 30 | e2e "place towers by clicking from three camera angles" timed out once while two screenshot jobs ran beside the suite | M7 full run | Watch (flaky under heavy CPU load) | passed 2/2 in isolation; not reproduced without the parallel load |
 | 31 | `tools/screenshots.mjs` world shots showed the hub over the scene (since milestone 5) | M8 review | Fixed | `nolobby`; docs/screenshots/m8 |
+| 32 | The GLB style pass dropped textures (kept only the material colour), so palette-textured pack models would render grey | code reading before import | Fixed | recolour pass keeps the texture; screenshots docs/screenshots/kenney |
+| 33 | Viewer e2e assumed every GLB is animated | viewer e2e with pack models | Fixed | test requires clips only where data/models.json maps them |
+| 34 | First generated towers were priced by a formula that ignored air, detection and armour types: the bot spammed Watch Towers | balance bot with all towers | Fixed | priced by the bot's value estimate (3rd attempt) |
+| 35 | Generated tower menu alone wins only 5/12 (42%) on Standard Normal (core menu 7/12) | `npm run balance -- --loadout <18 generated>` | Open | 3 tuning attempts used (formula, -15% price, bot-value pricing); kept the bot-value pricing. Next: give the batch a boss-killer role, or re-tune with a mixed menu |
+| 36 | Kenney zombie trousers glow: the bright red swatch is shared with accent texels, a palette remap cannot separate them | review sheet | Accepted | glow intensity for pack models lowered to 1.3 |

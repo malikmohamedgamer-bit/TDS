@@ -177,3 +177,17 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 - Music by ear (only pattern and state tests); Music volume slider has no automated test.
 - Real-GPU and real-phone frame times (only software rendering measured).
 - Pointer-lock look (headless cannot grant it).
+
+## Milestone 10 (part 1): asset packs and content batch 1 (2026-11-05)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| 10 Kenney packs downloaded from the official site, CC0 confirmed in each License.txt, only allowed file types kept | `tools/fetch-kenney.mjs`; `unzip -p ... License.txt`; `find` for disallowed extensions = 0 | pass | Quaternius not fetched (Google Drive); manual links in docs/credits.md |
+| Palette recolour (families, ramps, glow rule, emissive map) | unit palette.test.js | pass | |
+| 23 imported models load, within triangle budgets, mapped clips exist | unit models.test.js; e2e viewer (every GLB loads) | pass | trucks are boss bases (over the enemy budget) |
+| Art-style review from 5 angles + animation | docs/screenshots/kenney/*.png (23 sheets) | pass, with notes | zombie trousers glow (bug 36) |
+| New towers / enemies / boss render and fight in a match | headless sandbox run: 6 generated towers, 7 generated enemies, 1 generated boss, damage dealt, no page errors; docs/screenshots/kenney/ingame-batch1.png | pass | |
+| Generated towers balance (18-tower menu, Standard Normal) | `npm run balance -- --loadout <18 ids> --seeds 12` | **fail** | 5/12 (42%) vs target 60-70%; 3 attempts used (bug 35) |
+| Boss Rush with 12 rotating bosses | bot, 12 seeds, core towers | pass | 9/12 (75%) |
+| Core balance unchanged | unit balance tests pinned to the 12 core towers | pass | |
+| Regression | unit 70/70, lint clean, e2e 24/24 (6.2 min), soak 30 min both maps 0 rescues 0 failures | pass | |

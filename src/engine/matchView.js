@@ -2,7 +2,7 @@
 // towers as animated models, projectiles, mines, health bars, telegraphs and event-driven VFX.
 import * as THREE from 'three';
 import { rigFromGLB, rigFromProcedural, InstancedRig } from './instancedRig.js';
-import { loadGLB, ModelInstance } from './models.js';
+import { loadGLB, ModelInstance, modelSrc } from './models.js';
 import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS, mineModel } from './unitModels.js';
 import { Effects, DAMAGE_COLORS } from './effects.js';
 import { ModelBuilder } from './geo.js';
@@ -61,7 +61,7 @@ export class MatchView {
     for (const def of this.content.enemies.values()) tasks.push(this._enemyAsset(def));
     for (const id of Object.keys(ALLY_RIGS)) this._allyAsset(id);
     for (const def of this.content.towers.values()) {
-      const glb = def.model?.glb && this.content.models.get(def.model.glb);
+      const glb = modelSrc(this.content, def);
       if (glb) tasks.push(loadGLB(glb));
     }
     await Promise.all(tasks);
@@ -69,7 +69,7 @@ export class MatchView {
 
   async _enemyAsset(def) {
     if (this.enemyRigs.has(def.id)) return this.enemyRigs.get(def.id);
-    const glb = def.model?.glb && this.content.models.get(def.model.glb);
+    const glb = modelSrc(this.content, def);
     let asset;
     if (glb) asset = await rigFromGLB(glb, glb.clips, { transparent: def.stealth ? 0.45 : 0 });
     else {
@@ -173,12 +173,12 @@ export class MatchView {
   _makeTower(t) {
     const def = t.def;
     const vis = { uid: t.uid, defId: def.id, root: new THREE.Group(), inst: null, parts: {}, unit: null, yaw: t.rot || 0, recoil: 0, attackT: 9, scale: 1, evolved: false, muzzle: new THREE.Vector3(0, 1.4, 0.8) };
-    const glb = def.model?.glb && this.content.models.get(def.model.glb);
+    const glb = modelSrc(this.content, def);
     if (glb) {
       loadGLB(glb).then((gltf) => {
         if (!this.towerVis.has(t.uid)) return;
         vis.inst = new ModelInstance(gltf);
-        vis.inst.play(glb.clips.idle);
+        if (glb.clips?.idle) vis.inst.play(glb.clips.idle);
         vis.clips = glb.clips;
         vis.root.add(vis.inst.root);
       });
@@ -380,7 +380,7 @@ export class MatchView {
       src.traverse((o) => { if (o.isMesh) o.material = mat; });
       g.add(src);
     } else {
-      const glb = def.model?.glb && this.content.models.get(def.model.glb);
+      const glb = modelSrc(this.content, def);
       if (glb) loadGLB(glb).then((gltf) => {
         const inst = new ModelInstance(gltf);
         inst.root.traverse((o) => { if (o.isMesh) o.material = mat; });
@@ -474,7 +474,9 @@ export class MatchView {
       if (v.parts.sway) v.parts.sway.rotation.y = Math.sin(this.time * 2 + t.uid) * 0.25;
       if (v.inst) {
         v.inst.update(dt);
-        if (v.returnIdleAt && this.time > v.returnIdleAt) { v.inst.play(v.clips.idle, { fade: 0.2 }); v.returnIdleAt = 0; }
+        if (v.returnIdleAt && this.time > v.returnIdleAt && v.clips?.idle) { v.inst.play(v.clips.idle, { fade: 0.2 }); v.returnIdleAt = 0; }
+        // static pack towers have no attack clip: kick the whole model back a little when firing
+        if (!v.clips?.attack) v.inst.root.position.z = -0.12 * v.recoil;
       }
       if (v.unit && t.unit) {
         v.unit.position.set(t.unit.x, t.unit.y + Math.sin(this.time * 1.7 + t.uid) * 0.25, t.unit.z);

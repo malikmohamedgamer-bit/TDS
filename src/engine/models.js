@@ -9,6 +9,13 @@ import { remapPixels } from '../core/palette.js';
 const loader = new GLTFLoader();
 const cache = new Map();
 
+/** The model entry a tower / enemy uses, with its own palette override (colour variants). */
+export function modelSrc(content, def) {
+  const glb = def.model?.glb && content.models.get(def.model.glb);
+  if (!glb) return null;
+  return def.model.palette ? { ...glb, palette: def.model.palette } : glb;
+}
+
 let schemes = {};
 /** Register data/palettes.json schemes (call once after content loads). */
 export function setPalettes(p) {

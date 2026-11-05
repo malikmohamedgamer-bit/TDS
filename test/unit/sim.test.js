@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { content } from '../helpers.js';
+import { content, coreTowers } from '../helpers.js';
 import { validateContent } from '../../src/core/content.js';
 import { buildMapWorld } from '../../src/core/mapLayout.js';
 import { Path } from '../../src/sim/path.js';
@@ -309,9 +309,9 @@ test('determinism: same seed and commands give the same hash; replay reproduces 
 });
 
 test('balance: bot wins Normal with level-1 towers, a 2-tower strategy loses', () => {
-  const win = playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed: 'bal0' });
+  const win = playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed: 'bal0', loadout: coreTowers(C) });
   assert.equal(win.won, true, `normal: reached wave ${win.wave}`);
   assert.ok(win.baseHp < 150, 'not flawless: some pressure');
-  const weak = playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed: 'bal0', weak: true });
+  const weak = playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed: 'bal0', weak: true, loadout: coreTowers(C) });
   assert.equal(weak.won, false);
 });

@@ -109,3 +109,19 @@
 - `docs/online-plan.md` (accounts and cloud save, server-verified rewards by replay, Daily
   leaderboard, optional co-op; trading and real-money summons not planned), README, TUNING,
   PROGRESS, PLAYTEST, VERIFICATION brought up to date.
+
+## 0.10.0 - Asset packs and content batch 1 (2026-11-05)
+- 10 Kenney CC0 kits downloaded from kenney.nl (`tools/fetch-kenney.mjs`, raw packs git-ignored,
+  listed with URLs and licence in `docs/credits.md`). Quaternius packs need a manual download
+  (Google Drive); links in credits.
+- Recolour pipeline: `data/palettes.json` + `src/core/palette.js` map every texel of a pack model's
+  palette texture to the art-style palettes; only bright saturated texels glow. Per-unit palette
+  overrides make colour variants from one model. Pack models support `scale` and code motion
+  (`hover`, `waddle`, `roll`) when they have no clips; static towers aim and recoil.
+- `tools/import-kenney.mjs`: 23 models (9 tower bases, 9 enemy bases incl. 5 animated undead,
+  5 boss bases), scaled to art-style heights, within triangle budgets, reviewed in
+  docs/screenshots/kenney (5 views + animation each).
+- `tools/gen-content.mjs` (batch `kenney_b1`): 18 towers, 18 enemies, 10 bosses derived from
+  balanced templates. Towers are priced with the balance bot's own value estimate; enemies keep
+  their template's HP x speed. Generated towers stay out of the Daily Challenge.
+- Balance tests now guard the 12 core towers explicitly (`coreTowers` in test/helpers.js).

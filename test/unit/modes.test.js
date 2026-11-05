@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { content } from '../helpers.js';
+import { content, coreTowers } from '../helpers.js';
 import { buildMapWorld } from '../../src/core/mapLayout.js';
 import { Match } from '../../src/sim/match.js';
 import { generateWave, bossPool } from '../../src/sim/waveGen.js';
@@ -110,7 +110,7 @@ test('daily challenge: modifier budget, role slots and excluded modifiers hold o
 });
 
 test('balance smoke: boss rush and daily challenge are winnable; endless lasts beyond 20 waves', () => {
-  const run = (mode, seed, extra = {}) => playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed, skill: 0.7, options: { mode, ...extra }, maxTicks: 60 * 60 * 45 });
+  const run = (mode, seed, extra = {}) => playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed, skill: 0.7, loadout: coreTowers(C), options: { mode, ...extra }, maxTicks: 60 * 60 * 45 });
   assert.ok(['b0', 'b1'].some((s) => run('boss_rush', s).won), 'boss rush');
   const dc = dailyChallenge(C, '2026-11-05');
   assert.ok(['d0', 'd1', 'd2'].some((s) => playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: dc.difficulty, seed: s, skill: 0.7, loadout: dc.loadout, levels: dc.levels, options: { mode: 'daily', modifiers: dc.modifiers } }).won), 'daily on Easy');

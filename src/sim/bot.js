@@ -5,7 +5,7 @@ import { towerStats, nextStep } from './stats.js';
 import { Rng } from '../core/rng.js';
 
 /** Rough damage-per-second value of a stats object at a spot with path coverage share cov. */
-function value(stats, cov, wavesLeft) {
+export function value(stats, cov, wavesLeft) {
   if (stats.income) return (stats.income * wavesLeft) / 60;
   if (stats.aura) return 0; // valued by the towers it buffs, see auraValue()
   if (stats.summon) {

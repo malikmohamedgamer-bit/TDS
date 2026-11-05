@@ -237,7 +237,7 @@
       "url": "assets/models/kenney/car-kit/truck.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 1.538,
+      "scale": 3.462,
       "motion": "roll",
       "source": "pack: Kenney car-kit (CC0, kenney.nl/assets/car-kit), file truck.glb"
     },
@@ -245,7 +245,7 @@
       "url": "assets/models/kenney/car-kit/tractor-shovel.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 1.323,
+      "scale": 2.976,
       "motion": "roll",
       "source": "pack: Kenney car-kit (CC0, kenney.nl/assets/car-kit), file tractor-shovel.glb"
     },
@@ -253,7 +253,7 @@
       "url": "assets/models/kenney/car-kit/garbage-truck.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 1.375,
+      "scale": 3.125,
       "motion": "roll",
       "source": "pack: Kenney car-kit (CC0, kenney.nl/assets/car-kit), file garbage-truck.glb"
     },
@@ -261,7 +261,7 @@
       "url": "assets/models/kenney/castle-kit/siege-tower.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 1.119,
+      "scale": 2.425,
       "motion": "roll",
       "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-tower.glb"
     },
@@ -269,7 +269,7 @@
       "url": "assets/models/kenney/castle-kit/siege-ram.glb",
       "kind": "boss",
       "palette": "blight",
-      "scale": 1.858,
+      "scale": 3.8,
       "motion": "roll",
       "source": "pack: Kenney castle-kit (CC0, kenney.nl/assets/castle-kit), file siege-ram.glb"
     }

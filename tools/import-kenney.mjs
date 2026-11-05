@@ -28,12 +28,12 @@ const LIST = [
   ['tower-defense-kit', 'enemy-ufo-b', 'enemy', 'blight', 1.0, { motion: 'hover' }],
   ['tower-defense-kit', 'enemy-ufo-c', 'enemy', 'blight', 1.0, { motion: 'hover' }],
   ['tower-defense-kit', 'enemy-ufo-d', 'enemy', 'blight', 1.0, { motion: 'hover' }],
-  ['car-kit', 'truck', 'boss', 'blight', 2.0, { motion: 'roll' }],
-  ['car-kit', 'tractor-shovel', 'boss', 'blight', 2.0, { motion: 'roll' }],
-  ['car-kit', 'garbage-truck', 'boss', 'blight', 2.2, { motion: 'roll' }],
+  ['car-kit', 'truck', 'boss', 'blight', 4.5, { motion: 'roll' }],
+  ['car-kit', 'tractor-shovel', 'boss', 'blight', 4.5, { motion: 'roll' }],
+  ['car-kit', 'garbage-truck', 'boss', 'blight', 5.0, { motion: 'roll' }],
   // bosses (scaled up further by the enemy's size in data); the trucks are over the enemy triangle budget
-  ['castle-kit', 'siege-tower', 'boss', 'blight', 3.0, { motion: 'roll' }],
-  ['castle-kit', 'siege-ram', 'boss', 'blight', 2.2, { motion: 'roll' }],
+  ['castle-kit', 'siege-tower', 'boss', 'blight', 6.5, { motion: 'roll' }],
+  ['castle-kit', 'siege-ram', 'boss', 'blight', 4.5, { motion: 'roll' }],
 ];
 
 /** Height of a GLB from accessor bounds and node translation / scale (rotations ignored). */

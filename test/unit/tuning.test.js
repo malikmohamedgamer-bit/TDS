@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { content } from '../helpers.js';
+import { content, coreTowers } from '../helpers.js';
 import { buildMapWorld } from '../../src/core/mapLayout.js';
 import { Match } from '../../src/sim/match.js';
 import { resolveTuning, tuningWarnings, KNOBS } from '../../src/sim/tuning.js';
@@ -57,7 +57,7 @@ test('assists: extra cash, slow enemies, hero boost, full refund, skip wave; run
 });
 
 test('balance: every preset stays winnable on its target difficulty; lazy play loses on Standard', () => {
-  const run = (preset, difficulty, seed, strategy = 'smart') => playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty, seed, strategy, skill: 0.7, options: { preset } });
+  const run = (preset, difficulty, seed, strategy = 'smart') => playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty, seed, strategy, skill: 0.7, loadout: coreTowers(C), options: { preset } });
   for (const preset of Object.keys(C.tuning.presets)) {
     const wins = ['u0', 'u1', 'u2'].filter((s) => run(preset, 'normal', s).won).length;
     assert.ok(wins >= 1, `${preset}: imperfect bot won ${wins}/3 on Normal`);

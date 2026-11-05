@@ -12,3 +12,6 @@ export function content() {
   cached ??= loadContent(nodeReadJson);
   return cached;
 }
+
+/** The curated core towers (not generated batches, not legendary): what the balance tests guard. */
+export const coreTowers = (C) => [...C.towers.values()].filter((t) => !t.generated && t.rarity !== 'legendary').map((t) => t.id);

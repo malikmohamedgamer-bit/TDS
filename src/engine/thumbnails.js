@@ -1,6 +1,6 @@
 // Renders small portraits of 3D models (towers, enemies) into data URLs for UI icons.
 import * as THREE from 'three';
-import { loadGLB, ModelInstance } from './models.js';
+import { loadGLB, ModelInstance, modelSrc } from './models.js';
 import { TOWER_MODELS, ENEMY_RIGS } from './unitModels.js';
 import { rigFromProcedural, InstancedRig } from './instancedRig.js';
 
@@ -11,7 +11,7 @@ export async function towerThumbnail(renderer, content, towerId, size = 128, sil
   if (cache.has(key)) return cache.get(key);
   const def = content.towers.get(towerId);
   const obj = new THREE.Group();
-  const glb = def.model?.glb && content.models.get(def.model.glb);
+  const glb = modelSrc(content, def);
   if (glb) obj.add(new ModelInstance(await loadGLB(glb)).root);
   else if (TOWER_MODELS[towerId]) {
     const built = TOWER_MODELS[towerId]();
@@ -29,7 +29,7 @@ export async function enemyThumbnail(renderer, content, enemyId, size = 128, sil
   if (cache.has(key)) return cache.get(key);
   const def = content.enemies.get(enemyId);
   const obj = new THREE.Group();
-  const glb = def.model?.glb && content.models.get(def.model.glb);
+  const glb = modelSrc(content, def);
   if (glb) obj.add(new ModelInstance(await loadGLB(glb)).root);
   else {
     const rd = ENEMY_RIGS[enemyId] || ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;

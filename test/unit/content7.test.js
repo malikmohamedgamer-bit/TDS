@@ -2,7 +2,7 @@
 // (two roads), and the summon / bot / daily rules that depend on them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { content } from '../helpers.js';
+import { content, coreTowers } from '../helpers.js';
 import { buildMapWorld } from '../../src/core/mapLayout.js';
 import { Match } from '../../src/sim/match.js';
 import { towerStats } from '../../src/sim/stats.js';
@@ -17,9 +17,10 @@ const run = (m, s) => { for (let i = 0; i < s * 60; i++) m.step(); };
 
 test('content batch 1 is loaded: 2 legendary towers, 2 bosses, 2 maps', () => {
   const legend = [...C.towers.values()].filter((t) => t.rarity === 'legendary').map((t) => t.id).sort();
-  assert.deepEqual(legend, ['starfall_oracle', 'titan_railgun']);
-  assert.deepEqual([...C.enemies.values()].filter((e) => e.boss).map((e) => e.id).sort(), ['gravemaw', 'thornmother']);
-  assert.deepEqual([...C.maps.keys()].sort(), ['frostmere', 'riftline']);
+  for (const id of ['starfall_oracle', 'titan_railgun']) assert.ok(legend.includes(id));
+  const bossIds = [...C.enemies.values()].filter((e) => e.boss).map((e) => e.id);
+  for (const id of ['gravemaw', 'thornmother']) assert.ok(bossIds.includes(id));
+  for (const id of ['frostmere', 'riftline']) assert.ok(C.maps.has(id));
   assert.equal(C.maps.get('frostmere').paths.length, 2);
 });
 
@@ -109,10 +110,10 @@ test('daily loaners stay at epic or below (legendaries do not change the measure
 });
 
 test('balance smoke: Frostmere Normal is winnable with the non-legendary towers; lazy play loses', () => {
-  const loadout = [...C.towers.values()].filter((t) => t.rarity !== 'legendary').map((t) => t.id);
+  const loadout = coreTowers(C);
   const won = ['bal-1', 'bal-2', 'bal-3'].filter((seed) => playBot({ content: C, mapWorld: world('frostmere'), difficulty: 'normal', seed, skill: 0.7, loadout }).won);
   assert.ok(won.length >= 1, 'at least one of three seeds wins');
-  assert.equal(playBot({ content: C, mapWorld: world('frostmere'), difficulty: 'normal', seed: 'bal-1', skill: 0.7, strategy: 'lazy' }).won, false);
+  assert.equal(playBot({ content: C, mapWorld: world('frostmere'), difficulty: 'normal', seed: 'bal-1', skill: 0.7, strategy: 'lazy', loadout }).won, false);
 });
 
 test('difficulty bossHpMul softens bosses only, on that difficulty only', () => {
