@@ -192,8 +192,8 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
 }
 
 /** Play a full match with the bot. Returns the result plus bot report. */
-export function playBot({ content, mapWorld, difficulty = 'normal', seed = 'bot', loadout, levels, options, weak = false, strategy, skill = 1, maxTicks = 60 * 60 * 40 }) {
-  const m = new Match({ content, mapWorld, difficulty, seed, loadout, levels, options });
+export function playBot({ content, mapWorld, difficulty = 'normal', seed = 'bot', loadout, levels, options, hero, weak = false, strategy, skill = 1, maxTicks = 60 * 60 * 40 }) {
+  const m = new Match({ content, mapWorld, difficulty, seed, loadout, levels, options, hero });
   const bot = createBot(m, { loadout, weak, strategy, skill, seed });
   while (m.phase !== 'won' && m.phase !== 'lost' && m.tick < maxTicks) {
     bot.update();

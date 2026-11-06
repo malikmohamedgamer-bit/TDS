@@ -6,8 +6,10 @@ import { DAMAGE_COLORS } from '../engine/effects.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const TARGET_LABEL = { first: 'First', last: 'Last', strongest: 'Strongest', weakest: 'Weakest', fastest: 'Fastest', closest: 'Closest', flying: 'Flying only' };
-const ABILITY_KEYS = ['Z', 'X', 'G'];
-const ABILITY_ICON = { airstrike: '✈', frost_nova: '❄', commanders_rally: '⚑', artillery_barrage: '💥', field_repairs: '🔧', war_chest: '💰', gravity_well: '🌀', starfall: '☄' };
+const ABILITY_KEYS = ['Z', 'X', 'G', 'V'];
+const ABILITY_ICON = { airstrike: '✈', frost_nova: '❄', commanders_rally: '⚑', artillery_barrage: '💥', field_repairs: '🔧', war_chest: '💰', gravity_well: '🌀', starfall: '☄',
+  banner_of_valor: '🚩', flare_shells: '🎆', arcane_chain: 'ϟ', meteor: '🌋', wall_of_flame: '🔥', kindle: '♨', flashfire: '💨', reinforcements: '🪖', frag_volley: '💣',
+  overclock: '⚡', supply_drop: '📦', entangling_roots: '🌿', spirit_pack: '🐺', cleansing_bloom: '❀', verdant_renewal: '✚', marked_for_death: '◎', emp_burst: '⌁', recon_drone: '🛰', headhunter: '✖' };
 export const HOTBAR_KEYS = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'];
 export const DEFAULT_LOADOUT = ['rifleman', 'ember_adept', 'frost_weaver', 'marksman', 'rocket_battery', 'storm_caller'];
 

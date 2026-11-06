@@ -1,5 +1,5 @@
 // npm run balance -- [--preset standard|original|relaxed|all] [--difficulty normal|all|a,b] [--loadout all|starters|a,b]
-//   [--seeds 20] [--skill 0.7] [--strategy smart|lazy|weak] [--level 1] [--map id] [--verbose]
+//   [--seeds 20] [--skill 0.7] [--strategy smart|lazy|weak] [--level 1] [--map id] [--hero id|all] [--verbose]
 //   npm run balance -- --daily 10 [--from 2026-11-05] [--seeds 4] [--loaner 3] [--budget 3]   (Daily Challenge over N dates)
 // Plays whole matches headlessly and prints win rates. "smart" with skill < 1 is a sensible but
 // imperfect player; "lazy" uses 1-2 cheap tower types and never upgrades.
@@ -27,6 +27,7 @@ const skill = Number(opt('skill', 0.7));
 const strategy = opt('strategy', 'smart');
 const level = Number(opt('level', 1));
 const verbose = args.includes('--verbose');
+const heroes = list(opt('hero', [...content.heroes.keys()][0]), [...content.heroes.keys()]);
 const loadoutArg = opt('loadout', 'all');
 const loadout = loadoutArg === 'all' ? undefined : loadoutArg === 'starters' ? content.meta.starterTowers : loadoutArg.split(',');
 const levels = Object.fromEntries([...content.towers.keys()].map((id) => [id, level]));
@@ -65,20 +66,20 @@ const summary = [];
 for (const mapId of maps) {
   const map = content.maps.get(mapId);
   for (const preset of presets) {
-    for (const d of diffs) {
+    for (const d of diffs) for (const hero of heroes) {
       let wins = 0;
       let waves = 0;
       let keep = 0;
       const t0 = performance.now();
       for (let s = 0; s < seeds; s++) {
-        const r = playBot({ content, mapWorld: buildMapWorld(map, content.props), difficulty: d, seed: `bal-${s}`, levels, loadout, strategy, skill, options: { preset } });
+        const r = playBot({ content, mapWorld: buildMapWorld(map, content.props), difficulty: d, seed: `bal-${s}`, levels, loadout, strategy, skill, hero, options: { preset } });
         if (r.won) { wins++; keep += r.baseHp; }
         waves += r.won ? r.waves : r.wave - 1;
         if (verbose) console.log(`  ${preset} ${d} seed ${s}: ${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.waves} keep ${Math.round(r.baseHp)} placed ${r.bot.placed} upg ${r.bot.upgrades}`);
       }
-      const line = { map: mapId, preset, difficulty: d, strategy, skill, level, seeds, wins, winRate: wins / seeds, avgWavesCleared: +(waves / seeds).toFixed(1), avgKeepOnWin: wins ? Math.round(keep / wins) : 0, seconds: +((performance.now() - t0) / 1000).toFixed(1) };
+      const line = { map: mapId, preset, difficulty: d, hero, strategy, skill, level, seeds, wins, winRate: wins / seeds, avgWavesCleared: +(waves / seeds).toFixed(1), avgKeepOnWin: wins ? Math.round(keep / wins) : 0, seconds: +((performance.now() - t0) / 1000).toFixed(1) };
       summary.push(line);
-      console.log(`${mapId.padEnd(10)} ${preset.padEnd(9)} ${d.padEnd(10)} ${strategy}/${skill} L${level}: ${wins}/${seeds} won (${Math.round(line.winRate * 100)}%), avg waves cleared ${line.avgWavesCleared}, keep on win ${line.avgKeepOnWin} [${line.seconds}s]`);
+      console.log(`${mapId.padEnd(10)} ${preset.padEnd(9)} ${d.padEnd(10)} ${heroes.length > 1 ? `${hero.padEnd(17)} ` : ''}${strategy}/${skill} L${level}: ${wins}/${seeds} won (${Math.round(line.winRate * 100)}%), avg waves cleared ${line.avgWavesCleared}, keep on win ${line.avgKeepOnWin} [${line.seconds}s]`);
     }
   }
 }

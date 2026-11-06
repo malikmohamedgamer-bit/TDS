@@ -14,7 +14,7 @@ import { Hub } from '../ui/hub.js';
 import { towerThumbnail as tThumb, enemyThumbnail } from '../engine/thumbnails.js';
 import { buildMapWorld } from '../core/mapLayout.js';
 
-const ABILITY_CODES = ['KeyZ', 'KeyX', 'KeyG'];
+const ABILITY_CODES = ['KeyZ', 'KeyX', 'KeyG', 'KeyV'];
 
 export class MatchController {
   constructor(ctx) {

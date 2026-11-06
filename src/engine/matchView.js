@@ -36,6 +36,25 @@ const ABILITY_FX = {
   war_chest: { ring: '#FFD166', y: 1, count: 30, colors: ['#FFD166', '#FFF3B0'], up: 5, size: 0.14 },
   gravity_well: { ring: '#B15CFF', y: 0.4, count: 50, colors: ['#B15CFF', '#1E1B4B', '#C9A7FF'], speed: -0.6, up: 1, size: 0.16 },
   starfall: { ring: '#7FF6FF', y: 0.6, count: 70, colors: ['#7FF6FF', '#FFFFFF', '#B15CFF'], speed: 0.8, up: 8, size: 0.22, shake: 0.35 },
+  banner_of_valor: { ring: '#FFD166', y: 1.2, count: 36, colors: ['#FFD166', '#E5484D', '#FFF3B0'], up: 6, size: 0.14 },
+  flare_shells: { ring: '#FF6B35', y: 2, count: 50, colors: ['#FF6B35', '#FFE14D', '#FFF3B0'], speed: 0.5, up: 3, size: 0.16 },
+  arcane_chain: { ring: '#B15CFF', y: 1, count: 24, colors: ['#B15CFF', '#C9A7FF'], speed: 0.4, up: 2, size: 0.12 },
+  meteor: { ring: '#FF6B35', y: 0.4, count: 80, colors: ['#FF6B35', '#FF9F1C', '#3B1A14'], speed: 0.8, up: 8, size: 0.26, shake: 0.45 },
+  wall_of_flame: { ring: '#FF6B35', y: 0.3, count: 70, colors: ['#FF6B35', '#FFD166', '#C2410C'], speed: 0.5, up: 4, size: 0.18 },
+  kindle: { ring: '#FF9F1C', y: 1.2, count: 34, colors: ['#FF9F1C', '#FFD166'], up: 6, size: 0.14 },
+  flashfire: { ring: '#FFD166', y: 0.5, count: 60, colors: ['#FFD166', '#FF6B35', '#FFFFFF'], speed: 1.2, up: 2, size: 0.18, shake: 0.25 },
+  reinforcements: { ring: '#5B6B3A', y: 2, count: 30, colors: ['#C2B280', '#5B6B3A', '#FFD27A'], speed: 0.4, up: -2, size: 0.14 },
+  frag_volley: { ring: '#F28C28', y: 0.4, count: 55, colors: ['#FF9F1C', '#FFD27A', '#6E6E7A'], speed: 0.7, up: 6, size: 0.2, shake: 0.3 },
+  overclock: { ring: '#FFE14D', y: 1.2, count: 34, colors: ['#FFE14D', '#F28C28'], up: 5, size: 0.12 },
+  supply_drop: { ring: '#3FB950', y: 1, count: 30, colors: ['#FFD166', '#3FB950', '#C2B280'], up: 5, size: 0.14 },
+  entangling_roots: { ring: '#5A9440', y: 0.2, count: 60, colors: ['#5A9440', '#7BD389', '#7A5230'], speed: 0.5, up: 2, size: 0.18 },
+  spirit_pack: { ring: '#7FF6FF', y: 0.6, count: 30, colors: ['#7FF6FF', '#2EC4B6'], speed: 0.4, up: 3, size: 0.14 },
+  cleansing_bloom: { ring: '#FFF3B0', y: 0.8, count: 60, colors: ['#FFF3B0', '#7BD389', '#FFFFFF'], speed: 0.7, up: 5, size: 0.16 },
+  verdant_renewal: { ring: '#7BD389', y: 1, count: 40, colors: ['#7BD389', '#3FB950', '#FFF3B0'], up: 5, size: 0.14 },
+  marked_for_death: { ring: '#E5484D', y: 1, count: 24, colors: ['#E5484D', '#FFFFFF'], speed: 0.3, up: 2, size: 0.12 },
+  emp_burst: { ring: '#FFE14D', y: 0.8, count: 60, colors: ['#FFE14D', '#7FDBFF', '#FFFFFF'], speed: 1, up: 3, size: 0.14, shake: 0.2 },
+  recon_drone: { ring: '#7FDBFF', y: 3, count: 40, colors: ['#7FDBFF', '#FFFFFF'], speed: 0.6, up: 1, size: 0.1 },
+  headhunter: { ring: '#E5484D', y: 1, count: 40, colors: ['#E5484D', '#D9D9D9', '#1C1E24'], speed: 0.6, up: 3, size: 0.16 },
 };
 
 export class MatchView {
@@ -287,6 +306,7 @@ export class MatchView {
         }
         case 'leak': this.fx.burst(e.x, 1, e.z, { count: 20, colors: ['#E63946', '#FF3CAC'], up: 4 }); break;
         case 'heal': this.fx.ring(e.x, 0.1, e.z, { color: '#FF9AD5', r1: e.radius, life: 0.6 }); break;
+        case 'reveal': this.fx.burst(e.x, 1, e.z, { count: 10, colors: ['#FFFFFF', '#7FDBFF'], up: 2, size: 0.1 }); break;
         case 'freeze': { const ev = this.enemyVis.get(e.id); if (ev) ev.frozen = this.time + e.duration; break; }
         case 'hex': this.fx.bolt(e.x, 6, e.z, e.x, 1.5, e.z, { segments: 5, jitter: 0.6, life: 0.3 }); break;
         case 'telegraph': this._telegraph(e); break;

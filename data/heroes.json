@@ -8,7 +8,11 @@
       "rarity": "rare",
       "description": "Spellblade officer: a saber that cuts with arcane light and a commander's rally.",
       "model": {
-        "builder": "commander"
+        "builder": "commander",
+        "gear": {
+          "head": "cap",
+          "weapon": "blade"
+        }
       },
       "attack": {
         "damage": 12,
@@ -20,9 +24,11 @@
       "abilities": [
         "commanders_rally",
         "airstrike",
-        "frost_nova"
+        "frost_nova",
+        "banner_of_valor"
       ],
-      "hp": 200
+      "hp": 200,
+      "role": "Hybrid: tower buffs and burst"
     },
     {
       "id": "warmaster_ryn",
@@ -41,6 +47,10 @@
           "capeIn": "#3D4451",
           "blade": "#D9D9D9",
           "hilt": "#F28C28"
+        },
+        "gear": {
+          "head": "helmet",
+          "weapon": "rifle"
         }
       },
       "attack": {
@@ -53,9 +63,11 @@
       "abilities": [
         "artillery_barrage",
         "field_repairs",
-        "war_chest"
+        "war_chest",
+        "flare_shells"
       ],
-      "hp": 240
+      "hp": 240,
+      "role": "Economy and keep support"
     },
     {
       "id": "archmage_seren",
@@ -74,6 +86,10 @@
           "capeIn": "#1E1B4B",
           "blade": "#7FF6FF",
           "hair": "#E8E0FF"
+        },
+        "gear": {
+          "head": "hood",
+          "weapon": "staff"
         }
       },
       "attack": {
@@ -86,9 +102,189 @@
       "abilities": [
         "gravity_well",
         "starfall",
-        "frost_nova"
+        "frost_nova",
+        "arcane_chain"
       ],
-      "hp": 170
+      "hp": 170,
+      "role": "Crowd control and boss burst"
+    },
+    {
+      "id": "pyromancer_ignis",
+      "name": "Ignis Emberheart",
+      "faction": "hero",
+      "rarity": "epic",
+      "role": "Fire damage over time",
+      "description": "Magic pyromancer: fire bolts that leave enemies burning, meteors and walls of flame.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "flame",
+          "weapon": "staff"
+        },
+        "colors": {
+          "coat": "#7A1F12",
+          "coatTrim": "#FFD166",
+          "vest": "#FF6B35",
+          "pants": "#3B1A14",
+          "cape": "#C2410C",
+          "capeIn": "#3B1A14",
+          "blade": "#FF9F1C",
+          "hilt": "#3B2A20",
+          "hair": "#2B1A14",
+          "skin": "#E8B48C"
+        }
+      },
+      "attack": {
+        "damage": 8,
+        "damageType": "fire",
+        "rate": 1.1,
+        "range": 9,
+        "splash": 2.5,
+        "burn": {
+          "dps": 6,
+          "duration": 3
+        }
+      },
+      "abilities": [
+        "meteor",
+        "wall_of_flame",
+        "kindle",
+        "flashfire"
+      ],
+      "hp": 180
+    },
+    {
+      "id": "sergeant_kade",
+      "name": "Sergeant Kade",
+      "faction": "hero",
+      "rarity": "epic",
+      "role": "Allies on the road and tower speed",
+      "description": "Modern War assault sergeant: a light machine gun, rifle reinforcements and supply drops.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "helmet",
+          "weapon": "rifle",
+          "pack": true
+        },
+        "colors": {
+          "coat": "#5B6B3A",
+          "coatTrim": "#C2B280",
+          "vest": "#A8976A",
+          "pants": "#47552C",
+          "cape": "#5B6B3A",
+          "capeIn": "#47552C",
+          "blade": "#3D4451",
+          "hilt": "#1C1E24",
+          "hair": "#1C1410",
+          "skin": "#C68E64"
+        }
+      },
+      "attack": {
+        "damage": 6,
+        "damageType": "physical",
+        "rate": 3,
+        "range": 8,
+        "splash": 0
+      },
+      "abilities": [
+        "reinforcements",
+        "frag_volley",
+        "overclock",
+        "supply_drop"
+      ],
+      "hp": 260
+    },
+    {
+      "id": "grovewarden_nyra",
+      "name": "Grovewarden Nyra",
+      "faction": "hero",
+      "rarity": "epic",
+      "role": "Control, cleansing and healing",
+      "description": "Magic warden of the old groves: slowing thorn bolts, entangling roots and spirit wolves.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "antlers",
+          "weapon": "staff"
+        },
+        "colors": {
+          "coat": "#2F5D2A",
+          "coatTrim": "#7BD389",
+          "vest": "#5A9440",
+          "pants": "#3B2A20",
+          "cape": "#4B7F36",
+          "capeIn": "#2F5D2A",
+          "blade": "#7BD389",
+          "hilt": "#7A5230",
+          "hair": "#C9A26B",
+          "skin": "#D9A982"
+        }
+      },
+      "attack": {
+        "damage": 10,
+        "damageType": "poison",
+        "rate": 1.2,
+        "range": 9,
+        "splash": 0,
+        "slow": {
+          "amount": 0.2,
+          "duration": 1.5
+        }
+      },
+      "abilities": [
+        "entangling_roots",
+        "spirit_pack",
+        "cleansing_bloom",
+        "verdant_renewal"
+      ],
+      "hp": 200
+    },
+    {
+      "id": "captain_holt",
+      "name": "Captain Mara Holt",
+      "faction": "hero",
+      "rarity": "legendary",
+      "role": "Precision: marks, shield breaking, finishers",
+      "description": "Modern War recon captain: a marksman rifle that marks targets, EMP bursts and drone sweeps.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "beret",
+          "weapon": "rifle",
+          "scope": true
+        },
+        "colors": {
+          "coat": "#3D4451",
+          "coatTrim": "#E5484D",
+          "vest": "#5B6B3A",
+          "pants": "#2B2F3A",
+          "cape": "#3D4451",
+          "capeIn": "#2B2F3A",
+          "blade": "#3D4451",
+          "hilt": "#1C1E24",
+          "hair": "#7A3B1F",
+          "skin": "#F1C7A0"
+        }
+      },
+      "attack": {
+        "damage": 30,
+        "damageType": "physical",
+        "rate": 0.5,
+        "range": 16,
+        "splash": 0,
+        "mark": {
+          "amount": 0.15,
+          "duration": 3
+        }
+      },
+      "abilities": [
+        "marked_for_death",
+        "emp_burst",
+        "recon_drone",
+        "headhunter"
+      ],
+      "hp": 190
     }
   ]
 }

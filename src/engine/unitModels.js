@@ -283,6 +283,34 @@ export const ENEMY_RIGS = {
 
 // =============================================================================== allies (rigs)
 export const ALLY_RIGS = {
+  // Sergeant Kade's Reinforcements (hero skill): helmeted rifleman, War palette
+  rifle_trooper: {
+    height: 1.5,
+    parts: [
+      { name: 'body', pivot: [0, 0.8, 0], build: (b) => {
+        b.box(0.46, 0.5, 0.3, C.olive, { pos: [0, 1.0, 0] });
+        b.box(0.36, 0.34, 0.06, C.khaki, { pos: [0, 1.02, 0.16] });
+        b.box(0.3, 0.28, 0.28, C.skin, { pos: [0, 1.4, 0] });
+        for (const s of [-1, 1]) b.box(0.06, 0.05, 0.02, C.black, { pos: [s * 0.07, 1.42, 0.15] });
+        b.sphere(0.22, 8, 5, C.olive, { pos: [0, 1.53, 0], scale: [1.05, 0.62, 1.08] });
+        b.box(0.12, 0.12, 0.6, C.gunmetal, { pos: [0.16, 1.02, 0.3] });
+        b.box(0.05, 0.05, 0.28, C.black, { pos: [0.16, 1.05, 0.72] });
+        b.box(0.05, 0.03, 0.03, C.muzzle, { glow: true, intensity: 1.3, pos: [0.16, 1.05, 0.87] });
+        b.box(0.3, 0.34, 0.16, C.khakiDark, { pos: [0, 1.0, -0.22] });
+      } },
+      ...['A', 'B'].map((g) => ({ name: `leg${g}`, pivot: [g === 'A' ? -0.12 : 0.12, 0.75, 0], build: (b) => {
+        const x = g === 'A' ? -0.12 : 0.12;
+        b.box(0.17, 0.62, 0.2, C.oliveDark, { pos: [x, 0.44, 0] });
+        b.box(0.2, 0.14, 0.28, C.black, { pos: [x, 0.07, 0.04] });
+      } })),
+    ],
+    clips: {
+      move: { duration: 0.5, pose: (u, o) => { o.legA = { r: [0.55 * S(u), 0, 0] }; o.legB = { r: [-0.55 * S(u), 0, 0] }; o.body = { p: [0, 0.03 * Math.abs(S(u)), 0] }; } },
+      idle: { duration: 1.6, pose: (u, o) => { o.body = { p: [0, 0.015 * S(u), 0] }; } },
+      attack: { duration: 0.35, loop: false, pose: (u, o) => { o.body = { p: [0, 0, -0.08 * Math.sin(u * P)], r: [-0.08 * Math.sin(u * P), 0, 0] }; } },
+      death: { duration: 0.6, loop: false, pose: (u, o) => deathPose(u, o, 'x') },
+    },
+  },
   spirit_wolf: {
     height: 1.0,
     parts: [

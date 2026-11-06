@@ -37,7 +37,10 @@ async function boot() {
   disc.receiveShadow = true;
   r.scene.add(disc, grid);
 
-  const hero = new HeroView(r.scene);
+  // one view per hero look (data/heroes.json model colors + gear); the first one stands in for scale
+  const heroViews = new Map([...content.heroes.values()].map((h) => [h.id, new HeroView(r.scene, h.model?.colors, h.model?.gear)]));
+  let hero = heroViews.values().next().value;
+  for (const v of heroViews.values()) if (v !== hero) { v.root.visible = false; v.blob.visible = false; }
   let showHero = true;
   const stage = new THREE.Group();
   r.scene.add(stage);
@@ -45,7 +48,7 @@ async function boot() {
   // asset catalogue
   const assets = [];
   for (const [id, m] of content.models) assets.push({ id: `glb:${id}`, name: id.replace(/_/g, ' '), group: `${m.kind === 'tower' ? 'Towers' : m.kind === 'boss' ? 'Bosses' : 'Enemies'} (${/^pack: Kenney/.test(m.source || '') ? 'Kenney CC0, recoloured' : /^pack: Quaternius/.test(m.source || '') ? 'Quaternius CC0, recoloured' : 'Blender GLB'})`, kind: 'glb', model: m });
-  assets.push({ id: 'hero:commander', name: 'Commander Vale', group: 'Hero (code model)', kind: 'hero' });
+  for (const h of content.heroes.values()) assets.push({ id: `hero:${h.id}`, name: h.name, group: 'Heroes (code model, own colours and gear)', kind: 'hero', heroId: h.id });
   for (const id of Object.keys(TOWER_MODELS)) assets.push({ id: `tower:${id}`, name: id.replace(/_/g, ' '), group: 'Towers (code models)', kind: 'tower', build: TOWER_MODELS[id] });
   for (const [id, def] of Object.entries({ ...ENEMY_RIGS, ...ALLY_RIGS })) assets.push({ id: `rig:${id}`, name: id.replace(/_/g, ' '), group: ENEMY_RIGS[id] ? 'Enemies (code models)' : 'Summons (code models)', kind: 'rig', def });
   for (const p of content.props.values()) assets.push({ id: `prop:${p.id}`, name: p.id.replace(/_/g, ' '), group: 'Props (code models)', kind: 'prop', def: p });
@@ -107,6 +110,10 @@ async function boot() {
     const a = assets.find((x) => x.id === id);
     if (!a) throw new Error(`unknown asset ${id}`);
     current = a;
+    if (a.kind === 'hero') {
+      for (const v of heroViews.values()) { v.root.visible = false; v.blob.visible = false; }
+      hero = heroViews.get(a.heroId);
+    }
     for (const b of list.querySelectorAll('button')) b.setAttribute('aria-current', String(b.dataset.id === id));
     stage.clear();
     inst = null;

@@ -72,7 +72,7 @@ async function boot() {
 
   const hero = new Character(mw.world, map.playerSpawn);
   const heroDef = content.heroes.get(settings.hero) || [...content.heroes.values()][0];
-  const heroView = new HeroView(renderer.scene, heroDef?.model?.colors);
+  const heroView = new HeroView(renderer.scene, heroDef?.model?.colors, heroDef?.model?.gear);
   const rig = new CameraRig(renderer.camera, mw, settings);
   rig.yaw = (map.playerSpawn.yaw ?? 0) + Math.PI;
 

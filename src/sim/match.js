@@ -319,9 +319,10 @@ export class Match {
     const b = t.base;
     const a = t.aura || { damage: 0, range: 0, rate: 0, detection: false };
     let rate = (b.rate || 0) * (1 + a.rate);
-    for (const bf of t.buffs) if (bf.until > this.time) rate *= 1 + (bf.rate || 0);
+    let dmul = 1 + a.damage;
+    for (const bf of t.buffs) if (bf.until > this.time) { rate *= 1 + (bf.rate || 0); dmul *= 1 + (bf.damage || 0); }
     return {
-      damage: (b.damage || 0) * (1 + a.damage),
+      damage: (b.damage || 0) * dmul,
       range: (b.range || 0) * (1 + a.range) * this.rules.towerRange,
       rate,
       detection: !!b.detection || a.detection,
@@ -861,7 +862,7 @@ export class Match {
     h.cooldown = 1 / at.rate;
     this.events.push({ type: 'heroAttack', target: target.id, x: h.x, z: h.z, tx: target.x, tz: target.z });
     const before = this.stats.kills;
-    this._hit(target, { amount: at.damage * this.tune.heroDamage, type: at.damageType, splash: at.splash || 0, targets: { ground: true, air: true }, detection: true }, null, target.x, target.z);
+    this._hit(target, { amount: at.damage * this.tune.heroDamage, type: at.damageType, splash: at.splash || 0, burn: at.burn, slow: at.slow, mark: at.mark, chain: at.chain, targets: { ground: true, air: true }, detection: true }, null, target.x, target.z);
     h.kills += this.stats.kills - before;
   }
 
@@ -891,9 +892,30 @@ export class Match {
     for (const p of this.pendingAbilities) {
       if (p.at > this.time) { keep.push(p); continue; }
       const fx = p.def.effects;
-      if (fx.damage || fx.freeze || fx.stun || fx.slow) {
-        this._splash({ amount: fx.damage || 0, type: fx.damageType || 'physical', splash: p.def.radius, stun: fx.stun, freeze: fx.freeze, slow: fx.slow, targets: { ground: true, air: true }, detection: true }, null, p.x, p.z);
+      const rr = p.def.radius * p.def.radius;
+      const inArea = () => this.enemies.filter((e) => e.alive && r2(e.x, e.z, p.x, p.z) <= rr);
+      // strip shields / cloaks first so the damage below lands on health and every tower sees them
+      if (fx.shieldBreak) for (const e of inArea()) e.shield *= e.boss ? 1 - fx.shieldBreak * 0.5 : 1 - fx.shieldBreak;
+      if (fx.reveal) for (const e of inArea()) if (e.stealth) { e.stealth = false; this.events.push({ type: 'reveal', id: e.id, x: e.x, z: e.z }); }
+      if (fx.execute) for (const e of inArea()) if (!e.boss && e.hp <= e.maxHp * fx.execute) { this.events.push({ type: 'damage', id: e.id, amount: e.hp, damageType: fx.damageType || 'physical', x: e.x, y: e.y, z: e.z, shield: false }); this.stats.damage += e.hp; this._kill(e, null); }
+      if (fx.damage || fx.freeze || fx.stun || fx.slow || fx.burn || fx.mark) {
+        const packet = { amount: fx.damage || 0, type: fx.damageType || 'physical', splash: p.def.radius, stun: fx.stun, freeze: fx.freeze, slow: fx.slow, burn: fx.burn, mark: fx.mark, targets: { ground: true, air: true }, detection: true };
+        if (fx.chain) {
+          // chain lightning: strikes the enemy nearest the point, then jumps
+          let first = null;
+          let bd = rr;
+          for (const e of this.enemies) { if (!e.alive) continue; const d = r2(e.x, e.z, p.x, p.z); if (d <= bd) { bd = d; first = e; } }
+          if (first) this._hit(first, { ...packet, splash: 0, chain: fx.chain }, null, first.x, first.z);
+        } else this._splash(packet, null, p.x, p.z);
       }
+      if (fx.knockback) {
+        for (const e of inArea()) {
+          if (e.flying) continue;
+          e.d = Math.max(0, e.d - fx.knockback * (e.boss ? 0.25 : 1));
+          this._placeEnemy(e);
+        }
+      }
+      if (fx.allies) this._abilityAllies(fx.allies, p.x, p.z);
       // keep repairs and war chests (hero skills)
       if (fx.healBase) this.baseHp = Math.min(this.baseMax, this.baseHp + fx.healBase);
       if (fx.cash) { this.cash += fx.cash; this.stats.cashEarned += fx.cash; }
@@ -901,7 +923,7 @@ export class Match {
         for (const t of this.towers) {
           if (r2(t.x, t.z, p.x, p.z) <= p.def.radius * p.def.radius) {
             t.buffs = t.buffs.filter((b) => b.until > this.time);
-            t.buffs.push({ rate: fx.towerBuff.rate, until: this.time + fx.towerBuff.duration });
+            t.buffs.push({ rate: fx.towerBuff.rate || 0, damage: fx.towerBuff.damage || 0, until: this.time + fx.towerBuff.duration });
           }
         }
       }
@@ -910,13 +932,39 @@ export class Match {
     this.pendingAbilities = keep;
   }
 
+  /** Hero skill reinforcements: allies appear on the road point nearest (x, z) and fight like summons. */
+  _abilityAllies(al, x, z) {
+    let best = null;
+    let bd = Infinity;
+    const pt = {};
+    for (const path of this.paths) {
+      for (let d = 0; d <= path.length; d += 1) {
+        path.pointAt(d, pt);
+        const dd = r2(pt.x, pt.z, x, z);
+        if (dd < bd) { bd = dd; best = { path, d }; }
+      }
+    }
+    if (!best) return;
+    const u = al.unit;
+    for (let i = 0; i < al.count; i++) {
+      const a = {
+        id: this.nextId++, owner: -1, kind: u.id, path: best.path, d: Math.min(best.path.length - 1, best.d + i * 1.2), x: 0, z: 0, y: 0,
+        hp: u.hp, maxHp: u.hp, damage: u.damage, rate: u.rate, cd: 0, speed: u.speed, range: u.range,
+        splash: u.splash || 0, damageType: u.damageType || 'physical', dead: false, fighting: false, heading: 0,
+      };
+      this._placeAlly(a);
+      this.allies.push(a);
+      this.events.push({ type: 'allySpawn', id: a.id, uid: -1, kind: a.kind, x: a.x, z: a.z });
+    }
+  }
+
   /** Automatic abilities aim at the densest group (or the boss); null if not worth it. */
   _bestAbilitySpot(def) {
     if (def.target === 'self') {
       if (!this.hero) return null;
       // keep repairs only when the keep has lost at least that much; a war chest whenever ready
-      if (def.effects.healBase && !def.effects.towerBuff) return this.baseHp <= this.baseMax - def.effects.healBase ? { x: this.hero.x, z: this.hero.z } : null;
       if (def.effects.cash && !def.effects.towerBuff) return { x: this.hero.x, z: this.hero.z };
+      if (def.effects.healBase && !def.effects.towerBuff) return this.baseHp <= this.baseMax - def.effects.healBase ? { x: this.hero.x, z: this.hero.z } : null;
       if (!this.enemies.length) return null;
       const near = this.towers.filter((t) => r2(t.x, t.z, this.hero.x, this.hero.z) <= def.radius * def.radius).length;
       return near >= 2 ? { x: this.hero.x, z: this.hero.z } : null;

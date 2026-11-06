@@ -3,6 +3,10 @@
 Play at https://malikmohamedgamer-bit.github.io/TDS/ (or `npm run dev`). Sound on.
 
 ## Try first (new on 2026-11-06)
+0. **Seven heroes, four skills each** (final-product run, batch 1): Play > Hero shows every hero with its
+   role and skills. New: Ignis Emberheart (fire, meteors), Sergeant Kade (riflemen reinforcements, supply
+   drops), Grovewarden Nyra (roots, spirit wolves, cleansing), Captain Mara Holt (marks, EMP, finishers).
+   The fourth skill key is V. Progress toward the full game: docs/COMPLETION.md.
 1. **New maps**: Play > Map. Glacier Gate unlocks at player level 2, Mirrormire at 4, Starfall Sanctum at 6,
    then a generated map every two levels (5 to 27). To try a locked map now, open the game with
    `?map=<id>` (for example `?map=mirrormire`). The three flagships show off the new monsters and bosses.

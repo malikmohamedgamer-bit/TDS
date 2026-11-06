@@ -27,13 +27,13 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Towers | 37 (21 War, 16 Magic) on **28 distinct models**: 12 core + 2 legendary + 19 kenney_b1 (incl. Lancer Mech) + 4 quaternius_b1 (Rifle Squad; Magic: Starwatch Tower, Sanctum of Dawn, Spirit Barracks) |
 | Enemies / bosses | 42 on **33 distinct models** / 19 on **14 distinct models**: 11 core + 18 kenney_b1 + 8 quaternius_b1 + 5 quaternius_b2 (one model each) / 2 core + 10 kenney_b1 + 5 quaternius_b1 + 2 quaternius_b2. New units: flagship waves (featured swaps + final bosses), Endless, Boss Rush (6 bosses drawn per run from all 19) |
 | Imported pack models | 48: 23 Kenney + 25 Quaternius. data/models.json: 55 (7 Blender + 48 pack), **all 55 used by units**. All units: 98 on 75 distinct models (code-built models counted once each) |
-| Heroes / abilities | 3 heroes (Commander Vale default, Warmaster Ryn, Archmage Seren; hub Hero picker) / 8 abilities |
+| Heroes / abilities | 7 heroes, 4 skills each (Commander Vale default, Warmaster Ryn, Archmage Seren, Ignis Emberheart, Sergeant Kade, Grovewarden Nyra, Captain Mara Holt; own colours + headgear/weapon gear on the code model) / 27 skills |
 | Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
 | Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
 | Daily login rewards | 7-day streak |
 | Modes / modifiers | 7 / 9 |
 | Music | 4 moods (hub, build, wave, boss), 17 map keys (one per map, theme scale), procedural (no audio files) |
-| Unit tests / E2E tests | 81 / 24 |
+| Unit tests / E2E tests | 84 / 24 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -130,20 +130,25 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-Final-product run (owner brief 2026-11-06, see docs/COMPLETION.md for the scoreboard and batch plan):
-- Batch 1 in progress. Done: bug 37 closed as Accepted after 3 attempts (Lancer Mech `limit: 1` kept),
-  docs/COMPLETION.md + `node tools/count-content.mjs` (honest totals / distinct mechanics / models).
-- **Next:** finish batch 1: 4 new heroes (data/heroes.json + data/abilities.json; distinct palettes via
-  `model.colors` of the commander builder, 4 skills each, so give the 3 old heroes a 4th skill too) and a
-  better hero picker in `src/ui/hub.js` (cards with portrait, role, skills; no reload if avoidable).
-  Then batch 2 (towers A). Biggest score gaps: bosses have only 2 distinct mechanic sets (19 bosses) and
-  4 phase mechanics; quests 14/80, achievements 8/80; no cosmetics.
+Final-product run (owner brief 2026-11-06; targets raised to the full spec, scoreboard in docs/COMPLETION.md,
+stop at about 95% of the 5-hour window / 97% weekly, checkpoint to wip/final-product before each batch).
+- Batch 1 done: bug 37 accepted (Lancer limit 1), COMPLETION.md + `node tools/count-content.mjs`,
+  4 new heroes, 4 skills per hero, 9 new skill effects (src/sim/match.js `_updateAbilities`), hero gear
+  (src/engine/heroView.js), hero picker (src/ui/hub.js `_heroPicker`), `npm run balance -- --hero all`.
+- **Next: bosses batch (owner priority 1: only 2 distinct boss mechanic sets).** Add new boss phase action
+  types in `src/sim/match.js` `_bossPhases` / `_updateTelegraphs` (ideas: teleport forward, heal pulse,
+  stealth cloak, immunity phase per damage type, split into minions on death, tower-disable beam on a
+  line, cash drain, spawn portals on other roads, reflect/armour phase, speed dash with telegraph,
+  regen phase, summon shielders), each telegraphed (event + matchView ring), then bosses in a new data
+  file using them (unique phase sets), unit tests per action, balance bot.
+- Then unique-mechanic towers and enemies, maps, meta (quests, achievements, cosmetics, Index),
+  music and polish (owner priority order).
 
 ## Known weak spots (honest)
 
 - New maps (2026-11-06): balance from 12 bot seeds each (noisy); generated maps reuse two campaign wave
   tables (varied by themed swaps and HP); themes reuse the existing prop set with new colours.
-- New heroes reuse Commander Vale's model (recoloured); hero choice changes the look on reload.
+- All 7 heroes share Commander Vale's code model (own colours, headgear and weapon); picking a hero still reloads the page to rebuild the look.
 - Generated tower menu now too strong alone (bug 37). Rifle Squad is a plain Rifleman upgrade.
 - Ultimate Fantasy RTS towers are static buildings (they aim and recoil by code only).
 

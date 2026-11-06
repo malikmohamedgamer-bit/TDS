@@ -100,6 +100,27 @@ export class Hub {
   }
 
   // ------------------------------------------------------------------------- tabs ----------
+  /** Hero picker: one card per hero (side, role) and the chosen hero's attack and four skills. */
+  _heroPicker() {
+    const heroes = [...this.c.heroes.values()];
+    const side = (h) => {
+      const f = h.abilities.map((id) => this.c.abilities.get(id)?.faction);
+      const w = f.filter((x) => x === 'war').length;
+      const m = f.filter((x) => x === 'magic').length;
+      return w > m ? 'war' : m > w ? 'magic' : 'hybrid';
+    };
+    const SIDE = { war: '⛨ War', magic: '✦ Magic', hybrid: '◈ Hybrid' };
+    const cur = this.c.heroes.get(this.ctx.heroId) || heroes[0];
+    const at = cur.attack || {};
+    const extras = [at.splash ? `splash ${at.splash} m` : '', at.burn ? 'burns' : '', at.slow ? 'slows' : '', at.mark ? 'marks' : '', at.chain ? 'chains' : ''].filter(Boolean).join(', ');
+    return `<fieldset class="hero-pick"><legend>Hero <span class="count">${heroes.length}</span></legend>
+      <div class="diffs heroes" role="radiogroup" aria-label="Hero">${heroes.map((h) => `<label class="f-${side(h)}"><input type="radio" name="hero" value="${h.id}" data-testid="hero-${h.id}" ${h.id === cur.id ? 'checked' : ''}><span><b>${esc(h.name)}</b><small>${SIDE[side(h)]} · ${esc(h.role || '')}</small></span></label>`).join('')}</div>
+      <div class="hero-detail f-${side(cur)}" data-testid="hero-detail">
+        <p class="note"><b>${esc(cur.name)}</b>: ${esc(cur.description)} Attack: ${at.damage} ${esc(at.damageType)} every ${(1 / (at.rate || 1)).toFixed(1)} s, range ${at.range} m${extras ? ` (${extras})` : ''}. Health ${cur.hp}.</p>
+        <ol class="skills">${cur.abilities.map((id) => { const a = this.c.abilities.get(id); return `<li><b>${esc(a?.name || id)}</b> <small>${a?.cooldown ?? '?'} s · ${a?.target === 'self' ? 'around the hero' : 'aimed'}</small><br><small>${esc(a?.description || '')}</small></li>`; }).join('')}</ol>
+      </div></fieldset>`;
+  }
+
   _play() {
     const diffs = [...this.c.difficulties.values()].sort((a, b) => a.order - b.order);
     const modes = [...(this.c.modes?.values() || [])].map((m) => ({ ...m, locked: m.unlockLevel && this.save.profile.level < m.unlockLevel ? `Reach player level ${m.unlockLevel}` : null }));
@@ -118,7 +139,7 @@ export class Hub {
     const usable = (id) => anyTower || owns(this.save, id);
     return `
       ${maps.length > 1 ? `<fieldset><legend>Map</legend><div class="diffs maps" role="radiogroup" aria-label="Map">${maps.map((m) => `<label><input type="radio" name="map" value="${m.id}" data-testid="map-${m.id}" ${m.id === mapId ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked || `${m.paths.length} road${m.paths.length > 1 ? 's' : ''}${this.save.progress.bestDifficultyWon >= 0 && this.save.progress.best?.[m.id] ? ` · best ${Math.max(...Object.values(this.save.progress.best[m.id]))} waves` : ''}`)}</small></span></label>`).join('')}</div></fieldset>` : ''}
-      ${this.c.heroes.size > 1 ? `<fieldset><legend>Hero</legend><div class="diffs heroes" role="radiogroup" aria-label="Hero">${[...this.c.heroes.values()].map((h) => `<label><input type="radio" name="hero" value="${h.id}" data-testid="hero-${h.id}" ${h.id === this.ctx.heroId ? 'checked' : ''}><span><b>${esc(h.name)}</b><small>${esc(h.abilities.map((a) => this.c.abilities.get(a)?.name || a).join(' · '))}</small></span></label>`).join('')}</div></fieldset>` : ''}
+      ${this.c.heroes.size > 1 ? this._heroPicker() : ''}
       ${modes.length > 1 ? `<fieldset><legend>Mode</legend><div class="diffs modes" role="radiogroup" aria-label="Mode">${modes.map((m) => `<label><input type="radio" name="mode" value="${m.id}" data-testid="mode-${m.id}" ${m.id === this.cfg.mode ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked ? m.locked : m.desc)}</small></span></label>`).join('')}</div></fieldset>` : ''}
       ${mode.modifiers ? `<fieldset><legend>Modifiers <span class="count">reward x${modMul.toFixed(2)}</span></legend><div class="mods">${mods.map((x) => `<label class="row"><input type="checkbox" name="mod" value="${x.id}" ${this.cfg.modifiers.includes(x.id) ? 'checked' : ''}> <b>${esc(x.name)}</b> <small>${esc(x.desc)} · x${x.rewardMul}</small></label>`).join('')}</div></fieldset>` : ''}
       ${daily ? `<fieldset data-testid="daily-challenge"><legend>Today (${daily.date})</legend><p class="note">Difficulty: ${esc(this.c.difficulties.get(daily.difficulty).name)} (fixed). Modifiers: ${daily.modifiers.map((id) => `<b>${esc(this.c.modifiers.get(id).name)}</b> (${esc(this.c.modifiers.get(id).desc)})`).join(', ')}. Loaner loadout below, every tower at level ${Object.values(daily.levels)[0]}. Win for ${Object.entries(daily.reward).map(([k, v]) => `${v} ${k}`).join(' + ')}${this.save.claimed.includes(daily.rewardId) ? ' (already claimed today)' : ''}.</p></fieldset>` : ''}

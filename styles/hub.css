@@ -130,3 +130,14 @@
 /* 17+ maps: keep the picker compact; locked maps stay listed with their unlock level */
 .diffs.maps { max-height: 8.6rem; overflow-y: auto; padding-right: 4px; } /* about two rows: Difficulty and Start stay in view */
 .diffs.maps label { flex: 1 1 150px; }
+
+/* hero picker (2026-11-06): cards per hero plus the chosen hero's skills */
+.diffs.heroes label { flex: 1 1 140px; }
+.diffs.heroes label.f-war span { border-left: 4px solid #F28C28; }
+.diffs.heroes label.f-magic span { border-left: 4px solid #7B4DFF; }
+.diffs.heroes label.f-hybrid span { border-left: 4px solid #FFD166; }
+.hero-detail { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: #161a26; border: 2px solid var(--border); }
+.hero-detail.f-war { border-color: #5B6B3A; }
+.hero-detail.f-magic { border-color: #4B3A99; }
+.hero-detail .skills { margin: 6px 0 0; padding-left: 1.3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 4px 14px; }
+.hero-detail .skills small { color: var(--text-2); }
