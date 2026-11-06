@@ -137,8 +137,7 @@ parts, `buildBossRig(kit)`; enemy data `model.kit = { body, parts, accent }`), `
 thumbnails, viewer), boss_mech_01-08 on kit builds from tools/gen-bosses.mjs (`KIT_BOSSES = 8`, body from the lead
 mechanic, one part per mechanic, glow accent from the resist profile). Sheets: docs/screenshots/identity/kit-b1.
 Note: ModelBuilder `cyl` / `cone` are base-anchored unless `centered: true`.
-**Next:** (1) check the kit bosses in a real match (`?map=` + Boss Rush or TDS helpers; scale, health bar, rings);
-(2) raise `KIT_BOSSES` toward 40 with more body variety (strider unused so far; proportions per boss) and review;
+**Next:** (1) done: in-match check (tools/dev/kit-match-shot.mjs, no errors, scale fits the road); (2) raise `KIT_BOSSES` toward 40 with more body variety (strider unused so far; proportions per boss) and review;
 (3) heroes' distinct silhouettes, then tower / enemy materials (ROADMAP Chunk 1). Resume task
 `tds-finish-game-resume-1` (19:10 local) has an overlap guard (`.run-lock`, git-ignored, plus a session check).
 The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
