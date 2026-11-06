@@ -417,7 +417,7 @@ export class Match {
       shield: (def.shield || 0) * scale, maxShield: (def.shield || 0) * scale,
       armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd), flying: !!def.flying, stealth: !!def.stealth, alive: true,
       baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed, speedMul: 1, curSpeed: def.speed,
-      slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
+      shred: 0, shredUntil: 0, slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
       phase: 0, regenUntil: 0, regenRate: 0, cloakUntil: 0, immune: null, armorUntil: 0, armorAdd: 0, dashUntil: 0, dashMul: 1, revive: 0, revived: false, deathSpawn: null,
       healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
       blocked: false, wave, boss: !!def.boss, heading: 0, spawnedAt: this.time, parent, leak: leak ?? def.leak,
@@ -619,8 +619,13 @@ export class Match {
       if (t.cooldown < 0) t.cooldown = 0;
       t.target = target.id;
       t.hits++;
+      // crit: every Nth shot hits harder; ramp: damage builds while the same target stays in the sights
+      let amount = eff.damage;
+      if (b.crit && t.hits % b.crit.every === 0) amount *= b.crit.mul;
+      if (b.ramp) { t.rampN = t.rampTarget === target.id ? (t.rampN || 0) + 1 : 0; t.rampTarget = target.id; amount *= 1 + Math.min(b.ramp.max, b.ramp.perHit * t.rampN); }
       const packet = {
-        amount: eff.damage, type: b.damageType || 'physical', splash: b.splash || 0, armorPierce: b.armorPierce || 0,
+        amount,
+        execute: b.execute, shred: b.shred, pushback: b.pushback, type: b.damageType || 'physical', splash: b.splash || 0, armorPierce: b.armorPierce || 0,
         burn: b.burn, slow: b.slow, stun: b.stun, mark: b.mark, airBonus: b.airBonus, bossDamage: b.bossDamage,
         freeze: b.freeze && t.hits % b.freeze.every === 0 ? b.freeze.duration : 0,
         chain: b.chain, targets: b.targets, detection: eff.detection,
@@ -628,6 +633,15 @@ export class Match {
       const oy = t.unit ? t.unit.y : t.y + 2;
       const speed = b.projectile?.speed ?? 0;
       this.events.push({ type: 'fire', uid: t.uid, target: target.id, kind: b.projectile?.kind || 'bullet', x: ox, y: oy, z: oz, tx: target.x, ty: target.y + 1, tz: target.z });
+      if (b.multishot) {
+        // multishot: the same shot also strikes the nearest other enemies in range
+        const extra = this.enemies.filter((e) => e !== target && canTarget(e, b.targets, eff.detection) && r2(e.x, e.z, ox, oz) <= eff.range * eff.range)
+          .sort((p, q) => r2(p.x, p.z, target.x, target.z) - r2(q.x, q.z, target.x, target.z)).slice(0, b.multishot.count);
+        for (const e of extra) {
+          this.events.push({ type: 'fire', uid: t.uid, target: e.id, kind: b.projectile?.kind || 'bullet', x: ox, y: oy, z: oz, tx: e.x, ty: e.y + 1, tz: e.z });
+          this._hit(e, { ...packet, amount: amount * b.multishot.falloff, splash: 0 }, t, e.x, e.z);
+        }
+      }
       if (!speed) this._hit(target, packet, t, target.x, target.z);
       else this.projectiles.push({ id: this.nextId++, kind: b.projectile.kind, x: ox, y: oy, z: oz, target: target.id, tx: target.x, ty: target.y + 1, tz: target.z, speed, packet, src: t.uid });
     }
@@ -799,10 +813,18 @@ export class Match {
       if (packet.burn) { if (e.burnUntil <= now || packet.burn.dps >= e.burnDps) { e.burnDps = packet.burn.dps; e.burnSrc = src; } e.burnUntil = now + packet.burn.duration; }
       const stun = Math.max(packet.stun || 0, packet.freeze || 0) * (e.boss ? 0.25 : 1);
       if (stun) { e.stunUntil = Math.max(e.stunUntil, now + stun); if (packet.freeze) this.events.push({ type: 'freeze', id: e.id, duration: stun }); }
+      if (packet.shred) { e.shred = Math.max(e.shredUntil > now ? e.shred : 0, packet.shred.amount); e.shredUntil = Math.max(e.shredUntil, now + packet.shred.duration); }
+      if (packet.pushback) this._pushBack(e, packet.pushback * (e.boss ? 0.25 : 1));
       if (packet.mark) { e.mark = Math.max(e.markUntil > now ? e.mark : 0, packet.mark.amount); e.markUntil = now + packet.mark.duration; }
     }
     if (e.boss) this._bossPhases(e);
     if (e.hp <= 0) this._kill(e, src);
+  }
+
+  /** Knock an enemy back along its path (pushback towers). */
+  _pushBack(e, d) {
+    if (!(d > 0) || e.d === undefined) return;
+    e.d = Math.max(0, e.d - d);
   }
 
   _kill(e, src) {
@@ -815,7 +837,7 @@ export class Match {
     }
     e.alive = false;
     e.hp = 0;
-    const reward = this._gainCash(e.def.reward, 'kill');
+    const reward = this._gainCash(e.def.reward * (1 + (src?.base?.bounty || 0)), 'kill');
     this.stats.kills++;
     if (src) src.kills++;
     if (e.boss) this.stats.bossesKilled++;

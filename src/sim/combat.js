@@ -4,7 +4,7 @@ export const TARGET_MODES = ['first', 'last', 'strongest', 'weakest', 'fastest',
 
 /**
  * Damage an enemy actually takes from a packet, split into shield and health parts.
- * packet: {amount, type, armorPierce, airBonus, bossDamage}
+ * packet: {amount, type, armorPierce, airBonus, bossDamage, execute {below, mul}}
  * Returns {toShield, toHp} (raw values to subtract).
  */
 export function resolveDamage(enemy, packet, damageTypes, now = 0) {
@@ -13,9 +13,13 @@ export function resolveDamage(enemy, packet, damageTypes, now = 0) {
   if (enemy.markUntil > now) amt *= 1 + enemy.mark;
   if (enemy.flying && packet.airBonus) amt *= packet.airBonus;
   if (enemy.boss && packet.bossDamage) amt *= packet.bossDamage; // boss-killer towers
+  // execute: bonus damage to wounded enemies (not bosses)
+  if (packet.execute && !enemy.boss && enemy.maxHp > 0 && enemy.hp / enemy.maxHp < packet.execute.below) amt *= packet.execute.mul;
   if (t.armorApplies && enemy.armor > 0) {
     const pierce = Math.max(t.armorPierce || 0, packet.armorPierce || 0);
-    amt *= 1 - enemy.armor * (1 - Math.min(1, pierce));
+    // shred: armour-breaking rounds strip part of the armour for a while
+    const armor = enemy.shredUntil > now ? enemy.armor * (1 - enemy.shred) : enemy.armor;
+    amt *= 1 - armor * (1 - Math.min(1, pierce));
   }
   let toShield = 0;
   if (enemy.shield > 0 && amt > 0) {
