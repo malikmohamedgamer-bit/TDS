@@ -23,6 +23,13 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 ## Chunk 1: visual identity (MUST)
 - [ ] Bosses: distinct bodies for 40+ bosses (59 bosses on 14 models now); modular code-built boss kit
       (body, horns, wings, armour, weapons, totems, auras) where the silhouette hints at the mechanic
+  - [x] Kit: `src/engine/bossKit.js` (5 bodies: brute, strider, wraith, colossus, crawler; 14 mechanic parts;
+        unit tests test/unit/bossKit.test.js) (2026-11-06)
+  - [x] 8 bosses on kit builds (boss_mech_01-08 via tools/gen-bosses.mjs `KIT_BOSSES`); 4-angle sheets in
+        docs/screenshots/identity/kit-b1 (boss models 14 -> 22)
+  - [ ] Check the kit bosses in a real match (scale vs path, health bar height, telegraph rings)
+  - [ ] Raise `KIT_BOSSES` toward 40 (watch for repeated body + part sets; use the strider body; add body
+        variants or proportions so same-lead bosses differ), then the older bosses
 - [ ] Heroes: each of the 7 (later 10+) heroes a distinct model or strongly distinct outfit / weapon / silhouette
 - [ ] Tower and enemy materials: emissive details, wear, trim; Magic = runes / crystal / gold, War = painted
       metal / camo / hazard stripes (models.js style pass)
@@ -97,3 +104,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | Date | Step | Notes |
 |---|---|---|
 | 2026-11-06 | Chunk 0 | State check done at 85% of the 5-hour window; stopped there and scheduled the resume |
+| 2026-11-06 | Chunk 1 slice 1 | Owner raised the stop line to 99% for this run. Boss kit + 8 kit bosses, reviewed from 4 angles (fixed: cylinders and cones are base-anchored in ModelBuilder, now `centered`; second weapon to the left hand). Not yet checked in a real match |

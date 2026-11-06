@@ -61,8 +61,8 @@ export const BOSS_BODIES = {
       { name: 'body', pivot: [0, 2.2, 0], build: (b) => {
         b.ico(0.9, 1, c.hide, { pos: [0, 2.3, 0], scale: [0.9, 0.7, 1.45] });
         b.box(1.0, 0.25, 1.6, c.dark, { pos: [0, 2.85, -0.1] });
-        for (let i = 0; i < 5; i++) b.cone(0.1, 0.45, 4, c.bone, { pos: [0, 2.95, -0.9 + i * 0.4], rot: [-0.5, 0, 0] });
-        b.cone(0.2, 1.1, 5, c.dark, { pos: [0, 2.2, -1.6], rot: [-1.9, 0, 0] });
+        for (let i = 0; i < 5; i++) b.cone(0.1, 0.45, 4, c.bone, { centered: true, pos: [0, 2.95, -0.9 + i * 0.4], rot: [-0.5, 0, 0] });
+        b.cone(0.2, 1.1, 5, c.dark, { centered: true, pos: [0, 2.2, -1.6], rot: [-1.9, 0, 0] });
       } },
       { name: 'head', pivot: [0, 2.5, 1.0], build: (b) => {
         b.box(0.45, 0.5, 0.8, c.hide, { pos: [0, 2.45, 1.05], rot: [-0.5, 0, 0] });
@@ -93,15 +93,15 @@ export const BOSS_BODIES = {
     anchors: { head: { part: 'body', pos: [0, 3.15, 0.05] }, back: { part: 'body', pos: [0, 2.4, -0.55] }, handR: { part: 'armR', pos: [0.95, 1.75, 0.55] }, handL: { part: 'armL', pos: [-0.95, 1.75, 0.55] }, shoulder: { part: 'body', pos: [0.6, 2.55, 0] }, chest: { part: 'body', pos: [0, 2.2, 0.45] }, belt: { part: 'body', pos: [0, 1.55, 0] } },
     parts: (c, a) => [
       { name: 'body', pivot: [0, 1.8, 0], build: (b) => {
-        b.cyl(0.35, 1.0, 1.9, 7, c.deep, { pos: [0, 1.35, 0] });
-        b.cyl(0.55, 0.35, 0.7, 7, c.hide, { pos: [0, 2.55, 0] });
-        b.cone(0.5, 0.9, 6, c.deep, { pos: [0, 3.15, -0.08], rot: [-0.25, 0, 0] });
+        b.cyl(0.35, 1.0, 1.9, 7, c.deep, { centered: true, pos: [0, 1.35, 0] });
+        b.cyl(0.55, 0.35, 0.7, 7, c.hide, { centered: true, pos: [0, 2.55, 0] });
+        b.cone(0.5, 0.9, 6, c.deep, { centered: true, pos: [0, 3.15, -0.08], rot: [-0.25, 0, 0] });
         b.ico(0.3, 0, c.dark, { pos: [0, 2.95, 0.12] });
         for (const x of [-0.11, 0.11]) b.box(0.1, 0.06, 0.04, a, { glow: true, pos: [x, 2.98, 0.4] });
-        for (let i = 0; i < 6; i++) { const ang = (i / 6) * TAU; b.cone(0.16, 0.5, 4, c.deep, { pos: [Math.cos(ang) * 0.85, 0.35, Math.sin(ang) * 0.85], rot: [P, 0, 0] }); }
+        for (let i = 0; i < 6; i++) { const ang = (i / 6) * TAU; b.cone(0.2, 0.45, 4, c.deep, { centered: true, pos: [Math.cos(ang) * 0.9, 0.42, Math.sin(ang) * 0.9], rot: [P, 0, 0] }); }
       } },
       ...[-1, 1].map((s) => ({ name: s < 0 ? 'armL' : 'armR', pivot: [s * 0.6, 2.5, 0], build: (b) => {
-        b.cyl(0.14, 0.28, 0.95, 6, c.deep, { pos: [s * 0.8, 2.1, 0.25], rot: [0.6, 0, s * 0.35] });
+        b.cyl(0.14, 0.28, 0.95, 6, c.deep, { centered: true, pos: [s * 0.8, 2.1, 0.25], rot: [0.6, 0, s * 0.35] });
         b.box(0.2, 0.22, 0.2, c.bone, { pos: [s * 0.95, 1.72, 0.55] });
       } })),
     ],
@@ -153,12 +153,12 @@ export const BOSS_BODIES = {
         b.ico(1.0, 1, c.hide, { pos: [0, 1.35, -0.2], scale: [1.25, 0.65, 1.5] });
         b.ico(0.6, 1, c.dark, { pos: [0, 1.35, 1.2], scale: [1.2, 0.8, 0.9] });
         for (let i = 0; i < 4; i++) b.box(2.0 - i * 0.25, 0.12, 0.3, c.dark, { pos: [0, 1.95 - i * 0.04, 0.5 - i * 0.45] });
-        for (const s of [-1, 1]) b.cone(0.1, 0.7, 4, c.bone, { pos: [s * 0.35, 1.05, 1.75], rot: [1.4, 0, s * -0.4] });
+        for (const s of [-1, 1]) b.cone(0.1, 0.7, 4, c.bone, { centered: true, pos: [s * 0.35, 1.05, 1.75], rot: [1.4, 0, s * -0.4] });
         for (const x of [-0.25, -0.08, 0.08, 0.25]) b.box(0.08, 0.06, 0.04, a, { glow: true, pos: [x, 1.55, 1.71] });
       } },
       { name: 'tail', pivot: [0, 1.5, -1.3], build: (b) => {
         for (let i = 0; i < 4; i++) b.ico(0.28 - i * 0.03, 0, i % 2 ? c.dark : c.hide, { pos: [0, 1.7 + i * 0.38, -1.45 - Math.sin(i * 0.5) * 0.25] });
-        b.cone(0.16, 0.5, 4, c.bone, { pos: [0, 3.15, -1.2], rot: [0.9, 0, 0] });
+        b.cone(0.16, 0.5, 4, c.bone, { centered: true, pos: [0, 3.15, -1.2], rot: [0.9, 0, 0] });
       } },
       ...['A', 'B'].map((g) => ({ name: `legs${g}`, pivot: [0, 1.2, 0], build: (b) => {
         const legs = g === 'A' ? [[1, 0.8], [-1, 0], [1, -0.8]] : [[-1, 0.8], [1, 0], [-1, -0.8]];
@@ -184,8 +184,8 @@ export const BOSS_PARTS = {
   // dash: big forward ram horns
   horns: (A, c, a, add) => add(A.head.part, (b) => {
     for (const s of [-1, 1]) {
-      b.cone(0.16, 0.9, 5, c.bone, { pos: at(A.head, s * 0.42, 0.15, 0.1), rot: [1.1, 0, s * -0.7] });
-      b.cone(0.1, 0.45, 4, c.bone, { pos: at(A.head, s * 0.75, 0.42, 0.45), rot: [1.6, 0, s * -0.3] });
+      b.cone(0.16, 0.9, 5, c.bone, { centered: true, pos: at(A.head, s * 0.42, 0.15, 0.1), rot: [1.1, 0, s * -0.7] });
+      b.cone(0.1, 0.45, 4, c.bone, { centered: true, pos: at(A.head, s * 0.75, 0.42, 0.45), rot: [1.6, 0, s * -0.3] });
     }
   }),
   // armor: layered steel plates on shoulders, chest and back
@@ -199,7 +199,7 @@ export const BOSS_PARTS = {
   shieldRing: (A, c, a, add) => add('ring', (b) => {
     for (let i = 0; i < 6; i++) {
       const ang = (i / 6) * TAU;
-      b.cyl(0.38, 0.38, 0.08, 6, c.steel, { pos: [Math.cos(ang) * 1.9, 1.6, Math.sin(ang) * 1.9], rot: [P / 2, 0, -ang + P / 2] });
+      b.cyl(0.38, 0.38, 0.08, 6, c.steel, { centered: true, pos: [Math.cos(ang) * 1.9, 1.6, Math.sin(ang) * 1.9], rot: [P / 2, 0, -ang + P / 2] });
       b.box(0.18, 0.18, 0.05, a, { glow: true, pos: [Math.cos(ang) * 1.96, 1.6, Math.sin(ang) * 1.96], rot: [0, -ang + P / 2, P / 4] });
     }
   }),
@@ -220,8 +220,8 @@ export const BOSS_PARTS = {
   }),
   // snipe: long aimed lance with a glowing tip
   lance: (A, c, a, add) => add(A.handR.part, (b) => {
-    b.cyl(0.05, 0.08, 2.2, 5, c.steel, { pos: at(A.handR, 0, 0.1, 0.75), rot: [P / 2, 0, 0] });
-    b.cone(0.12, 0.45, 4, a, { glow: true, pos: at(A.handR, 0, 0.1, 2.0), rot: [P / 2, 0, 0] });
+    b.cyl(0.05, 0.08, 2.2, 5, c.steel, { centered: true, pos: at(A.handR, 0, 0.1, 0.75), rot: [P / 2, 0, 0] });
+    b.cone(0.12, 0.45, 4, a, { centered: true, glow: true, pos: at(A.handR, 0, 0.1, 2.0), rot: [P / 2, 0, 0] });
     b.box(0.35, 0.35, 0.2, c.metal, { pos: at(A.handR, 0, 0.1, 0.0) });
   }),
   // regen / heal pulse: crystal growths on the back and a slow ground ring
@@ -236,8 +236,8 @@ export const BOSS_PARTS = {
   }),
   // drain cash: spiked gold crown and a coin sack at the belt
   crown: (A, c, a, add) => {
-    add(A.head.part, (b) => { b.cyl(0.36, 0.36, 0.16, 8, c.gold, { pos: at(A.head, 0, 0.42, -0.05) }); for (let i = 0; i < 5; i++) { const ang = (i / 5) * TAU; b.cone(0.07, 0.3, 4, c.gold, { pos: at(A.head, Math.cos(ang) * 0.3, 0.62, -0.05 + Math.sin(ang) * 0.3) }); } });
-    add(A.belt.part, (b) => { b.ico(0.35, 0, '#A0703C', { pos: at(A.belt, 0.75, -0.2, 0.3) }); for (let i = 0; i < 3; i++) b.cyl(0.12, 0.12, 0.04, 8, c.gold, { pos: at(A.belt, 0.75, 0.15 + i * 0.05, 0.3) }); });
+    add(A.head.part, (b) => { b.cyl(0.36, 0.36, 0.16, 8, c.gold, { centered: true, pos: at(A.head, 0, 0.42, -0.05) }); for (let i = 0; i < 5; i++) { const ang = (i / 5) * TAU; b.cone(0.07, 0.3, 4, c.gold, { centered: true, pos: at(A.head, Math.cos(ang) * 0.3, 0.62, -0.05 + Math.sin(ang) * 0.3) }); } });
+    add(A.belt.part, (b) => { b.ico(0.35, 0, '#A0703C', { pos: at(A.belt, 0.75, -0.2, 0.3) }); for (let i = 0; i < 3; i++) b.cyl(0.12, 0.12, 0.04, 8, c.gold, { centered: true, pos: at(A.belt, 0.75, 0.15 + i * 0.05, 0.3) }); });
   },
   // teleport / portals: floating rift shards on their own orbit part
   riftShards: (A, c, a, add) => add('ring', (b) => {

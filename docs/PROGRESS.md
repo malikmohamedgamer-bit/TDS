@@ -132,12 +132,16 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 ## Next exact action
 
 **FINISH THE GAME run (owner brief 2026-11-06, supersedes the UI/GFX brief below).** Checklist and priority tiers:
-`docs/ROADMAP.md`. Chunk 0 done (clean tree, unit 109/109, lint clean, Blender MCP 5.2.2 verified). Stopped at 85%
-of the 5-hour window; resume task `tds-finish-game-resume-1` (Bypass permissions mode saved) fires 2026-11-06 19:10
-local and carries the verbatim brief. **Next:** Chunk 1 batch 1, boss visual identity: a modular code-built boss kit
-(body, horns, wings, armour, weapons, totems, auras in `src/engine/unitModels.js`) so 40+ bosses get distinct bodies
-whose silhouette hints at their mechanic (shield = armour, summon = totems, cloak = veils, ...). Checkpoint to
-`wip/final` first. The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
+`docs/ROADMAP.md`. Chunk 0 done. Chunk 1 slice 1 done (2026-11-06): `src/engine/bossKit.js` (pure: 5 bodies, 14 mechanic
+parts, `buildBossRig(kit)`; enemy data `model.kit = { body, parts, accent }`), `enemyRigDef()` in unitModels.js (matches,
+thumbnails, viewer), boss_mech_01-08 on kit builds from tools/gen-bosses.mjs (`KIT_BOSSES = 8`, body from the lead
+mechanic, one part per mechanic, glow accent from the resist profile). Sheets: docs/screenshots/identity/kit-b1.
+Note: ModelBuilder `cyl` / `cone` are base-anchored unless `centered: true`.
+**Next:** (1) check the kit bosses in a real match (`?map=` + Boss Rush or TDS helpers; scale, health bar, rings);
+(2) raise `KIT_BOSSES` toward 40 with more body variety (strider unused so far; proportions per boss) and review;
+(3) heroes' distinct silhouettes, then tower / enemy materials (ROADMAP Chunk 1). Resume task
+`tds-finish-game-resume-1` (19:10 local) has an overlap guard (`.run-lock`, git-ignored, plus a session check).
+The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
 
 Older brief, UI / texture / GFX / content update (owner brief 2026-11-06, docs/ui-style.md; checkpoints to wip/ui-gfx before each
 batch; stop at about 95% of the 5-hour window / 97% weekly and schedule a resume).
