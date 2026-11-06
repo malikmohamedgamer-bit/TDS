@@ -128,5 +128,5 @@
 .diffs input:disabled:not(:checked) + span { opacity: 0.45; }
 
 /* 17+ maps: keep the picker compact; locked maps stay listed with their unlock level */
-.diffs.maps { max-height: 19rem; overflow-y: auto; padding-right: 4px; }
+.diffs.maps { max-height: 8.6rem; overflow-y: auto; padding-right: 4px; } /* about two rows: Difficulty and Start stay in view */
 .diffs.maps label { flex: 1 1 150px; }

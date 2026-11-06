@@ -9,7 +9,9 @@ async function startMatch(page, { tutorial = false, difficulty = 'normal', clear
   await page.goto('./?quality=low');
   const lobby = page.getByTestId('lobby');
   await expect(lobby).toBeVisible({ timeout: 60_000 });
-  await lobby.locator(`input[name="diff"][value="${difficulty}"]`).check({ force: true });
+  // click the visible card like a player (the radio itself is hidden)
+  await lobby.locator('label', { has: page.locator(`input[name="diff"][value="${difficulty}"]`) }).click();
+  await expect(lobby.locator(`input[name="diff"][value="${difficulty}"]`)).toBeChecked();
   const tut = lobby.locator('[name="tutorial"]');
   if (tutorial) await tut.check(); else await tut.uncheck();
   await page.getByTestId('start').click();
