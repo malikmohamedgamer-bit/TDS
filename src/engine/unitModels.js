@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
 import { buildBossRig } from './bossKit.js';
+import { buildKitTower } from './towerKit.js';
 
 const P = Math.PI;
 const TAU = Math.PI * 2;
@@ -412,6 +413,12 @@ const soldier = (b, x, y, z, { kneel = false, helmet = C.olive } = {}) => {
   b.box(0.06, 0.06, 0.02, C.black, { pos: [x + 0.07, y + ly * 2 + 0.62, z + 0.16] });
   b.sphere(0.23, 8, 5, helmet, { pos: [x, y + ly * 2 + 0.74, z], scale: [1.05, 0.65, 1.08] });
 };
+
+/** The code-built model builder for a tower def: its own builder, a kit build (model.kit), or null (GLB / none). */
+export function towerBuilder(def) {
+  if (def.model?.kit) return () => buildKitTower(def.model.kit, def.faction);
+  return TOWER_MODELS[def.id] || null;
+}
 
 /** Builders return {group, parts:{turret, recoil, spin[], bob}, muzzle:Vector3 (local), unit?}. */
 export const TOWER_MODELS = {

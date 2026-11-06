@@ -1,7 +1,7 @@
 // Renders small portraits of 3D models (towers, enemies) into data URLs for UI icons.
 import * as THREE from 'three';
 import { loadGLB, ModelInstance, modelSrc } from './models.js';
-import { TOWER_MODELS, enemyRigDef } from './unitModels.js';
+import { towerBuilder, enemyRigDef } from './unitModels.js';
 import { rigFromProcedural, InstancedRig } from './instancedRig.js';
 
 const cache = new Map();
@@ -13,8 +13,8 @@ export async function towerThumbnail(renderer, content, towerId, size = 128, sil
   const obj = new THREE.Group();
   const glb = modelSrc(content, def);
   if (glb) obj.add(new ModelInstance(await loadGLB(glb)).root);
-  else if (TOWER_MODELS[towerId]) {
-    const built = TOWER_MODELS[towerId]();
+  else if (towerBuilder(def)) {
+    const built = towerBuilder(def)();
     obj.add(built.group);
     if (built.unit) { built.unit.position.set(0, 1.6, 0); built.unit.scale.setScalar(0.55); obj.add(built.unit); }
   }

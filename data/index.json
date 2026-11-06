@@ -23,7 +23,8 @@
     "towers/magic.json",
     "towers/legendary.json",
     "towers/kenney_b1.json",
-    "towers/quaternius_b1.json"
+    "towers/quaternius_b1.json",
+    "towers/mechanics_b1.json"
   ],
   "enemies": [
     "enemies/blight.json",

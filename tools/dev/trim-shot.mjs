@@ -24,8 +24,8 @@ try {
     const m = window.TDS.match;
     m.cash = 99999;
     m.loadout = [...m.content.towers.keys()];
-    const glbTowers = [...m.content.towers.values()].filter((d) => d.model?.glb);
-    const pick = (f) => glbTowers.filter((d) => d.faction === f).slice(0, 4).map((d) => d.id);
+    const glbTowers = [...m.content.towers.values()].filter((d) => d.model?.kit);
+    const pick = (f) => glbTowers.filter((d) => d.faction === f).filter((_, i) => i % 7 === 3).slice(0, 4).map((d) => d.id);
     const ids = [...pick('war'), ...pick('magic')];
     const hero = window.TDS.hero || { x: 0, z: 0 };
     const placed = [];

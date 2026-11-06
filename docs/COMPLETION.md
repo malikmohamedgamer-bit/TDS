@@ -18,7 +18,7 @@ colour and stat variants count once. Each signature group counts as one.
 
 | Type | Total (1) | Distinct mechanics (2) | Models (3) | Final target | Run target (75%) | Progress to final |
 |---|---|---|---|---|---|---|
-| Towers | 37 (21 War, 16 Magic) | 23 (62%, target 50%) | 28 | 100 | 75 | 37% |
+| Towers | **100** (57 War, 43 Magic): 37 earlier + 63 kit towers | **85** (85%, target 50%) | 91 (28 earlier + 63 code-built kit builds: 6 bases x 12 heads x 8 add-ons, every combination different) | 100 | 75 | **100%** |
 | Enemies | 42 | 19 (45%, target 35%) | 33 | 200 | 150 | 21% |
 | Bosses | **100** | **83** (83%, target 50%) | 94 (14 pack / code models + 81 code-built kit builds on 5 base bodies, every body+parts set different; tints are extra variety, not counted) | 100 | 75 | **100%** |
 | Maps | 17 on 8 themes | 5 hand-made, 12 generated | - | 50 | 38 | 34% |

@@ -137,7 +137,7 @@ parts, `buildBossRig(kit)`; enemy data `model.kit = { body, parts, accent }`), `
 thumbnails, viewer), boss_mech_01-08 on kit builds from tools/gen-bosses.mjs (`KIT_BOSSES = 8`, body from the lead
 mechanic, one part per mechanic, glow accent from the resist profile). Sheets: docs/screenshots/identity/kit-b1.
 Note: ModelBuilder `cyl` / `cone` are base-anchored unless `centered: true`.
-**Next:** Chunk 1 mostly done (boss bodies, hero silhouettes, first trim pass). Chunk 2 started: bosses 100 done. Now: towers 100+ with unique mechanics (tools/gen-content.mjs; check which stat keys the sim supports), then enemies 200+, maps 50+, heroes 10+, modes 10+. Readability language (Chunk 1) still open.
+**Next:** Chunk 1 mostly done. Chunk 2: bosses 100 and towers 100 done (kit towers all direct-fire). Now: enemies 200+ (tools/gen-content.mjs patterns + new mechanics: teleport, speed burst, immunities, stealth, split, heal, shield, swarm; a kit for enemy bodies like bossKit), maps 50+, heroes 10+, modes 10+. Open from Chunk 1: readability language.
 `tds-finish-game-resume-1` (19:10 local) has an overlap guard (`.run-lock`, git-ignored, plus a session check).
 The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
 

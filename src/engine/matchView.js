@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { rigFromGLB, rigFromProcedural, InstancedRig } from './instancedRig.js';
 import { loadGLB, ModelInstance, modelSrc } from './models.js';
-import { enemyRigDef, ALLY_RIGS, TOWER_MODELS, mineModel } from './unitModels.js';
+import { enemyRigDef, ALLY_RIGS, TOWER_MODELS, towerBuilder, mineModel } from './unitModels.js';
 import { Effects } from './effects.js';
 import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
@@ -239,7 +239,7 @@ export class MatchView {
       });
       vis.muzzle.set(0, 1.25, 0.9);
     } else {
-      const built = (TOWER_MODELS[def.id] || TOWER_MODELS.rune_totem)();
+      const built = (towerBuilder(def) || TOWER_MODELS.rune_totem)();
       vis.root.add(built.group);
       vis.parts = built.parts;
       vis.muzzle.copy(built.muzzle);
@@ -471,7 +471,7 @@ export class MatchView {
     const def = this.content.towers.get(towerId);
     const g = new THREE.Group();
     const mat = new THREE.MeshBasicMaterial({ color: '#9FE6A0', transparent: true, opacity: 0.45, depthWrite: false });
-    const src = TOWER_MODELS[def.id] ? TOWER_MODELS[def.id]().group : null;
+    const src = towerBuilder(def)?.().group || null;
     if (src) {
       src.traverse((o) => { if (o.isMesh) o.material = mat; });
       g.add(src);

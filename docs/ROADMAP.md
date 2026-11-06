@@ -40,7 +40,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 
 ## Chunk 2: content to the targets (MUST)
 - [x] Bosses 100+ (100 bosses: 19 earlier + 81 generated kit bosses in mechanics_b1 / b2; 83 mechanically distinct, 94 models) (2026-11-06)
-- [ ] Towers 100+ across all classes incl. aura, hero-linked, rockets vs artillery, more air (distinct >= 50%)
+- [x] Towers 100+ (100: 63 kit towers with 7 new sim mechanics: execute, crit, ramp, shred, pushback, bounty, multishot; 85 mechanically distinct, 91 models) (2026-11-06). Still thin: air, aura, summoner, trap, hero-linked classes (all kit towers are direct-fire) - add in a later batch
 - [ ] Enemies 200+ with teleport, speed burst, immunities, stealth, split, heal, shield, swarm (distinct >= 35%)
 - [ ] Maps 50+: 6+ new themes, path templates (loops, crossovers, multi-lane, air routes), 8+ new flagships,
       picker scales to 50+
@@ -110,3 +110,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-06 | Chunk 1 slice 3 | Heroes: builds, bow and launcher weapons, pauldrons / mantle / spikes; reviewed from 4 angles |
 | 2026-11-06 | Chunk 1 slice 4 | Faction material trims via applyTrim (shader patch, no console errors in a real match); subtle |
 | 2026-11-06 | Chunk 2 bosses | 100 bosses (81 kit bosses, `tools/gen-bosses.mjs` writes mechanics_b1 + b2). Boss Rush fell to 3/12 with the bigger pool; BASE_HP 7500 -> 6000 gave 9/12 (75%), 6500 gave 7/12 (58%), kept 6500 (2 attempts). Unit 111, lint clean |
+| 2026-11-06 | Chunk 2 towers | 7 new tower mechanics in the sim (tests), `src/engine/towerKit.js`, `tools/gen-towers.mjs` -> data/towers/mechanics_b1.json (63 towers). Generated-only Riftline / Frostmere Normal: PRICE_MUL 1.1 12/12 + 11/12, 1.5 5/12, 1.3 12/12, 1.4 9/12 + 8/12 (3 attempts, kept 1.4; BUGS #48). Unit 119, lint clean |
