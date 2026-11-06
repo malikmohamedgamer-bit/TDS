@@ -91,3 +91,13 @@ saved in `assets/models/quaternius/<pack>/` and registered by `node tools/import
 | q_character_soldier | Toon Shooter Characters/Character_Soldier (AK kept) | War tower | 20,805 -> 2,996 | Idle / - / Idle_Shoot / - |
 
 Mixamo animations, if used later, go in `assets/incoming` and will be listed here.
+
+## UI / GFX update (2026-11-06): no new third-party assets
+
+Everything added in this pass is made in code in this repository: SVG icons (`src/ui/icons.js`), map
+previews (`src/ui/mapThumb.js`), terrain detail, emissive and roughness maps (`src/engine/textures.js`),
+sky layers (`src/engine/mapView.js`), ambient particle sprites (`src/engine/themeFx.js`) and the VFX
+library (`data/vfx.json`). Fonts are the player's own system fonts (Bahnschrift / Segoe UI / Palatino
+stacks, `docs/ui-style.md`); no web fonts and no external requests. No ambientCG / Poly Haven textures
+were used yet. The 40 new bosses reuse the CC0 boss models listed above, recoloured through
+`data/palettes.json`.

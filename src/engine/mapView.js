@@ -5,6 +5,7 @@ import { grainTexture, terrainTexture } from './textures.js';
 import { propGeometry } from './propModels.js';
 import { ModelBuilder } from './geo.js';
 import { Rng } from '../core/rng.js';
+import { AmbientParticles } from './themeFx.js';
 
 let shared;
 export function sharedMaterials() {
@@ -21,20 +22,50 @@ export function sharedMaterials() {
 const SKY_VERT = /* glsl */ `
   varying vec3 vDir;
   void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+// Sky: gradient + horizon haze + (per theme, data/themes.json) pixel stars, aurora curtains and fbm clouds.
 const SKY_FRAG = /* glsl */ `
-  uniform vec3 top; uniform vec3 horizon; uniform vec3 bottom; uniform vec3 sunDir;
+  uniform vec3 top; uniform vec3 horizon; uniform vec3 bottom; uniform vec3 sunDir; uniform vec3 haze;
+  uniform float stars; uniform float aurora; uniform float clouds; uniform float time;
   varying vec3 vDir;
+  float hash(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+  float noise(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);
+    float a = hash(vec3(i, 0.0)); float b = hash(vec3(i + vec2(1.0, 0.0), 0.0)); float c = hash(vec3(i + vec2(0.0, 1.0), 0.0)); float d = hash(vec3(i + vec2(1.0, 1.0), 0.0));
+    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y); }
+  float fbm(vec2 p){ float v = 0.0; float a = 0.5; for (int i = 0; i < 4; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
   void main(){
-    float h = vDir.y;
+    vec3 d = normalize(vDir);
+    float h = d.y;
     vec3 c = h > 0.0 ? mix(horizon, top, pow(smoothstep(0.0, 0.65, h), 0.8)) : mix(horizon, bottom, smoothstep(0.0, -0.25, h));
-    float s = max(dot(normalize(vDir), sunDir), 0.0);
+    c = mix(c, haze, (1.0 - smoothstep(0.0, 0.2, abs(h))) * 0.35);
+    if (h > 0.0) {
+      vec3 cell = floor(d * 240.0);
+      float st = hash(cell);
+      float tw = 0.65 + 0.35 * sin(time * 2.2 + st * 50.0);
+      c += vec3(0.92, 0.94, 1.0) * step(0.9972, st) * stars * smoothstep(0.06, 0.35, h) * tw;
+      float az = atan(d.z, d.x);
+      float band = sin(az * 3.0 + time * 0.05 + sin(az * 7.0 + time * 0.13) * 0.6);
+      float au = smoothstep(0.5, 1.0, band) * smoothstep(0.1, 0.28, h) * (1.0 - smoothstep(0.45, 0.8, h));
+      c += mix(vec3(0.15, 1.0, 0.6), vec3(0.65, 0.35, 1.0), smoothstep(0.2, 0.5, h)) * au * aurora * 0.5;
+      vec2 uv = d.xz / (h + 0.18) * 1.3 + vec2(time * 0.004, time * 0.002);
+      float cl = smoothstep(1.02 - clouds * 0.75, 1.1, fbm(uv) + 0.3) * smoothstep(0.02, 0.22, h);
+      c = mix(c, mix(haze, vec3(1.0), 0.65), cl * 0.6);
+    }
+    float s = max(dot(d, sunDir), 0.0);
     c += vec3(1.0, 0.92, 0.75) * (pow(s, 900.0) * 3.0 + pow(s, 12.0) * 0.12);
     gl_FragColor = vec4(c, 1.0);
   }`;
 
+/** Time-of-day variants a hand-made map can opt into with "timeOfDay" (visual only, never balance). */
+const TIME_OF_DAY = {
+  dusk: { sky: 0.78, horizon: '#FFB27A', sun: { color: '#FFB37A', intensity: 2.0, elevation: 16 }, hemi: 0.85, stars: 0.35 },
+  night: { sky: 0.32, horizon: '#3B3F7A', sun: { color: '#A9C2FF', intensity: 1.1, elevation: 38 }, hemi: 0.6, stars: 1 },
+};
+
 export class MapView {
-  constructor(renderer, mapWorld, propDefs, settings) {
+  constructor(renderer, mapWorld, propDefs, settings, theme = null) {
     this.r = renderer;
+    this.theme = theme;
+    this.tod = TIME_OF_DAY[mapWorld.map.timeOfDay] || null;
     this.mw = mapWorld;
     this.propDefs = propDefs;
     this.settings = settings;
@@ -50,10 +81,17 @@ export class MapView {
   build() {
     const { map, terrain } = this.mw;
     const scene = this.r.scene;
-    const sky = map.sky;
+    const sky = this.skyColors();
     scene.background = new THREE.Color(sky.horizon);
     scene.fog = new THREE.Fog(sky.fog, sky.fogNear, sky.fogFar);
-    this.r.setSun(map.sun, map.size);
+    this.r.setSun(this.tod ? { ...map.sun, ...this.tod.sun } : map.sun, map.size);
+    const th = this.theme;
+    if (th?.hemi) {
+      this.r.hemi.color.set(th.hemi.sky);
+      this.r.hemi.groundColor.set(th.hemi.ground);
+      this.r.hemi.intensity = th.hemi.intensity * (this.tod?.hemi ?? 1);
+    }
+    this.r.setGrade?.(th?.grade);
     this._buildSky();
     this._buildTerrain(map, terrain);
     this._buildProps();
@@ -62,7 +100,18 @@ export class MapView {
     this._buildClouds(map);
     this._buildMountains(map);
     this._buildPortalSwirls(terrain);
+    this.ambient = new AmbientParticles(this.theme, map, this.settings.quality, this.settings.reducedMotion);
+    this.group.add(this.ambient.points);
     this.applyQuality();
+  }
+
+  /** Sky colours with the time-of-day variant applied. */
+  skyColors() {
+    const sky = this.mw.map.sky;
+    if (!this.tod) return sky;
+    const k = this.tod.sky;
+    const dim = (hex) => `#${new THREE.Color(hex).multiplyScalar(k).getHexString()}`;
+    return { ...sky, top: dim(sky.top), horizon: this.tod.horizon, fog: `#${new THREE.Color(sky.fog).lerp(new THREE.Color(this.tod.horizon), 0.5).multiplyScalar(Math.max(0.45, k)).getHexString()}` };
   }
 
   _buildSky() {
@@ -74,8 +123,13 @@ export class MapView {
       depthWrite: false,
       fog: false,
       uniforms: {
-        top: { value: new THREE.Color(map.sky.top) },
-        horizon: { value: new THREE.Color(map.sky.horizon) },
+        top: { value: new THREE.Color(this.skyColors().top) },
+        horizon: { value: new THREE.Color(this.skyColors().horizon) },
+        haze: { value: new THREE.Color(this.theme?.sky?.haze || map.sky.horizon) },
+        stars: { value: Math.max(this.theme?.sky?.stars || 0, this.tod?.stars || 0) },
+        aurora: { value: this.theme?.sky?.aurora || 0 },
+        clouds: { value: this.theme?.sky?.cloudCover ?? 0.3 },
+        time: { value: 0 },
         bottom: { value: new THREE.Color(map.ground.grass[3]) },
         sunDir: { value: this.r.sunDir.clone() },
       },
@@ -105,8 +159,12 @@ export class MapView {
   _buildTerrain(map, terrain) {
     const W = map.size.w;
     const D = map.size.d;
-    const tex = terrainTexture(map, terrain);
-    const inner = this._terrainMesh(-W / 2, -D / 2, W, D, 1, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0 }), terrain);
+    const tex = terrainTexture(map, terrain, 8, { detail: this.theme?.ground?.detail, emissive: this.theme?.ground?.emissive });
+    const tmat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0 });
+    // themed ground detail: glowing lava / ooze / runes (emissive map), glossy ice (roughness map)
+    if (tex.userData.emissiveMap) { tmat.emissive.set('#ffffff'); tmat.emissiveMap = tex.userData.emissiveMap; tmat.emissiveIntensity = 1.3; this.groundGlow = tmat; }
+    if (tex.userData.roughnessMap) { tmat.roughness = 1; tmat.roughnessMap = tex.userData.roughnessMap; tmat.metalness = 0.05; }
+    const inner = this._terrainMesh(-W / 2, -D / 2, W, D, 1, tmat, terrain);
     // inner plane UVs: PlaneGeometry already spans 0..1 over the map, matching the baked texture
     inner.name = 'terrain';
     this.terrainMesh = inner;
@@ -223,7 +281,21 @@ export class MapView {
       if (terrain.pathMask(x, z) < 0.98 || terrain.slope(x, z) > 26) continue;
       list.push({ x, y: terrain.height(x, z), z, rot: rng.range(0, 6.28), scale: rng.range(0.7, 1.4), tint: rng.range(0.85, 1.1) });
     }
-    this.grass = this._addInstanced(geo, sharedMaterials().body, list, false, 'grass');
+    // own material so only grass sways (vertex shader, height-weighted, phase from the instance position)
+    const gm = sharedMaterials().body.clone();
+    this.grassUniforms = { uTime: { value: 0 } };
+    gm.onBeforeCompile = (sh) => {
+      sh.uniforms.uTime = this.grassUniforms.uTime;
+      sh.vertexShader = `uniform float uTime;\n${sh.vertexShader}`.replace('#include <begin_vertex>', `#include <begin_vertex>
+        #ifdef USE_INSTANCING
+          float ph = instanceMatrix[3].x * 0.37 + instanceMatrix[3].z * 0.23;
+          float sw = sin(uTime * 1.6 + ph) * 0.07 + sin(uTime * 3.1 + ph * 1.7) * 0.025;
+          transformed.x += sw * max(position.y, 0.0) * 2.0;
+          transformed.z += sw * 0.6 * max(position.y, 0.0) * 2.0;
+        #endif`);
+    };
+    gm.customProgramCacheKey = () => 'grass-sway';
+    this.grass = this._addInstanced(geo, gm, list, false, 'grass');
   }
 
   _buildPathStones(map, terrain) {
@@ -260,7 +332,7 @@ export class MapView {
     b.ico(2.2, 1, '#FFFFFF', { pos: [-3.0, 0.2, -0.5], scale: [1.3, 0.6, 1] });
     b.ico(1.9, 1, '#EEF4FF', { pos: [0.6, 1.4, 0.2], scale: [1.2, 0.7, 1] });
     const geo = b.build().body;
-    const mat = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1, emissive: '#E8F2FF', emissiveIntensity: 0.62, fog: false });
+    const mat = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1, emissive: '#E8F2FF', emissiveIntensity: 0.62 * (this.tod?.sky ?? 1), fog: false });
     const rng = new Rng(`${map.seed}:clouds`);
     this.cloudData = [];
     for (let i = 0; i < 16; i++) {
@@ -297,7 +369,8 @@ export class MapView {
     b.cone(18, 16, 6, '#F4F7FB', { pos: [0, 34.5, 0] });
     b.cone(28, 36, 6, '#6C7B8E', { pos: [30, -5, 10] });
     const geo = b.build().body;
-    const mat = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1, fog: false, emissive: '#9DB7D6', emissiveIntensity: 0.35 });
+    // distant silhouettes take the theme's tint and horizon haze
+    const mat = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1, fog: false, color: this.theme?.sky?.silhouette || '#FFFFFF', emissive: this.theme?.sky?.haze || '#9DB7D6', emissiveIntensity: this.theme ? 0.22 : 0.35 });
     const rng = new Rng(`${map.seed}:mountains`);
     const list = [];
     for (let i = 0; i < 18; i++) {
@@ -320,6 +393,7 @@ export class MapView {
     const q = this.r.q;
     for (const m of this.propMeshes || []) m.castShadow = q.propShadows && m.userData.castShadowDefault;
     if (this.grass) this.grass.visible = this.settings.quality !== 'low';
+    if (this.ambient) this.ambient.points.visible = this.settings.ambientFx !== false && this.ambient.p.length > 0;
   }
 
   /** Animated Blight vortex in every enemy portal (pixel-quantised spiral, glow via colour only). */
@@ -373,6 +447,11 @@ export class MapView {
     this.time += dt;
     if (this.swirlUniforms && !this.settings.reducedMotion) this.swirlUniforms.uTime.value = this.time;
     if (this.clouds) this._updateClouds(dt);
+    const calm = this.settings.reducedMotion;
+    if (this.sky) this.sky.material.uniforms.time.value = calm ? 0 : this.time;
+    if (this.grassUniforms) this.grassUniforms.uTime.value = calm ? 0 : this.time;
+    if (this.ambient?.points.visible) this.ambient.update(dt);
+    if (this.groundGlow && !calm) this.groundGlow.emissiveIntensity = 1.15 + Math.sin(this.time * 1.3) * 0.25 + Math.sin(this.time * 3.7) * 0.08;
     if (this.sky && cameraPos) this.sky.position.copy(cameraPos);
   }
 }

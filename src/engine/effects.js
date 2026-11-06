@@ -21,7 +21,10 @@ export class Effects {
     this.camera = camera;
     this.settings = settings;
     // particles
-    this.maxP = 2400;
+    this.maxP = 3200; // instanced capacity (Ultra cap); the live cap comes from data/vfx.json per quality
+    this.capP = 2400;
+    this.countMul = 1;
+    this.lib = null;
     this.p = [];
     this.pFree = [];
     const geo = new THREE.BoxGeometry(1, 1, 1);
@@ -70,7 +73,7 @@ export class Effects {
   burst(x, y, z, { count = 12, color = '#ffffff', speed = 4, up = 2, size = 0.12, life = 0.6, gravity = 9, spread = 1, colors = null } = {}) {
     const n = Math.round(count * this.scale);
     for (let i = 0; i < n; i++) {
-      if (this.p.length >= this.maxP) this.p.shift();
+      if (this.p.length >= this.capP) this.p.shift();
       const a = Math.random() * Math.PI * 2;
       const v = speed * (0.4 + Math.random() * 0.6);
       this.p.push({
@@ -80,6 +83,37 @@ export class Effects {
         rot: Math.random() * 6,
       });
     }
+  }
+
+  /** VFX library (data/vfx.json) and the live particle cap / count multiplier for a quality tier. */
+  setLibrary(lib, quality = 'medium') {
+    this.lib = lib;
+    this.capP = Math.min(this.maxP, lib?.caps?.particles?.[quality] ?? 2400);
+    this.countMul = lib?.caps?.countMul?.[quality] ?? 1;
+  }
+
+  /**
+   * Plays a preset. Visual steps run here; side effects (shake, flash, slowmo) are returned so the
+   * owner can apply them (camera, post pass, simulation speed). Unknown presets do nothing.
+   */
+  play(name, x, y, z, { radius = 1, tx, ty, tz } = {}) {
+    const steps = this.lib?.presets?.[name];
+    if (!steps) return null;
+    let side = null;
+    for (const step of steps) {
+      const [k, p] = Object.entries(step)[0];
+      if (k === 'burst') {
+        this.burst(x, y + (p.y || 0), z, { ...p, count: Math.max(1, Math.round((p.count || 8) * this.countMul)), speed: p.speedByRadius ? p.speedByRadius * radius : p.speed ?? 4 });
+      } else if (k === 'ring') {
+        this.ring(x, y + (p.y || 0), z, { ...p, r0: p.r0 === 'radius' ? radius : p.r0 ?? 0.2, r1: p.r1 === 'radius' ? radius : p.r1 ?? 3 });
+      } else if (k === 'bolt') {
+        if (tx !== undefined) this.bolt(x, y, z, tx, ty, tz, p);
+      } else {
+        side = side || {};
+        side[k] = p;
+      }
+    }
+    return side;
   }
 
   ring(x, y, z, { color = '#ffffff', r0 = 0.2, r1 = 3, life = 0.5, intensity = 1.6 } = {}) {

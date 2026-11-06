@@ -162,6 +162,10 @@ export class MatchController {
     this.mhud.select(null, this.match);
     this.speed = 1;
     this.rewarded = false;
+    this.endSeq = false;
+    this.introduced = new Set();
+    this.cine = null;
+    document.body.classList.remove('cine');
     this.mode = 'idle';
     this.ready = true;
     document.body.classList.add('in-match');
@@ -364,7 +368,7 @@ export class MatchController {
   step() {
     if (!this.match || !this.ready || this.paused) return;
     // fractional speeds (0.5x, 1.5x) accumulate whole simulation steps
-    this.speedAcc = (this.speedAcc || 0) + this.speed;
+    this.speedAcc = (this.speedAcc || 0) + this.speed * (this.view?.timeScale ?? 1);
     while (this.speedAcc >= 1) { this.speedAcc -= 1; this.match.step(); }
     this.heroSync += 1;
     if (this.heroSync >= 15) {
@@ -380,6 +384,7 @@ export class MatchController {
     this.view.onEvents(events);
     this.onEvents(events);
     this.view.update(this.paused ? 0 : dt);
+    this._cinematics(dt);
     this.mhud.update(m, { placing: this.mode === 'placing' ? this.placing : null, speed: this.speed });
     // tutorial progress
     const ts = this.tutorialStats;
@@ -392,6 +397,37 @@ export class MatchController {
     ts.dt = dt;
     this.tutorial.update(ts);
     if ((m.phase === 'won' || m.phase === 'lost') && !this.rewarded) this.finish();
+  }
+
+  /**
+   * Boss intro (letterbox + camera turns to the boss once), victory / defeat sequences (slow orbit and a
+   * burst at the keep). Reduced motion keeps the letterbox and the burst but never moves the camera.
+   */
+  _cinematics(dt) {
+    const m = this.match;
+    const calm = this.settings.reducedMotion;
+    const boss = m.enemies.find((e) => e.alive && e.def.boss && !this.introduced?.has(e.id));
+    if (boss) {
+      this.introduced = this.introduced || new Set();
+      this.introduced.add(boss.id);
+      this.cine = { until: performance.now() + 2600, x: boss.x, z: boss.z, turn: !calm && this.rig.mode === 'orbit' };
+      document.body.classList.add('cine');
+      this.mhud.caption(`${boss.def.name} enters the valley`);
+    }
+    if (this.cine) {
+      if (this.cine.turn) {
+        const want = Math.atan2(-(this.cine.x - this.hero.x), -(this.cine.z - this.hero.z));
+        const d = Math.atan2(Math.sin(want - this.rig.yaw), Math.cos(want - this.rig.yaw));
+        this.rig.yaw += d * Math.min(1, dt * 2.4);
+      }
+      if (performance.now() > this.cine.until) { this.cine = null; document.body.classList.remove('cine'); }
+    }
+    if ((m.phase === 'won' || m.phase === 'lost') && !this.endSeq) {
+      this.endSeq = true;
+      const base = m.map.base || { x: 0, z: 0 };
+      this.view._vfx(m.phase === 'won' ? 'victory' : 'defeat', base.x, 1, base.z);
+    }
+    if (this.endSeq && !calm && this.rig.mode === 'orbit' && !this.mhud.modalOpen) this.rig.yaw += dt * 0.25;
   }
 
   onEvents(events) {
@@ -414,6 +450,12 @@ export class MatchController {
         case 'heal': sfx.play('heal', e, { gap: 0.3 }); break;
         case 'waveCleared': if (!this.match?.enemies.some((x) => x.alive && x.def.boss)) this.music?.setMood('build', this.map.id); this.mhud.banner(`Wave ${e.wave} cleared`, 'good'); break;
         case 'waveReward': sfx.play('cash'); break;
+        case 'cashDrain': if (e.amount > 0) this.mhud.banner(`The boss stole $${e.amount}!`, 'warn'); sfx.play('error'); break;
+        case 'bossRevive': this.mhud.banner('It rises again!', 'boss'); break;
+        case 'bossImmune': this.mhud.banner(`Immune to ${e.types.join(' and ')} for ${e.duration} s`, 'warn'); break;
+        case 'bossCloak': this.mhud.banner('The boss vanished: only detection can hit it', 'warn'); break;
+        case 'bossPortal': this.mhud.caption('Portal opens on another road'); break;
+        case 'bossRegen': this.mhud.caption('The boss regenerates: fire stops it'); break;
         case 'heroDown': this.mhud.banner('Commander down! Back in 6 s', 'warn'); break;
         case 'won': this.music?.setMood('hub', this.map.id); sfx.play('win'); break;
         case 'lost': this.music?.setMood('hub', this.map.id); sfx.play('lose'); break;

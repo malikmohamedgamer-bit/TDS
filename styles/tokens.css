@@ -1,0 +1,43 @@
+/* Design tokens: docs/ui-style.md. Loaded first; every other sheet reads these. */
+:root {
+  --ink-0: #07080c; --ink-1: #0d0f15; --ink-2: #12141c; --ink-3: #1a1e2a; --ink-4: #262b3d; --ink-5: #353c54;
+  --text: #f4f6fb; --text-2: #a9b0c2; --text-3: #6f7891;
+  --brass: #ffd166; --brass-2: #b8903c; --brass-dim: rgba(255, 209, 102, 0.28);
+  --go: #3fb950; --go-2: #7be08a; --go-ink: #08210d; --stop: #e5484d; --stop-2: #ff8a8e;
+  --m-1: #7b4dff; --m-2: #2ec4b6; --m-gold: #ffd166; --m-night: #1e1b4b; --m-glow: #c9a7ff;
+  --w-1: #5b6b3a; --w-2: #c2b280; --w-haz: #f28c28; --w-steel: #3d4451; --w-light: #8a9a66;
+  --r-common: #b0b7c3; --r-uncommon: #5fd068; --r-rare: #3fa9f5; --r-epic: #b15cff; --r-legendary: #ffb627; --r-mythic: #ff4d6d;
+  --blight: #ff3cac; --blight-2: #e63946;
+
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --font-display: "Bahnschrift", "DIN Alternate", "Arial Narrow", "Roboto Condensed", sans-serif-condensed, var(--font-ui);
+  --font-lore: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --fs-0: 0.64rem; --fs-1: 0.8rem; --fs-2: 1rem; --fs-3: 1.25rem; --fs-4: 1.56rem; --fs-5: 1.95rem; --fs-6: 2.44rem;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --rad: 4px; --rad-l: 6px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1); --ease-pop: cubic-bezier(0.2, 1.6, 0.4, 1);
+  --t-press: 90ms; --t-hover: 160ms; --t-panel: 240ms;
+  --ui-scale: 1;
+
+  /* corner brackets: L-shaped trim in each corner (background layers) */
+  --trim: var(--brass-dim);
+  --bk: 14px;
+  --brackets:
+    linear-gradient(var(--trim), var(--trim)) left top / var(--bk) 2px no-repeat,
+    linear-gradient(var(--trim), var(--trim)) left top / 2px var(--bk) no-repeat,
+    linear-gradient(var(--trim), var(--trim)) right top / var(--bk) 2px no-repeat,
+    linear-gradient(var(--trim), var(--trim)) right top / 2px var(--bk) no-repeat,
+    linear-gradient(var(--trim), var(--trim)) left bottom / var(--bk) 2px no-repeat,
+    linear-gradient(var(--trim), var(--trim)) left bottom / 2px var(--bk) no-repeat,
+    linear-gradient(var(--trim), var(--trim)) right bottom / var(--bk) 2px no-repeat,
+    linear-gradient(var(--trim), var(--trim)) right bottom / 2px var(--bk) no-repeat;
+  --plate: linear-gradient(180deg, rgba(38, 43, 61, 0.96), rgba(18, 20, 28, 0.96));
+  --plate-magic: linear-gradient(160deg, rgba(43, 31, 99, 0.96), rgba(22, 18, 52, 0.97) 60%, rgba(14, 12, 32, 0.97));
+  --plate-war: linear-gradient(180deg, rgba(58, 64, 50, 0.97), rgba(33, 37, 33, 0.97) 70%);
+  --hazard: repeating-linear-gradient(135deg, var(--w-haz) 0 7px, #1b1d20 7px 14px);
+  --rivets:
+    radial-gradient(circle at 9px 9px, #a7ae9a 0 1.6px, #2a2e26 2.2px, transparent 2.8px),
+    radial-gradient(circle at calc(100% - 9px) 9px, #a7ae9a 0 1.6px, #2a2e26 2.2px, transparent 2.8px),
+    radial-gradient(circle at 9px calc(100% - 9px), #a7ae9a 0 1.6px, #2a2e26 2.2px, transparent 2.8px),
+    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), #a7ae9a 0 1.6px, #2a2e26 2.2px, transparent 2.8px);
+}

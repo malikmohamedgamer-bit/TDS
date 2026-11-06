@@ -1,5 +1,6 @@
 // TDS bootstrap: loads content and the save, builds the world (map, hero, cameras), then runs the
 // match flow (loadout -> match -> results) on a fixed-timestep loop.
+import { mapTheme } from './ui/mapThumb.js';
 import { loadContent, browserReadJson } from './core/content.js';
 import { buildMapWorld } from './core/mapLayout.js';
 import { Character } from './core/character.js';
@@ -68,7 +69,7 @@ async function boot() {
   const renderer = new Renderer(canvas, settings);
   setLoading('Planting trees…', 65);
   await new Promise((r) => setTimeout(r, 0));
-  const mapView = new MapView(renderer, mw, content.props, settings);
+  const mapView = new MapView(renderer, mw, content.props, settings, content.themes?.[mapTheme(map)]);
 
   const hero = new Character(mw.world, map.playerSpawn);
   const heroDef = content.heroes.get(settings.hero) || [...content.heroes.values()][0];
@@ -154,6 +155,7 @@ async function boot() {
   const stats = { frames: 0, acc: 0, fps: 0, frameMs: 0, samples: [] };
 
   let errorShown = false;
+  let menuFrame = 0;
   function frame(now) {
     // schedule first: one failing frame must never stop the game loop
     requestAnimationFrame(frame);
@@ -215,7 +217,9 @@ async function boot() {
     sfx.setListener(renderer.camera.position.x, renderer.camera.position.z);
     ctrl.update(dt);
     mapView.update(dt, renderer.camera.position);
-    renderer.render();
+    // a full-screen menu (hub) hides the world: draw it at a quarter rate behind the panel
+    menuFrame = (menuFrame + 1) % 4;
+    if (!(ctrl.hub?.el.open && menuFrame !== 0)) renderer.render();
 
     stats.frames++;
     stats.acc += dt;

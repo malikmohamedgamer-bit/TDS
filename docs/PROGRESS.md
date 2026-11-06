@@ -17,7 +17,8 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 7. Content batch 1 | **Done (2026-11-05)**: Frostmere Crossing (2 roads), Thornmother boss, 2 legendary towers, map picker |
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
 | 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
-| 10. Asset packs + content growth | **In progress** (2026-11-06): 10 Kenney + 10 Quaternius CC0 packs, 48 imported pack models (23 Kenney, 25 Quaternius), seeded map generator + 15 new maps (3 hand-made flagships, 12 generated), content batches kenney_b1, quaternius_b1, quaternius_b2, 2 new heroes, 5 new hero skills, Lancer Mech boss killer. Full e2e + 30 min soak for this batch: see VERIFICATION.md |
+| 11. UI / GFX / content update | **In progress** (2026-11-06): see Next exact action |
+| 10. Asset packs + content growth | **Done** (2026-11-06): 10 Kenney + 10 Quaternius CC0 packs, 48 imported pack models (23 Kenney, 25 Quaternius), seeded map generator + 15 new maps (3 hand-made flagships, 12 generated), content batches kenney_b1, quaternius_b1, quaternius_b2, 2 new heroes, 5 new hero skills, Lancer Mech boss killer. Full e2e + 30 min soak for this batch: see VERIFICATION.md |
 
 ## Real content counts (2026-11-06, counted from data/ by script)
 
@@ -130,19 +131,29 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-Final-product run (owner brief 2026-11-06; targets raised to the full spec, scoreboard in docs/COMPLETION.md,
-stop at about 95% of the 5-hour window / 97% weekly, checkpoint to wip/final-product before each batch).
-- Batch 1 done: bug 37 accepted (Lancer limit 1), COMPLETION.md + `node tools/count-content.mjs`,
-  4 new heroes, 4 skills per hero, 9 new skill effects (src/sim/match.js `_updateAbilities`), hero gear
-  (src/engine/heroView.js), hero picker (src/ui/hub.js `_heroPicker`), `npm run balance -- --hero all`.
-- **Next: bosses batch (owner priority 1: only 2 distinct boss mechanic sets).** Add new boss phase action
-  types in `src/sim/match.js` `_bossPhases` / `_updateTelegraphs` (ideas: teleport forward, heal pulse,
-  stealth cloak, immunity phase per damage type, split into minions on death, tower-disable beam on a
-  line, cash drain, spawn portals on other roads, reflect/armour phase, speed dash with telegraph,
-  regen phase, summon shielders), each telegraphed (event + matchView ring), then bosses in a new data
-  file using them (unique phase sets), unit tests per action, balance bot.
-- Then unique-mechanic towers and enemies, maps, meta (quests, achievements, cosmetics, Index),
-  music and polish (owner priority order).
+UI / texture / GFX / content update (owner brief 2026-11-06, docs/ui-style.md; checkpoints to wip/ui-gfx before each
+batch; stop at about 95% of the 5-hour window / 97% weekly and schedule a resume).
+- Done (batch UI/GFX 1 + bosses): docs/ui-style.md, styles/tokens.css + styles/theme.css (war-table panels,
+  faction dress), src/ui/icons.js (SVG set: classes, archetypes, damage types, abilities, rarity badges),
+  hub redesign (src/ui/hub.js: nav rail / phone tab bar, mission summary, map picker with search, theme
+  filters, groups, SVG previews from src/ui/mapThumb.js, lock badges), HUD icons + wave bar + end screen
+  with counters (src/ui/counter.js), settings Ultra / resolution / interface size / grade / weather,
+  theme visuals from data/themes.json (sky shader stars / aurora / clouds, hemi light, colour grade in the
+  vignette pass, ambient particles src/engine/themeFx.js, terrain detail ruts / ice / lava / ooze /
+  ripples / runes with emissive and roughness maps, grass sway, dusk / night via map `timeOfDay`),
+  data-driven VFX library data/vfx.json (Effects.play, quality caps, status auras, boss moments, slow
+  motion, flash), boss intro letterbox + camera turn, victory / defeat sequences, menus render the world at
+  a quarter rate. Bosses: 12 new phase actions (src/sim/match.js `_bossAction`), `tools/gen-bosses.mjs`
+  -> data/bosses/mechanics_b1.json (40 bosses, 40 different kits), test/unit/bosses.test.js.
+  BEFORE screenshots: docs/screenshots/ui-update/before (tools/ui-shots.mjs).
+- **Next**: (1) Boss Rush balance for the new bosses (BUGS.md #46). (2) AFTER screenshots
+  `node tools/ui-shots.mjs after` and review against before; full e2e + 30 min soak at the milestone end.
+  (3) Track A unit materials (faction trims, wear, rarity glints on models, eye / weapon glow) in
+  src/engine/models.js style pass. (4) Remaining screens: Index detail panel, quests / achievements
+  layout, summon banners (more than one), pause screen styling, loading tips per theme. (5) Track D:
+  unique-mechanic towers and enemies, new themes / maps, modes, quests, achievements, cosmetics
+  (tower skins, hero outfits, projectile effects, UI themes) earned in play and shown in the Index.
+  (6) BUGS.md #44 hero balance.
 
 ## Known weak spots (honest)
 

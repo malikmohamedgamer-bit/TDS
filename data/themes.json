@@ -1,0 +1,263 @@
+{
+  "$doc": "Visual profile per map theme (Track A/B of the UI/GFX update). Read by src/engine/themeFx.js and the renderer. sky: extra shader layers (stars 0-1, aurora 0-1, cloudCover 0-1, haze colour, silhouette tint for distant mountains); particles: ambient kind (snow | embers | spores | dust | motes | pollen) and count at High (Medium x0.6, Low x0.25); grade: colour grading in the vignette pass (lift, gamma, gain as RGB multipliers, saturation, contrast); hemi: ambient sky / ground colours; ground: baked terrain detail (ruts | ice | lava | ooze | ripples | runes) and its emissive colour; timeOfDay: optional sun override for maps that set timeOfDay in their own data.",
+  "themes": {
+    "verdant": {
+      "label": "Verdant",
+      "sky": {
+        "stars": 0,
+        "aurora": 0,
+        "cloudCover": 0.35,
+        "haze": "#FFF4DC",
+        "silhouette": "#FFFFFF"
+      },
+      "particles": {
+        "kind": "pollen",
+        "count": 160,
+        "color": "#FFF3B0"
+      },
+      "grade": {
+        "lift": [
+          0.0,
+          0.0,
+          0.01
+        ],
+        "gamma": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "gain": [
+          1.03,
+          1.02,
+          0.98
+        ],
+        "saturation": 1.08,
+        "contrast": 1.04
+      },
+      "hemi": {
+        "sky": "#C4DCFF",
+        "ground": "#6B5A3E",
+        "intensity": 1.1
+      },
+      "ground": {
+        "detail": "ruts",
+        "emissive": null
+      }
+    },
+    "frost": {
+      "label": "Frost",
+      "sky": {
+        "stars": 0.15,
+        "aurora": 0.85,
+        "cloudCover": 0.25,
+        "haze": "#E8F4FF",
+        "silhouette": "#E6EEFF"
+      },
+      "particles": {
+        "kind": "snow",
+        "count": 420,
+        "color": "#F4FAFF"
+      },
+      "grade": {
+        "lift": [
+          0.0,
+          0.01,
+          0.03
+        ],
+        "gamma": [
+          1.0,
+          1.0,
+          0.97
+        ],
+        "gain": [
+          0.97,
+          1.0,
+          1.06
+        ],
+        "saturation": 0.92,
+        "contrast": 1.05
+      },
+      "hemi": {
+        "sky": "#D8E8FF",
+        "ground": "#6A7484",
+        "intensity": 1.2
+      },
+      "ground": {
+        "detail": "ice",
+        "emissive": null
+      }
+    },
+    "toxic": {
+      "label": "Toxic Mire",
+      "sky": {
+        "stars": 0,
+        "aurora": 0,
+        "cloudCover": 0.6,
+        "haze": "#C9E6A0",
+        "silhouette": "#9AAA82"
+      },
+      "particles": {
+        "kind": "spores",
+        "count": 260,
+        "color": "#B6FF7A"
+      },
+      "grade": {
+        "lift": [
+          0.01,
+          0.02,
+          0.0
+        ],
+        "gamma": [
+          1.0,
+          0.97,
+          1.02
+        ],
+        "gain": [
+          0.98,
+          1.04,
+          0.94
+        ],
+        "saturation": 1.02,
+        "contrast": 1.08
+      },
+      "hemi": {
+        "sky": "#C6D9A8",
+        "ground": "#3E4A2E",
+        "intensity": 1.0
+      },
+      "ground": {
+        "detail": "ooze",
+        "emissive": "#7BFF5A"
+      }
+    },
+    "ember": {
+      "label": "Ember",
+      "sky": {
+        "stars": 0.2,
+        "aurora": 0,
+        "cloudCover": 0.5,
+        "haze": "#FFB27A",
+        "silhouette": "#8A5246"
+      },
+      "particles": {
+        "kind": "embers",
+        "count": 300,
+        "color": "#FF8A3D"
+      },
+      "grade": {
+        "lift": [
+          0.02,
+          0.0,
+          0.0
+        ],
+        "gamma": [
+          0.97,
+          1.0,
+          1.03
+        ],
+        "gain": [
+          1.08,
+          1.0,
+          0.92
+        ],
+        "saturation": 1.06,
+        "contrast": 1.1
+      },
+      "hemi": {
+        "sky": "#FFC9A0",
+        "ground": "#4A2A22",
+        "intensity": 1.0
+      },
+      "ground": {
+        "detail": "lava",
+        "emissive": "#FF6A1F"
+      }
+    },
+    "dunes": {
+      "label": "Dunes",
+      "sky": {
+        "stars": 0,
+        "aurora": 0,
+        "cloudCover": 0.15,
+        "haze": "#FFE2B0",
+        "silhouette": "#F0D2A6"
+      },
+      "particles": {
+        "kind": "dust",
+        "count": 240,
+        "color": "#E8C890"
+      },
+      "grade": {
+        "lift": [
+          0.02,
+          0.01,
+          0.0
+        ],
+        "gamma": [
+          0.98,
+          1.0,
+          1.04
+        ],
+        "gain": [
+          1.06,
+          1.02,
+          0.94
+        ],
+        "saturation": 1.0,
+        "contrast": 1.06
+      },
+      "hemi": {
+        "sky": "#FFE6C2",
+        "ground": "#8A6A40",
+        "intensity": 1.15
+      },
+      "ground": {
+        "detail": "ripples",
+        "emissive": null
+      }
+    },
+    "starfall": {
+      "label": "Starfall",
+      "sky": {
+        "stars": 1,
+        "aurora": 0.35,
+        "cloudCover": 0.1,
+        "haze": "#B9A6FF",
+        "silhouette": "#9A8FE0"
+      },
+      "particles": {
+        "kind": "motes",
+        "count": 220,
+        "color": "#C9A7FF"
+      },
+      "grade": {
+        "lift": [
+          0.01,
+          0.0,
+          0.04
+        ],
+        "gamma": [
+          1.0,
+          1.02,
+          0.96
+        ],
+        "gain": [
+          0.98,
+          0.98,
+          1.08
+        ],
+        "saturation": 1.1,
+        "contrast": 1.08
+      },
+      "hemi": {
+        "sky": "#B8B0FF",
+        "ground": "#2E2A4A",
+        "intensity": 1.05
+      },
+      "ground": {
+        "detail": "runes",
+        "emissive": "#B58CFF"
+      }
+    }
+  }
+}

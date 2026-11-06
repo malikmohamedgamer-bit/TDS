@@ -45,6 +45,8 @@ export async function loadContent(readJson) {
     quests: index.quests ? await readJson(index.quests) : null,
     music: index.music ? await readJson(index.music) : null,
     palettes: index.palettes ? await readJson(index.palettes) : null,
+    themes: index.themes ? (await readJson(index.themes)).themes : {},
+    vfx: index.vfx ? await readJson(index.vfx) : null,
     ...(await (async () => {
       const m = index.modes ? await readJson(index.modes) : { modes: [], modifiers: [] };
       return { modes: new Map(m.modes.map((x) => [x.id, x])), modifiers: new Map(m.modifiers.map((x) => [x.id, x])) };
@@ -70,6 +72,9 @@ export function contentVersion(content) {
 }
 
 /** Returns a list of human-readable problems (empty when content is consistent). */
+/** Boss phase action types the simulation knows (src/sim/match.js _bossPhases / _bossAction). */
+export const BOSS_ACTIONS = ['telegraph', 'summon', 'shield', 'speed', 'teleport', 'regen', 'cloak', 'immune', 'armor', 'dash', 'drainCash', 'portal', 'healPulse', 'snipe', 'undying', 'splitOnDeath'];
+
 export function validateContent(c) {
   const errs = [];
   const dmg = (t, where) => { if (t && !c.damageTypes.has(t)) errs.push(`${where}: unknown damage type "${t}"`); };
@@ -78,6 +83,7 @@ export function validateContent(c) {
     for (const t of Object.keys(e.resist || {})) dmg(t, `enemy ${e.id} resist`);
     for (const ref of [e.split?.into, e.summon?.into]) if (ref && !c.enemies.has(ref)) errs.push(`enemy ${e.id}: unknown enemy "${ref}"`);
     for (const ph of e.phases || []) for (const a of ph.actions) if (a.into && !c.enemies.has(a.into)) errs.push(`boss ${e.id}: unknown enemy "${a.into}"`);
+    for (const ph of e.phases || []) for (const a of ph.actions) if (!BOSS_ACTIONS.includes(a.type)) errs.push(`boss ${e.id}: unknown phase action "${a.type}"`);
   }
   for (const t of c.towers.values()) {
     if (!(t.cost > 0)) errs.push(`tower ${t.id}: bad cost`);

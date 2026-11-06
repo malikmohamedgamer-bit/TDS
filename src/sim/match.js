@@ -418,7 +418,8 @@ export class Match {
       armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd), flying: !!def.flying, stealth: !!def.stealth, alive: true,
       baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed, speedMul: 1, curSpeed: def.speed,
       slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
-      phase: 0, healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
+      phase: 0, regenUntil: 0, regenRate: 0, cloakUntil: 0, immune: null, armorUntil: 0, armorAdd: 0, dashUntil: 0, dashMul: 1, revive: 0, revived: false, deathSpawn: null,
+      healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
       blocked: false, wave, boss: !!def.boss, heading: 0, spawnedAt: this.time, parent, leak: leak ?? def.leak,
     };
     this._placeEnemy(e);
@@ -506,6 +507,7 @@ export class Match {
       if (e.burnUntil > now) this._damage(e, { amount: e.burnDps * dt, type: 'fire', dot: true }, e.burnSrc);
       if (!e.alive) continue;
       if (def.regen && e.burnUntil <= now) e.hp = Math.min(e.maxHp, e.hp + def.regen * e.maxHp * dt);
+      if (e.boss) this._bossTimers(e, dt);
       // abilities
       if (def.heal) {
         e.healT -= dt;
@@ -781,6 +783,10 @@ export class Match {
   _damage(e, packet, src) {
     if (!e.alive) return;
     const now = this.time;
+    if (e.immune && e.immune.until > now && e.immune.types.includes(packet.type)) {
+      if (!packet.dot && now - (e.immune.shown || -9) >= 1) { e.immune.shown = now; this.events.push({ type: 'immune', id: e.id, damageType: packet.type, x: e.x, y: e.y, z: e.z }); }
+      return;
+    }
     const { toShield, toHp } = resolveDamage(e, packet, this.content.damageTypes, now);
     e.shield = Math.max(0, e.shield - toShield);
     e.hp -= toHp;
@@ -800,6 +806,13 @@ export class Match {
   }
 
   _kill(e, src) {
+    if (e.revive > 0 && !e.revived) {
+      // "undying" phase: the boss gets back up once, at a share of its health, and keeps its phase
+      e.revived = true;
+      e.hp = e.maxHp * e.revive;
+      this.events.push({ type: 'bossRevive', id: e.id, x: e.x, z: e.z, hp: e.hp });
+      return;
+    }
     e.alive = false;
     e.hp = 0;
     const reward = this._gainCash(e.def.reward, 'kill');
@@ -809,6 +822,10 @@ export class Match {
     this.events.push({ type: 'death', id: e.id, enemy: e.defId, x: e.x, y: e.y, z: e.z, reward, boss: e.boss });
     if (e.def.split) {
       for (let i = 0; i < e.def.split.count; i++) this.spawnEnemy(e.def.split.into, { pathIdx: this.paths.indexOf(e.path), d: Math.max(0, e.d - 0.5 * i), wave: e.wave, parent: e.id });
+    }
+    if (e.deathSpawn) {
+      for (let i = 0; i < e.deathSpawn.count; i++) this.spawnEnemy(e.deathSpawn.into, { pathIdx: this.paths.indexOf(e.path), d: Math.max(0, e.d - 0.6 * i), wave: e.wave, parent: e.id });
+      this.events.push({ type: 'bossSplit', id: e.id, x: e.x, z: e.z, count: e.deathSpawn.count });
     }
   }
 
@@ -829,9 +846,114 @@ export class Match {
           e.maxShield = Math.max(e.maxShield, e.shield);
         } else if (a.type === 'speed') {
           e.speedMul *= 1 + (a.mul - 1) * this.tune.bossPhaseSpeed;
-        }
+        } else this._bossAction(e, a);
       }
     }
+  }
+
+  /**
+   * Boss phase actions beyond telegraph / summon / shield / speed (data/bosses: phases[].actions[]).
+   * Every action emits an event so the view can show it (ring, burst, banner).
+   */
+  _bossAction(e, a) {
+    const now = this.time;
+    const pathIdx = this.paths.indexOf(e.path);
+    switch (a.type) {
+      case 'teleport': { // blink forward along the road
+        const x0 = e.x;
+        const z0 = e.z;
+        e.d = Math.min(e.path.length - 6, e.d + a.distance);
+        e.progress = Math.max(e.progress, e.d);
+        this._placeEnemy(e);
+        this.events.push({ type: 'bossBlink', id: e.id, x0, z0, x: e.x, z: e.z });
+        break;
+      }
+      case 'regen': // heal a share of max health over time; burning stops it (like regenerating enemies)
+        e.regenUntil = now + a.duration;
+        e.regenRate = (a.amount * e.maxHp) / a.duration;
+        this.events.push({ type: 'bossRegen', id: e.id, x: e.x, z: e.z, duration: a.duration });
+        break;
+      case 'cloak': // stealth: only detection can target it
+        e.cloakUntil = now + a.duration;
+        e.stealth = true;
+        this.events.push({ type: 'bossCloak', id: e.id, x: e.x, z: e.z, duration: a.duration });
+        break;
+      case 'immune': // ignores some damage types for a while
+        e.immune = { types: a.types.slice(), until: now + a.duration, shown: -9 };
+        this.events.push({ type: 'bossImmune', id: e.id, x: e.x, z: e.z, types: a.types, duration: a.duration });
+        break;
+      case 'armor': // temporary extra armour
+        if (e.armorUntil <= now) e.armorAdd = 0;
+        e.armor = Math.min(0.9, e.armor - e.armorAdd + a.add);
+        e.armorAdd = a.add;
+        e.armorUntil = now + a.duration;
+        this.events.push({ type: 'bossArmor', id: e.id, x: e.x, z: e.z, duration: a.duration });
+        break;
+      case 'dash': { // short speed burst
+        const mul = 1 + (a.mul - 1) * this.tune.bossPhaseSpeed;
+        if (e.dashUntil > now) e.speedMul /= e.dashMul;
+        e.speedMul *= mul;
+        e.dashMul = mul;
+        e.dashUntil = now + a.duration;
+        this.events.push({ type: 'bossDash', id: e.id, x: e.x, z: e.z, duration: a.duration });
+        break;
+      }
+      case 'drainCash': { // steals a share of the player's cash (never below 0)
+        if (this.options.infiniteCash) break;
+        const amount = Math.floor(this.cash * a.pct);
+        this.cash -= amount;
+        this.events.push({ type: 'cashDrain', id: e.id, x: e.x, z: e.z, amount });
+        break;
+      }
+      case 'portal': { // minions from the start of every other road (own road on one-road maps)
+        const roads = this.paths.length > 1 ? this.paths.map((_, i) => i).filter((i) => i !== pathIdx) : [pathIdx];
+        for (const r of roads) {
+          for (let i = 0; i < a.count; i++) this.spawnEnemy(a.into, { pathIdx: r, d: i * 0.8, wave: e.wave, parent: e.id });
+          const p = this.paths[r].pointAt(0);
+          this.events.push({ type: 'bossPortal', id: e.id, x: p.x, z: p.z, count: a.count });
+        }
+        break;
+      }
+      case 'healPulse': { // heals nearby Blight (not itself)
+        const rr = a.radius * a.radius;
+        let n = 0;
+        for (const o of this.enemies) {
+          if (!o.alive || o === e || r2(o.x, o.z, e.x, e.z) > rr) continue;
+          o.hp = Math.min(o.maxHp, o.hp + a.amount * o.maxHp);
+          n++;
+        }
+        this.events.push({ type: 'heal', id: e.id, x: e.x, z: e.z, radius: a.radius, count: n });
+        break;
+      }
+      case 'snipe': { // telegraphed strike on the tower that has dealt the most damage
+        let best = null;
+        for (const t of this.towers) if (!best || t.damage > best.damage) best = t;
+        const x = best ? best.x : e.x;
+        const z = best ? best.z : e.z;
+        const tg = { id: this.nextId++, x, z, radius: a.radius, effect: 'stunTowers', duration: a.duration, at: now + a.delay, from: e.id };
+        this.telegraphs.push(tg);
+        this.events.push({ type: 'telegraph', ...tg, delay: a.delay, snipe: true });
+        break;
+      }
+      case 'undying':
+        e.revive = a.hp;
+        this.events.push({ type: 'bossUndying', id: e.id, x: e.x, z: e.z });
+        break;
+      case 'splitOnDeath':
+        e.deathSpawn = { into: a.into, count: a.count };
+        this.events.push({ type: 'bossSplitReady', id: e.id, x: e.x, z: e.z });
+        break;
+      default: throw new Error(`Unknown boss action "${a.type}"`);
+    }
+  }
+
+  /** Ends timed boss effects (cloak, armour, dash) and applies phase regeneration. */
+  _bossTimers(e, dt) {
+    const now = this.time;
+    if (e.regenUntil > now && e.burnUntil <= now) e.hp = Math.min(e.maxHp, e.hp + e.regenRate * dt);
+    if (e.cloakUntil && now >= e.cloakUntil) { e.cloakUntil = 0; e.stealth = !!e.def.stealth; }
+    if (e.armorUntil && now >= e.armorUntil) { e.armor = Math.max(0, e.armor - e.armorAdd); e.armorAdd = 0; e.armorUntil = 0; }
+    if (e.dashUntil && now >= e.dashUntil) { e.speedMul /= e.dashMul; e.dashMul = 1; e.dashUntil = 0; }
   }
 
   _updateTelegraphs() {

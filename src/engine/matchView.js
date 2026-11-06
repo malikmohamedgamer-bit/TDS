@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { rigFromGLB, rigFromProcedural, InstancedRig } from './instancedRig.js';
 import { loadGLB, ModelInstance, modelSrc } from './models.js';
 import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS, mineModel } from './unitModels.js';
-import { Effects, DAMAGE_COLORS } from './effects.js';
+import { Effects } from './effects.js';
 import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
 import { damp } from '../core/math.js';
@@ -30,32 +30,7 @@ const PROJECTILES = {
 };
 
 /** Hit effects for hero skills added in data (ring colour at cast, particle burst on hit). */
-const ABILITY_FX = {
-  artillery_barrage: { ring: '#F28C28', y: 0.4, count: 60, colors: ['#FF9F1C', '#FFD27A', '#6E6E7A'], speed: 0.6, up: 7, size: 0.24, shake: 0.4 },
-  field_repairs: { ring: '#3FB950', y: 1, count: 30, colors: ['#3FB950', '#FFF3B0'], up: 4, size: 0.14 },
-  war_chest: { ring: '#FFD166', y: 1, count: 30, colors: ['#FFD166', '#FFF3B0'], up: 5, size: 0.14 },
-  gravity_well: { ring: '#B15CFF', y: 0.4, count: 50, colors: ['#B15CFF', '#1E1B4B', '#C9A7FF'], speed: -0.6, up: 1, size: 0.16 },
-  starfall: { ring: '#7FF6FF', y: 0.6, count: 70, colors: ['#7FF6FF', '#FFFFFF', '#B15CFF'], speed: 0.8, up: 8, size: 0.22, shake: 0.35 },
-  banner_of_valor: { ring: '#FFD166', y: 1.2, count: 36, colors: ['#FFD166', '#E5484D', '#FFF3B0'], up: 6, size: 0.14 },
-  flare_shells: { ring: '#FF6B35', y: 2, count: 50, colors: ['#FF6B35', '#FFE14D', '#FFF3B0'], speed: 0.5, up: 3, size: 0.16 },
-  arcane_chain: { ring: '#B15CFF', y: 1, count: 24, colors: ['#B15CFF', '#C9A7FF'], speed: 0.4, up: 2, size: 0.12 },
-  meteor: { ring: '#FF6B35', y: 0.4, count: 80, colors: ['#FF6B35', '#FF9F1C', '#3B1A14'], speed: 0.8, up: 8, size: 0.26, shake: 0.45 },
-  wall_of_flame: { ring: '#FF6B35', y: 0.3, count: 70, colors: ['#FF6B35', '#FFD166', '#C2410C'], speed: 0.5, up: 4, size: 0.18 },
-  kindle: { ring: '#FF9F1C', y: 1.2, count: 34, colors: ['#FF9F1C', '#FFD166'], up: 6, size: 0.14 },
-  flashfire: { ring: '#FFD166', y: 0.5, count: 60, colors: ['#FFD166', '#FF6B35', '#FFFFFF'], speed: 1.2, up: 2, size: 0.18, shake: 0.25 },
-  reinforcements: { ring: '#5B6B3A', y: 2, count: 30, colors: ['#C2B280', '#5B6B3A', '#FFD27A'], speed: 0.4, up: -2, size: 0.14 },
-  frag_volley: { ring: '#F28C28', y: 0.4, count: 55, colors: ['#FF9F1C', '#FFD27A', '#6E6E7A'], speed: 0.7, up: 6, size: 0.2, shake: 0.3 },
-  overclock: { ring: '#FFE14D', y: 1.2, count: 34, colors: ['#FFE14D', '#F28C28'], up: 5, size: 0.12 },
-  supply_drop: { ring: '#3FB950', y: 1, count: 30, colors: ['#FFD166', '#3FB950', '#C2B280'], up: 5, size: 0.14 },
-  entangling_roots: { ring: '#5A9440', y: 0.2, count: 60, colors: ['#5A9440', '#7BD389', '#7A5230'], speed: 0.5, up: 2, size: 0.18 },
-  spirit_pack: { ring: '#7FF6FF', y: 0.6, count: 30, colors: ['#7FF6FF', '#2EC4B6'], speed: 0.4, up: 3, size: 0.14 },
-  cleansing_bloom: { ring: '#FFF3B0', y: 0.8, count: 60, colors: ['#FFF3B0', '#7BD389', '#FFFFFF'], speed: 0.7, up: 5, size: 0.16 },
-  verdant_renewal: { ring: '#7BD389', y: 1, count: 40, colors: ['#7BD389', '#3FB950', '#FFF3B0'], up: 5, size: 0.14 },
-  marked_for_death: { ring: '#E5484D', y: 1, count: 24, colors: ['#E5484D', '#FFFFFF'], speed: 0.3, up: 2, size: 0.12 },
-  emp_burst: { ring: '#FFE14D', y: 0.8, count: 60, colors: ['#FFE14D', '#7FDBFF', '#FFFFFF'], speed: 1, up: 3, size: 0.14, shake: 0.2 },
-  recon_drone: { ring: '#7FDBFF', y: 3, count: 40, colors: ['#7FDBFF', '#FFFFFF'], speed: 0.6, up: 1, size: 0.1 },
-  headhunter: { ring: '#E5484D', y: 1, count: 40, colors: ['#E5484D', '#D9D9D9', '#1C1E24'], speed: 0.6, up: 3, size: 0.16 },
-};
+/** Hero skill VFX now live in data/vfx.json as ability.<id> presets (cast ring colour = first ring step). */
 
 export class MatchView {
   constructor(renderer, match, content, settings, overlay) {
@@ -68,6 +43,10 @@ export class MatchView {
     this.group.name = 'match';
     this.scene.add(this.group);
     this.fx = new Effects(this.scene, renderer.camera, overlay, settings);
+    this.fx.setLibrary(content.vfx, settings.quality);
+    this.timeScale = 1; // < 1 during slow-motion moments (boss death); read by the controller
+    this.slowmo = null;
+    this.auraT = 0;
     this.enemyRigs = new Map(); // defId -> InstancedRig
     this.allyRigs = new Map();
     this.enemyVis = new Map(); // id -> visual state
@@ -231,8 +210,7 @@ export class MatchView {
     vis.root.position.set(t.x, t.y, t.z);
     this.group.add(vis.root);
     this.towerVis.set(t.uid, vis);
-    this.fx.burst(t.x, t.y + 0.2, t.z, { count: 18, colors: ['#C49A6C', '#A97D52', '#D8B184'], speed: 3, up: 2.5, size: 0.14 });
-    this.fx.ring(t.x, t.y, t.z, { color: '#FFD166', r1: 2.2, life: 0.5 });
+    this._vfx('place', t.x, t.y + 0.2, t.z);
     return vis;
   }
 
@@ -252,7 +230,7 @@ export class MatchView {
         case 'place': { const t = m.towerById(e.uid); if (t) this._makeTower(t); break; }
         case 'sell': {
           const v = this.towerVis.get(e.uid);
-          if (v) this.fx.burst(v.root.position.x, v.root.position.y + 0.5, v.root.position.z, { count: 20, colors: ['#FFD166', '#F4F6FB'], up: 3 });
+          if (v) this._vfx('sell', v.root.position.x, v.root.position.y + 0.5, v.root.position.z);
           this._removeTower(e.uid);
           break;
         }
@@ -266,8 +244,7 @@ export class MatchView {
           const v = this.towerVis.get(e.uid);
           const t = m.towerById(e.uid);
           if (v && t) {
-            this.fx.burst(t.x, t.y + 1, t.z, { count: e.evolved ? 60 : 24, colors: e.evolved ? ['#FFD166', '#C9A7FF', '#7FF6FF'] : ['#FFD166', '#F4F6FB'], up: 5, speed: 3 });
-            this.fx.ring(t.x, t.y, t.z, { color: e.evolved ? '#C9A7FF' : '#FFD166', r1: e.evolved ? 4 : 2.4, life: e.evolved ? 0.9 : 0.5 });
+            this._vfx(e.evolved ? 'evolve' : 'upgrade', t.x, t.y + 1, t.z);
             if (e.evolved) v.evolved = true;
           }
           break;
@@ -278,7 +255,7 @@ export class MatchView {
             v.attackT = 0;
             v.recoil = 1;
             if (v.inst && v.clips?.attack) { v.inst.play(v.clips.attack, { once: true, fade: 0.05 }); v.returnIdleAt = this.time + 0.45; }
-            if (e.kind === 'bullet' || e.kind === 'tracer') this.fx.burst(e.x, e.y, e.z, { count: 3, color: '#FFD27A', speed: 1, up: 0.5, size: 0.1, life: 0.12, gravity: 0 });
+            this._vfx(`muzzle.${e.kind}`, e.x, e.y, e.z);
             if (e.kind === 'lightning') this.fx.bolt(e.x, e.y, e.z, e.tx, e.ty, e.tz);
           }
           break;
@@ -288,62 +265,88 @@ export class MatchView {
           const ev = this.enemyVis.get(e.id);
           if (ev) ev.flash = 1;
           if (e.amount >= 1) this.fx.number(e.x, e.y + (ev?.height || 1.5), e.z, e.amount, e.damageType);
-          this.fx.burst(e.x, e.y + 0.8, e.z, { count: 3, color: DAMAGE_COLORS[e.damageType] || '#fff', speed: 2, up: 1.5, size: 0.08, life: 0.3 });
+          if (!e.dot || Math.random() < 0.25) this._vfx(`hit.${e.damageType || 'physical'}`, e.x, e.y + 0.8, e.z);
           break;
         }
         case 'explosion': {
-          const col = e.damageType === 'ice' ? ['#7FDBFF', '#BDEBFF', '#FFFFFF'] : e.damageType === 'fire' ? ['#FF6B35', '#FFD27A', '#FF9F1C'] : e.damageType === 'holy' ? ['#FFF3B0', '#FFD166'] : ['#FF9F1C', '#FFD27A', '#6E6E7A', '#3D4451'];
-          this.fx.burst(e.x, e.y + 0.3, e.z, { count: 10 + Math.round(e.radius * 5), colors: col, speed: e.radius * 1.8, up: 3, size: 0.18, life: 0.7 });
-          this.fx.ring(e.x, e.y, e.z, { color: col[0], r0: 0.3, r1: e.radius, life: 0.35 });
+          const lib = this.fx.lib?.presets || {};
+          const name = e.kind === 'mine' ? 'explosion.mine' : lib[`explosion.${e.damageType}`] ? `explosion.${e.damageType}` : 'explosion.default';
+          this._vfx(name, e.x, e.y + 0.3, e.z, { radius: e.radius });
           break;
         }
         case 'death': {
           const ev = this.enemyVis.get(e.id);
           if (ev) { ev.state = 'death'; ev.t = 0; ev.dead = true; this.dying.push(ev); this.enemyVis.delete(e.id); }
-          this.fx.burst(e.x, e.y + 0.6, e.z, { count: e.boss ? 120 : 16, colors: ['#3A3D5C', '#E63946', '#FF3CAC', '#2B2D42'], speed: e.boss ? 8 : 3, up: e.boss ? 8 : 3, size: e.boss ? 0.3 : 0.14, life: 0.9 });
+          this._vfx(e.boss ? 'death.boss' : ev?.data?.def?.flying ? 'death.flying' : 'death.normal', e.x, e.y + 0.6, e.z);
           if (e.reward) this.fx.number(e.x, e.y + 2, e.z, e.reward, 'holy', { text: `+$${e.reward}` });
           break;
         }
-        case 'leak': this.fx.burst(e.x, 1, e.z, { count: 20, colors: ['#E63946', '#FF3CAC'], up: 4 }); break;
-        case 'heal': this.fx.ring(e.x, 0.1, e.z, { color: '#FF9AD5', r1: e.radius, life: 0.6 }); break;
-        case 'reveal': this.fx.burst(e.x, 1, e.z, { count: 10, colors: ['#FFFFFF', '#7FDBFF'], up: 2, size: 0.1 }); break;
+        case 'leak': this._vfx('leak', e.x, 1, e.z); break;
+        case 'heal': this._vfx('enemyHeal', e.x, 0.1, e.z, { radius: e.radius }); break;
+        case 'reveal': this._vfx('reveal', e.x, 1, e.z); break;
         case 'freeze': { const ev = this.enemyVis.get(e.id); if (ev) ev.frozen = this.time + e.duration; break; }
         case 'hex': this.fx.bolt(e.x, 6, e.z, e.x, 1.5, e.z, { segments: 5, jitter: 0.6, life: 0.3 }); break;
         case 'telegraph': this._telegraph(e); break;
         case 'telegraphHit': {
-          this.fx.ring(e.x, 0.1, e.z, { color: '#E63946', r0: 1, r1: e.radius, life: 0.6, intensity: 2.2 });
-          this.fx.burst(e.x, 0.3, e.z, { count: 60, colors: ['#6E6E7A', '#3A3D5C', '#E63946'], speed: 9, up: 5, size: 0.25 });
+          this._vfx('boss.slam', e.x, 0.3, e.z, { radius: e.radius });
           const tg = this.telegraphs.get(e.id);
           if (tg) { this.group.remove(tg.mesh); this.telegraphs.delete(e.id); }
-          this.shake = this.settings.reducedMotion ? 0 : 0.6;
           break;
         }
-        case 'bossPhase': { const ev = this.enemyVis.get(e.id); if (ev) { ev.state = 'roar'; ev.t = 0; ev.roarUntil = this.time + 1.4; } break; }
+        case 'bossPhase': { const ev = this.enemyVis.get(e.id); if (ev) { ev.state = 'roar'; ev.t = 0; ev.roarUntil = this.time + 1.4; this._vfx('boss.phase', ev.x, 0.5, ev.z); } break; }
+        case 'bossBlink': this._vfx('boss.blink', e.x0, 1, e.z0); this._vfx('boss.blink', e.x, 1, e.z); break;
+        case 'bossRegen': this._vfx('boss.regen', e.x, 0.2, e.z); break;
+        case 'bossCloak': this._vfx('boss.cloak', e.x, 1, e.z); break;
+        case 'bossImmune': this._vfx('boss.immune', e.x, 0.3, e.z); break;
+        case 'immune': this.fx.number(e.x, e.y + 3, e.z, 0, e.damageType, { text: 'IMMUNE' }); break;
+        case 'bossArmor': this._vfx('boss.armor', e.x, 0.3, e.z); break;
+        case 'bossDash': this._vfx('boss.dash', e.x, 0.3, e.z); break;
+        case 'cashDrain': this._vfx('boss.drain', e.x, 1, e.z); break;
+        case 'bossPortal': this._vfx('boss.portal', e.x, 0.3, e.z); break;
+        case 'bossRevive': this._vfx('boss.revive', e.x, 0.5, e.z); break;
+        case 'bossSplit': this._vfx('boss.split', e.x, 0.6, e.z); break;
         case 'minePlaced': this.fx.burst(e.x, 0.2, e.z, { count: 6, color: '#C49A6C', up: 1.5, size: 0.08 }); break;
-        case 'allySpawn': this.fx.ring(e.x, 0.1, e.z, { color: '#7FF6FF', r1: 1.5 }); this.fx.burst(e.x, 0.5, e.z, { count: 14, color: '#7FF6FF', up: 3 }); break;
+        case 'allySpawn': this._vfx('summon', e.x, 0.1, e.z); break;
         case 'allyDeath': this.fx.burst(e.x, 0.6, e.z, { count: 14, color: '#7FF6FF', up: 3 }); break;
         case 'heroAttack': this.fx.bolt(e.x, 1.2, e.z, e.tx, 1.0, e.tz, { segments: 3, jitter: 0.15, life: 0.12 }); this.fx.burst(e.tx, 1, e.tz, { count: 6, color: '#C9A7FF', up: 1.5, speed: 2 }); break;
-        case 'abilityCast': this.fx.ring(e.x, 0.1, e.z, { color: ABILITY_FX[e.id]?.ring || (e.id === 'frost_nova' ? '#7FDBFF' : e.id === 'airstrike' ? '#E5484D' : '#FFD166'), r0: e.radius, r1: e.radius * 1.02, life: Math.max(0.4, e.delay + 0.2), intensity: 2 }); break;
+        case 'abilityCast': this.fx.ring(e.x, 0.1, e.z, { color: this.fx.lib?.presets?.[`ability.${e.id}`]?.find((st) => st.ring)?.ring.color || '#FFD166', r0: e.radius, r1: e.radius * 1.02, life: Math.max(0.4, e.delay + 0.2), intensity: 2 }); break;
         case 'abilityHit': {
-          if (e.id === 'airstrike') {
-            for (let i = 0; i < 6; i++) {
-              const a = (i / 6) * Math.PI * 2;
-              this.fx.burst(e.x + Math.cos(a) * e.radius * 0.5, 0.4, e.z + Math.sin(a) * e.radius * 0.5, { count: 14, colors: ['#FF9F1C', '#FFD27A', '#6E6E7A'], speed: 6, up: 6, size: 0.22 });
-            }
-            this.shake = this.settings.reducedMotion ? 0 : 0.5;
-          }
-          if (e.id === 'frost_nova') this.fx.burst(e.x, 0.4, e.z, { count: 50, colors: ['#7FDBFF', '#FFFFFF', '#BDEBFF'], speed: e.radius, up: 2, size: 0.16 });
-          if (e.id === 'commanders_rally') this.fx.burst(e.x, 1, e.z, { count: 30, colors: ['#FFD166', '#C9A7FF'], up: 5 });
-          const fx = ABILITY_FX[e.id];
-          if (fx) {
-            this.fx.burst(e.x, fx.y, e.z, { count: fx.count, colors: fx.colors, speed: (fx.speed ?? 1) * e.radius, up: fx.up, size: fx.size });
-            if (fx.shake && !this.settings.reducedMotion) this.shake = fx.shake;
-          }
+          this._vfx(`ability.${e.id}`, e.x, 0, e.z, { radius: e.radius });
           this.fx.ring(e.x, 0.1, e.z, { color: '#FFFFFF', r0: 0.5, r1: e.radius, life: 0.5 });
           break;
         }
         default: break;
       }
+    }
+  }
+
+  /** Plays a data/vfx.json preset and applies its side effects (shake, flash, slow motion). */
+  _vfx(name, x, y, z, opts) {
+    const side = this.fx.play(name, x, y, z, opts);
+    if (!side) return;
+    const calm = this.settings.reducedMotion;
+    if (side.shake && !calm) this.shake = Math.max(this.shake || 0, side.shake);
+    if (side.flash) this.r.flash?.(side.flash.color, side.flash.alpha, side.flash.life);
+    if (side.slowmo && !calm) this.slowmo = { scale: side.slowmo.scale, until: this.time + side.slowmo.seconds, len: side.slowmo.seconds };
+  }
+
+  /** Status auras: a few particles on burning, slowed, stunned, marked and shielded enemies (capped). */
+  _auras(dt) {
+    this.auraT += dt;
+    if (this.auraT < 0.12) return;
+    this.auraT = 0;
+    const m = this.match;
+    let n = 0;
+    for (const e of m.enemies) {
+      if (!e.alive || n > 24) continue;
+      const v = this.enemyVis.get(e.id);
+      if (!v) continue;
+      const y = v.y + (v.height || 1.5) * 0.6;
+      if (e.burnUntil > m.time) { this._vfx('status.burn', v.x, y, v.z); n++; }
+      if (e.slowUntil > m.time) { this._vfx('status.slow', v.x, y, v.z); n++; }
+      if (e.stunUntil > m.time) { this._vfx('status.stun', v.x, y + 0.6, v.z); n++; }
+      if (e.markUntil > m.time) { this._vfx('status.mark', v.x, y + 0.8, v.z); n++; }
+      if (e.shield > 0) { this._vfx('status.shield', v.x, y, v.z); n++; }
     }
   }
 
@@ -445,7 +448,7 @@ export class MatchView {
       if (!v) {
         v = { id: e.id, defId: e.defId, x: e.x, y: e.y, z: e.z, yaw: e.heading, state: 'move', t: Math.random(), flash: 0, scale: 1, height: 1.5, boss: e.boss, spawnT: 0 };
         this.enemyVis.set(e.id, v);
-        if (e.boss) this.fx.ring(e.x, 0.1, e.z, { color: '#FF3CAC', r1: 6, life: 1 });
+        if (e.boss) { this._vfx('boss.spawn', e.x, 0.1, e.z); this.bossSeen = e.id; }
       }
       const k = damp(20, dt);
       v.x += (e.x - v.x) * k; v.y += (e.y - v.y) * k; v.z += (e.z - v.z) * k;
@@ -603,6 +606,12 @@ export class MatchView {
     }
 
     const rect = this.r.canvas.getBoundingClientRect();
+    this._auras(dt);
+    // slow motion eases back to normal over its last third
+    if (this.slowmo) {
+      const left = this.slowmo.until - this.time;
+      if (left <= 0) { this.slowmo = null; this.timeScale = 1; } else this.timeScale = Math.min(1, this.slowmo.scale + (1 - this.slowmo.scale) * Math.max(0, 1 - left / (this.slowmo.len / 3)));
+    }
     this.fx.update(dt, rect.width, rect.height);
   }
 

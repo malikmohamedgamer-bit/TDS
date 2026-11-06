@@ -46,7 +46,7 @@ function build(entry, usedNames) {
   return generateMap({
     id: entry.id, name: entry.name || nameFor(entry.theme, entry.seed, usedNames), seed: entry.seed, template: entry.template,
     roads, theme, unlockLevel: entry.unlockLevel, description: entry.description, baseWaves: base, enemies: content.enemies, hpMul: entry.hpMul ?? 1,
-    swaps: entry.swaps, boss: entry.boss,
+    swaps: entry.swaps, boss: entry.boss, timeOfDay: entry.timeOfDay,
   });
 }
 

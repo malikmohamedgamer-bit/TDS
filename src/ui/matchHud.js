@@ -3,17 +3,16 @@
 import { nextStep, towerStats } from '../sim/stats.js';
 import { TARGET_MODES } from '../sim/combat.js';
 import { DAMAGE_COLORS } from '../engine/effects.js';
+import { icon, abilityIcon } from './icons.js';
+import { countUp } from './counter.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const TARGET_LABEL = { first: 'First', last: 'Last', strongest: 'Strongest', weakest: 'Weakest', fastest: 'Fastest', closest: 'Closest', flying: 'Flying only' };
 const ABILITY_KEYS = ['Z', 'X', 'G', 'V'];
-const ABILITY_ICON = { airstrike: '✈', frost_nova: '❄', commanders_rally: '⚑', artillery_barrage: '💥', field_repairs: '🔧', war_chest: '💰', gravity_well: '🌀', starfall: '☄',
-  banner_of_valor: '🚩', flare_shells: '🎆', arcane_chain: 'ϟ', meteor: '🌋', wall_of_flame: '🔥', kindle: '♨', flashfire: '💨', reinforcements: '🪖', frag_volley: '💣',
-  overclock: '⚡', supply_drop: '📦', entangling_roots: '🌿', spirit_pack: '🐺', cleansing_bloom: '❀', verdant_renewal: '✚', marked_for_death: '◎', emp_burst: '⌁', recon_drone: '🛰', headhunter: '✖' };
 export const HOTBAR_KEYS = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'];
 export const DEFAULT_LOADOUT = ['rifleman', 'ember_adept', 'frost_weaver', 'marksman', 'rocket_battery', 'storm_caller'];
 
-const fmt = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `${Math.round(n)}`);
+const fmt = (n) => (n >= 1e9 ? `${(n / 1e9).toFixed(1)}B` : n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M` : n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `${Math.round(n)}`);
 
 export class MatchHud {
   constructor(root, content, cb) {
@@ -25,16 +24,16 @@ export class MatchHud {
     this.el.className = 'match-ui';
     this.el.innerHTML = `
       <div class="status panel" role="group" aria-label="Match status" data-testid="status">
-        <div class="st wave"><span class="k">Wave</span><b data-testid="wave">0/20</b></div>
-        <div class="st timer"><span class="k">Next</span><b data-testid="timer">-</b></div>
+        <div class="st wave" data-tip="Current wave / total">${icon('wave')}<div class="stk"><span class="k">Wave</span><b data-testid="wave">0/20</b><div class="wavebar" aria-hidden="true"><span></span></div></div></div>
+        <div class="st timer" data-tip="Time until the next wave starts on its own">${icon('timer')}<div class="stk"><span class="k">Next</span><b data-testid="timer">-</b></div></div>
         <button class="btn skip" data-testid="skip" aria-label="Start next wave (N)">Next wave <kbd>N</kbd></button>
-        <div class="st hp"><span class="k">Keep</span><div class="bar" aria-hidden="true"><span></span></div><b data-testid="keep">150</b></div>
-        <div class="st cash"><span class="k">Cash</span><b data-testid="cash">$0</b></div>
+        <div class="st hp" data-tip="Keep health: enemies that reach the keep damage it">${icon('keep')}<div class="stk"><span class="k">Keep</span><div class="bar" aria-hidden="true"><span></span></div><b data-testid="keep">150</b></div></div>
+        <div class="st cash" data-tip="Cash for towers and upgrades this match">${icon('cash')}<div class="stk"><span class="k">Cash</span><b data-testid="cash">$0</b></div></div>
         <button class="btn assist-skip" data-testid="assist-skip" hidden aria-label="Assist: skip this whole wave">✚ Skip this wave</button>
         <button class="btn speed" data-testid="speed" aria-label="Game speed">1x</button>
-        <button class="icon-btn pause" aria-label="Pause (P)">❚❚</button>
+        <button class="icon-btn pause" aria-label="Pause (P)">${icon('pause')}</button>
       </div>
-      <div class="bossbar panel" hidden data-testid="bossbar" role="group" aria-label="Boss health"><div class="bname"></div><div class="bphase"></div><div class="bbar"><span class="bhp"></span><span class="bsh"></span></div><div class="bnum"></div></div>
+      <div class="bossbar panel" hidden data-testid="bossbar" role="group" aria-label="Boss health"><div class="bname">${icon('boss')}<span></span>${icon('boss')}</div><div class="bphase"></div><div class="bbar"><span class="bhp"></span><span class="bsh"></span></div><div class="bnum"></div></div>
       <div class="hotbar" role="toolbar" aria-label="Towers" data-testid="hotbar"></div>
       <div class="abilities" role="toolbar" aria-label="Abilities" data-testid="abilities"></div>
       <section class="tower-panel panel" hidden aria-label="Selected tower" data-testid="tower-panel"></section>
@@ -44,10 +43,10 @@ export class MatchHud {
       <dialog class="modal panel pause-modal" data-testid="pause">
         <h2>Paused</h2>
         <div class="col">
-          <button class="btn primary" data-act="resume">Resume</button>
-          <button class="btn" data-act="settings">Settings</button>
-          <button class="btn" data-act="restart">Restart match</button>
-          <button class="btn danger" data-act="quit">Quit to loadout</button>
+          <button class="btn primary" data-act="resume">${icon('play')} Resume</button>
+          <button class="btn" data-act="settings">${icon('settings')} Settings</button>
+          <button class="btn" data-act="restart">${icon('restart')} Restart match</button>
+          <button class="btn danger" data-act="quit">${icon('exit')} Quit to loadout</button>
         </div>
       </dialog>
       <dialog class="modal panel end-modal" data-testid="end"></dialog>`;
@@ -96,8 +95,8 @@ export class MatchHud {
   setAbilities(abilities) {
     const box = this.$('.abilities');
     box.innerHTML = abilities.map((a, i) => `<div class="ab" data-ab="${a.id}">
-      <button class="abtn" data-cast="${a.id}" aria-label="${esc(a.def.name)} (${ABILITY_KEYS[i]})"><span class="ic" aria-hidden="true">${ABILITY_ICON[a.id] || '✦'}</span><kbd>${ABILITY_KEYS[i]}</kbd><span class="cd" aria-hidden="true"></span><span class="nm">${esc(a.def.name)}</span></button>
-      <button class="auto" data-auto="${a.id}" aria-pressed="false" aria-label="${esc(a.def.name)} automatic">AUTO</button></div>`).join('');
+      <button class="abtn" data-cast="${a.id}" aria-label="${esc(a.def.name)} (${ABILITY_KEYS[i]})">${icon(abilityIcon(a.id))}<kbd>${ABILITY_KEYS[i]}</kbd><span class="cd" aria-hidden="true"></span><span class="nm">${esc(a.def.name)}</span></button>
+      <button class="auto" data-auto="${a.id}" data-tip="${esc(a.def.description || '')}" aria-pressed="false" aria-label="${esc(a.def.name)} automatic">AUTO</button></div>`).join('');
     box.onclick = (e) => {
       const c = e.target.closest('[data-cast]');
       if (c) this.cb.onAbility(c.dataset.cast);
@@ -110,6 +109,7 @@ export class MatchHud {
   update(m, { placing, speed }) {
     const ws = m.waveCount();
     this.$('[data-testid="wave"]').textContent = Number.isFinite(ws) ? `${m.wave}/${ws}` : `${m.wave}/∞`;
+    this.$('.wavebar span').style.width = `${Number.isFinite(ws) ? Math.min(1, m.wave / ws) * 100 : 100}%`;
     const left = m.nextWaveAt - m.time;
     const timer = this.$('[data-testid="timer"]');
     timer.textContent = m.mode.score === 'time' && m.phase === 'wave' ? `⏱ ${Math.floor(m.time / 60)}:${String(Math.floor(m.time) % 60).padStart(2, '0')}` : m.phase === 'won' || m.phase === 'lost' ? '-' : m.wave >= ws ? 'Final' : Number.isFinite(left) ? `${Math.max(0, Math.ceil(left))}s` : 'Ready';
@@ -130,7 +130,7 @@ export class MatchHud {
     const bb = this.$('.bossbar');
     bb.hidden = !boss;
     if (boss) {
-      bb.querySelector('.bname').textContent = boss.def.name;
+      bb.querySelector('.bname span').textContent = boss.def.name;
       const phases = boss.def.phases || [];
       bb.querySelector('.bphase').textContent = boss.phase > 0 ? `Phase ${boss.phase + 1}: ${phases[boss.phase - 1]?.name || ''}` : 'Phase 1';
       bb.querySelector('.bhp').style.width = `${Math.max(0, boss.hp / boss.maxHp) * 100}%`;
@@ -189,7 +189,7 @@ export class MatchHud {
     for (let i = 0; i < totalSteps; i++) pips.push(`<i class="${i < t.tier ? 'on' : ''}"></i>`);
     const dps = (eff.damage || 0) * (eff.rate || 0);
     const stats = [];
-    if (b.damage) stats.push(['Damage', `${eff.damage.toFixed(eff.damage < 10 ? 1 : 0)} <span class="dt" style="color:${DAMAGE_COLORS[b.damageType] || '#fff'}">${esc(b.damageType || '')}</span>`]);
+    if (b.damage) stats.push(['Damage', `${eff.damage.toFixed(eff.damage < 10 ? 1 : 0)} <span class="dt" style="color:${DAMAGE_COLORS[b.damageType] || '#fff'}">${icon(b.damageType || 'physical')}${esc(b.damageType || '')}</span>`]);
     if (b.rate) stats.push(['Attacks/s', eff.rate.toFixed(2)]);
     if (dps) stats.push(['DPS', dps.toFixed(0)]);
     if (eff.range) stats.push(['Range', `${eff.range.toFixed(1)} m`]);
@@ -222,8 +222,8 @@ export class MatchHud {
     const refund = m.refundOf(t);
     p.innerHTML = `
       <header><div><h2 data-testid="tower-name">${esc(t.name)}</h2><div class="pips" aria-label="Tier ${t.tier} of ${totalSteps}">${pips.join('')}</div></div>
-      <button class="icon-btn" data-act="close" aria-label="Close">✕</button></header>
-      ${t.stunUntil > m.time ? '<p class="stunned">⚠ Stunned</p>' : ''}
+      <button class="icon-btn" data-act="close" aria-label="Close">${icon('cross')}</button></header>
+      ${t.stunUntil > m.time ? `<p class="stunned">${icon('warn')} Stunned</p>` : ''}
       <dl>${stats.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
       ${b.damage || b.trap ? `<div class="targeting" role="radiogroup" aria-label="Targeting">${TARGET_MODES.map((mode) => `<button role="radio" aria-checked="${t.targeting === mode}" data-target="${mode}">${TARGET_LABEL[mode]}</button>`).join('')}</div>` : ''}
       ${upgrade}
@@ -281,14 +281,26 @@ export class MatchHud {
   showEnd(res, rewards) {
     const d = this.$('.end-modal');
     const won = res.won;
-    d.innerHTML = `<h2 class="${won ? 'won' : 'lost'}">${won ? '★ Victory' : '✕ Defeat'}</h2>
-      <p class="sub">${esc(res.presetLabel || res.preset || '')} tuning${res.assisted ? ` · <b class="assisted" data-testid="assisted">✚ Assist: ${esc(res.assists.join(', '))}</b>` : ''}</p>
+    const time = `${Math.floor(res.ticks / 3600)}:${String(Math.floor(res.ticks / 60) % 60).padStart(2, '0')}`;
+    const stat = (k, v, n) => `<div><dt>${k}</dt><dd${n !== undefined ? ` data-count="${n}"` : ''}>${v}</dd></div>`;
+    const rw = [];
+    if (rewards.granted && !rewards.sandbox) {
+      rw.push(`<span class="rw">${icon('crown')} +<span data-count="${rewards.crowns}">${rewards.crowns}</span> Crowns</span>`);
+      rw.push(`<span class="rw">${icon('star')} +<span data-count="${rewards.xp}">${rewards.xp}</span> XP</span>`);
+      if (rewards.sigils) rw.push(`<span class="rw">${icon('sigil')} +<span data-count="${rewards.sigils}">${rewards.sigils}</span> Sigils</span>`);
+    }
+    const extra = rewards.sandbox ? 'Sandbox: no rewards' : !rewards.granted ? 'Rewards already claimed for this match'
+      : [rewards.daily ? 'Daily challenge complete!' : '', rewards.levels?.length ? `Level ${rewards.levels[rewards.levels.length - 1].level}!` : ''].filter(Boolean).join(' · ');
+    d.classList.toggle('lost', !won);
+    d.innerHTML = `<div class="end-hero">${icon(won ? 'trophy' : 'skull', { cls: 'end-ic' })}
+      <h2 class="${won ? 'won' : 'lost'}">${won ? 'Victory' : 'Defeat'}</h2>
       <p class="sub">${res.mode === 'endless' ? `Endless: you survived ${res.score} waves.` : res.mode === 'time_attack' && won ? `Time: ${Math.floor(res.score / 60)}:${String(res.score % 60).padStart(2, '0')}` : won ? 'The keep stands. The rift is sealed, for now.' : `The keep fell on wave ${res.wave}.`}</p>
-      <dl class="endstats"><dt>Waves</dt><dd>${res.wave}/${res.waves}</dd><dt>Kills</dt><dd>${res.stats.kills}</dd><dt>Leaks</dt><dd>${res.stats.leaks}</dd>
-      <dt>Damage</dt><dd>${fmt(res.stats.damage)}</dd><dt>Keep</dt><dd>${Math.max(0, Math.round(res.baseHp))}</dd><dt>Time</dt><dd>${Math.floor(res.ticks / 3600)}:${String(Math.floor(res.ticks / 60) % 60).padStart(2, '0')}</dd></dl>
-      <div class="rewards" data-testid="rewards">${rewards.sandbox ? 'Sandbox: no rewards' : rewards.granted ? `+${rewards.crowns} Crowns · +${rewards.xp} XP${rewards.sigils ? ` · +${rewards.sigils} Sigils` : ''}${rewards.daily ? ' · Daily challenge complete!' : ''}${rewards.levels?.length ? ` · Level ${rewards.levels[rewards.levels.length - 1].level}!` : ''}` : 'Rewards already claimed for this match'}</div>
-      <div class="row2"><button class="btn primary" data-act="again" data-testid="again">Play again</button><button class="btn" data-act="lobby">Change loadout</button></div>`;
+      <p class="sub">${esc(res.presetLabel || res.preset || '')} tuning${res.assisted ? ` · <b class="assisted" data-testid="assisted">✚ Assist: ${esc(res.assists.join(', '))}</b>` : ''}</p></div>
+      <div class="end-body"><dl class="endstats">${stat('Waves', `${res.wave}/${res.waves}`)}${stat('Kills', res.stats.kills, res.stats.kills)}${stat('Leaks', res.stats.leaks, res.stats.leaks)}${stat('Damage', fmt(res.stats.damage))}${stat('Keep', Math.max(0, Math.round(res.baseHp)), Math.max(0, Math.round(res.baseHp)))}${stat('Time', time)}</dl>
+      <div class="rewards" data-testid="rewards">${rw.join('')}${extra ? `<span class="rw-note">${extra}</span>` : ''}</div>
+      <div class="row2"><button class="btn primary big" data-act="again" data-testid="again">${icon('restart')} Play again</button><button class="btn" data-act="lobby">${icon('back')} Change loadout</button></div></div>`;
     if (!d.open) d.showModal();
+    countUp(d, { reduced: document.body.classList.contains('reduced-motion') || matchMedia('(prefers-reduced-motion: reduce)').matches });
     d.onclick = (e) => {
       const a = e.target.closest('[data-act]')?.dataset.act;
       if (a) { d.close(); this.cb.onEnd(a); }

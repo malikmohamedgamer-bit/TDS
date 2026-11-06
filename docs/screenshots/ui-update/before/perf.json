@@ -1,0 +1,62 @@
+{
+ "tag": "before",
+ "date": "2026-11-06T03:17:11.320Z",
+ "loads": [
+  {
+   "size": "desktop",
+   "ms": 5138,
+   "bytes": 3377407,
+   "byType": {
+    "css": 37978,
+    "js": 2792820,
+    "json": 394854,
+    "glb": 138408,
+    "png": 11787
+   },
+   "requests": 129
+  },
+  {
+   "size": "tablet",
+   "ms": 7862,
+   "bytes": 3377407,
+   "byType": {
+    "css": 37978,
+    "js": 2792820,
+    "json": 394854,
+    "glb": 138408,
+    "png": 11787
+   },
+   "requests": 129
+  },
+  {
+   "size": "phone",
+   "ms": 5144,
+   "bytes": 3442015,
+   "byType": {
+    "css": 37978,
+    "js": 2792820,
+    "json": 394854,
+    "glb": 203016,
+    "png": 11787
+   },
+   "requests": 130
+  }
+ ],
+ "frames": [
+  {
+   "map": "riftline",
+   "size": "desktop",
+   "fps": 10,
+   "frameMs": 100,
+   "p50": 100,
+   "p95": 100,
+   "p99": 100,
+   "cpuRenderMs": 7.399999976158142,
+   "calls": 287,
+   "triangles": 173577,
+   "geometries": 797,
+   "textures": 113
+  }
+ ],
+ "errors": []
+}

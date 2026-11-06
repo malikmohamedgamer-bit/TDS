@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.10.0 - UI / GFX update, batch 1 + boss mechanics (2026-11-06)
+- UI: docs/ui-style.md, design tokens, war-table theme with Magic / War faction dress, code-drawn SVG icon
+  set (tower classes, enemy archetypes, damage types, abilities, rarity badges with shapes), new lobby
+  (nav rail / phone tab bar, mission summary, map picker with search, theme filters, previews, locks),
+  HUD icons, wave bar, boss bar, end screen with counting rewards, loading tips.
+- Settings: Low / Medium / High / Ultra, resolution scale, interface size, colour grading, weather.
+- Graphics: per-theme sky (stars, aurora, clouds, haze), ambient light, colour grade, ambient particles,
+  terrain detail (ruts, ice, lava, ooze, ripples, runes), grass sway, dusk and night maps.
+- VFX library in data/vfx.json: hits and explosions per element, muzzle flashes, status auras, boss spawn,
+  phase, slam, death with slow motion and flash, victory / defeat bursts; boss intro letterbox.
+- Bosses: 12 new phase mechanics and 40 new bosses with unique mechanic sets (tools/gen-bosses.mjs).
+- Performance: menus draw the world at a quarter rate; UI animations are finite (no per-frame repaint).
+
 ## 0.1.0 - Milestone 1 (2026-11-05)
 - Project setup: package.json, vendored Three.js 0.187.0, zero-dependency dev server, ESLint,
   Node test runner, Playwright (desktop + emulated Pixel 7).

@@ -13,6 +13,8 @@
   "music": "music.json",
   "palettes": "palettes.json",
   "models": "models.json",
+  "themes": "themes.json",
+  "vfx": "vfx.json",
   "towers": [
     "towers/war.json",
     "towers/magic.json",
@@ -29,7 +31,8 @@
     "enemies/quaternius_b1.json",
     "bosses/quaternius_b1.json",
     "enemies/quaternius_b2.json",
-    "bosses/quaternius_b2.json"
+    "bosses/quaternius_b2.json",
+    "bosses/mechanics_b1.json"
   ],
   "waves": [
     "waves/riftline_campaign.json",
