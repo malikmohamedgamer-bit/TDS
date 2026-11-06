@@ -1,0 +1,59 @@
+{
+  "$doc": "Data-driven VFX library (src/engine/effects.js play()). A preset is a list of steps: burst (pixel particles: count, colors, speed, up, size, life, gravity, spread; 'speedByRadius' multiplies speed by the event radius), ring (expanding ground ring: color, r0, r1 or 'radius' to use the event radius, life, intensity, y), bolt (lightning from the event point to its target, segments, jitter, life), shake (camera shake amount, ignored in reduced motion), flash (full-screen tint: color, alpha, life; ignored in reduced motion), slowmo (time scale, seconds; ignored in reduced motion). Particle counts are scaled by quality (caps) and halved in reduced motion. Live caps keep the frame time flat.",
+  "caps": { "particles": { "low": 700, "medium": 1600, "high": 2400, "ultra": 3200 }, "countMul": { "low": 0.45, "medium": 0.8, "high": 1, "ultra": 1.25 } },
+  "presets": {
+    "hit.physical": [{ "burst": { "count": 3, "colors": ["#E8E8E8", "#FFD27A"], "speed": 2, "up": 1.5, "size": 0.08, "life": 0.3 } }],
+    "hit.fire": [{ "burst": { "count": 5, "colors": ["#FF6B35", "#FFD166", "#3B1A14"], "speed": 1.4, "up": 2.6, "size": 0.1, "life": 0.45, "gravity": -2 } }],
+    "hit.ice": [{ "burst": { "count": 5, "colors": ["#7FDBFF", "#FFFFFF", "#BDEBFF"], "speed": 2.2, "up": 1, "size": 0.09, "life": 0.4, "gravity": 4 } }],
+    "hit.lightning": [{ "burst": { "count": 6, "colors": ["#FFE14D", "#FFFFFF"], "speed": 4, "up": 1, "size": 0.06, "life": 0.18, "gravity": 0 } }],
+    "hit.arcane": [{ "burst": { "count": 5, "colors": ["#C9A7FF", "#7FF6FF", "#FFFFFF"], "speed": 1.6, "up": 1.8, "size": 0.09, "life": 0.45, "gravity": -1 } }],
+    "hit.poison": [{ "burst": { "count": 5, "colors": ["#7BD389", "#B6FF7A", "#2F5A2A"], "speed": 1.2, "up": 1.2, "size": 0.1, "life": 0.5, "gravity": 3 } }],
+    "hit.explosive": [{ "burst": { "count": 4, "colors": ["#FF9F1C", "#FFD27A", "#6E6E7A"], "speed": 2.6, "up": 2, "size": 0.1, "life": 0.35 } }],
+    "hit.holy": [{ "burst": { "count": 5, "colors": ["#FFF3B0", "#FFFFFF", "#FFD166"], "speed": 1.2, "up": 2.8, "size": 0.09, "life": 0.5, "gravity": -1.5 } }],
+    "hit.dark": [{ "burst": { "count": 5, "colors": ["#B07CD8", "#3A2350", "#FF3CAC"], "speed": 1.4, "up": 1.4, "size": 0.1, "life": 0.5, "gravity": 1 } }],
+
+    "muzzle.bullet": [{ "burst": { "count": 3, "colors": ["#FFD27A", "#FFFFFF"], "speed": 1, "up": 0.5, "size": 0.1, "life": 0.12, "gravity": 0 } }],
+    "muzzle.tracer": [{ "burst": { "count": 4, "colors": ["#FFD27A", "#FF9F1C"], "speed": 1.4, "up": 0.4, "size": 0.1, "life": 0.12, "gravity": 0 } }],
+    "muzzle.railslug": [{ "burst": { "count": 10, "colors": ["#7FDBFF", "#FFFFFF"], "speed": 3, "up": 0.4, "size": 0.1, "life": 0.2, "gravity": 0 } }, { "shake": 0.08 }],
+    "muzzle.rocket": [{ "burst": { "count": 8, "colors": ["#BBBBBB", "#FF9F1C"], "speed": 1.2, "up": 1, "size": 0.16, "life": 0.5, "gravity": -1 } }],
+    "muzzle.grenade": [{ "burst": { "count": 5, "colors": ["#BBBBBB", "#FFD27A"], "speed": 1, "up": 1, "size": 0.14, "life": 0.35, "gravity": -1 } }],
+    "muzzle.fireball": [{ "burst": { "count": 6, "colors": ["#FF6B35", "#FFD166"], "speed": 1, "up": 1.5, "size": 0.12, "life": 0.3, "gravity": -2 } }],
+    "muzzle.frostbolt": [{ "burst": { "count": 6, "colors": ["#7FDBFF", "#FFFFFF"], "speed": 1, "up": 1, "size": 0.1, "life": 0.3, "gravity": 0 } }],
+    "muzzle.starshard": [{ "burst": { "count": 8, "colors": ["#C9A7FF", "#7FF6FF", "#FFFFFF"], "speed": 1.2, "up": 1.6, "size": 0.1, "life": 0.4, "gravity": -1 } }],
+    "muzzle.lightning": [{ "burst": { "count": 4, "colors": ["#FFE14D", "#FFFFFF"], "speed": 2, "up": 0.6, "size": 0.07, "life": 0.15, "gravity": 0 } }],
+
+    "explosion.default": [{ "burst": { "count": 14, "colors": ["#FF9F1C", "#FFD27A", "#6E6E7A"], "speedByRadius": 1.8, "up": 3, "size": 0.18, "life": 0.7 } }, { "ring": { "color": "#FF9F1C", "r0": 0.3, "r1": "radius", "life": 0.35 } }],
+    "explosion.fire": [{ "burst": { "count": 16, "colors": ["#FF6B35", "#FFD166", "#3B1A14"], "speedByRadius": 1.6, "up": 4, "size": 0.18, "life": 0.8, "gravity": 2 } }, { "ring": { "color": "#FF6B35", "r0": 0.3, "r1": "radius", "life": 0.4 } }],
+    "explosion.ice": [{ "burst": { "count": 14, "colors": ["#7FDBFF", "#FFFFFF", "#BDEBFF"], "speedByRadius": 1.4, "up": 2, "size": 0.16, "life": 0.7 } }, { "ring": { "color": "#7FDBFF", "r0": 0.3, "r1": "radius", "life": 0.5 } }],
+    "explosion.arcane": [{ "burst": { "count": 14, "colors": ["#C9A7FF", "#7FF6FF", "#B15CFF"], "speedByRadius": 1.4, "up": 3, "size": 0.15, "life": 0.7, "gravity": -1 } }, { "ring": { "color": "#B15CFF", "r0": 0.3, "r1": "radius", "life": 0.45 } }],
+    "explosion.poison": [{ "burst": { "count": 14, "colors": ["#7BD389", "#B6FF7A", "#2F5A2A"], "speedByRadius": 1.2, "up": 2, "size": 0.18, "life": 0.9, "gravity": 1 } }, { "ring": { "color": "#7BD389", "r0": 0.3, "r1": "radius", "life": 0.6 } }],
+    "explosion.holy": [{ "burst": { "count": 14, "colors": ["#FFF3B0", "#FFFFFF", "#FFD166"], "speedByRadius": 1.2, "up": 4, "size": 0.15, "life": 0.8, "gravity": -1 } }, { "ring": { "color": "#FFF3B0", "r0": 0.3, "r1": "radius", "life": 0.45 } }],
+    "explosion.dark": [{ "burst": { "count": 14, "colors": ["#B07CD8", "#3A2350", "#FF3CAC"], "speedByRadius": 1.2, "up": 2, "size": 0.17, "life": 0.8 } }, { "ring": { "color": "#8E5BB5", "r0": 0.3, "r1": "radius", "life": 0.5 } }],
+    "explosion.lightning": [{ "burst": { "count": 12, "colors": ["#FFE14D", "#FFFFFF", "#7FDBFF"], "speedByRadius": 2.2, "up": 2, "size": 0.1, "life": 0.35, "gravity": 0 } }, { "ring": { "color": "#FFE14D", "r0": 0.3, "r1": "radius", "life": 0.3 } }],
+    "explosion.mine": [{ "burst": { "count": 18, "colors": ["#C49A6C", "#FF9F1C", "#6E6E7A"], "speedByRadius": 1.6, "up": 5, "size": 0.2, "life": 0.8 } }, { "ring": { "color": "#FF9F1C", "r0": 0.3, "r1": "radius", "life": 0.35 } }, { "shake": 0.12 }],
+
+    "death.normal": [{ "burst": { "count": 16, "colors": ["#3A3D5C", "#E63946", "#FF3CAC", "#2B2D42"], "speed": 3, "up": 3, "size": 0.14, "life": 0.9 } }],
+    "death.flying": [{ "burst": { "count": 18, "colors": ["#3A3D5C", "#E63946", "#FF3CAC", "#2B2D42"], "speed": 2.4, "up": 1, "size": 0.14, "life": 1.2, "gravity": 12 } }],
+    "death.boss": [{ "burst": { "count": 140, "colors": ["#3A3D5C", "#E63946", "#FF3CAC", "#FFD166"], "speed": 8, "up": 9, "size": 0.3, "life": 1.3 } }, { "ring": { "color": "#FF3CAC", "r0": 1, "r1": 12, "life": 1.2, "intensity": 2.4 } }, { "ring": { "color": "#FFD166", "r0": 0.5, "r1": 7, "life": 0.8, "intensity": 2 } }, { "shake": 0.8 }, { "flash": { "color": "#FFFFFF", "alpha": 0.35, "life": 0.35 } }, { "slowmo": { "scale": 0.3, "seconds": 1.4 } }],
+
+    "status.burn": [{ "burst": { "count": 1, "colors": ["#FF6B35", "#FFD166"], "speed": 0.3, "up": 1.6, "size": 0.09, "life": 0.5, "gravity": -2 } }],
+    "status.slow": [{ "burst": { "count": 1, "colors": ["#7FDBFF", "#FFFFFF"], "speed": 0.4, "up": 0.3, "size": 0.07, "life": 0.6, "gravity": 1 } }],
+    "status.stun": [{ "burst": { "count": 1, "colors": ["#FFE14D", "#FFFFFF"], "speed": 1.2, "up": 0.2, "size": 0.07, "life": 0.3, "gravity": 0 } }],
+    "status.mark": [{ "burst": { "count": 1, "colors": ["#E5484D", "#FFD166"], "speed": 0.2, "up": 0.6, "size": 0.08, "life": 0.5, "gravity": 0 } }],
+    "status.shield": [{ "burst": { "count": 1, "colors": ["#7FDBFF", "#C9A7FF"], "speed": 0.8, "up": 0.4, "size": 0.06, "life": 0.4, "gravity": 0 } }],
+
+    "heal": [{ "ring": { "color": "#7BD389", "r1": "radius", "life": 0.6 } }, { "burst": { "count": 10, "colors": ["#7BD389", "#FFFFFF"], "speed": 0.6, "up": 2.4, "size": 0.1, "life": 0.7, "gravity": -1 } }],
+    "enemyHeal": [{ "ring": { "color": "#FF9AD5", "r1": "radius", "life": 0.6 } }],
+    "summon": [{ "ring": { "color": "#7FF6FF", "r1": 1.5 } }, { "ring": { "color": "#C9A7FF", "r0": 1.6, "r1": 0.2, "life": 0.5 } }, { "burst": { "count": 14, "colors": ["#7FF6FF", "#C9A7FF"], "up": 3, "speed": 1.2, "size": 0.12, "life": 0.7, "gravity": -1 } }],
+    "reveal": [{ "burst": { "count": 10, "colors": ["#FFFFFF", "#7FDBFF"], "up": 2, "size": 0.1 } }],
+    "place": [{ "burst": { "count": 18, "colors": ["#C49A6C", "#A97D52", "#D8B184"], "speed": 3, "up": 2.5, "size": 0.14 } }, { "ring": { "color": "#FFD166", "r1": 2.2, "life": 0.5 } }],
+    "sell": [{ "burst": { "count": 20, "colors": ["#FFD166", "#F4F6FB"], "up": 3, "speed": 2, "size": 0.12 } }],
+    "upgrade": [{ "burst": { "count": 24, "colors": ["#FFD166", "#F4F6FB"], "up": 5, "speed": 3, "size": 0.12 } }, { "ring": { "color": "#FFD166", "r1": 2.4, "life": 0.5 } }],
+    "evolve": [{ "burst": { "count": 60, "colors": ["#FFD166", "#C9A7FF", "#7FF6FF"], "up": 5, "speed": 3, "size": 0.14 } }, { "ring": { "color": "#C9A7FF", "r1": 4, "life": 0.9 } }, { "flash": { "color": "#FFD166", "alpha": 0.12, "life": 0.25 } }],
+    "leak": [{ "burst": { "count": 20, "colors": ["#E63946", "#FF3CAC"], "up": 4, "speed": 2, "size": 0.14 } }, { "flash": { "color": "#E5484D", "alpha": 0.12, "life": 0.3 } }],
+
+    "boss.spawn": [{ "ring": { "color": "#FF3CAC", "r1": 6, "life": 1 } }, { "ring": { "color": "#E63946", "r0": 6, "r1": 0.5, "life": 1.1 } }, { "burst": { "count": 60, "colors": ["#FF3CAC", "#2B2D42", "#E63946"], "speed": 2, "up": 6, "size": 0.22, "life": 1.2, "gravity": -1 } }, { "shake": 0.3 }],
+    "boss.phase": [{ "ring": { "color": "#FF3CAC", "r0": 0.5, "r1": 9, "life": 0.9, "intensity": 2.4 } }, { "burst": { "count": 50, "colors": ["#FF3CAC", "#FFFFFF", "#E63946"], "speed": 5, "up": 6, "size": 0.2, "life": 0.9 } }, { "shake": 0.35 }, { "flash": { "color": "#FF3CAC", "alpha": 0.14, "life": 0.3 } }],
+    "boss.slam": [{ "ring": { "color": "#E63946", "r0": 1, "r1": "radius", "life": 0.6, "intensity": 2.2 } }, { "burst": { "count": 60, "colors": ["#6E6E7A", "#3A3D5C", "#E63946"], "speed": 9, "up": 5, "size": 0.25 } }, { "shake": 0.6 }]
+  }
+}

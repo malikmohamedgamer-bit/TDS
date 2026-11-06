@@ -209,7 +209,8 @@
         "shade": "shadow_stalker"
       },
       "boss": "boss_sporelord",
-      "calibration": "hpMul 1 -> 92%, hpMul 1.133 -> 75%, hpMul 1.213 -> 75%"
+      "calibration": "hpMul 1 -> 92%, hpMul 1.133 -> 75%, hpMul 1.213 -> 75%",
+      "timeOfDay": "dusk"
     },
     {
       "id": "starfall_sanctum",
@@ -351,7 +352,8 @@
         "skitter": "blight_raider"
       },
       "boss": "boss_archfiend",
-      "calibration": "hpMul 1 -> 8%, hpMul 0.8 -> 92%, hpMul 0.864 -> 50%"
+      "calibration": "hpMul 1 -> 8%, hpMul 0.8 -> 92%, hpMul 0.864 -> 50%",
+      "timeOfDay": "night"
     }
   ],
   "batch": [

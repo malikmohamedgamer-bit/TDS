@@ -7,9 +7,11 @@
   <meta name="description" content="TDS: a 3D tower defense game. Magic and Modern War defend the valley against the Blight.">
   <title>TDS: Tower Defense</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2l12 8v12l-12 8L4 22V10z' fill='%237B4DFF'/%3E%3Cpath d='M16 8l6 4v8l-6 4-6-4v-8z' fill='%23FFD166'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/match.css">
   <link rel="stylesheet" href="styles/hub.css">
+  <link rel="stylesheet" href="styles/theme.css">
   <script type="importmap">
     {
       "imports": {
@@ -28,7 +30,14 @@
     <p class="load-tag">Magic and Modern War hold the line against the Blight</p>
     <div class="load-bar" aria-hidden="true"><span></span></div>
     <p class="load-text">Starting…</p>
+    <p class="load-tip"><b>Tip</b><span id="load-tip-text">Frost towers slow everything in range: put them where the road bends.</span></p>
   </div>
+  <script>
+    (function () {
+      var tips = ['Frost towers slow everything in range: put them where the road bends.', 'Flying enemies ignore traps. Bring at least one tower that hits air.', 'Stealth enemies need a tower with detection, or a hero skill that reveals them.', 'Press N to start the next wave early for bonus cash.', 'Bosses telegraph big attacks with a ring on the ground: move towers out or burst them first.', 'Permanent tower levels carry into every match. Spend Crowns in the Towers tab.', 'Right-click or tap a placed tower to upgrade it, change targeting or sell it.', 'Armoured enemies shrug off bullets; magic and explosives cut through.'];
+      document.getElementById('load-tip-text').textContent = tips[Math.floor(Math.random() * tips.length)];
+    })();
+  </script>
   <noscript><p class="noscript">TDS needs JavaScript and WebGL to run.</p></noscript>
   <script type="module" src="src/main.js"></script>
 </body>

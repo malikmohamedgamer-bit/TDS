@@ -14,6 +14,10 @@ export function defaultSettings(env = {}) {
     highContrast: false,
     colorblind: 'none', // none | deuteranopia | protanopia | tritanopia (palette swap)
     textScale: 1,
+    uiScale: 1, // 0.85 - 1.25, whole interface (on top of text size)
+    resolutionScale: 1, // 0.5 - 1, 3D render resolution (UI stays sharp)
+    colorGrade: true, // per-theme colour grading in the post pass
+    ambientFx: true, // theme particles (snow, embers, spores ...)
     mouseSensitivity: 1,
     invertY: false,
     showFps: false,

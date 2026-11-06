@@ -154,6 +154,7 @@ async function boot() {
   const stats = { frames: 0, acc: 0, fps: 0, frameMs: 0, samples: [] };
 
   let errorShown = false;
+  let menuFrame = 0;
   function frame(now) {
     // schedule first: one failing frame must never stop the game loop
     requestAnimationFrame(frame);
@@ -215,7 +216,9 @@ async function boot() {
     sfx.setListener(renderer.camera.position.x, renderer.camera.position.z);
     ctrl.update(dt);
     mapView.update(dt, renderer.camera.position);
-    renderer.render();
+    // a full-screen menu (hub) hides the world: draw it at a quarter rate behind the panel
+    menuFrame = (menuFrame + 1) % 4;
+    if (!(ctrl.hub?.el.open && menuFrame !== 0)) renderer.render();
 
     stats.frames++;
     stats.acc += dt;

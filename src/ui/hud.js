@@ -43,11 +43,14 @@ export class Hud {
           <header><h2 id="settings-title">Settings</h2><button class="icon-btn" value="close" aria-label="Close settings">${ICONS.close}</button></header>
           <fieldset><legend>Graphics</legend>
             <div class="seg" role="radiogroup" aria-label="Quality">
-              ${['low', 'medium', 'high'].map((q) => `<label><input type="radio" name="quality" value="${q}"><span>${q[0].toUpperCase() + q.slice(1)}</span></label>`).join('')}
+              ${['low', 'medium', 'high', 'ultra'].map((q) => `<label><input type="radio" name="quality" value="${q}"><span>${q[0].toUpperCase() + q.slice(1)}</span></label>`).join('')}
             </div>
             <label class="row">Pixelation
               <select name="pixelation"><option value="1">Off</option><option value="2">2x</option><option value="3">3x</option><option value="4">4x</option></select></label>
+            <label class="row">Resolution <input type="range" name="resolutionScale" min="0.5" max="1" step="0.05"><output name="resOut"></output></label>
             <label class="row"><input type="checkbox" name="bloom"> Glow (bloom)</label>
+            <label class="row"><input type="checkbox" name="colorGrade"> Colour grading per map theme</label>
+            <label class="row"><input type="checkbox" name="ambientFx"> Weather and ambient particles</label>
             <label class="row"><input type="checkbox" name="vignette"> Vignette</label>
             <label class="row"><input type="checkbox" name="showFps"> Show frame time</label>
           </fieldset>
@@ -55,6 +58,7 @@ export class Hud {
             <label class="row"><input type="checkbox" name="reducedMotion"> Reduced motion</label>
             <label class="row"><input type="checkbox" name="highContrast"> High contrast UI</label>
             <label class="row">Text size <input type="range" name="textScale" min="0.85" max="1.5" step="0.05"><output name="textScaleOut"></output></label>
+            <label class="row">Interface size <input type="range" name="uiScale" min="0.85" max="1.25" step="0.05"><output name="uiScaleOut"></output></label>
           </fieldset>
           <fieldset><legend>Audio</legend>
             <label class="row"><input type="checkbox" name="muted"> Mute all sound</label>
@@ -117,7 +121,9 @@ export class Hud {
     const f = this.form.elements;
     for (const r of f.quality) r.checked = r.value === s.quality;
     f.pixelation.value = String(s.pixelation);
-    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) f[k].checked = !!s[k];
+    for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) f[k].checked = !!s[k];
+    f.resolutionScale.value = s.resolutionScale ?? 1;
+    f.uiScale.value = s.uiScale ?? 1;
     f.masterVolume.value = s.masterVolume;
     f.tuningPreset.value = s.tuningPreset || 'default';
     f.sfxVolume.value = s.sfxVolume;
@@ -135,6 +141,8 @@ export class Hud {
   _outputs() {
     const f = this.form.elements;
     f.textScaleOut.value = `${Math.round(f.textScale.value * 100)}%`;
+    f.uiScaleOut.value = `${Math.round(f.uiScale.value * 100)}%`;
+    f.resOut.value = `${Math.round(f.resolutionScale.value * 100)}%`;
     f.sensOut.value = `${Number(f.mouseSensitivity.value).toFixed(1)}x`;
     f.masterOut.value = `${Math.round(f.masterVolume.value * 100)}%`;
     f.sfxOut.value = `${Math.round(f.sfxVolume.value * 100)}%`;
@@ -146,7 +154,9 @@ export class Hud {
     const s = this.settings;
     s.quality = [...f.quality].find((r) => r.checked)?.value || s.quality;
     s.pixelation = Number(f.pixelation.value);
-    for (const k of ['bloom', 'vignette', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) s[k] = f[k].checked;
+    for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) s[k] = f[k].checked;
+    s.resolutionScale = Number(f.resolutionScale.value);
+    s.uiScale = Number(f.uiScale.value);
     s.masterVolume = Number(f.masterVolume.value);
     s.tuningPreset = f.tuningPreset.value;
     s.sfxVolume = Number(f.sfxVolume.value);
@@ -161,6 +171,7 @@ export class Hud {
   applyAccessibility() {
     const s = this.settings;
     document.documentElement.style.setProperty('--text-scale', s.textScale);
+    document.documentElement.style.setProperty('--ui-scale', s.uiScale ?? 1);
     document.body.classList.toggle('high-contrast', !!s.highContrast);
     document.body.classList.toggle('reduced-motion', !!s.reducedMotion);
     this.fps.hidden = !s.showFps;

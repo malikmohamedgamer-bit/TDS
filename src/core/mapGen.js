@@ -245,6 +245,7 @@ export function generateMap(opts) {
     waves: `${id}_waves`,
     unlockLevel: opts.unlockLevel,
     theme: theme.id,
+    ...(opts.timeOfDay ? { timeOfDay: opts.timeOfDay } : {}), // visual only (src/engine/mapView.js TIME_OF_DAY)
     generated: { template: opts.roads ? 'hand' : template, seed: `${seed}`, theme: theme.id },
     size: { w: FRAME.w, d: FRAME.d },
     sky: theme.sky,
