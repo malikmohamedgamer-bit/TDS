@@ -21,7 +21,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Docs read; this ROADMAP created
 
 ## Chunk 1: visual identity (MUST)
-- [ ] Bosses: distinct bodies for 40+ bosses (59 bosses on 14 models now); modular code-built boss kit
+- [x] Bosses: distinct bodies for 40+ bosses (59 bosses on 14 models now); modular code-built boss kit
       (body, horns, wings, armour, weapons, totems, auras) where the silhouette hints at the mechanic
   - [x] Kit: `src/engine/bossKit.js` (5 bodies: brute, strider, wraith, colossus, crawler; 14 mechanic parts;
         unit tests test/unit/bossKit.test.js) (2026-11-06)
@@ -29,8 +29,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
         docs/screenshots/identity/kit-b1 (boss models 14 -> 22)
   - [x] Checked in a real match (Riftline, all 8 spawned, no page errors; scale fits the road; `tools/dev/kit-match-shot.mjs`,
         docs/screenshots/identity/kit-b1/match-*.png). Weak spot: dark bodies on dark forest maps rely on the glow accents
-  - [ ] Raise `KIT_BOSSES` toward 40 (watch for repeated body + part sets; use the strider body; add body
-        variants or proportions so same-lead bosses differ), then the older bosses
+  - [x] `KIT_BOSSES` = 40: 5 bodies (wraith 18, colossus 9, brute 5, crawler 5, strider 3), 40 different body+parts sets, 6 hide tints + 5 accents; sheets docs/screenshots/identity/kit-b2; 8 checked in a match (33-40). Weak spot: tints read dark under scene lighting
 - [ ] Heroes: each of the 7 (later 10+) heroes a distinct model or strongly distinct outfit / weapon / silhouette
 - [ ] Tower and enemy materials: emissive details, wear, trim; Magic = runes / crystal / gold, War = painted
       metal / camo / hazard stripes (models.js style pass)
@@ -106,3 +105,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 |---|---|---|
 | 2026-11-06 | Chunk 0 | State check done at 85% of the 5-hour window; stopped there and scheduled the resume |
 | 2026-11-06 | Chunk 1 slice 1 | Owner raised the stop line to 99% for this run. Boss kit + 8 kit bosses, reviewed from 4 angles (fixed: cylinders and cones are base-anchored in ModelBuilder, now `centered`; second weapon to the left hand). Then checked in a real match (no errors, scale fine) |
+| 2026-11-06 | Chunk 1 slice 2 | 40 kit bosses (boss models 22 -> 54 distinct), tints, sheets kit-b2, match check; unit 111, lint clean |

@@ -12,6 +12,15 @@ const S = (u, k = 1) => Math.sin(u * TAU * k);
 
 const BASE = { hide: '#3A3D5C', dark: '#2B2D42', deep: '#1E1B4B', bone: '#D6CFC7', metal: '#3D4451', steel: '#8A939E', gold: '#FFD166' };
 /** Glow accents (emissive only, docs/art-style.md). */
+/** Hide/armour tints so same-silhouette bosses still read apart (a tint is variety, not a new model). */
+export const TINTS = {
+  ash: {},
+  bog: { hide: '#3F5B3A', dark: '#27382A', deep: '#1B2E2A', bone: '#CFD3B0', metal: '#3A4A44' },
+  rust: { hide: '#6B3F2E', dark: '#46281F', deep: '#2E1A1F', bone: '#E0C9A8', metal: '#5A4038' },
+  glacier: { hide: '#4A6585', dark: '#2F4560', deep: '#1B2A4B', bone: '#E3F0F7', metal: '#4F6275' },
+  dusk: { hide: '#5A3A6B', dark: '#3A2447', deep: '#241038', bone: '#E2D2E8', metal: '#4A3F5C' },
+  sand: { hide: '#7A6A45', dark: '#52452B', deep: '#352C1C', bone: '#F0E3C4', metal: '#6A5E48' },
+};
 export const ACCENTS = { crimson: '#E63946', magenta: '#FF3CAC', violet: '#C9A7FF', toxic: '#9BE564', ember: '#FF6B35', frost: '#7FF6FF' };
 
 const deathPose = (u, o) => { const k = Math.min(1, u * 1.5); o._root = { r: [0, 0, k * 1.3], p: [0, -0.5 * k, 0] }; };
@@ -295,7 +304,7 @@ export function buildBossRig(kit) {
   const body = BOSS_BODIES[kit.body];
   if (!body) throw new Error(`Unknown boss body "${kit.body}"`);
   const accent = ACCENTS[kit.accent] || ACCENTS.crimson;
-  const c = BASE;
+  const c = { ...BASE, ...(TINTS[kit.tint] || {}) };
   const extra = {};
   const add = (name, fn) => { (extra[name] ||= []).push(fn); };
   const used = [...new Set(kit.parts || [])];
@@ -321,5 +330,5 @@ export function buildBossRig(kit) {
   for (const [name, clip] of Object.entries(body.clips)) {
     clips[name] = name === 'death' || !extraNames.length ? clip : { ...clip, pose: (u, o) => { clip.pose(u, o); for (const n of extraNames) EXTRA[n].pose(u, o); } };
   }
-  return { height: body.height, parts, clips, kit: { body: kit.body, parts: used, accent: kit.accent || 'crimson' } };
+  return { height: body.height, parts, clips, kit: { body: kit.body, parts: used, accent: kit.accent || 'crimson', tint: kit.tint || 'ash' } };
 }

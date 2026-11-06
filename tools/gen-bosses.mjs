@@ -41,7 +41,8 @@ const MODELS = [
 ];
 // the first KIT_BOSSES bosses get code-built kit bodies (src/engine/bossKit.js): body from the lead mechanic,
 // one part per mechanic, glow accent from the resist profile (dark, poison, fire, lightning, ice resist)
-const KIT_BOSSES = 8;
+const KIT_BOSSES = 40;
+const KIT_TINT = ['ash', 'bog', 'rust', 'glacier', 'dusk', 'sand'];
 const KIT_ACCENT = ['violet', 'toxic', 'ember', 'magenta', 'frost'];
 const RESISTS = [
   { dark: 0.5, poison: 0.7, holy: 1.35, lightning: 1.15 },
@@ -123,7 +124,7 @@ export function buildBosses(count = 40) {
     const types = new Set(phases.flatMap((ph) => ph.actions.map((a) => a.type)));
     const ehp = [...types].reduce((acc, t) => acc + (EHP[t] || 0), 0);
     const fast = types.has('dash') || types.has('teleport');
-    const kitModel = i < KIT_BOSSES ? { kit: { body: MECHANIC_BODY[lead], parts: [...new Set(order.concat([...types].filter((t) => !order.includes(t))).map((t) => MECHANIC_PART[t]))], accent: KIT_ACCENT[i % KIT_ACCENT.length] } } : null;
+    const kitModel = i < KIT_BOSSES ? { kit: { body: MECHANIC_BODY[lead], parts: [...new Set(order.concat([...types].filter((t) => !order.includes(t))).map((t) => MECHANIC_PART[t]))], accent: KIT_ACCENT[i % KIT_ACCENT.length], tint: KIT_TINT[(Math.floor(i / 5) + i) % KIT_TINT.length] } } : null;
     const m = MODELS[i % MODELS.length];
     const palette = m.palettes ? m.palettes[Math.floor(i / MODELS.length) % m.palettes.length] : undefined;
     return {

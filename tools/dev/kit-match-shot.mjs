@@ -3,6 +3,7 @@ import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 
+const START = Number(process.argv[3] || 1);
 const out = process.argv[2] || 'docs/screenshots/identity/kit-b1';
 mkdirSync(out, { recursive: true });
 const PORT = 5198;
@@ -18,15 +19,15 @@ try {
   await page.locator('[name="tutorial"]').uncheck();
   await page.getByTestId('start').click();
   await page.waitForFunction(() => window.TDS.match && window.TDS.ctrl.view, null, { timeout: 60_000 });
-  const ids = await page.evaluate(() => {
+  const ids = await page.evaluate((start) => {
     const m = window.TDS.match;
-    const ids = ['boss_mech_01', 'boss_mech_02', 'boss_mech_03', 'boss_mech_04', 'boss_mech_05', 'boss_mech_06', 'boss_mech_07', 'boss_mech_08'];
+    const ids = Array.from({ length: 8 }, (_, i) => 'boss_mech_' + String(start + i).padStart(2, '0'));
     ids.forEach((id, i) => m.spawnEnemy(id, { d: 8 + i * 5.5, hpMul: 50 }));
     m.step();
     const e = m.enemies[m.enemies.length - 5];
     window.TDS.teleport(e.x + 6, e.z + 6);
     return ids;
-  });
+  }, START);
   for (const [i, [yaw, pitch, dist]] of [[0.8, 0.45, 18], [2.6, 0.3, 14]].entries()) {
     await page.evaluate(([y, p, d]) => { window.TDS.setView(y, p); window.TDS.setDistance(d); }, [yaw, pitch, dist]);
     await page.waitForTimeout(3000);

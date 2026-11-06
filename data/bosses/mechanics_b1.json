@@ -26,7 +26,8 @@
       "wings",
       "eggSacs"
      ],
-     "accent": "violet"
+     "accent": "violet",
+     "tint": "ash"
     }
    },
    "description": "Thalthos vanishes from towers without detection, then speeds up for good, then bursts into minions when it dies.",
@@ -98,7 +99,8 @@
       "skulls",
       "totems"
      ],
-     "accent": "toxic"
+     "accent": "toxic",
+     "tint": "bog"
     }
    },
    "description": "Grimlith marks your best tower for a stunning strike, then stomps towers near it into silence, then gets back up once.",
@@ -179,7 +181,8 @@
       "shieldRing",
       "totems"
      ],
-     "accent": "ember"
+     "accent": "ember",
+     "tint": "rust"
     }
    },
    "description": "Drakar regrows its health unless it burns, then charges in a sudden burst, then raises a shield.",
@@ -256,7 +259,8 @@
       "crystals",
       "totems"
      ],
-     "accent": "magenta"
+     "accent": "magenta",
+     "tint": "glacier"
     }
    },
    "description": "Kaellith hardens its hide, then heals the Blight around it, then calls the swarm.",
@@ -329,7 +333,8 @@
       "crown",
       "totems"
      ],
-     "accent": "frost"
+     "accent": "frost",
+     "tint": "dusk"
     }
    },
    "description": "Kaelvorn blinks forward along the road, then shrugs off one kind of damage for a while, then steals a share of your cash.",
@@ -409,7 +414,8 @@
       "riftShards",
       "crystals"
      ],
-     "accent": "violet"
+     "accent": "violet",
+     "tint": "ash"
     }
    },
    "description": "Thalvane steals a share of your cash, then opens portals on the other roads, then heals the Blight around it.",
@@ -481,7 +487,8 @@
       "skulls",
       "eggSacs"
      ],
-     "accent": "toxic"
+     "accent": "toxic",
+     "tint": "bog"
     }
    },
    "description": "Ulruun shrugs off one kind of damage for a while, then gets back up once, then bursts into minions when it dies.",
@@ -555,7 +562,8 @@
       "lance",
       "totems"
      ],
-     "accent": "ember"
+     "accent": "ember",
+     "tint": "rust"
     }
    },
    "description": "Brakdrel blinks forward along the road, then charges in a sudden burst, then marks your best tower for a stunning strike.",
@@ -626,7 +634,17 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "q_tank3"
+    "kit": {
+     "body": "crawler",
+     "parts": [
+      "crystals",
+      "veil",
+      "armor",
+      "totems"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Krygath regrows its health unless it burns, then vanishes from towers without detection, then hardens its hide.",
    "phases": [
@@ -695,7 +713,16 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "q_stan"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "lance",
+      "shieldRing"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Nyxvane opens portals on the other roads, then marks your best tower for a stunning strike, then raises a shield.",
    "phases": [
@@ -760,7 +787,17 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "q_big_yeti"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "crystals",
+      "wings",
+      "totems"
+     ],
+     "accent": "violet",
+     "tint": "ash"
+    }
    },
    "description": "Ashruun blinks forward along the road, then regrows its health unless it burns, then speeds up for good.",
    "phases": [
@@ -829,7 +866,17 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "q_big_ninja"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "hammer",
+      "skulls",
+      "totems"
+     ],
+     "accent": "toxic",
+     "tint": "bog"
+    }
    },
    "description": "Morruun vanishes from towers without detection, then stomps towers near it into silence, then gets back up once.",
    "phases": [
@@ -899,8 +946,16 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "gravemaw",
-    "builder": "gravemaw"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "ward",
+      "armor",
+      "totems"
+     ],
+     "accent": "ember",
+     "tint": "rust"
+    }
    },
    "description": "Zhurmire shrugs off one kind of damage for a while, then hardens its hide, then calls the swarm.",
    "phases": [
@@ -967,8 +1022,16 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "k_siege_tower",
-    "palette": "blight_frost"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "crystals",
+      "eggSacs"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Zhurris opens portals on the other roads, then heals the Blight around it, then bursts into minions when it dies.",
    "phases": [
@@ -1032,8 +1095,16 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "k_siege_ram",
-    "palette": "blight_toxic"
+    "kit": {
+     "body": "strider",
+     "parts": [
+      "horns",
+      "crown",
+      "eggSacs"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Ashvane charges in a sudden burst, then steals a share of your cash, then bursts into minions when it dies.",
    "phases": [
@@ -1097,8 +1168,17 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "k_truck",
-    "palette": "blight_ember"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "ward",
+      "armor",
+      "totems"
+     ],
+     "accent": "violet",
+     "tint": "ash"
+    }
    },
    "description": "Ulmire vanishes from towers without detection, then shrugs off one kind of damage for a while, then hardens its hide.",
    "phases": [
@@ -1171,8 +1251,16 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "k_tractor_shovel",
-    "palette": "blight_frost"
+    "kit": {
+     "body": "crawler",
+     "parts": [
+      "crystals",
+      "crown",
+      "totems"
+     ],
+     "accent": "toxic",
+     "tint": "bog"
+    }
    },
    "description": "Vordrel regrows its health unless it burns, then steals a share of your cash, then heals the Blight around it.",
    "phases": [
@@ -1241,8 +1329,15 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "k_garbage_truck",
-    "palette": "blight_ember"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "skulls"
+     ],
+     "accent": "ember",
+     "tint": "rust"
+    }
    },
    "description": "Rhazzek blinks forward along the road, then opens portals on the other roads, then gets back up once.",
    "phases": [
@@ -1304,7 +1399,17 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "q_big_orc_skull"
+    "kit": {
+     "body": "strider",
+     "parts": [
+      "horns",
+      "lance",
+      "wings",
+      "totems"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Thallith charges in a sudden burst, then marks your best tower for a stunning strike, then speeds up for good.",
    "phases": [
@@ -1374,7 +1479,17 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "q_big_demon"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "lance",
+      "hammer",
+      "totems"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Ulvane blinks forward along the road, then marks your best tower for a stunning strike, then stomps towers near it into silence.",
    "phases": [
@@ -1447,7 +1562,16 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "q_big_mushroom_king"
+    "kit": {
+     "body": "brute",
+     "parts": [
+      "crown",
+      "totems",
+      "eggSacs"
+     ],
+     "accent": "violet",
+     "tint": "ash"
+    }
    },
    "description": "Malgath steals a share of your cash, then calls the swarm, then bursts into minions when it dies.",
    "phases": [
@@ -1511,7 +1635,16 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "q_tank3"
+    "kit": {
+     "body": "crawler",
+     "parts": [
+      "crystals",
+      "riftShards",
+      "shieldRing"
+     ],
+     "accent": "toxic",
+     "tint": "bog"
+    }
    },
    "description": "Kaelmire regrows its health unless it burns, then opens portals on the other roads, then raises a shield.",
    "phases": [
@@ -1574,7 +1707,17 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "q_stan"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "armor",
+      "horns",
+      "crystals",
+      "totems"
+     ],
+     "accent": "ember",
+     "tint": "rust"
+    }
    },
    "description": "Rhazdrel hardens its hide, then charges in a sudden burst, then heals the Blight around it.",
    "phases": [
@@ -1644,7 +1787,17 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "q_big_yeti"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "ward",
+      "skulls",
+      "totems"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Malvorn vanishes from towers without detection, then shrugs off one kind of damage for a while, then gets back up once.",
    "phases": [
@@ -1715,7 +1868,16 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "q_big_ninja"
+    "kit": {
+     "body": "brute",
+     "parts": [
+      "lance",
+      "hammer",
+      "eggSacs"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Ulris marks your best tower for a stunning strike, then stomps towers near it into silence, then bursts into minions when it dies.",
    "phases": [
@@ -1783,8 +1945,17 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "gravemaw",
-    "builder": "gravemaw"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "crystals",
+      "wings",
+      "totems"
+     ],
+     "accent": "violet",
+     "tint": "ash"
+    }
    },
    "description": "Kryvane vanishes from towers without detection, then heals the Blight around it, then speeds up for good.",
    "phases": [
@@ -1853,8 +2024,16 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "k_siege_tower",
-    "palette": "blight_scrap"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "ward",
+      "riftShards",
+      "totems"
+     ],
+     "accent": "toxic",
+     "tint": "bog"
+    }
    },
    "description": "Braklith shrugs off one kind of damage for a while, then opens portals on the other roads, then calls the swarm.",
    "phases": [
@@ -1921,8 +2100,17 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "k_siege_ram",
-    "palette": "blight_pale"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "armor",
+      "horns",
+      "shieldRing",
+      "totems"
+     ],
+     "accent": "ember",
+     "tint": "rust"
+    }
    },
    "description": "Vorlith hardens its hide, then charges in a sudden burst, then raises a shield.",
    "phases": [
@@ -1991,8 +2179,17 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "k_truck",
-    "palette": "blight_scrap"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "crystals",
+      "skulls",
+      "totems"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Ashdrel blinks forward along the road, then regrows its health unless it burns, then gets back up once.",
    "phases": [
@@ -2060,8 +2257,16 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "k_tractor_shovel",
-    "palette": "blight_toxic"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "crown",
+      "eggSacs"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Morvane vanishes from towers without detection, then steals a share of your cash, then bursts into minions when it dies.",
    "phases": [
@@ -2124,8 +2329,17 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "k_garbage_truck",
-    "palette": "blight_pale"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "armor",
+      "lance",
+      "skulls",
+      "totems"
+     ],
+     "accent": "violet",
+     "tint": "ash"
+    }
    },
    "description": "Dradrel hardens its hide, then marks your best tower for a stunning strike, then gets back up once.",
    "phases": [
@@ -2196,7 +2410,17 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "q_big_orc_skull"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "ward",
+      "crown",
+      "crystals",
+      "totems"
+     ],
+     "accent": "toxic",
+     "tint": "bog"
+    }
    },
    "description": "Sulgath shrugs off one kind of damage for a while, then steals a share of your cash, then heals the Blight around it.",
    "phases": [
@@ -2268,7 +2492,17 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "q_big_demon"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "crystals",
+      "horns",
+      "totems"
+     ],
+     "accent": "ember",
+     "tint": "rust"
+    }
    },
    "description": "Ostthos blinks forward along the road, then regrows its health unless it burns, then charges in a sudden burst.",
    "phases": [
@@ -2337,7 +2571,16 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "q_big_mushroom_king"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "crystals",
+      "totems"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Mallith opens portals on the other roads, then heals the Blight around it, then calls the swarm.",
    "phases": [
@@ -2401,7 +2644,17 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "q_tank3"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "armor",
+      "hammer",
+      "totems"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Zhurkar blinks forward along the road, then hardens its hide, then stomps towers near it into silence.",
    "phases": [
@@ -2473,7 +2726,16 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "q_stan"
+    "kit": {
+     "body": "brute",
+     "parts": [
+      "wings",
+      "skulls",
+      "eggSacs"
+     ],
+     "accent": "violet",
+     "tint": "ash"
+    }
    },
    "description": "Vexmire speeds up for good, then gets back up once, then bursts into minions when it dies.",
    "phases": [
@@ -2536,7 +2798,17 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "q_big_yeti"
+    "kit": {
+     "body": "strider",
+     "parts": [
+      "horns",
+      "crown",
+      "shieldRing",
+      "totems"
+     ],
+     "accent": "toxic",
+     "tint": "bog"
+    }
    },
    "description": "Morvorn charges in a sudden burst, then steals a share of your cash, then raises a shield.",
    "phases": [
@@ -2604,7 +2876,17 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "q_big_ninja"
+    "kit": {
+     "body": "crawler",
+     "parts": [
+      "crystals",
+      "veil",
+      "lance",
+      "totems"
+     ],
+     "accent": "ember",
+     "tint": "rust"
+    }
    },
    "description": "Grimvorn regrows its health unless it burns, then vanishes from towers without detection, then marks your best tower for a stunning strike.",
    "phases": [
@@ -2674,8 +2956,16 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "gravemaw",
-    "builder": "gravemaw"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "ward",
+      "riftShards",
+      "eggSacs"
+     ],
+     "accent": "magenta",
+     "tint": "glacier"
+    }
    },
    "description": "Ashthos shrugs off one kind of damage for a while, then opens portals on the other roads, then bursts into minions when it dies.",
    "phases": [
@@ -2741,8 +3031,17 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "k_siege_tower",
-    "palette": "blight_pale"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "crown",
+      "crystals",
+      "totems"
+     ],
+     "accent": "frost",
+     "tint": "dusk"
+    }
    },
    "description": "Thalgath vanishes from towers without detection, then steals a share of your cash, then heals the Blight around it.",
    "phases": [
