@@ -3,6 +3,20 @@
 Results are from real runs on the owner's Windows 11 machine. "Headless" means Playwright
 Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU performance.
 
+## UI / GFX update, batch 1 (2026-11-06)
+
+| Feature | How tested | Result | Notes |
+|---|---|---|---|
+| Unit tests | `npm test` | pass | 106 (before the quests batch), then 109 with test/unit/quests-gen.test.js |
+| Full e2e | `npx playwright test` | pass | 26/26 in 7.9 min (new hub-ui spec: map search, theme filter, lock badges, mission summary, arrow-key tabs, Ultra / resolution / interface size) |
+| BEFORE / AFTER review | `node tools/ui-shots.mjs before|after` | pass | 48 shots each (hub, map picker, 6 themed matches, boss, victory, defeat, summon, shop, Index, quests, towers at desktop / tablet / phone), no page errors; pairs in docs/screenshots/ui-update |
+| Load size | performance resource entries (dev server, uncompressed) | +4.5% | 3,298 KB / 129 requests -> 3,445 KB / 137 requests (new CSS, icons, theme / VFX data, generated bosses) |
+| Frame time | TDS.stats in the riftline match shot, desktop High, headless | unchanged | 100 ms (10 fps software rendering) before and after; draw calls 287 -> 290; real-GPU numbers not measured |
+| Hub responsiveness | CDP Performance metrics, same 4 tab clicks | faster | old UI 34 s, new UI 40 s (bug 45) -> 19 s after finite animations + quarter-rate world behind menus |
+| Boss mechanics | test/unit/bosses.test.js (13 tests) | pass | every new action, timers restore exact values, 40 generated bosses each beatable with 3 phases |
+| Boss Rush balance | `node tools/dev/boss-rush.mjs 20` | 55% | below 60-70% target, accepted after 3 attempts (BUGS.md #46) |
+| Visual check of themes | in-app browser, desktop | pass | Ember lava, Frost ice, Toxic ooze, Starfall night runes, faction decals; not checked on a real phone or GPU |
+
 ## Milestone 1 (2026-11-05)
 
 | Feature | How tested | Result | Notes |

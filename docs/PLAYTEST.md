@@ -23,7 +23,7 @@ Seven heroes (four skills each, key V for the fourth), tutorial, campaign, hub t
 Towers, Index, Quests), modes, tuning presets and Assist, phone controls. Locked maps open with `?map=<id>`.
 
 ## Real counts (tools/count-content.mjs, 2026-11-06)
-17 maps on 6 themes, 37 towers (23 distinct mechanics, 28 models), 42 enemies (19 distinct, 33 models),
+17 maps on 6 themes, 37 towers (23 distinct mechanics, 28 models), 42 enemies (19 distinct, 33 models), 95 achievements (tiers of 17 conditions), 29 quests,
 59 bosses (42 distinct mechanic sets, 14 models), 7 heroes with 27 skills, 7 modes, 9 modifiers.
 
 ## Balance (bot, skill 0.7, Standard Normal)
@@ -35,8 +35,8 @@ Daily Challenge 62%, Boss Rush: see BUGS.md #46. New hero kits are too strong (B
   tricks yet, only the warnings and effects do.
 - Toxic ooze glow is speckly up close; Ember lava cracks also run over cliff walls.
 - Water is still not a thing on any map (no river or lake geometry); "liquid" is only the ooze and lava.
-- Tower and enemy models did not get new materials (wear, trims, rarity glints) in this pass: only the
-  UI cards got rarity glints.
+- Towers now stand on a faction decal (War hazard pad, Magic rune circle) with a rarity ring (Rare and up,
+  Legendary pulses), but the tower and enemy models themselves did not get new materials (wear, camo, runes).
 - No outline / toon edge post effect yet; no LOD.
 - The new lobby, effects and themes were checked in headless software rendering and a desktop browser
   pane, not on a real phone.

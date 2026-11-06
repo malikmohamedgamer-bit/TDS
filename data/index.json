@@ -8,7 +8,10 @@
   "progression": "progression.json",
   "tuning": "tuning.json",
   "meta": "meta.json",
-  "quests": "quests.json",
+  "quests": [
+    "quests.json",
+    "quests/generated_b1.json"
+  ],
   "modes": "modes.json",
   "music": "music.json",
   "palettes": "palettes.json",

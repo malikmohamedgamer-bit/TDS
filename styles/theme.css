@@ -257,9 +257,11 @@ legend { font-family: var(--font-display); color: var(--brass); }
 .banner.boss { font-size: var(--fs-6); text-shadow: 0 0 24px rgba(255, 60, 172, 0.8), 0 3px 0 #000; }
 
 /* boss intro letterbox (matchController adds body.cine for a few seconds) */
-body::before, body::after { content: ""; position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 5; transition: height 0.5s var(--ease-out); pointer-events: none; }
+/* bars sit above the 3D view but under the HUD (#ui z-index 2) so status, hotbar and abilities stay usable */
+#ui { z-index: 2; }
+body::before, body::after { content: ""; position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 1; transition: height 0.5s var(--ease-out); pointer-events: none; }
 body::before { top: 0; } body::after { bottom: 0; }
-body.cine::before, body.cine::after { height: 9vh; }
+body.cine::before, body.cine::after { height: 7vh; }
 
 /* ---- loading screen tips ----------------------------------------------------------------- */
 #loading { background: radial-gradient(ellipse at 50% 35%, #2b2470 0%, #12141c 62%, #07080c 100%); }

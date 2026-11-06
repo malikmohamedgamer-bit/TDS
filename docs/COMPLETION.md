@@ -4,7 +4,7 @@ Progress toward the **final product** spec (100+ towers, 200+ enemies, 50+ maps,
 feature list below). Goal of the current run: at least **75%** overall and 75% of each content target.
 Counts come from `node tools/count-content.mjs` (reads `data/` through the game's own loader).
 
-**Overall: 58%** (updated 2026-11-06, UI/GFX batch 1 + boss mechanics batch). Targets raised by the owner to the full final product (100%).
+**Overall: 59%** (updated 2026-11-06, UI/GFX batch 1 + boss mechanics + quests batch). Targets raised by the owner to the full final product (100%).
 
 ## How the counts work (honest counting)
 
@@ -40,12 +40,12 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 | Enemy mechanics | 5 | 10 of 13 (missing teleport, speed burst, immunities) | 3.8 |
 | Boss phase mechanics | 5 | 16 / 12 | 5.0 |
 | Modes | 5 | 7 / 10 (no new modes yet) | 3.5 |
-| Meta | 10 | tiers, branches, shop yes; 1 banner; Index partial; quests 14/80; achievements 8/80; daily only; no cosmetics | 5.3 |
+| Meta | 10 | tiers, branches, shop yes; 1 banner; Index with discovery bars; quests 29/80 (23 daily + 6 story); achievements 95/80 (honest: tiers of 17 distinct conditions, `tools/gen-quests.mjs`); daily only; no cosmetics | 6.3 |
 | Music and SFX | 4 | 4 moods, scale per map; no boss/victory theme sets per theme; SFX per class partial | 1.6 |
 | Quality and accessibility | 5 | tutorial, touch, settings, reduced motion, high contrast, text + interface scale, Low/Medium/High/Ultra, resolution scale, keyboard tab navigation, ARIA progress bars; colourblind only glyphs; no LOD | 4.5 |
 | Map features | 5 | themes 8/14, flagships 5/13, new path templates 0/4 | 1.6 |
 | Visual polish | 5 | war-table UI with faction dress and SVG icon set, map previews, per-theme sky / grade / particles / ground detail, time of day, data-driven VFX library (60+ presets, status auras), boss intro letterbox, slow motion on boss death, victory / defeat sequences, animated reward counters | 4.0 |
-| **Total** | 100 | | **58** |
+| **Total** | 100 | | **59** |
 
 ## Log
 
@@ -53,5 +53,6 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 |---|---|---|---|
 | 2026-11-06 | start | 43% | baseline from data; bosses are the weakest area (2 distinct mechanic sets for 19 bosses) |
 | 2026-11-06 | 1 (part) | 43% | bug 37 accepted after 3 attempts (Lancer limit 1); stopped at 85% of the 5-hour usage window as instructed |
+| 2026-11-06 | quests + decals | 59% | 87 generated achievements (17 conditions, partial progress bars), 15 extra daily quests, Quests tab sorted (claimable first); faction base decals and rarity rings under towers; letterbox under the HUD |
 | 2026-11-06 | UI/GFX 1 + bosses | 58% | docs/ui-style.md, tokens + theme layer, hub redesign (nav rail, mission summary, map picker with search / theme filters / previews / locks), HUD icons, end screen counters, Ultra / resolution / UI scale, theme visuals (sky, grade, particles, ground detail, grass sway, dusk / night maps), VFX library, 12 new boss mechanics and 40 bosses |
 | 2026-11-06 | 1 | 47% | 4 new heroes (Ignis, Kade, Nyra, Holt), 4th skill for the 3 old ones, 19 new skills on 9 new effects (burn, mark, chain, knockback, reveal, shield break, execute, road allies, damage buff), hero attacks with status effects, hero picker with skill details, 4th ability key V |

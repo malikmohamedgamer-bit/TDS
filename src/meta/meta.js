@@ -162,9 +162,26 @@ export function questBoard(save, quests, date) {
   return save.quests.daily;
 }
 
+/** Progress of a story / achievement condition as {progress, target} (bars show partial progress). */
+export function condProgress(q, save, content) {
+  const s = save.stats;
+  const owned = Object.keys(save.towers.owned);
+  const seenEnemies = save.index?.enemies || [];
+  if (q.stat) return { progress: Math.min(s[q.stat] || 0, q.target), target: q.target };
+  if (q.summons) return { progress: Math.min(s.summons || 0, q.summons), target: q.summons };
+  if (q.towerLevel) return { progress: Math.min(Math.max(0, ...Object.values(save.towers.owned).map((t) => t.level)), q.towerLevel), target: q.towerLevel };
+  if (q.owned) return { progress: Math.min(owned.length, q.owned), target: q.owned };
+  if (q.ownFaction) { const n = owned.filter((id) => content.towers.get(id)?.faction === q.ownFaction.faction).length; return { progress: Math.min(n, q.ownFaction.count), target: q.ownFaction.count }; }
+  if (q.discovered) return { progress: Math.min(seenEnemies.filter((id) => !content.enemies.get(id)?.boss).length, q.discovered), target: q.discovered };
+  if (q.discoveredBosses) return { progress: Math.min(seenEnemies.filter((id) => content.enemies.get(id)?.boss).length, q.discoveredBosses), target: q.discoveredBosses };
+  const done = condDone(q, save, content);
+  return { progress: done ? 1 : 0, target: 1 };
+}
+
 function condDone(q, save, content, prog = null) {
   const s = save.stats;
   if (q.stat) return (s[q.stat] || 0) >= q.target;
+  if (q.ownFaction || q.discovered || q.discoveredBosses) { const p = condProgress(q, save, content); return p.progress >= p.target; }
   if (q.winDifficulty) return (save.progress.bestDifficultyWon ?? -1) >= DIFF_ORDER.indexOf(q.winDifficulty);
   if (q.summons) return (s.summons || 0) >= q.summons;
   if (q.towerLevel) return Object.values(save.towers.owned).some((t) => t.level >= q.towerLevel);
@@ -184,12 +201,10 @@ export function questStatus(save, quests, content, date) {
     out.push({ kind: 'daily', ...q, progress: Math.min(p, q.target), done: p >= q.target, claimed: save.claimed.includes(`quest:${date}:${id}`), claimId: `quest:${date}:${id}` });
   }
   for (const q of quests.story) {
-    out.push({ kind: 'story', ...q, progress: condDone(q, save, content) ? 1 : 0, target: 1, done: condDone(q, save, content), claimed: save.claimed.includes(`story:${q.id}`), claimId: `story:${q.id}` });
+    out.push({ kind: 'story', ...q, ...condProgress(q, save, content), done: condDone(q, save, content), claimed: save.claimed.includes(`story:${q.id}`), claimId: `story:${q.id}` });
   }
   for (const q of quests.achievements) {
-    const target = q.target || 1;
-    const progress = q.stat ? Math.min(save.stats[q.stat] || 0, target) : condDone(q, save, content) ? 1 : 0;
-    out.push({ kind: 'achievement', ...q, progress, target, done: condDone(q, save, content), claimed: save.claimed.includes(`ach:${q.id}`), claimId: `ach:${q.id}` });
+    out.push({ kind: 'achievement', ...q, ...condProgress(q, save, content), done: condDone(q, save, content), claimed: save.claimed.includes(`ach:${q.id}`), claimId: `ach:${q.id}` });
   }
   return out;
 }
@@ -291,7 +306,7 @@ export function applyMatchResult(save, result, content, meta, date) {
   const board = questBoard(save, content.quests, date);
   for (const id of board.ids) {
     const q = content.quests.daily.find((x) => x.id === id);
-    if (q?.stat) board.progress[id] = (board.progress[id] || 0) + (add[q.stat] || 0);
+    if (q?.stat) board.progress[id] = (board.progress[id] || 0) + (q.stat === 'matches' ? 1 : add[q.stat] || 0);
   }
   return out;
 }

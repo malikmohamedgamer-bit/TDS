@@ -146,9 +146,11 @@ batch; stop at about 95% of the 5-hour window / 97% weekly and schedule a resume
   a quarter rate. Bosses: 12 new phase actions (src/sim/match.js `_bossAction`), `tools/gen-bosses.mjs`
   -> data/bosses/mechanics_b1.json (40 bosses, 40 different kits), test/unit/bosses.test.js.
   BEFORE screenshots: docs/screenshots/ui-update/before (tools/ui-shots.mjs).
-- **Next**: (1) Boss Rush balance for the new bosses (BUGS.md #46). (2) AFTER screenshots
-  `node tools/ui-shots.mjs after` and review against before; full e2e + 30 min soak at the milestone end.
-  (3) Track A unit materials (faction trims, wear, rarity glints on models, eye / weapon glow) in
+- Also done: AFTER screenshots (docs/screenshots/ui-update/after), full e2e 26/26, Boss Rush tuned (55%, BUGS.md #46),
+  quests batch (`tools/gen-quests.mjs` -> data/quests/generated_b1.json, data/index.json `quests` is now a list,
+  `condProgress` in src/meta/meta.js), faction base decals + rarity rings under towers (src/engine/matchView.js
+  `factionDecal`).
+- **Next**: (1) 30 min soak (`npm run soak -- --minutes 30`) for this milestone. (2) Track A unit materials (faction trims, wear, rarity glints on models, eye / weapon glow) in
   src/engine/models.js style pass. (4) Remaining screens: Index detail panel, quests / achievements
   layout, summon banners (more than one), pause screen styling, loading tips per theme. (5) Track D:
   unique-mechanic towers and enemies, new themes / maps, modes, quests, achievements, cosmetics

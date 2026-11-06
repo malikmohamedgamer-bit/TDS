@@ -17,6 +17,54 @@ const _t = new THREE.Vector3();
 const UP = new THREE.Vector3(0, 1, 0);
 const wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 
+const RARITY_COLOR = { rare: '#3FA9F5', epic: '#B15CFF', legendary: '#FFB627', mythic: '#FF4D6D' };
+const decals = {};
+/**
+ * Faction base decal under every tower (docs/art-style.md material language): War = olive pad with a
+ * hazard-stripe band and rivets, Magic = night-violet disc with a gold rune circle. One shared canvas
+ * texture per faction (128 px), drawn once.
+ */
+function factionDecal(faction) {
+  if (decals[faction]) return decals[faction];
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d');
+  g.translate(64, 64);
+  if (faction === 'war') {
+    g.fillStyle = 'rgba(61,68,81,0.55)';
+    g.beginPath(); g.arc(0, 0, 50, 0, Math.PI * 2); g.fill();
+    for (let i = 0; i < 24; i++) {
+      g.fillStyle = i % 2 ? '#1B1D20' : '#F28C28';
+      g.beginPath(); g.arc(0, 0, 62, (i / 24) * Math.PI * 2, ((i + 1) / 24) * Math.PI * 2); g.arc(0, 0, 52, ((i + 1) / 24) * Math.PI * 2, (i / 24) * Math.PI * 2, true); g.fill();
+    }
+    g.fillStyle = '#A7AE9A';
+    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; g.fillRect(Math.cos(a) * 44 - 2, Math.sin(a) * 44 - 2, 4, 4); }
+  } else {
+    g.fillStyle = 'rgba(30,27,75,0.5)';
+    g.beginPath(); g.arc(0, 0, 58, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#FFD166';
+    g.lineWidth = 3;
+    g.beginPath(); g.arc(0, 0, 60, 0, Math.PI * 2); g.stroke();
+    g.lineWidth = 1.5;
+    g.beginPath(); g.arc(0, 0, 50, 0, Math.PI * 2); g.stroke();
+    g.strokeStyle = '#C9A7FF';
+    g.lineWidth = 2;
+    for (let i = 0; i < 12; i++) {
+      // simple angular runes between the two circles
+      const a = (i / 12) * Math.PI * 2;
+      g.save(); g.rotate(a); g.translate(0, -55);
+      g.beginPath();
+      if (i % 3 === 0) { g.moveTo(-3, -3); g.lineTo(0, 3); g.lineTo(3, -3); } else if (i % 3 === 1) { g.moveTo(0, -4); g.lineTo(0, 4); g.moveTo(-3, 0); g.lineTo(3, -2); } else { g.moveTo(-3, 3); g.lineTo(0, -3); g.lineTo(3, 3); g.moveTo(-2, 1); g.lineTo(2, 1); }
+      g.stroke(); g.restore();
+    }
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.magFilter = THREE.NearestFilter;
+  decals[faction] = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, color: new THREE.Color(faction === 'war' ? '#FFFFFF' : '#FFFFFF').multiplyScalar(faction === 'war' ? 1 : 1.5), polygonOffset: true, polygonOffsetFactor: -2 });
+  return decals[faction];
+}
+
 const PROJECTILES = {
   bullet: { color: '#FFD27A', size: [0.06, 0.06, 0.5], glow: 2.6 },
   tracer: { color: '#FFF3B0', size: [0.05, 0.05, 1.6], glow: 3 },
@@ -196,6 +244,17 @@ export class MatchView {
       vis.parts = built.parts;
       vis.muzzle.copy(built.muzzle);
       if (built.unit) { vis.unit = built.unit; this.group.add(built.unit); }
+    }
+    // faction base decal + rarity ring (rare and up; legendary / mythic pulse)
+    vis.decal = new THREE.Mesh(new THREE.PlaneGeometry(3, 3).rotateX(-Math.PI / 2), factionDecal(def.faction === 'magic' ? 'magic' : 'war'));
+    vis.decal.position.y = 0.05;
+    vis.decal.renderOrder = 1;
+    vis.root.add(vis.decal);
+    if (RARITY_COLOR[def.rarity]) {
+      vis.rarity = new THREE.Mesh(new THREE.RingGeometry(1.52, 1.62, 40).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: new THREE.Color(RARITY_COLOR[def.rarity]).multiplyScalar(1.8), transparent: true, opacity: 0.85, depthWrite: false }));
+      vis.rarity.position.y = 0.07;
+      vis.rarity.userData.pulse = def.rarity === 'legendary' || def.rarity === 'mythic';
+      vis.root.add(vis.rarity);
     }
     // tier / evolution marker ring
     vis.aura = new THREE.Mesh(new THREE.RingGeometry(1.1, 1.25, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: new THREE.Color('#FFD166').multiplyScalar(2), transparent: true, opacity: 0.0, depthWrite: false }));
@@ -493,6 +552,7 @@ export class MatchView {
     // --- towers
     for (const t of m.towers) {
       const v = this.towerVis.get(t.uid) || this._makeTower(t);
+      if (v.rarity?.userData.pulse) v.rarity.material.opacity = this.settings.reducedMotion ? 0.85 : 0.55 + 0.35 * Math.sin(this.time * 2.4 + t.uid);
       const tgt = t.target && m.enemies.find((e) => e.id === t.target && e.alive);
       const ox = v.unit ? t.unit.x : t.x;
       const oz = v.unit ? t.unit.z : t.z;

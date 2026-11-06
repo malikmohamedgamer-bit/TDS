@@ -42,7 +42,13 @@ export async function loadContent(readJson) {
     progression: index.progression ? await readJson(index.progression) : null,
     tuning: index.tuning ? await readJson(index.tuning) : null,
     meta: index.meta ? await readJson(index.meta) : null,
-    quests: index.quests ? await readJson(index.quests) : null,
+    // quests: one file or a list (hand-written quests.json + generated tiers); lists are concatenated
+    quests: index.quests ? await (async () => {
+      const files = Array.isArray(index.quests) ? index.quests : [index.quests];
+      const out = { daily: [], story: [], achievements: [] };
+      for (const f of files) { const q = await readJson(f); for (const k of Object.keys(out)) out[k].push(...(q[k] || [])); }
+      return out;
+    })() : null,
     music: index.music ? await readJson(index.music) : null,
     palettes: index.palettes ? await readJson(index.palettes) : null,
     themes: index.themes ? (await readJson(index.themes)).themes : {},

@@ -325,7 +325,11 @@ export class Hub {
   _quests() {
     const qs = questStatus(this.save, this.c.quests, this.c, this.date());
     const QI = { daily: 'scroll', story: 'book', achievement: 'trophy' };
-    const sec = (kind, title) => `<h3>${icon(QI[kind])} ${title}</h3><div class="quests">${qs.filter((q) => q.kind === kind).map((q) => `<div class="quest ${q.done ? 'done' : ''} ${q.claimed ? 'claimed' : ''}" data-testid="quest-${q.id}">
+    // ready to claim first, then closest to done, claimed last (95 achievements stay scannable)
+    const rank = (q) => (q.done && !q.claimed ? 0 : q.claimed ? 2 : 1);
+    const sorted = (kind) => qs.filter((q) => q.kind === kind).sort((a, b) => rank(a) - rank(b) || (b.progress / b.target) - (a.progress / a.target));
+    const sum = (kind) => { const l = qs.filter((q) => q.kind === kind); const d = l.filter((q) => q.done).length; return `<span class="count">${d}/${l.length} done</span>`; };
+    const sec = (kind, title) => `<h3>${icon(QI[kind])} ${title} ${sum(kind)}</h3><div class="quests">${sorted(kind).map((q) => `<div class="quest ${q.done ? 'done' : ''} ${q.claimed ? 'claimed' : ''}" data-testid="quest-${q.id}">
       <i class="q-ic">${icon(q.claimed ? 'check' : q.done ? 'star' : QI[kind])}</i>
       <div><b>${esc(q.name)}</b><small>${esc(q.desc)}</small>
       <div class="qbar" role="progressbar" aria-label="${q.progress} of ${q.target}" aria-valuemin="0" aria-valuemax="${q.target}" aria-valuenow="${q.progress}"><span style="width:${(q.progress / q.target) * 100}%"></span></div><small>${fmt(q.progress)}/${fmt(q.target)} · ${rewardHtml(q.reward)}</small></div>
