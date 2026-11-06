@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { rigFromGLB, rigFromProcedural, InstancedRig } from './instancedRig.js';
 import { loadGLB, ModelInstance, modelSrc } from './models.js';
-import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS, mineModel } from './unitModels.js';
+import { enemyRigDef, ALLY_RIGS, TOWER_MODELS, mineModel } from './unitModels.js';
 import { Effects } from './effects.js';
 import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
@@ -128,7 +128,7 @@ export class MatchView {
     let asset;
     if (glb) asset = await rigFromGLB(glb, glb.clips, { transparent: def.stealth ? 0.45 : 0 });
     else {
-      const rd = ENEMY_RIGS[def.id] || ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;
+      const rd = enemyRigDef(def);
       asset = rigFromProcedural(rd, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: rd.height, transparent: rd.transparent || 0 });
     }
     const rig = new InstancedRig(asset, this.group, def.boss ? 2 : 24);

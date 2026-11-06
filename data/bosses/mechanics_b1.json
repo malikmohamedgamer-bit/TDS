@@ -19,8 +19,15 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "k_siege_tower",
-    "palette": "blight"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "veil",
+      "wings",
+      "eggSacs"
+     ],
+     "accent": "violet"
+    }
    },
    "description": "Thalthos vanishes from towers without detection, then speeds up for good, then bursts into minions when it dies.",
    "phases": [
@@ -83,8 +90,16 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "k_siege_ram",
-    "palette": "blight_ember"
+    "kit": {
+     "body": "brute",
+     "parts": [
+      "lance",
+      "hammer",
+      "skulls",
+      "totems"
+     ],
+     "accent": "toxic"
+    }
    },
    "description": "Grimlith marks your best tower for a stunning strike, then stomps towers near it into silence, then gets back up once.",
    "phases": [
@@ -156,8 +171,16 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "k_truck",
-    "palette": "blight"
+    "kit": {
+     "body": "crawler",
+     "parts": [
+      "crystals",
+      "horns",
+      "shieldRing",
+      "totems"
+     ],
+     "accent": "ember"
+    }
    },
    "description": "Drakar regrows its health unless it burns, then charges in a sudden burst, then raises a shield.",
    "phases": [
@@ -226,8 +249,15 @@
     "arcane": 1.2
    },
    "model": {
-    "glb": "k_tractor_shovel",
-    "palette": "blight"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "armor",
+      "crystals",
+      "totems"
+     ],
+     "accent": "magenta"
+    }
    },
    "description": "Kaellith hardens its hide, then heals the Blight around it, then calls the swarm.",
    "phases": [
@@ -291,8 +321,16 @@
     "dark": 1.1
    },
    "model": {
-    "glb": "k_garbage_truck",
-    "palette": "blight_toxic"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "ward",
+      "crown",
+      "totems"
+     ],
+     "accent": "frost"
+    }
    },
    "description": "Kaelvorn blinks forward along the road, then shrugs off one kind of damage for a while, then steals a share of your cash.",
    "phases": [
@@ -364,7 +402,15 @@
     "lightning": 1.15
    },
    "model": {
-    "glb": "q_big_orc_skull"
+    "kit": {
+     "body": "brute",
+     "parts": [
+      "crown",
+      "riftShards",
+      "crystals"
+     ],
+     "accent": "violet"
+    }
    },
    "description": "Thalvane steals a share of your cash, then opens portals on the other roads, then heals the Blight around it.",
    "phases": [
@@ -428,7 +474,15 @@
     "arcane": 1.1
    },
    "model": {
-    "glb": "q_big_demon"
+    "kit": {
+     "body": "colossus",
+     "parts": [
+      "ward",
+      "skulls",
+      "eggSacs"
+     ],
+     "accent": "toxic"
+    }
    },
    "description": "Ulruun shrugs off one kind of damage for a while, then gets back up once, then bursts into minions when it dies.",
    "phases": [
@@ -493,7 +547,16 @@
     "holy": 1.2
    },
    "model": {
-    "glb": "q_big_mushroom_king"
+    "kit": {
+     "body": "wraith",
+     "parts": [
+      "riftShards",
+      "horns",
+      "lance",
+      "totems"
+     ],
+     "accent": "ember"
+    }
    },
    "description": "Brakdrel blinks forward along the road, then charges in a sudden burst, then marks your best tower for a stunning strike.",
    "phases": [

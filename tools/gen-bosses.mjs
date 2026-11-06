@@ -7,6 +7,7 @@
 // recoloured through palette schemes (Kenney) or as-is (Quaternius, Gravemaw).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Rng } from '../src/core/rng.js';
+import { MECHANIC_BODY, MECHANIC_PART } from '../src/engine/bossKit.js';
 
 const NEW = ['teleport', 'regen', 'cloak', 'immune', 'armor', 'dash', 'drainCash', 'portal', 'healPulse', 'snipe', 'undying', 'splitOnDeath'];
 const OLD = ['telegraph', 'summon', 'shield', 'speed'];
@@ -38,6 +39,10 @@ const MODELS = [
   { glb: 'q_big_orc_skull' }, { glb: 'q_big_demon' }, { glb: 'q_big_mushroom_king' }, { glb: 'q_tank3' }, { glb: 'q_stan' }, { glb: 'q_big_yeti' }, { glb: 'q_big_ninja' },
   { glb: 'gravemaw', builder: 'gravemaw' },
 ];
+// the first KIT_BOSSES bosses get code-built kit bodies (src/engine/bossKit.js): body from the lead mechanic,
+// one part per mechanic, glow accent from the resist profile (dark, poison, fire, lightning, ice resist)
+const KIT_BOSSES = 8;
+const KIT_ACCENT = ['violet', 'toxic', 'ember', 'magenta', 'frost'];
 const RESISTS = [
   { dark: 0.5, poison: 0.7, holy: 1.35, lightning: 1.15 },
   { poison: 0.4, ice: 0.5, fire: 1.3, arcane: 1.1 },
@@ -118,6 +123,7 @@ export function buildBosses(count = 40) {
     const types = new Set(phases.flatMap((ph) => ph.actions.map((a) => a.type)));
     const ehp = [...types].reduce((acc, t) => acc + (EHP[t] || 0), 0);
     const fast = types.has('dash') || types.has('teleport');
+    const kitModel = i < KIT_BOSSES ? { kit: { body: MECHANIC_BODY[lead], parts: [...new Set(order.concat([...types].filter((t) => !order.includes(t))).map((t) => MECHANIC_PART[t]))], accent: KIT_ACCENT[i % KIT_ACCENT.length] } } : null;
     const m = MODELS[i % MODELS.length];
     const palette = m.palettes ? m.palettes[Math.floor(i / MODELS.length) % m.palettes.length] : undefined;
     return {
@@ -132,7 +138,7 @@ export function buildBosses(count = 40) {
       leak: 1000,
       size: 3.2,
       resist: RESISTS[i % RESISTS.length],
-      model: m.builder ? { glb: m.glb, builder: m.builder } : { glb: m.glb, ...(palette ? { palette } : {}) },
+      model: kitModel || (m.builder ? { glb: m.glb, builder: m.builder } : { glb: m.glb, ...(palette ? { palette } : {}) }),
       description: `${name} ${order.map((x) => PHRASE[x]).join(', then ')}.`,
       phases,
       generated: { batch: 'mechanics_b1', kit: [...types].sort() },

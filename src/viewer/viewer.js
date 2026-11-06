@@ -8,7 +8,7 @@ import { propGeometry } from '../engine/propModels.js';
 import { HeroView } from '../engine/heroView.js';
 import { loadGLB, ModelInstance, triangleCount, setPalettes } from '../engine/models.js';
 import { createStorage } from '../save/storage.js';
-import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS } from '../engine/unitModels.js';
+import { ENEMY_RIGS, ALLY_RIGS, TOWER_MODELS, enemyRigDef } from '../engine/unitModels.js';
 import { rigFromGLB, rigFromProcedural, InstancedRig } from '../engine/instancedRig.js';
 import { loadSettings } from '../save/settings.js';
 
@@ -51,6 +51,7 @@ async function boot() {
   for (const h of content.heroes.values()) assets.push({ id: `hero:${h.id}`, name: h.name, group: 'Heroes (code model, own colours and gear)', kind: 'hero', heroId: h.id });
   for (const id of Object.keys(TOWER_MODELS)) assets.push({ id: `tower:${id}`, name: id.replace(/_/g, ' '), group: 'Towers (code models)', kind: 'tower', build: TOWER_MODELS[id] });
   for (const [id, def] of Object.entries({ ...ENEMY_RIGS, ...ALLY_RIGS })) assets.push({ id: `rig:${id}`, name: id.replace(/_/g, ' '), group: ENEMY_RIGS[id] ? 'Enemies (code models)' : 'Summons (code models)', kind: 'rig', def });
+  for (const e of content.enemies.values()) if (e.model?.kit) assets.push({ id: `rig:${e.id}`, name: e.name, group: 'Bosses (code kit: body + mechanic parts)', kind: 'rig', def: enemyRigDef(e) });
   for (const p of content.props.values()) assets.push({ id: `prop:${p.id}`, name: p.id.replace(/_/g, ' '), group: 'Props (code models)', kind: 'prop', def: p });
 
   const list = document.querySelector('.v-groups');

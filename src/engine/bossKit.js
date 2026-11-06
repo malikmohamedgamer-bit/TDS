@@ -299,9 +299,13 @@ export function buildBossRig(kit) {
   const extra = {};
   const add = (name, fn) => { (extra[name] ||= []).push(fn); };
   const used = [...new Set(kit.parts || [])];
+  let handFull = false;
   for (const p of used) {
     if (!BOSS_PARTS[p]) throw new Error(`Unknown boss part "${p}"`);
-    BOSS_PARTS[p](body.anchors, c, accent, add);
+    // a second hand weapon goes to the left hand
+    const weapon = p === 'hammer' || p === 'lance';
+    BOSS_PARTS[p](weapon && handFull ? { ...body.anchors, handR: body.anchors.handL } : body.anchors, c, accent, add);
+    if (weapon) handFull = true;
   }
   const parts = body.parts(c, accent).map((pd) => {
     const more = extra[pd.name];

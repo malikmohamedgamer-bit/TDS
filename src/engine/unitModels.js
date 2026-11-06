@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
+import { buildBossRig } from './bossKit.js';
 
 const P = Math.PI;
 const TAU = Math.PI * 2;
@@ -280,6 +281,17 @@ export const ENEMY_RIGS = {
     },
   },
 };
+
+const kitRigs = new Map();
+/** Rig definition for an enemy: own code rig, boss kit (model.kit), named builder, else the mite. */
+export function enemyRigDef(def) {
+  if (ENEMY_RIGS[def.id]) return ENEMY_RIGS[def.id];
+  if (def.model?.kit) {
+    if (!kitRigs.has(def.id)) kitRigs.set(def.id, buildBossRig(def.model.kit));
+    return kitRigs.get(def.id);
+  }
+  return ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;
+}
 
 // =============================================================================== allies (rigs)
 export const ALLY_RIGS = {
