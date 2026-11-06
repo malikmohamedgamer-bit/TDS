@@ -35,7 +35,8 @@
     "bosses/quaternius_b1.json",
     "enemies/quaternius_b2.json",
     "bosses/quaternius_b2.json",
-    "bosses/mechanics_b1.json"
+    "bosses/mechanics_b1.json",
+    "bosses/mechanics_b2.json"
   ],
   "waves": [
     "waves/riftline_campaign.json",

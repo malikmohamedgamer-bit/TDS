@@ -20,7 +20,7 @@ colour and stat variants count once. Each signature group counts as one.
 |---|---|---|---|---|---|---|
 | Towers | 37 (21 War, 16 Magic) | 23 (62%, target 50%) | 28 | 100 | 75 | 37% |
 | Enemies | 42 | 19 (45%, target 35%) | 33 | 200 | 150 | 21% |
-| Bosses | 59 | **42** (71%, target 50%) | 54 (14 pack / code models + 40 code-built kit builds on 5 base bodies, every body+parts set different; tints are extra variety, not counted) | 100 | 75 | 59% |
+| Bosses | **100** | **83** (83%, target 50%) | 94 (14 pack / code models + 81 code-built kit builds on 5 base bodies, every body+parts set different; tints are extra variety, not counted) | 100 | 75 | **100%** |
 | Maps | 17 on 8 themes | 5 hand-made, 12 generated | - | 50 | 38 | 34% |
 | Heroes | 7 (7 looks: own colours + gear silhouettes) | 27 skills, 4 per hero; 9 new skill effects | 1 code model with 6 headgear / 3 weapon parts | 10, 4 skills each, 30 skills | - | 77% |
 

@@ -39,7 +39,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Before / after sheets in docs/screenshots/identity/
 
 ## Chunk 2: content to the targets (MUST)
-- [ ] Bosses 100+ (more unique phase mechanics; distinct >= 50%)
+- [x] Bosses 100+ (100 bosses: 19 earlier + 81 generated kit bosses in mechanics_b1 / b2; 83 mechanically distinct, 94 models) (2026-11-06)
 - [ ] Towers 100+ across all classes incl. aura, hero-linked, rockets vs artillery, more air (distinct >= 50%)
 - [ ] Enemies 200+ with teleport, speed burst, immunities, stealth, split, heal, shield, swarm (distinct >= 35%)
 - [ ] Maps 50+: 6+ new themes, path templates (loops, crossovers, multi-lane, air routes), 8+ new flagships,
@@ -109,3 +109,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-06 | Chunk 1 slice 2 | 40 kit bosses (boss models 22 -> 54 distinct), tints, sheets kit-b2, match check; unit 111, lint clean |
 | 2026-11-06 | Chunk 1 slice 3 | Heroes: builds, bow and launcher weapons, pauldrons / mantle / spikes; reviewed from 4 angles |
 | 2026-11-06 | Chunk 1 slice 4 | Faction material trims via applyTrim (shader patch, no console errors in a real match); subtle |
+| 2026-11-06 | Chunk 2 bosses | 100 bosses (81 kit bosses, `tools/gen-bosses.mjs` writes mechanics_b1 + b2). Boss Rush fell to 3/12 with the bigger pool; BASE_HP 7500 -> 6000 gave 9/12 (75%), 6500 gave 7/12 (58%), kept 6500 (2 attempts). Unit 111, lint clean |

@@ -142,11 +142,11 @@ test('undying revives the boss once at a share of its health; splitOnDeath spawn
   assert.equal(m.enemies.filter((e) => e.alive && e.defId === 'husk').length, 4);
 });
 
-test('mechanics_b1: 40 bosses with 40 different mechanic sets, at least 2 new mechanics each, every new mechanic used', () => {
-  const batch = [...C.enemies.values()].filter((e) => e.generated?.batch === 'mechanics_b1');
-  assert.equal(batch.length, 40);
+test('mechanics_b1 + b2: 81 bosses with 81 different mechanic sets, at least 2 new mechanics each, every new mechanic used', () => {
+  const batch = [...C.enemies.values()].filter((e) => /^mechanics_b[12]$/.test(e.generated?.batch));
+  assert.equal(batch.length, 81);
   const sig = (e) => [...new Set(e.phases.flatMap((p) => p.actions.map((a) => a.type)))].sort().join('+');
-  assert.equal(new Set(batch.map(sig)).size, 40);
+  assert.equal(new Set(batch.map(sig)).size, 81);
   const NEW = BOSS_ACTIONS.slice(4);
   for (const e of batch) assert.ok(sig(e).split('+').filter((t) => NEW.includes(t)).length >= 2, e.id);
   for (const t of NEW) assert.ok(batch.some((e) => sig(e).includes(t)), t);
@@ -154,7 +154,7 @@ test('mechanics_b1: 40 bosses with 40 different mechanic sets, at least 2 new me
 });
 
 test('every generated boss can be beaten in a full simulation: phases fire, nothing throws, it dies', () => {
-  for (const e of [...C.enemies.values()].filter((x) => x.generated?.batch === 'mechanics_b1')) {
+  for (const e of [...C.enemies.values()].filter((x) => /^mechanics_b[12]$/.test(x.generated?.batch))) {
     const m = new Match({ content: C, mapWorld: world('frostmere'), seed: e.id, options: { infiniteCash: true } });
     m.cash = 5000;
     const b = m.spawnEnemy(e.id, { d: 10 });
