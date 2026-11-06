@@ -45,7 +45,7 @@ const TOWERS = [
   ['guard_tower', 'Guard Tower', 'rifleman', 'k_tower_square_build_c', 'war', 'war', 'ground', 'Riflemen behind stone walls: steady, long reach.', { mul: { damage: 1.25, rate: 1.0 }, add: { range: 3 } }],
   ['watch_tower', 'Watch Tower', 'rifleman', 'k_tower_square_build_c', 'war', 'war', 'ground', 'Spotters see hidden enemies and hit flyers.', { set: { detection: true, 'targets.air': true } }],
   // boss killer (BUGS.md #35): the batch had splash and chip damage but nothing that deletes a boss
-  ['lancer_mech', 'Lancer Mech', 'marksman', 'q_leela', 'war', 'war', 'sniper', 'Walking rail lance: armour-piercing shots at the strongest enemy, triple damage to bosses. Ground only.', { mul: { damage: 1.6, rate: 0.6 }, set: { armorPierce: 0.8, bossDamage: 3 }, add: { range: 2 }, price: 500 }],
+  ['lancer_mech', 'Lancer Mech', 'marksman', 'q_leela', 'war', 'war', 'sniper', 'Walking rail lance: armour-piercing shots at the strongest enemy, triple damage to bosses. Ground only.', { mul: { damage: 1.6, rate: 0.6 }, set: { armorPierce: 0.8, bossDamage: 3 }, add: { range: 2 }, price: 500, limit: 1 }],
 ];
 
 function setPath(o, path, v) {
@@ -64,13 +64,15 @@ const makeTower = (batch) => ([id, name, tpl, glb, faction, palette, cls, desc, 
   for (const [k, v] of Object.entries(ops.add || {})) t.stats[k] = +((t.stats[k] || 0) + v).toFixed(2);
   for (const [k, v] of Object.entries(ops.set || {})) setPath(t.stats, k, v);
   // priced by the bot's own value estimate: every variant is exactly as cost-efficient as its template
-  // to the balance bot (PRICE_MUL stays 1; it exists for experiments)
+  // to the balance bot (PRICE_MUL stays 1; bug 37 tried 1.2 and 1.5, see BUGS.md)
   // ops.price: a deliberate role price instead (the boss killer is efficient on purpose, like the
   // core Marksman; the bot buys greedily and never saves up for an expensive specialist)
   // aura towers have no direct value (0): a variant with unchanged stats keeps its template's price
   const tv = towerValue(T.stats);
   const ratio = ops.price ? ops.price / T.cost : tv > 0 ? (towerValue(t.stats) / tv) * PRICE_MUL : 1;
   t.cost = round25(T.cost * ratio);
+  // ops.limit: per-match build limit (bug 37: one boss killer, not a spam pick)
+  if (ops.limit) t.limit = ops.limit;
   const scaleUp = (st) => { st.cost = round25(st.cost * ratio); };
   for (const st of t.upgrades.linear) scaleUp(st);
   for (const br of Object.values(t.upgrades.branches)) for (const st of br.steps) { scaleUp(st); if (st.evolve) st.evolve = `${st.evolve === T.upgrades.branches.A.steps.at(-1).evolve || st.evolve === T.upgrades.branches.B.steps.at(-1).evolve ? `${name} ${br.name}` : st.evolve}`; }

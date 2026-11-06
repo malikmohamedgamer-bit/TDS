@@ -2198,7 +2198,7 @@
    "rarity": "uncommon",
    "description": "Walking rail lance: armour-piercing shots at the strongest enemy, triple damage to bosses. Ground only.",
    "cost": 500,
-   "limit": 6,
+   "limit": 1,
    "footprint": 0.9,
    "placement": "ground",
    "model": {

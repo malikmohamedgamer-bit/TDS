@@ -130,17 +130,14 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-1. Bug 37: one change to the Lancer Mech (`limit: 1` per match or price $650), re-measure the generated
-   menu (target 60-70%); then re-check the mixed menu.
-2. Maps: more seeds per map (24-40) for the 15 new maps would cut the 12-seed noise (8 points per seed);
-   Starfall Sanctum (50%) is the first to look at. `node tools/gen-maps.mjs --calibrate <id> --force`.
-3. More content batches through the same tools: `tools/quaternius-models.json` +
-   `tools/blender/convert_quaternius.py` + `node tools/import-quaternius.mjs --fit` + `tools/gen-content.mjs`;
-   maps through `tools/map-batches.json` + `node tools/gen-maps.mjs --check --calibrate`.
-   Candidates: Steampunk Turrets (War towers, FBX), Cute Monsters / Easy Enemy (swarms), more RTS
-   buildings for Magic, more themes.
-4. Hero models: the two new heroes reuse Commander Vale's code model with their own colours.
-Every batch: balance bot, 4-angle review, counts, docs, commit, push, deploy check.
+Final-product run (owner brief 2026-11-06, see docs/COMPLETION.md for the scoreboard and batch plan):
+- Batch 1 in progress. Done: bug 37 closed as Accepted after 3 attempts (Lancer Mech `limit: 1` kept),
+  docs/COMPLETION.md + `node tools/count-content.mjs` (honest totals / distinct mechanics / models).
+- **Next:** finish batch 1: 4 new heroes (data/heroes.json + data/abilities.json; distinct palettes via
+  `model.colors` of the commander builder, 4 skills each, so give the 3 old heroes a 4th skill too) and a
+  better hero picker in `src/ui/hub.js` (cards with portrait, role, skills; no reload if avoidable).
+  Then batch 2 (towers A). Biggest score gaps: bosses have only 2 distinct mechanic sets (19 bosses) and
+  4 phase mechanics; quests 14/80, achievements 8/80; no cosmetics.
 
 ## Known weak spots (honest)
 
