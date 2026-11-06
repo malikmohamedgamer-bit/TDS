@@ -137,7 +137,7 @@ parts, `buildBossRig(kit)`; enemy data `model.kit = { body, parts, accent }`), `
 thumbnails, viewer), boss_mech_01-08 on kit builds from tools/gen-bosses.mjs (`KIT_BOSSES = 8`, body from the lead
 mechanic, one part per mechanic, glow accent from the resist profile). Sheets: docs/screenshots/identity/kit-b1.
 Note: ModelBuilder `cyl` / `cone` are base-anchored unless `centered: true`.
-**Next:** boss bodies done (40 kit bosses, slice 2). Now: (1) heroes distinct silhouettes (src/engine hero model, 7 heroes), (2) tower / enemy materials (models.js style pass), then Chunk 2.
+**Next:** boss bodies (40 kit) and hero silhouettes done. Now: (1) tower / enemy materials (models.js style pass: faction trims, emissive, wear), then readability language, then Chunk 2 content.
 `tds-finish-game-resume-1` (19:10 local) has an overlap guard (`.run-lock`, git-ignored, plus a session check).
 The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
 

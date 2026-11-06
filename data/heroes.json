@@ -50,7 +50,13 @@
         },
         "gear": {
           "head": "helmet",
-          "weapon": "rifle"
+          "weapon": "rifle",
+          "shoulder": "pauldrons",
+          "build": [
+            1.12,
+            1,
+            1.08
+          ]
         }
       },
       "attack": {
@@ -89,7 +95,12 @@
         },
         "gear": {
           "head": "hood",
-          "weapon": "staff"
+          "weapon": "staff",
+          "build": [
+            0.92,
+            1.07,
+            0.92
+          ]
         }
       },
       "attack": {
@@ -119,7 +130,13 @@
         "builder": "commander",
         "gear": {
           "head": "flame",
-          "weapon": "staff"
+          "weapon": "staff",
+          "shoulder": "spikes",
+          "build": [
+            1,
+            1.03,
+            1
+          ]
         },
         "colors": {
           "coat": "#7A1F12",
@@ -164,8 +181,13 @@
         "builder": "commander",
         "gear": {
           "head": "helmet",
-          "weapon": "rifle",
-          "pack": true
+          "weapon": "launcher",
+          "pack": true,
+          "build": [
+            1.16,
+            0.96,
+            1.16
+          ]
         },
         "colors": {
           "coat": "#5B6B3A",
@@ -206,7 +228,13 @@
         "builder": "commander",
         "gear": {
           "head": "antlers",
-          "weapon": "staff"
+          "weapon": "bow",
+          "shoulder": "mantle",
+          "build": [
+            0.94,
+            1.05,
+            0.94
+          ]
         },
         "colors": {
           "coat": "#2F5D2A",
@@ -252,7 +280,12 @@
         "gear": {
           "head": "beret",
           "weapon": "rifle",
-          "scope": true
+          "scope": true,
+          "build": [
+            0.94,
+            1,
+            0.94
+          ]
         },
         "colors": {
           "coat": "#3D4451",

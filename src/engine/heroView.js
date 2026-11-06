@@ -43,7 +43,7 @@ export class HeroView {
   /**
    * colors: overrides for the default palette (data/heroes.json model.colors), one look per hero.
    * gear: silhouette parts (model.gear): head cap|helmet|hood|beret|flame|antlers, weapon blade|staff|rifle,
-   * pack (backpack + radio), scope (rifle scope).
+   * pack (backpack + radio), scope (rifle scope), shoulder pauldrons|mantle|spikes, build [w,h,d] body scale, weapon bow|launcher.
    */
   constructor(scene, colors = {}, gear = {}) {
     const COL = { ...DEFAULT_COL, ...colors };
@@ -53,6 +53,8 @@ export class HeroView {
     this.root.name = 'hero';
     this.body = new THREE.Group();
     this.root.add(this.body);
+    // build: body proportions [width, height, depth] so heroes differ in silhouette, not only in colour
+    if (gear.build) this.body.scale.set(...gear.build);
 
     // legs (pivot at hip)
     this.legs = [-1, 1].map((side) => {
@@ -78,6 +80,15 @@ export class HeroView {
       b.box(0.04, 0.5, 0.04, COL.coatTrim, { pos: [0.2, 1.2, 0.2] });
       for (const s of [-1, 1]) b.box(0.22, 0.1, 0.4, COL.coatTrim, { pos: [s * 0.33, 1.5, 0], rot: [0, 0, -s * 0.2] });
       b.octa(0.07, COL.blade, { glow: true, pos: [-0.17, 1.35, 0.235] });
+      if (gear.shoulder === 'pauldrons') {
+        // broad layered shoulder plates with a rank stripe
+        for (const s of [-1, 1]) { b.box(0.36, 0.1, 0.5, COL.coat, { pos: [s * 0.38, 1.58, 0], rot: [0, 0, -s * 0.25] }); b.box(0.3, 0.08, 0.44, COL.coatTrim, { pos: [s * 0.42, 1.65, 0], rot: [0, 0, -s * 0.3] }); }
+      } else if (gear.shoulder === 'mantle') {
+        // leafy mantle draped over both shoulders
+        for (let i = 0; i < 7; i++) { const a = -0.9 + i * 0.3; b.cone(0.1, 0.34, 4, i % 2 ? COL.vest : COL.cape, { centered: true, pos: [Math.sin(a) * 0.46, 1.5 - Math.abs(a) * 0.08, Math.cos(a) * 0.1 - 0.02], rot: [Math.PI, 0, -a * 0.5] }); }
+      } else if (gear.shoulder === 'spikes') {
+        for (const s of [-1, 1]) for (const k of [0, 1]) b.cone(0.07, 0.3, 4, COL.coatTrim, { centered: true, glow: true, intensity: 1.4, pos: [s * (0.36 + k * 0.07), 1.62 + k * 0.1, 0], rot: [0, 0, -s * (0.5 + k * 0.4)] });
+      }
     });
     this.body.add(this.torso);
 
@@ -142,6 +153,17 @@ export class HeroView {
           b.box(0.06, 1.5, 0.06, COL.hilt, { pos: [0, -0.5, 0.12] });
           b.box(0.16, 0.06, 0.16, COL.coatTrim, { pos: [0, 0.22, 0.12] });
           b.octa(0.13, COL.blade, { glow: true, intensity: 2, pos: [0, 0.38, 0.12] });
+        } else if (side === 1 && weapon === 'bow') {
+          // tall recurve bow with a glowing string, held at the side
+          for (let i = 0; i < 5; i++) { const t = (i - 2) / 2; b.box(0.05, 0.4, 0.05, COL.hilt, { pos: [0, -0.5 + t * 0.52, 0.2 + (1 - t * t) * 0.16], rot: [t * 0.5, 0, 0] }); }
+          b.box(0.015, 1.5, 0.015, COL.blade, { glow: true, intensity: 1.6, pos: [0, -0.5, 0.15] });
+          b.octa(0.06, COL.blade, { glow: true, intensity: 1.8, pos: [0, -0.5, 0.36] });
+        } else if (side === 1 && weapon === 'launcher') {
+          // fat rocket tube resting on the shoulder, glowing muzzle
+          b.cyl(0.11, 0.11, 0.95, 8, COL.blade, { centered: true, pos: [0.02, -0.15, 0.2], rot: [Math.PI / 2, 0, 0] });
+          b.cyl(0.14, 0.14, 0.1, 8, COL.coatTrim, { centered: true, pos: [0.02, -0.15, 0.68], rot: [Math.PI / 2, 0, 0] });
+          b.cyl(0.07, 0.07, 0.04, 8, '#FFB04A', { centered: true, glow: true, intensity: 1.6, pos: [0.02, -0.15, 0.73], rot: [Math.PI / 2, 0, 0] });
+          b.box(0.07, 0.2, 0.08, COL.hilt, { pos: [0.02, -0.32, 0.12] });
         } else if (side === 1 && weapon === 'rifle') {
           // rifle held at the hip, barrel forward
           b.box(0.09, 0.14, 0.7, COL.blade, { pos: [0, -0.58, 0.28] });
