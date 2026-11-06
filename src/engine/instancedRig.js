@@ -211,6 +211,7 @@ export function rigFromProcedural(def, states, opts = {}) {
     if (g.body) { parts.push({ geometry: g.body, material: mats.body }); owner.push(pd); }
     if (g.glow) { parts.push({ geometry: g.glow, material: mats.glow }); owner.push(pd); }
   }
+  const k = def.scale || 1; // uniform model scale baked into every frame (kit enemies are small versions of the boss bodies)
   const clips = new Map();
   const pose = {};
   const piv = new THREE.Vector3();
@@ -236,13 +237,14 @@ export function rigFromProcedural(def, states, opts = {}) {
           _m.compose(_v.set(...(base.p || [0, 0, 0])), _q, _s.setScalar(base.s ?? 1));
           _w.premultiply(_m);
         }
+        if (k !== 1) _w.premultiply(_m.makeScale(k, k, k));
         _w.toArray(data, (p * frames + f) * 16);
       });
     }
     clips.set(name, { fps: BAKE_FPS, frames, loop: c.loop !== false, duration: c.duration, data });
   };
   for (const [name, c] of Object.entries(def.clips)) record(name, c);
-  return new RigAsset(parts, clips, states, opts);
+  return new RigAsset(parts, clips, states, k !== 1 && opts.height ? { ...opts, height: opts.height * k } : opts);
 }
 
 /** Draws many instances of one RigAsset. */

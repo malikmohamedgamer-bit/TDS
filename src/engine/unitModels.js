@@ -288,7 +288,7 @@ const kitRigs = new Map();
 export function enemyRigDef(def) {
   if (ENEMY_RIGS[def.id]) return ENEMY_RIGS[def.id];
   if (def.model?.kit) {
-    if (!kitRigs.has(def.id)) kitRigs.set(def.id, buildBossRig(def.model.kit));
+    if (!kitRigs.has(def.id)) { const rig = buildBossRig(def.model.kit); kitRigs.set(def.id, def.model.scale ? { ...rig, scale: def.model.scale } : rig); }
     return kitRigs.get(def.id);
   }
   return ENEMY_RIGS[def.model?.builder] || ENEMY_RIGS.mite;

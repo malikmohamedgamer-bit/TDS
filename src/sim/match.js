@@ -419,7 +419,7 @@ export class Match {
       baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed, speedMul: 1, curSpeed: def.speed,
       shred: 0, shredUntil: 0, slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
       phase: 0, regenUntil: 0, regenRate: 0, cloakUntil: 0, immune: null, armorUntil: 0, armorAdd: 0, dashUntil: 0, dashMul: 1, revive: 0, revived: false, deathSpawn: null,
-      healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
+      blinkT: def.blink?.every ?? 0, burstT: def.burst?.every ?? 0, burstUntil: 0, healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
       blocked: false, wave, boss: !!def.boss, heading: 0, spawnedAt: this.time, parent, leak: leak ?? def.leak,
     };
     this._placeEnemy(e);
@@ -523,6 +523,19 @@ export class Match {
           this.events.push({ type: 'heal', id: e.id, x: e.x, z: e.z, radius: def.heal.radius, count: n });
         }
       }
+      // blink: short teleports forward along the road; burst: periodic speed surges (enemy mechanics, ROADMAP Chunk 2)
+      if (def.blink && e.stunUntil <= now) {
+        e.blinkT -= dt;
+        if (e.blinkT <= 0) {
+          e.blinkT = def.blink.every;
+          e.d = Math.min(e.path.length - 0.5, e.d + def.blink.distance);
+          this.events.push({ type: 'enemyBlink', id: e.id, x: e.x, z: e.z });
+        }
+      }
+      if (def.burst) {
+        e.burstT -= dt;
+        if (e.burstT <= 0) { e.burstT = def.burst.every; e.burstUntil = now + def.burst.duration; }
+      }
       if (def.summon) {
         e.summonT -= dt;
         if (e.summonT <= 0) {
@@ -541,7 +554,7 @@ export class Match {
       // movement
       const stunned = e.stunUntil > now;
       const slow = e.slowUntil > now ? e.slow : 0;
-      e.curSpeed = stunned ? 0 : e.baseSpeed * e.speedMul * (1 - slow);
+      e.curSpeed = stunned ? 0 : e.baseSpeed * e.speedMul * (1 - slow) * (e.burstUntil > now ? def.burst.mul : 1);
       e.blocked = false;
       if (!e.flying) {
         for (const a of this.allies) {
