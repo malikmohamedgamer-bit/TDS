@@ -318,6 +318,151 @@
         "headhunter"
       ],
       "hp": 190
+    },
+    {
+      "id": "tidecaller_maren",
+      "name": "Tidecaller Maren",
+      "faction": "hero",
+      "rarity": "epic",
+      "role": "Control: waves, ice and storms",
+      "description": "A sea-witch who drowns the road in freezing tides and calls lightning down on the stragglers.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "crown",
+          "weapon": "staff",
+          "shoulder": "mantle",
+          "build": [
+            0.96,
+            1.04,
+            0.96
+          ]
+        },
+        "colors": {
+          "coat": "#0E4A63",
+          "coatTrim": "#7FF6FF",
+          "vest": "#1B7F8C",
+          "pants": "#12303F",
+          "cape": "#1B7F8C",
+          "capeIn": "#0E4A63",
+          "blade": "#7FF6FF",
+          "hilt": "#E8E0FF",
+          "hair": "#BFE9F2",
+          "skin": "#D9B79B"
+        }
+      },
+      "attack": {
+        "damage": 13,
+        "damageType": "ice",
+        "rate": 1.2,
+        "range": 8,
+        "splash": 1.2,
+        "slow": {
+          "amount": 0.2,
+          "duration": 1.5
+        }
+      },
+      "abilities": [
+        "tidal_surge",
+        "glacier_wall",
+        "tempest_call",
+        "sea_mist"
+      ],
+      "hp": 185
+    },
+    {
+      "id": "blastmaster_brik",
+      "name": "Blastmaster Brik",
+      "faction": "hero",
+      "rarity": "epic",
+      "role": "Demolition: big blasts and stuns",
+      "description": "A grizzled sapper with more charges than sense: carpet bombs, planted charges and caltrop fields.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "goggles",
+          "weapon": "launcher",
+          "shoulder": "pauldrons",
+          "build": [
+            1.2,
+            0.94,
+            1.2
+          ]
+        },
+        "colors": {
+          "coat": "#6B4F2A",
+          "coatTrim": "#F28C28",
+          "vest": "#3D4451",
+          "pants": "#2B2F3A",
+          "cape": "#3D4451",
+          "capeIn": "#2B2F3A",
+          "blade": "#3D4451",
+          "hilt": "#F28C28",
+          "hair": "#1C1410",
+          "skin": "#C68E64"
+        }
+      },
+      "attack": {
+        "damage": 20,
+        "damageType": "explosive",
+        "rate": 0.8,
+        "range": 9,
+        "splash": 2
+      },
+      "abilities": [
+        "carpet_bomb",
+        "sapper_charge",
+        "scrap_haul",
+        "tripwire_field"
+      ],
+      "hp": 230
+    },
+    {
+      "id": "shadowblade_vex",
+      "name": "Shadowblade Vex",
+      "faction": "hero",
+      "rarity": "legendary",
+      "role": "Assassin: finishers, snares and reveals",
+      "description": "A dusk-walker who hunts the weak: shadow strikes that finish the wounded, snares and a veil that exposes the hidden.",
+      "model": {
+        "builder": "commander",
+        "gear": {
+          "head": "hood",
+          "weapon": "dagger",
+          "shoulder": "spikes",
+          "build": [
+            0.9,
+            1.06,
+            0.9
+          ]
+        },
+        "colors": {
+          "coat": "#1E1B2E",
+          "coatTrim": "#C9A7FF",
+          "vest": "#3A2447",
+          "pants": "#14101F",
+          "cape": "#3A2447",
+          "capeIn": "#1E1B2E",
+          "blade": "#C9A7FF",
+          "hilt": "#2B2D42",
+          "hair": "#E8E0FF",
+          "skin": "#C9B7C9"
+        }
+      },
+      "attack": {
+        "damage": 26,
+        "damageType": "dark",
+        "rate": 1.6,
+        "range": 6,
+        "splash": 0
+      },
+      "abilities": [
+        "shadow_strike",
+        "umbral_snare",
+        "dusk_veil",
+        "soul_harvest"
+      ],
+      "hp": 170
     }
   ]
 }

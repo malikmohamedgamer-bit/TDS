@@ -104,6 +104,8 @@ export const ABILITY_ICONS = {
   wall_of_flame: 'fire', kindle: 'fire', flashfire: 'explosive', reinforcements: 'hero', frag_volley: 'area', overclock: 'buff', supply_drop: 'crate',
   entangling_roots: 'roots', spirit_pack: 'wolf', cleansing_bloom: 'poison', verdant_renewal: 'heal', marked_for_death: 'target', emp_burst: 'emp',
   recon_drone: 'drone', headhunter: 'sniper',
+  tidal_surge: 'vortex', glacier_wall: 'ice', tempest_call: 'lightning', sea_mist: 'heal', carpet_bomb: 'air', sapper_charge: 'explosive', scrap_haul: 'crate',
+  tripwire_field: 'trap', shadow_strike: 'skull', umbral_snare: 'roots', dusk_veil: 'target', soul_harvest: 'coins',
 };
 
 /** Rarity badge: shape + label + colour (never colour alone). */

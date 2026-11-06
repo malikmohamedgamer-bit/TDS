@@ -22,7 +22,7 @@ colour and stat variants count once. Each signature group counts as one.
 | Enemies | **200** (42 earlier + 158 kit enemies) | **168** (84%, target 35%) | 191 (33 earlier + 158 code-built boss-kit bodies, shrunk; every body+parts set different) | 200 | 150 | **100%** |
 | Bosses | **100** | **83** (83%, target 50%) | 94 (14 pack / code models + 81 code-built kit builds on 5 base bodies, every body+parts set different; tints are extra variety, not counted) | 100 | 75 | **100%** |
 | Maps | 17 on 8 themes | 5 hand-made, 12 generated | - | 50 | 38 | 34% |
-| Heroes | 7 (7 looks: own colours + gear silhouettes) | 27 skills, 4 per hero; 9 new skill effects | 1 code model with 6 headgear / 3 weapon parts | 10, 4 skills each, 30 skills | - | 77% |
+| Heroes | **10** (10 looks: own colours + gear silhouettes, builds, weapons) | **39 skills**, 4 per hero; 21 distinct skill effect shapes | 1 code model with 8 headgear / 5 weapon / 3 shoulder parts and 6 body builds | 10, 4 skills each, 30 skills | - | **100%** |
 
 Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, speed + teleport, regen, cloak, damage-type immunity, armour, dash, cash drain, portals on other roads, heal pulse, snipe on the top tower, revive once, split on death). 40 generated bosses (`tools/gen-bosses.mjs`) each use a different set.
 

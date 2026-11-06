@@ -124,6 +124,16 @@ export class HeroView {
       } else if (head === 'beret') {
         b.cyl(0.3, 0.3, 0.1, 8, COL.coatTrim, { pos: [0.04, 0.52, 0], rot: [0, 0, -0.18], scale: [1.1, 1, 1] });
         b.box(0.08, 0.07, 0.03, COL.hilt === '#1C1E24' ? '#FFD166' : COL.hilt, { glow: true, intensity: 1.4, pos: [-0.12, 0.52, 0.27] });
+      } else if (head === 'goggles') {
+        // blast helmet with a glowing goggle band and hazard crest
+        b.sphere(0.33, 8, 5, COL.coat, { pos: [0, 0.5, 0], scale: [1, 0.6, 1.05] });
+        b.box(0.54, 0.12, 0.08, '#1C1E24', { pos: [0, 0.32, 0.25] });
+        for (const x of [-0.12, 0.12]) b.cyl(0.07, 0.07, 0.05, 6, COL.coatTrim, { centered: true, glow: true, intensity: 1.6, pos: [x, 0.32, 0.3], rot: [Math.PI / 2, 0, 0] });
+        b.box(0.08, 0.05, 0.5, COL.coatTrim, { pos: [0, 0.68, 0] });
+      } else if (head === 'crown') {
+        // sea-glass crown: a ring of glowing shards
+        b.box(0.54, 0.07, 0.5, COL.coatTrim, { pos: [0, 0.5, 0] });
+        for (let i = 0; i < 5; i++) { const a = (i / 5) * Math.PI * 2; b.cone(0.06, 0.22 + (i % 2) * 0.1, 4, COL.blade, { glow: true, intensity: 1.8, pos: [Math.cos(a) * 0.2, 0.54, Math.sin(a) * 0.2] }); }
       } else if (head === 'flame') {
         // crown of fire: three glowing flame spikes
         b.box(0.54, 0.08, 0.5, COL.coatTrim, { pos: [0, 0.52, 0] });
@@ -153,6 +163,10 @@ export class HeroView {
           b.box(0.06, 1.5, 0.06, COL.hilt, { pos: [0, -0.5, 0.12] });
           b.box(0.16, 0.06, 0.16, COL.coatTrim, { pos: [0, 0.22, 0.12] });
           b.octa(0.13, COL.blade, { glow: true, intensity: 2, pos: [0, 0.38, 0.12] });
+        } else if (weapon === 'dagger') {
+          // a short glowing dagger in each hand, point forward
+          b.box(0.05, 0.16, 0.05, COL.hilt, { pos: [0, -0.62, 0.06], rot: [0.9, 0, 0] });
+          b.box(0.06, 0.5, 0.025, COL.blade, { glow: true, intensity: 1.8, pos: [0, -0.8, 0.28], rot: [0.9, 0, 0] });
         } else if (side === 1 && weapon === 'bow') {
           // tall recurve bow with a glowing string, held at the side
           for (let i = 0; i < 5; i++) { const t = (i - 2) / 2; b.box(0.05, 0.4, 0.05, COL.hilt, { pos: [0, -0.5 + t * 0.52, 0.2 + (1 - t * t) * 0.16], rot: [t * 0.5, 0, 0] }); }

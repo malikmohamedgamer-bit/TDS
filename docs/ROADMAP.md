@@ -44,7 +44,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Enemies 200+ (200: 158 kit enemies from tools/gen-enemies.mjs; new sim mechanics blink + burst; 12 traits, every trait set used once; 168 distinct, 191 models) (2026-11-06). They appear in Endless / Daily pools only; campaign tables unchanged (maps batch will feature them)
 - [ ] Maps 50+: 6+ new themes, path templates (loops, crossovers, multi-lane, air routes), 8+ new flagships,
       picker scales to 50+
-- [ ] Heroes 10+, skills 30+
+- [x] Heroes 10+, skills 30+ (10 heroes, 39 skills: Tidecaller Maren, Blastmaster Brik, Shadowblade Vex + 12 abilities) (2026-11-06). Balance of the new three not yet measured (Chunk 3, with BUGS #44)
 - [ ] 3+ new modes (10+ total)
 - [ ] More CC0 packs (Kenney, Quaternius first), credits recorded
 - [ ] Balance bot quick check (12 seeds) on every new map and mode
@@ -112,3 +112,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-06 | Chunk 2 bosses | 100 bosses (81 kit bosses, `tools/gen-bosses.mjs` writes mechanics_b1 + b2). Boss Rush fell to 3/12 with the bigger pool; BASE_HP 7500 -> 6000 gave 9/12 (75%), 6500 gave 7/12 (58%), kept 6500 (2 attempts). Unit 111, lint clean |
 | 2026-11-06 | Chunk 2 towers | 7 new tower mechanics in the sim (tests), `src/engine/towerKit.js`, `tools/gen-towers.mjs` -> data/towers/mechanics_b1.json (63 towers). Generated-only Riftline / Frostmere Normal: PRICE_MUL 1.1 12/12 + 11/12, 1.5 5/12, 1.3 12/12, 1.4 9/12 + 8/12 (3 attempts, kept 1.4; BUGS #48). Unit 119, lint clean |
 | 2026-11-06 | Chunk 2 enemies | Enemy mechanics blink + burst (sim, tests), boss-kit bodies shrunk via model.scale (baked in rigFromProcedural), `tools/gen-enemies.mjs` -> data/enemies/mechanics_b1.json (158). Unit 122, lint clean. No balance run yet on Endless with the 200 pool (Chunk 3) |
+| 2026-11-06 | Chunk 2 heroes | 3 heroes + 12 abilities (goggles / crown heads, dagger weapon in HeroView, icons), sheets heroes-b2. Unit 122, lint clean |

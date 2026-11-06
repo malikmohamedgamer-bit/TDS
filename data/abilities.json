@@ -476,6 +476,214 @@
       },
       "unlockWave": 1,
       "description": "Finishes every non-boss below 25% health in the area, then 150 damage."
+    },
+    {
+      "id": "tidal_surge",
+      "name": "Tidal Surge",
+      "faction": "magic",
+      "cooldown": 40,
+      "target": "point",
+      "delay": 0.4,
+      "radius": 9,
+      "effects": {
+        "damage": 50,
+        "damageType": "ice",
+        "knockback": 5,
+        "slow": {
+          "amount": 0.4,
+          "duration": 3
+        }
+      },
+      "unlockWave": 1,
+      "description": "A wave of freezing water throws ground enemies back and chills them."
+    },
+    {
+      "id": "glacier_wall",
+      "name": "Glacier Wall",
+      "faction": "magic",
+      "cooldown": 55,
+      "target": "point",
+      "delay": 0.4,
+      "radius": 7,
+      "effects": {
+        "damage": 70,
+        "damageType": "ice",
+        "freeze": 3
+      },
+      "unlockWave": 1,
+      "description": "Ice erupts from the road and freezes everything in the circle for 3 s."
+    },
+    {
+      "id": "tempest_call",
+      "name": "Tempest Call",
+      "faction": "magic",
+      "cooldown": 60,
+      "target": "point",
+      "delay": 0.8,
+      "radius": 7,
+      "effects": {
+        "damage": 140,
+        "damageType": "lightning",
+        "chain": {
+          "count": 6,
+          "falloff": 0.85,
+          "range": 8
+        }
+      },
+      "unlockWave": 1,
+      "description": "Lightning strikes a spot and leaps through up to 6 enemies."
+    },
+    {
+      "id": "sea_mist",
+      "name": "Sea Mist",
+      "faction": "magic",
+      "cooldown": 80,
+      "target": "self",
+      "delay": 0,
+      "radius": 14,
+      "effects": {
+        "healBase": 10,
+        "towerBuff": {
+          "rate": 0.15,
+          "duration": 10
+        }
+      },
+      "unlockWave": 1,
+      "description": "Restores 10 keep health; nearby towers fire 15% faster for 10 s."
+    },
+    {
+      "id": "carpet_bomb",
+      "name": "Carpet Bomb",
+      "faction": "war",
+      "cooldown": 65,
+      "target": "point",
+      "delay": 2.5,
+      "radius": 12,
+      "effects": {
+        "damage": 200,
+        "damageType": "explosive",
+        "stun": 0.4
+      },
+      "unlockWave": 1,
+      "description": "A bomber run across a wide strip: heavy damage and a brief stun."
+    },
+    {
+      "id": "sapper_charge",
+      "name": "Sapper Charge",
+      "faction": "war",
+      "cooldown": 30,
+      "target": "point",
+      "delay": 1.5,
+      "radius": 5,
+      "effects": {
+        "damage": 260,
+        "damageType": "explosive",
+        "stun": 1.5
+      },
+      "unlockWave": 1,
+      "description": "A planted charge goes off after 1.5 s: huge damage and a long stun in a small circle."
+    },
+    {
+      "id": "scrap_haul",
+      "name": "Scrap Haul",
+      "faction": "war",
+      "cooldown": 85,
+      "target": "self",
+      "delay": 0,
+      "radius": 3,
+      "effects": {
+        "cash": 100,
+        "healBase": 10
+      },
+      "unlockWave": 1,
+      "description": "Salvage from the field: +100 cash and +10 keep health."
+    },
+    {
+      "id": "tripwire_field",
+      "name": "Tripwire Field",
+      "faction": "war",
+      "cooldown": 45,
+      "target": "point",
+      "delay": 0.5,
+      "radius": 8,
+      "effects": {
+        "damage": 35,
+        "damageType": "physical",
+        "slow": {
+          "amount": 0.6,
+          "duration": 5
+        }
+      },
+      "unlockWave": 1,
+      "description": "Wires and caltrops: enemies in the circle are slowed by 60% for 5 s."
+    },
+    {
+      "id": "shadow_strike",
+      "name": "Shadow Strike",
+      "faction": "magic",
+      "cooldown": 28,
+      "target": "point",
+      "delay": 0.2,
+      "radius": 4,
+      "effects": {
+        "damage": 180,
+        "damageType": "dark",
+        "execute": 0.3
+      },
+      "unlockWave": 1,
+      "description": "A blade of shadow: heavy damage, and finishes every non-boss below 30% health."
+    },
+    {
+      "id": "umbral_snare",
+      "name": "Umbral Snare",
+      "faction": "magic",
+      "cooldown": 40,
+      "target": "point",
+      "delay": 0.3,
+      "radius": 7,
+      "effects": {
+        "damage": 30,
+        "damageType": "dark",
+        "stun": 2.2
+      },
+      "unlockWave": 1,
+      "description": "Shadows bind every enemy in the circle for 2.2 s."
+    },
+    {
+      "id": "dusk_veil",
+      "name": "Dusk Veil",
+      "faction": "magic",
+      "cooldown": 50,
+      "target": "point",
+      "delay": 0.5,
+      "radius": 12,
+      "effects": {
+        "reveal": true,
+        "mark": {
+          "amount": 0.3,
+          "duration": 8
+        }
+      },
+      "unlockWave": 1,
+      "description": "Reveals hidden enemies and marks them: +30% damage taken for 8 s."
+    },
+    {
+      "id": "soul_harvest",
+      "name": "Soul Harvest",
+      "faction": "magic",
+      "cooldown": 75,
+      "target": "self",
+      "delay": 0,
+      "radius": 12,
+      "effects": {
+        "cash": 90,
+        "towerBuff": {
+          "damage": 0.15,
+          "duration": 8
+        }
+      },
+      "unlockWave": 1,
+      "description": "Reaps the battlefield: +90 cash; nearby towers deal 15% more damage for 8 s."
     }
   ]
 }

@@ -137,7 +137,7 @@ parts, `buildBossRig(kit)`; enemy data `model.kit = { body, parts, accent }`), `
 thumbnails, viewer), boss_mech_01-08 on kit builds from tools/gen-bosses.mjs (`KIT_BOSSES = 8`, body from the lead
 mechanic, one part per mechanic, glow accent from the resist profile). Sheets: docs/screenshots/identity/kit-b1.
 Note: ModelBuilder `cyl` / `cone` are base-anchored unless `centered: true`.
-**Next:** Chunk 1 mostly done. Chunk 2: bosses 100, towers 100 and enemies 200 done. Now: maps 50+ (tools/gen-maps.mjs + tools/map-batches.json: add 33 maps, 6+ new themes, new path templates, picker for 50+, featured swaps so new enemies appear in campaign waves), heroes 10+, modes 10+. Open from Chunk 1: readability language. Kit towers are direct-fire only (add air / aura / summoner / trap kit towers later).
+**Next:** Chunk 1 mostly done. Chunk 2: bosses 100, towers 100, enemies 200, heroes 10 done. Now: maps 50+ (tools/gen-maps.mjs + tools/map-batches.json: add 33 maps, 6+ new themes, new path templates, picker for 50+, featured swaps so new enemies appear in campaign waves), modes 10+. Open from Chunk 1: readability language. Kit towers are direct-fire only (add air / aura / summoner / trap kit towers later).
 `tds-finish-game-resume-1` (19:10 local) has an overlap guard (`.run-lock`, git-ignored, plus a session check).
 The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
 
