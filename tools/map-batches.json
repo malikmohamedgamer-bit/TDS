@@ -1,0 +1,467 @@
+{
+  "$doc": "Maps made by tools/gen-maps.mjs (src/core/mapGen.js). flagship: hand-authored roads, hand-picked name / theme / unlock. batch: template + theme + seed; the name comes from the theme's name lists. hpMul is written by --calibrate (balance bot, 12 core towers, Standard Normal, target 60-70%, at most 3 measurements per map).",
+  "flagships": [
+    {
+      "id": "glacier_gate",
+      "name": "Glacier Gate",
+      "theme": "frost",
+      "unlockLevel": 2,
+      "seed": "glacier-gate-1",
+      "hpMul": 1.05,
+      "description": "One endless switchback climbs the frozen pass. The longest road in the game: build deep, not wide.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "main",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -28
+            ],
+            [
+              -40,
+              -28
+            ],
+            [
+              -40,
+              28
+            ],
+            [
+              -26,
+              28
+            ],
+            [
+              -26,
+              -28
+            ],
+            [
+              -12,
+              -28
+            ],
+            [
+              -12,
+              28
+            ],
+            [
+              2,
+              28
+            ],
+            [
+              2,
+              -28
+            ],
+            [
+              16,
+              -28
+            ],
+            [
+              16,
+              28
+            ],
+            [
+              30,
+              28
+            ],
+            [
+              30,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "swaps": {
+        "skitter": "blight_raider",
+        "ironshell": "thornback",
+        "gloomwing": "blight_drake",
+        "mossback": "glimmer_slime"
+      },
+      "boss": "boss_frost_matriarch",
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 58%, hpMul 1.03 -> 75%"
+    },
+    {
+      "id": "mirrormire",
+      "name": "Mirrormire",
+      "theme": "toxic",
+      "unlockLevel": 4,
+      "seed": "mirrormire-1",
+      "hpMul": 1.133,
+      "description": "Two portals, two mirrored roads through the marsh. They meet only at the causeway before your keep.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "north",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              30
+            ],
+            [
+              -42,
+              30
+            ],
+            [
+              -42,
+              8
+            ],
+            [
+              -28,
+              8
+            ],
+            [
+              -28,
+              30
+            ],
+            [
+              -14,
+              30
+            ],
+            [
+              -14,
+              8
+            ],
+            [
+              0,
+              8
+            ],
+            [
+              0,
+              30
+            ],
+            [
+              14,
+              30
+            ],
+            [
+              14,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "south",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -30
+            ],
+            [
+              -42,
+              -30
+            ],
+            [
+              -42,
+              -8
+            ],
+            [
+              -28,
+              -8
+            ],
+            [
+              -28,
+              -30
+            ],
+            [
+              -14,
+              -30
+            ],
+            [
+              -14,
+              -8
+            ],
+            [
+              0,
+              -8
+            ],
+            [
+              0,
+              -30
+            ],
+            [
+              14,
+              -30
+            ],
+            [
+              14,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "swaps": {
+        "brood_sac": "sporecap",
+        "mender": "plague_shambler",
+        "bulwark": "blight_brute",
+        "shade": "shadow_stalker"
+      },
+      "boss": "boss_sporelord",
+      "calibration": "hpMul 1 -> 92%, hpMul 1.133 -> 75%, hpMul 1.213 -> 75%"
+    },
+    {
+      "id": "starfall_sanctum",
+      "name": "Starfall Sanctum",
+      "theme": "starfall",
+      "unlockLevel": 6,
+      "seed": "starfall-sanctum-1",
+      "hpMul": 0.864,
+      "description": "Three portals. A straight royal road runs through the sanctum while two winding paths fall in from the heights.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "north",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              30
+            ],
+            [
+              -40,
+              30
+            ],
+            [
+              -40,
+              17
+            ],
+            [
+              -26,
+              17
+            ],
+            [
+              -26,
+              30
+            ],
+            [
+              -12,
+              30
+            ],
+            [
+              -12,
+              17
+            ],
+            [
+              2,
+              17
+            ],
+            [
+              2,
+              30
+            ],
+            [
+              16,
+              30
+            ],
+            [
+              16,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "middle",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "south",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -30
+            ],
+            [
+              -40,
+              -30
+            ],
+            [
+              -40,
+              -17
+            ],
+            [
+              -26,
+              -17
+            ],
+            [
+              -26,
+              -30
+            ],
+            [
+              -12,
+              -30
+            ],
+            [
+              -12,
+              -17
+            ],
+            [
+              2,
+              -17
+            ],
+            [
+              2,
+              -30
+            ],
+            [
+              16,
+              -30
+            ],
+            [
+              16,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "swaps": {
+        "gloomwing": "skull_wisp",
+        "caller": "hex_acolyte",
+        "ironshell": "thornback",
+        "skitter": "blight_raider"
+      },
+      "boss": "boss_archfiend",
+      "calibration": "hpMul 1 -> 8%, hpMul 0.8 -> 92%, hpMul 0.864 -> 50%"
+    }
+  ],
+  "batch": [
+    {
+      "id": "gen_verdant_1",
+      "template": "serpentine",
+      "theme": "verdant",
+      "seed": "gv1",
+      "unlockLevel": 5,
+      "hpMul": 1.245,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 75%, hpMul 1.245 -> 58%"
+    },
+    {
+      "id": "gen_frost_1",
+      "template": "fork",
+      "theme": "frost",
+      "seed": "gf1",
+      "unlockLevel": 7,
+      "hpMul": 1,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 42%, hpMul 1.015 -> 75%"
+    },
+    {
+      "id": "gen_ember_1",
+      "template": "serpentine",
+      "theme": "ember",
+      "seed": "ge1",
+      "unlockLevel": 9,
+      "hpMul": 1.175,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 58%, hpMul 1.147 -> 83%"
+    },
+    {
+      "id": "gen_toxic_1",
+      "template": "fork",
+      "theme": "toxic",
+      "seed": "gt1",
+      "unlockLevel": 11,
+      "hpMul": 1.092,
+      "calibration": "hpMul 1 -> 83%, hpMul 1.092 -> 75%, hpMul 1.202 -> 50%"
+    },
+    {
+      "id": "gen_dunes_1",
+      "template": "serpentine",
+      "theme": "dunes",
+      "seed": "gd1",
+      "unlockLevel": 13,
+      "hpMul": 1.175,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 58%, hpMul 1.147 -> 50%"
+    },
+    {
+      "id": "gen_starfall_1",
+      "template": "trident",
+      "theme": "starfall",
+      "seed": "gs1",
+      "unlockLevel": 15,
+      "hpMul": 1,
+      "calibration": "hpMul 1 -> 67%"
+    },
+    {
+      "id": "gen_verdant_2",
+      "template": "fork",
+      "theme": "verdant",
+      "seed": "gv2",
+      "unlockLevel": 17,
+      "hpMul": 0.893,
+      "calibration": "hpMul 1 -> 25%, hpMul 0.8 -> 100%, hpMul 0.893 -> 58%"
+    },
+    {
+      "id": "gen_frost_2",
+      "template": "trident",
+      "theme": "frost",
+      "seed": "gf2",
+      "unlockLevel": 19,
+      "hpMul": 0.871,
+      "calibration": "hpMul 1 -> 17%, hpMul 0.8 -> 92%, hpMul 0.871 -> 67%"
+    },
+    {
+      "id": "gen_ember_2",
+      "template": "fork",
+      "theme": "ember",
+      "seed": "ge2",
+      "unlockLevel": 21,
+      "hpMul": 1,
+      "calibration": "hpMul 1 -> 67%"
+    },
+    {
+      "id": "gen_toxic_2",
+      "template": "trident",
+      "theme": "toxic",
+      "seed": "gt2",
+      "unlockLevel": 23,
+      "hpMul": 0.893,
+      "calibration": "hpMul 1 -> 25%, hpMul 0.8 -> 100%, hpMul 0.893 -> 67%"
+    },
+    {
+      "id": "gen_dunes_2",
+      "template": "trident",
+      "theme": "dunes",
+      "seed": "gd2",
+      "unlockLevel": 25,
+      "hpMul": 0.8,
+      "calibration": "hpMul 1 -> 17%, hpMul 0.8 -> 67%"
+    },
+    {
+      "id": "gen_starfall_2",
+      "template": "serpentine",
+      "theme": "starfall",
+      "seed": "gs2",
+      "unlockLevel": 27,
+      "hpMul": 1.05,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 58%, hpMul 1.03 -> 83%"
+    }
+  ]
+}

@@ -1,0 +1,506 @@
+{
+ "id": "gen_dunes_2",
+ "name": "Dust Outpost",
+ "description": "Desert outpost: 3 roads.",
+ "seed": "gd2",
+ "scatterGap": 1.3,
+ "waves": "gen_dunes_2_waves",
+ "unlockLevel": 25,
+ "theme": "dunes",
+ "generated": {
+  "template": "trident",
+  "seed": "gd2",
+  "theme": "dunes"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#6FA8E8",
+  "horizon": "#F4E8D0",
+  "fog": "#EAD8B8",
+  "fogNear": 80,
+  "fogFar": 210
+ },
+ "sun": {
+  "azimuth": 190,
+  "elevation": 60,
+  "color": "#FFF0D0",
+  "intensity": 2.8
+ },
+ "ground": {
+  "grass": [
+   "#C8B07A",
+   "#B89E68",
+   "#D8C08A",
+   "#A88E5A"
+  ],
+  "path": [
+   "#A07A50",
+   "#8A6640",
+   "#B48C5E",
+   "#745434"
+  ],
+  "rim": [
+   "#B89A70",
+   "#9A8060"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 6,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": -0.5,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 30,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": -0.5,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": -30,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 42,
+    "z": 25.5,
+    "r": 8,
+    "h": 2.5
+   },
+   {
+    "x": 41.5,
+    "z": -18,
+    "r": 6,
+    "h": 2.4
+   },
+   {
+    "x": 30.5,
+    "z": -15.5,
+    "r": 5.5,
+    "h": 1.7
+   },
+   {
+    "x": 43,
+    "z": 33,
+    "r": 9.5,
+    "h": 2
+   },
+   {
+    "x": 32,
+    "z": -11.5,
+    "r": 6,
+    "h": 2.7
+   },
+   {
+    "x": 28,
+    "z": -31.5,
+    "r": 5,
+    "h": 2.5
+   },
+   {
+    "x": 3.5,
+    "z": -34,
+    "r": 5.5,
+    "h": 2.2
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "north",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     30
+    ],
+    [
+     -39.5,
+     30
+    ],
+    [
+     -39.5,
+     17
+    ],
+    [
+     -26.5,
+     17
+    ],
+    [
+     -26.5,
+     29
+    ],
+    [
+     -9,
+     29
+    ],
+    [
+     -9,
+     17
+    ],
+    [
+     9,
+     17
+    ],
+    [
+     9,
+     28.5
+    ],
+    [
+     28.5,
+     28.5
+    ],
+    [
+     28.5,
+     -0.5
+    ],
+    [
+     45,
+     -0.5
+    ]
+   ]
+  },
+  {
+   "id": "middle",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -0.5
+    ],
+    [
+     45,
+     -0.5
+    ]
+   ]
+  },
+  {
+   "id": "south",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -30
+    ],
+    [
+     -39.5,
+     -30
+    ],
+    [
+     -39.5,
+     -17.5
+    ],
+    [
+     -25,
+     -17.5
+    ],
+    [
+     -25,
+     -29
+    ],
+    [
+     -7,
+     -29
+    ],
+    [
+     -7,
+     -18
+    ],
+    [
+     14.5,
+     -18
+    ],
+    [
+     14.5,
+     -0.5
+    ],
+    [
+     45,
+     -0.5
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": -0.5
+ },
+ "playerSpawn": {
+  "x": 23.5,
+  "z": -13.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 30,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -0.5,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -30,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": -0.5,
+   "rot": 0
+  },
+  {
+   "kind": "tent",
+   "x": -32,
+   "z": -27.5,
+   "rot": 4.95
+  },
+  {
+   "kind": "tent",
+   "x": 41,
+   "z": 18,
+   "rot": 2.39
+  },
+  {
+   "kind": "tent",
+   "x": -5,
+   "z": -7.5,
+   "rot": 0.72
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 27,
+   "z": -28,
+   "rot": 0.61
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -28.5,
+   "z": 9,
+   "rot": 4.82
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 20.5,
+   "z": 6,
+   "rot": 4.3
+  },
+  {
+   "kind": "crate_stack",
+   "x": 14,
+   "z": -26,
+   "rot": 2.84
+  },
+  {
+   "kind": "crate_stack",
+   "x": 29,
+   "z": -9,
+   "rot": 0.86
+  },
+  {
+   "kind": "barrel",
+   "x": 38.5,
+   "z": -8,
+   "rot": 4.28
+  },
+  {
+   "kind": "barrel",
+   "x": 18,
+   "z": 22,
+   "rot": 5.43
+  },
+  {
+   "kind": "barrel",
+   "x": 37.5,
+   "z": -15,
+   "rot": 0.45
+  },
+  {
+   "kind": "barrel",
+   "x": -21,
+   "z": 10,
+   "rot": 2.93
+  },
+  {
+   "kind": "watchtower",
+   "x": -45,
+   "z": -11.5,
+   "rot": 6.27
+  },
+  {
+   "kind": "tank_wreck",
+   "x": 28.5,
+   "z": -20,
+   "rot": 2.19
+  },
+  {
+   "kind": "lamp_post",
+   "x": 7.5,
+   "z": -13.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 2,
+   "z": -14,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -14.5,
+   "z": 3.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -23,
+   "z": 16.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 5,
+   "z": 26,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -40.5,
+   "z": 4,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -8.5,
+   "z": 12.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -43,
+   "z": 18,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 3,
+   "z": 20.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 32,
+   "z": 24.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -36.5,
+   "z": 13,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 32.5,
+   "z": 4,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 33,
+   "z": 17,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -34,
+   "z": -13,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "rock",
+   "count": 28,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 3.5
+  },
+  {
+   "kind": "rock_small",
+   "count": 36,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  },
+  {
+   "kind": "bush",
+   "count": 20,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2.5
+  },
+  {
+   "kind": "tree_round",
+   "count": 10,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 11,
+   "minPathDist": 5,
+   "spacing": 4,
+   "scale": [
+    0.6,
+    0.9
+   ]
+  }
+ ]
+}

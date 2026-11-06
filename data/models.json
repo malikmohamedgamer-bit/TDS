@@ -477,6 +477,125 @@
       },
       "motion": "waddle",
       "source": "pack: Quaternius animated-zombie (CC0, quaternius.com/packs/animatedzombie.html), file FBX/Zombie.fbx, decimated to 1500 triangles"
+    },
+    "q_watchtower_second_age_3": {
+      "url": "assets/models/quaternius/ultimate-fantasy-rts/watchtower-second-age-3.glb",
+      "kind": "tower",
+      "palette": "magic",
+      "scale": 2.481,
+      "source": "pack: Quaternius ultimate-fantasy-rts (CC0, quaternius.com/packs/ultimatefantasyrts.html), file glTF/WatchTower_SecondAge_Level3.gltf, decimated to 2999 triangles"
+    },
+    "q_temple_second_age_2": {
+      "url": "assets/models/quaternius/ultimate-fantasy-rts/temple-second-age-2.glb",
+      "kind": "tower",
+      "palette": "magic",
+      "scale": 0.763,
+      "source": "pack: Quaternius ultimate-fantasy-rts (CC0, quaternius.com/packs/ultimatefantasyrts.html), file glTF/Temple_SecondAge_Level2.gltf, decimated to 2292 triangles"
+    },
+    "q_towerhouse_second_age": {
+      "url": "assets/models/quaternius/ultimate-fantasy-rts/towerhouse-second-age.glb",
+      "kind": "tower",
+      "palette": "magic",
+      "scale": 2.261,
+      "source": "pack: Quaternius ultimate-fantasy-rts (CC0, quaternius.com/packs/ultimatefantasyrts.html), file glTF/TowerHouse_SecondAge.gltf, decimated to 3000 triangles"
+    },
+    "q_blob_alien": {
+      "url": "assets/models/quaternius/ultimate-monsters/blob-alien.glb",
+      "kind": "enemy",
+      "palette": "blight_pale",
+      "scale": 0.492,
+      "glow": false,
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Bite_Front",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Alien.gltf, decimated to 1499 triangles, 24 glow faces (eyes / accents)"
+    },
+    "q_blob_wizard": {
+      "url": "assets/models/quaternius/ultimate-monsters/blob-wizard.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 0.619,
+      "glow": false,
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Bite_Front",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Blob/glTF/Wizard.gltf, decimated to 1498 triangles, 62 glow faces (eyes / accents)"
+    },
+    "q_flying_armabee_evolved": {
+      "url": "assets/models/quaternius/ultimate-monsters/flying-armabee-evolved.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 0.651,
+      "glow": false,
+      "clips": {
+        "idle": "Flying_Idle",
+        "move": "Fast_Flying",
+        "attack": "Headbutt",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Armabee_Evolved.gltf, decimated to 1500 triangles, 92 glow faces (eyes / accents)"
+    },
+    "q_flying_squidle": {
+      "url": "assets/models/quaternius/ultimate-monsters/flying-squidle.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 0.576,
+      "glow": false,
+      "clips": {
+        "idle": "Flying_Idle",
+        "move": "Fast_Flying",
+        "attack": "Headbutt",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Squidle.gltf, decimated to 1499 triangles, 48 glow faces (eyes / accents)"
+    },
+    "q_flying_glub_evolved": {
+      "url": "assets/models/quaternius/ultimate-monsters/flying-glub-evolved.glb",
+      "kind": "enemy",
+      "palette": "blight",
+      "scale": 0.432,
+      "glow": false,
+      "clips": {
+        "idle": "Flying_Idle",
+        "move": "Fast_Flying",
+        "attack": "Headbutt",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Flying/glTF/Glub_Evolved.gltf, decimated to 1499 triangles, 330 glow faces (eyes / accents)"
+    },
+    "q_big_yeti": {
+      "url": "assets/models/quaternius/ultimate-monsters/big-yeti.glb",
+      "kind": "boss",
+      "palette": "blight_frost",
+      "scale": 1.892,
+      "glow": false,
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Punch",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/Yeti.gltf, decimated to 6094 triangles, 112 glow faces (eyes / accents)"
+    },
+    "q_big_ninja": {
+      "url": "assets/models/quaternius/ultimate-monsters/big-ninja.glb",
+      "kind": "boss",
+      "palette": "blight",
+      "scale": 1.607,
+      "glow": false,
+      "clips": {
+        "idle": "Idle",
+        "move": "Walk",
+        "attack": "Punch",
+        "death": "Death"
+      },
+      "source": "pack: Quaternius ultimate-monsters (CC0, quaternius.com/packs/ultimatemonsters.html), file Big/glTF/Ninja.gltf, decimated to 5964 triangles, 48 glow faces (eyes / accents)"
     }
   }
 }

@@ -5,7 +5,7 @@ import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
 import { damp } from '../core/math.js';
 
-const COL = {
+const DEFAULT_COL = {
   coat: '#2A2766', coatTrim: '#FFD166', vest: '#5B6B3A', pants: '#4A5530', boot: '#2B2420',
   skin: '#F1C7A0', hair: '#3B2A20', glove: '#3D4451', cape: '#7B4DFF', capeIn: '#1E1B4B',
   blade: '#C9A7FF', hilt: '#FFD166', eye: '#1A1A22',
@@ -40,7 +40,9 @@ function blobTexture() {
 }
 
 export class HeroView {
-  constructor(scene) {
+  /** colors: overrides for the default palette (data/heroes.json model.colors), one look per hero. */
+  constructor(scene, colors = {}) {
+    const COL = { ...DEFAULT_COL, ...colors };
     this.root = new THREE.Group();
     this.root.name = 'hero';
     this.body = new THREE.Group();

@@ -1,14 +1,132 @@
 {
-  "$doc": "Player abilities (hero skills, airstrikes, spells). cooldown s; target: point (aim at ground), self (around hero) or global. mode defaults to manual; automatic picks the densest enemy group. Effects: damage {amount, type, radius}, slow, stun, heal base, cash.",
+  "$doc": "Player abilities (hero skills, airstrikes, spells). cooldown s; target: point (aim at ground), self (around hero) or global. mode defaults to manual; automatic picks the densest enemy group. Effects: damage + damageType, stun, freeze, slow {amount, duration} (area, radius), towerBuff, healBase (keep health), cash.",
   "abilities": [
-    { "id": "airstrike", "name": "Airstrike", "faction": "war", "cooldown": 45, "target": "point", "delay": 1.5, "radius": 7,
-      "effects": { "damage": 220, "damageType": "explosive", "stun": 0.6 }, "unlockWave": 1,
-      "description": "Call in a jet strike on a point after 1.5 s." },
-    { "id": "frost_nova", "name": "Frost Nova", "faction": "magic", "cooldown": 35, "target": "point", "delay": 0.3, "radius": 9,
-      "effects": { "damage": 40, "damageType": "ice", "freeze": 2.5 }, "unlockWave": 1,
-      "description": "Freezes every enemy in a wide circle for 2.5 s." },
-    { "id": "commanders_rally", "name": "Commander's Rally", "faction": "hero", "cooldown": 60, "target": "self", "delay": 0, "radius": 16,
-      "effects": { "towerBuff": { "rate": 0.35, "duration": 8 } }, "unlockWave": 1,
-      "description": "Towers near the Commander attack 35% faster for 8 s." }
+    {
+      "id": "airstrike",
+      "name": "Airstrike",
+      "faction": "war",
+      "cooldown": 45,
+      "target": "point",
+      "delay": 1.5,
+      "radius": 7,
+      "effects": {
+        "damage": 220,
+        "damageType": "explosive",
+        "stun": 0.6
+      },
+      "unlockWave": 1,
+      "description": "Call in a jet strike on a point after 1.5 s."
+    },
+    {
+      "id": "frost_nova",
+      "name": "Frost Nova",
+      "faction": "magic",
+      "cooldown": 35,
+      "target": "point",
+      "delay": 0.3,
+      "radius": 9,
+      "effects": {
+        "damage": 40,
+        "damageType": "ice",
+        "freeze": 2.5
+      },
+      "unlockWave": 1,
+      "description": "Freezes every enemy in a wide circle for 2.5 s."
+    },
+    {
+      "id": "commanders_rally",
+      "name": "Commander's Rally",
+      "faction": "hero",
+      "cooldown": 60,
+      "target": "self",
+      "delay": 0,
+      "radius": 16,
+      "effects": {
+        "towerBuff": {
+          "rate": 0.35,
+          "duration": 8
+        }
+      },
+      "unlockWave": 1,
+      "description": "Towers near the Commander attack 35% faster for 8 s."
+    },
+    {
+      "id": "artillery_barrage",
+      "name": "Artillery Barrage",
+      "faction": "war",
+      "cooldown": 55,
+      "target": "point",
+      "delay": 2.2,
+      "radius": 10,
+      "effects": {
+        "damage": 160,
+        "damageType": "explosive",
+        "stun": 0.5
+      },
+      "unlockWave": 1,
+      "description": "A wide shell barrage lands on a point after 2.2 s."
+    },
+    {
+      "id": "field_repairs",
+      "name": "Field Repairs",
+      "faction": "war",
+      "cooldown": 90,
+      "target": "self",
+      "delay": 0,
+      "radius": 3,
+      "effects": {
+        "healBase": 20
+      },
+      "unlockWave": 1,
+      "description": "Engineers patch the keep: restores 20 keep health."
+    },
+    {
+      "id": "war_chest",
+      "name": "War Chest",
+      "faction": "war",
+      "cooldown": 80,
+      "target": "self",
+      "delay": 0,
+      "radius": 3,
+      "effects": {
+        "cash": 120
+      },
+      "unlockWave": 1,
+      "description": "Requisitioned funds: +120 cash."
+    },
+    {
+      "id": "gravity_well",
+      "name": "Gravity Well",
+      "faction": "magic",
+      "cooldown": 40,
+      "target": "point",
+      "delay": 0.4,
+      "radius": 8,
+      "effects": {
+        "damage": 30,
+        "damageType": "arcane",
+        "slow": {
+          "amount": 0.5,
+          "duration": 5
+        }
+      },
+      "unlockWave": 1,
+      "description": "Warps space: enemies in the area are halved in speed for 5 s."
+    },
+    {
+      "id": "starfall",
+      "name": "Starfall",
+      "faction": "magic",
+      "cooldown": 70,
+      "target": "point",
+      "delay": 1.2,
+      "radius": 6,
+      "effects": {
+        "damage": 320,
+        "damageType": "arcane"
+      },
+      "unlockWave": 1,
+      "description": "A falling star strikes one spot after 1.2 s: built for bosses and elites."
+    }
   ]
 }

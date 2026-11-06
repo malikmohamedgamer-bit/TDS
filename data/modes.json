@@ -3,7 +3,7 @@
   "modes": [
     { "id": "campaign", "name": "Campaign", "desc": "20 waves, bosses on 10 and 20", "score": "win" },
     { "id": "endless", "name": "Endless", "desc": "Waves never stop. A boss every 10. How far can you go?", "endless": true, "score": "waves", "unlockLevel": 2, "rewardPerWave": 10 },
-    { "id": "boss_rush", "name": "Boss Rush", "desc": "Six bosses, back to back, growing stronger", "waves": "boss_rush", "startCash": 2000, "score": "win", "unlockLevel": 4 },
+    { "id": "boss_rush", "name": "Boss Rush", "desc": "Every boss in the game, back to back, growing stronger", "waves": "boss_rush", "startCash": 2000, "score": "win", "unlockLevel": 4 },
     { "id": "daily", "name": "Daily Challenge", "desc": "Today's modifiers and a loaner loadout, the same for everyone. Reward once per day.", "daily": true, "map": "riftline", "allTowers": true, "score": "win", "dailyBudget": 3, "difficulty": "easy", "loanerLevel": 4, "loanerMaxRarity": "epic", "tune": { "enemyHp": 1.08 } },
     { "id": "time_attack", "name": "Time Attack", "desc": "Short wave timers: clear the campaign as fast as you can", "maxDuration": 32, "intermission": 1, "score": "time", "unlockLevel": 3, "tune": { "startCash": 1.3 } },
     { "id": "challenge", "name": "Challenge", "desc": "Pick your own modifiers for bigger rewards", "modifiers": true, "score": "win", "unlockLevel": 2 },

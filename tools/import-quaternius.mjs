@@ -23,6 +23,7 @@ const PAGES = {
   'animated-mech': 'quaternius.com/packs/animatedmech.html',
   'toon-shooter-kit': 'quaternius.com/packs/toonshootergamekit.html',
   'animated-zombie': 'quaternius.com/packs/animatedzombie.html',
+  'ultimate-fantasy-rts': 'quaternius.com/packs/ultimatefantasyrts.html',
 };
 
 const info = JSON.parse(readFileSync('assets/packs/quaternius-convert.json', 'utf8'));

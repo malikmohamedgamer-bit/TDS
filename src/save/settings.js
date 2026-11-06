@@ -32,6 +32,7 @@ export function defaultSettings(env = {}) {
     assistFullRefund: false,
     assistSkipWave: false,
     map: 'riftline', // last map picked in the hub (?map= in the URL wins)
+    hero: '', // hero picked in the hub ('' = the first hero in data/heroes.json)
   };
 }
 

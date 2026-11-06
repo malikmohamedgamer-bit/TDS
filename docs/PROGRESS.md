@@ -17,22 +17,23 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 7. Content batch 1 | **Done (2026-11-05)**: Frostmere Crossing (2 roads), Thornmother boss, 2 legendary towers, map picker |
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
 | 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
-| 10. Asset packs + content growth | **In progress**: 10 Kenney + 10 Quaternius CC0 packs, recolour pipeline, 37 imported pack models (23 Kenney, 14 Quaternius), content batch 1 (18 towers, 18 enemies, 10 bosses). Quaternius models are imported and reviewed but not yet used by any unit. Map generator and further batches not started |
+| 10. Asset packs + content growth | **In progress** (2026-11-06): 10 Kenney + 10 Quaternius CC0 packs, 48 imported pack models (23 Kenney, 25 Quaternius), seeded map generator + 15 new maps (3 hand-made flagships, 12 generated), content batches kenney_b1, quaternius_b1, quaternius_b2, 2 new heroes, 5 new hero skills, Lancer Mech boss killer. Full e2e + 30 min soak for this batch: see VERIFICATION.md |
 
-## Real content counts (after content batch 1, counted from data/)
+## Real content counts (2026-11-06, counted from data/ by script)
 
 | Content | Count |
 |---|---|
-| Maps | 2 (Riftline Valley 1 road; Frostmere Crossing 2 roads, unlocks at player level 3); no generated maps yet |
-| Towers | 32: 12 core (7 war, 5 magic; 5 starters) + 2 legendary + 18 generated (batch kenney_b1: 9 Kenney models x 2 stat / colour variants) |
-| Enemies / bosses | 29 / 12: 11 core + 18 generated (9 Kenney models x 2 palettes) / 2 core + 10 generated (5 Kenney models x 2 palettes). Generated enemies appear in Endless (from wave 8) and generated waves; Boss Rush rotates all 12 bosses |
-| Imported pack models | 37: 23 Kenney CC0 (of 1,201 GLBs downloaded) + 14 Quaternius CC0 (7 enemies, 5 bosses, 2 War towers; of about 330 models in 10 packs). Distinct models in data/models.json: 44 (7 Blender + 37 pack); 30 are used by towers / enemies / bosses, the 14 Quaternius ones are not used by any unit yet |
+| Maps | 17: Riftline Valley, Frostmere Crossing (L3), 3 hand-made flagships (Glacier Gate L2, Mirrormire L4, Starfall Sanctum L6) and 12 generated (L5-L27, every 2 levels); 6 themes; 6 one-road, 6 two-road, 5 three-road |
+| Towers | 37 (21 War, 16 Magic) on **28 distinct models**: 12 core + 2 legendary + 19 kenney_b1 (incl. Lancer Mech) + 4 quaternius_b1 (Rifle Squad; Magic: Starwatch Tower, Sanctum of Dawn, Spirit Barracks) |
+| Enemies / bosses | 42 on **33 distinct models** / 19 on **14 distinct models**: 11 core + 18 kenney_b1 + 8 quaternius_b1 + 5 quaternius_b2 (one model each) / 2 core + 10 kenney_b1 + 5 quaternius_b1 + 2 quaternius_b2. New units: flagship waves (featured swaps + final bosses), Endless, Boss Rush (6 bosses drawn per run from all 19) |
+| Imported pack models | 48: 23 Kenney + 25 Quaternius. data/models.json: 55 (7 Blender + 48 pack), **all 55 used by units**. All units: 98 on 75 distinct models (code-built models counted once each) |
+| Heroes / abilities | 3 heroes (Commander Vale default, Warmaster Ryn, Archmage Seren; hub Hero picker) / 8 abilities |
 | Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
 | Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
 | Daily login rewards | 7-day streak |
 | Modes / modifiers | 7 / 9 |
-| Music | 4 moods (hub, build, wave, boss), 2 map keys, procedural (no audio files) |
-| Unit tests / E2E tests | 72 / 24 |
+| Music | 4 moods (hub, build, wave, boss), 17 map keys (one per map, theme scale), procedural (no audio files) |
+| Unit tests / E2E tests | 81 / 24 |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -41,11 +42,12 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
 | Frostmere, 12 regular towers, Normal, Standard | 13/20 (65%); starters Easy 11/12; lazy 0/8 |
 | Daily Challenge, fixed Easy, 10 dates x 6 seeds | 39/60 (65%); held-out dates 45/60 (75%) |
-| Boss Rush, 12 regular towers | 8/12 (67%) before batch 1; 9/12 (75%) with the 12 bosses rotating; about 100% with a Titan Railgun |
+| Boss Rush, 12 regular towers | 8/12 (67%) with 6 bosses drawn per run from all 19 (all 19 appeared in 12 runs). Before 2026-11-06 only the 6 weakest bosses ever appeared (bug 38) |
 | Generated towers only (18), Riftline Normal | 5/12 (42%) before the boss killer (bug 35) |
 | Generated towers only (19, with Lancer Mech), Riftline / Frostmere Normal | 12/12 / 12/12 (100%): **above the 60-70% target** (bug 37; Frostmere was already 12/12 before) |
 | Core 12 towers, Riftline / Frostmere Normal (same run) | 7/12 (58%) / 6/12 (50%) |
 | Daily Challenge, 10 dates x 10 seeds | 62/100 (62%), identical before and after the boss killer |
+| 15 new maps, 12 core towers, Normal, 12 seeds each (calibrated enemy HP per map, at most 3 measurements) | 67%: Moonlit Heights, Rime Pass, Mire Marsh, Brimstone Scar, Dust Outpost; 58%: Glacier Gate, Meadow Downs, Bramble Hollow, Aether Plateau, Cinder Wastes, Sunscorch Expanse; 75%: Mirrormire, Frost Gate, Mire Wallow; 50%: Starfall Sanctum. One seed = 8 points: every map is within 50-75%, 5 inside 60-70% (tools/map-batches.json `calibration`) |
 | Random 6-tower loadouts, Riftline Normal | core 4/16, generated 0/16 before the pricing fix (the final boss decides) |
 | All 12 regular towers, Normal, Original | 10/12 (83%) |
 | All 12 regular towers, Normal, Relaxed | 12/12 (100%) |
@@ -128,20 +130,25 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-Content growth (milestone 10), in this order:
-1. Map generator (`tools/gen-maps.mjs`): seeded serpentine 1-road layouts on the 110 x 80 frame
-   (columns 12+ m apart, keep at x 50.5), themes (palette, sky, scatter, music key), wave sets
-   from `generateWave` stored as data, `scatterGap` 1.3. Soak every map; bot each map to 60-70%.
-2. Fix bug 35 (generated tower menu 42%): give the batch a single-target boss killer, then
-   re-measure with a mixed core + generated menu.
-3. Batch 2+: give the 14 imported Quaternius models units (gen-content templates: 7 enemies incl. 2
-   air, 5 bosses, 2 War towers), then more from the downloaded packs (Ultimate Fantasy RTS units for
-   Magic towers, Steampunk Turrets for War towers, Cute Monsters / Easy Enemy for swarms; all need
-   convert_fbx.py + decimation), more Kenney models and palette schemes.
-Honest scale: 100+ towers / 200+ enemies / 100+ bosses are reachable as variants of about 25-40
-models; 50+ maps need the generator. Every batch: balance bot, counts, commit, push, deploy check.
+1. Bug 37: one change to the Lancer Mech (`limit: 1` per match or price $650), re-measure the generated
+   menu (target 60-70%); then re-check the mixed menu.
+2. Maps: more seeds per map (24-40) for the 15 new maps would cut the 12-seed noise (8 points per seed);
+   Starfall Sanctum (50%) is the first to look at. `node tools/gen-maps.mjs --calibrate <id> --force`.
+3. More content batches through the same tools: `tools/quaternius-models.json` +
+   `tools/blender/convert_quaternius.py` + `node tools/import-quaternius.mjs --fit` + `tools/gen-content.mjs`;
+   maps through `tools/map-batches.json` + `node tools/gen-maps.mjs --check --calibrate`.
+   Candidates: Steampunk Turrets (War towers, FBX), Cute Monsters / Easy Enemy (swarms), more RTS
+   buildings for Magic, more themes.
+4. Hero models: the two new heroes reuse Commander Vale's code model with their own colours.
+Every batch: balance bot, 4-angle review, counts, docs, commit, push, deploy check.
 
 ## Known weak spots (honest)
+
+- New maps (2026-11-06): balance from 12 bot seeds each (noisy); generated maps reuse two campaign wave
+  tables (varied by themed swaps and HP); themes reuse the existing prop set with new colours.
+- New heroes reuse Commander Vale's model (recoloured); hero choice changes the look on reload.
+- Generated tower menu now too strong alone (bug 37). Rifle Squad is a plain Rifleman upgrade.
+- Ultimate Fantasy RTS towers are static buildings (they aim and recoil by code only).
 
 - New players cannot win Standard Normal with starters at level 1 (0/12); Easy first, then levels or
   unlocks (by design; Original / Relaxed presets or Assist make it easier).

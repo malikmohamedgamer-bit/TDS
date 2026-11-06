@@ -70,6 +70,13 @@ export class MatchController {
       date: () => ctx.date?.() || localDate(),
       modes: ctx.modes,
       mapId: this.map.id,
+      heroId: this.content.heroes.has(this.settings.hero) ? this.settings.hero : [...this.content.heroes.keys()][0],
+      switchHero: (id) => {
+        // the hero's look is built with the world: reload into it, like a map change
+        this.settings.hero = id;
+        ctx.persistSettings?.();
+        location.reload();
+      },
       switchMap: (id) => {
         // a different map is a different world: rebuild it cleanly by reloading on that map
         this.settings.map = id;
@@ -141,6 +148,7 @@ export class MatchController {
     this.ready = false;
     const match = new Match({
       content: this.content, mapWorld: mw, difficulty: cfg.difficulty, seed, loadout: cfg.loadout, levels,
+      hero: this.content.heroes.has(this.settings.hero) ? this.settings.hero : undefined,
       options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero, preset: this.presetId(), assist: this.assist(), mode: cfg.mode || 'campaign', modifiers: cfg.modifiers || [], dailyDate: cfg.dailyDate },
     });
     const view = new MatchView(this.renderer, match, this.content, this.settings, this.ui.querySelector('.dmg-layer'));

@@ -1,0 +1,393 @@
+{
+ "id": "glacier_gate",
+ "name": "Glacier Gate",
+ "description": "One endless switchback climbs the frozen pass. The longest road in the game: build deep, not wide.",
+ "seed": "glacier-gate-1",
+ "scatterGap": 1.3,
+ "waves": "glacier_gate_waves",
+ "unlockLevel": 2,
+ "theme": "frost",
+ "generated": {
+  "template": "hand",
+  "seed": "glacier-gate-1",
+  "theme": "frost"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#7E9CC4",
+  "horizon": "#E6EDF5",
+  "fog": "#D4DEEA",
+  "fogNear": 85,
+  "fogFar": 210
+ },
+ "sun": {
+  "azimuth": 160,
+  "elevation": 36,
+  "color": "#FFE4C2",
+  "intensity": 2.3
+ },
+ "ground": {
+  "grass": [
+   "#8FA270",
+   "#7E926A",
+   "#A6B48A",
+   "#6F8461"
+  ],
+  "path": [
+   "#8A7A68",
+   "#776858",
+   "#9C8C7A",
+   "#65584A"
+  ],
+  "rim": [
+   "#8D9AA6",
+   "#B9C6D2"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 8,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 0,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": -28,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 32.5,
+    "z": -28,
+    "r": 9,
+    "h": 2.2
+   },
+   {
+    "x": 36,
+    "z": -27.5,
+    "r": 8,
+    "h": 1.9
+   },
+   {
+    "x": 39,
+    "z": -31.5,
+    "r": 6,
+    "h": 2.5
+   },
+   {
+    "x": 42,
+    "z": 15.5,
+    "r": 5,
+    "h": 1.3
+   },
+   {
+    "x": 31.5,
+    "z": -25.5,
+    "r": 10,
+    "h": 1.2
+   },
+   {
+    "x": 43,
+    "z": 25.5,
+    "r": 7.5,
+    "h": 1.6
+   },
+   {
+    "x": 43,
+    "z": -36,
+    "r": 8.5,
+    "h": 2.9
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "main",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -28
+    ],
+    [
+     -40,
+     -28
+    ],
+    [
+     -40,
+     28
+    ],
+    [
+     -26,
+     28
+    ],
+    [
+     -26,
+     -28
+    ],
+    [
+     -12,
+     -28
+    ],
+    [
+     -12,
+     28
+    ],
+    [
+     2,
+     28
+    ],
+    [
+     2,
+     -28
+    ],
+    [
+     16,
+     -28
+    ],
+    [
+     16,
+     28
+    ],
+    [
+     30,
+     28
+    ],
+    [
+     30,
+     0
+    ],
+    [
+     45,
+     0
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 0
+ },
+ "playerSpawn": {
+  "x": 34,
+  "z": -19.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -28,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 0,
+   "rot": 0
+  },
+  {
+   "kind": "ruin_arch",
+   "x": 39.5,
+   "z": 22,
+   "rot": 1.46
+  },
+  {
+   "kind": "runestone",
+   "x": 35.5,
+   "z": -10.5,
+   "rot": 4.41
+  },
+  {
+   "kind": "runestone",
+   "x": 8.5,
+   "z": -12,
+   "rot": 3.7
+  },
+  {
+   "kind": "runestone",
+   "x": -32,
+   "z": 1.5,
+   "rot": 4.51
+  },
+  {
+   "kind": "runestone",
+   "x": 40,
+   "z": -31,
+   "rot": 2.61
+  },
+  {
+   "kind": "watchtower",
+   "x": 40,
+   "z": -14,
+   "rot": 4
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 22.5,
+   "z": 10,
+   "rot": 3.84
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 30.5,
+   "z": -12,
+   "rot": 3.68
+  },
+  {
+   "kind": "barbed_fence",
+   "x": 23,
+   "z": -7,
+   "rot": 3.87
+  },
+  {
+   "kind": "barbed_fence",
+   "x": 33.5,
+   "z": -28,
+   "rot": 5.91
+  },
+  {
+   "kind": "crate",
+   "x": -34.5,
+   "z": -11,
+   "rot": 0.5
+  },
+  {
+   "kind": "crate",
+   "x": -19,
+   "z": -18,
+   "rot": 2.86
+  },
+  {
+   "kind": "lamp_post",
+   "x": 34.5,
+   "z": 7.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -43.5,
+   "z": 24,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 6.5,
+   "z": -5.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -36,
+   "z": 18,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -2.5,
+   "z": 14.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 19.5,
+   "z": 0,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -43.5,
+   "z": -16,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -30.5,
+   "z": -17.5,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "tree_pine",
+   "count": 68,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 2.6,
+   "scale": [
+    0.8,
+    1.4
+   ]
+  },
+  {
+   "kind": "bush",
+   "count": 22,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2
+  },
+  {
+   "kind": "rock",
+   "count": 24,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 3.5
+  },
+  {
+   "kind": "rock_small",
+   "count": 32,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  },
+  {
+   "kind": "crystal_cluster",
+   "count": 6,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 16,
+   "minPathDist": 5,
+   "spacing": 5
+  }
+ ]
+}

@@ -263,6 +263,120 @@
         "attack": "Idle_Shoot"
       },
       "basePlate": "war"
+    },
+    {
+      "pack": "ultimate-fantasy-rts",
+      "file": "watchtower-second-age-3",
+      "src": "glTF/WatchTower_SecondAge_Level3.gltf",
+      "kind": "tower",
+      "palette": "magic",
+      "height": 3.6,
+      "tris": 3000,
+      "note": "static building; towers animate by code"
+    },
+    {
+      "pack": "ultimate-fantasy-rts",
+      "file": "temple-second-age-2",
+      "src": "glTF/Temple_SecondAge_Level2.gltf",
+      "kind": "tower",
+      "palette": "magic",
+      "height": 3,
+      "tris": 3000,
+      "note": "static building"
+    },
+    {
+      "pack": "ultimate-fantasy-rts",
+      "file": "towerhouse-second-age",
+      "src": "glTF/TowerHouse_SecondAge.gltf",
+      "kind": "tower",
+      "palette": "magic",
+      "height": 3.4,
+      "tris": 3000,
+      "note": "static building"
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "blob-alien",
+      "src": "Blob/glTF/Alien.gltf",
+      "kind": "enemy",
+      "palette": "blight_pale",
+      "height": 1.6,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "blob",
+      "batch": 2
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "blob-wizard",
+      "src": "Blob/glTF/Wizard.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.6,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "blob",
+      "batch": 2
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "flying-armabee-evolved",
+      "src": "Flying/glTF/Armabee_Evolved.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.5,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "fly",
+      "batch": 2
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "flying-squidle",
+      "src": "Flying/glTF/Squidle.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.6,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "fly",
+      "batch": 2
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "flying-glub-evolved",
+      "src": "Flying/glTF/Glub_Evolved.gltf",
+      "kind": "enemy",
+      "palette": "blight",
+      "height": 1.6,
+      "tris": 1500,
+      "glow": "eyes",
+      "clips": "fly",
+      "batch": 2
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "big-yeti",
+      "src": "Big/glTF/Yeti.gltf",
+      "kind": "boss",
+      "palette": "blight_frost",
+      "height": 5.5,
+      "tris": 8000,
+      "glow": "eyes",
+      "clips": "big",
+      "batch": 2
+    },
+    {
+      "pack": "ultimate-monsters",
+      "file": "big-ninja",
+      "src": "Big/glTF/Ninja.gltf",
+      "kind": "boss",
+      "palette": "blight",
+      "height": 5.5,
+      "tris": 8000,
+      "glow": "eyes",
+      "clips": "big",
+      "batch": 2
     }
   ]
 }

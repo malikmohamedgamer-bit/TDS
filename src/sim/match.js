@@ -341,7 +341,13 @@ export class Match {
       w = this.genWaves.get(n);
     }
     if (w && this.waveSet.bossRotate) {
-      const pool = bossPool(this.content);
+      // each run draws its bosses from the whole pool (seeded, so replays match), weakest first;
+      // before, the pool was HP-sorted and only its first entries ever appeared
+      if (!this.bossRushOrder) {
+        const picked = new Rng(`${this.seed}:bossrush`).shuffle(bossPool(this.content)).slice(0, this.waveSet.waves.length);
+        this.bossRushOrder = picked.sort((a, b) => this.content.enemies.get(a).hp - this.content.enemies.get(b).hp);
+      }
+      const pool = this.bossRushOrder;
       const id = pool[(n - 1) % pool.length];
       w = { ...w, groups: w.groups.map((g) => (this.content.enemies.get(g.enemy)?.boss ? { ...g, enemy: id } : g)) };
     }
@@ -885,9 +891,12 @@ export class Match {
     for (const p of this.pendingAbilities) {
       if (p.at > this.time) { keep.push(p); continue; }
       const fx = p.def.effects;
-      if (fx.damage || fx.freeze || fx.stun) {
-        this._splash({ amount: fx.damage || 0, type: fx.damageType || 'physical', splash: p.def.radius, stun: fx.stun, freeze: fx.freeze, targets: { ground: true, air: true }, detection: true }, null, p.x, p.z);
+      if (fx.damage || fx.freeze || fx.stun || fx.slow) {
+        this._splash({ amount: fx.damage || 0, type: fx.damageType || 'physical', splash: p.def.radius, stun: fx.stun, freeze: fx.freeze, slow: fx.slow, targets: { ground: true, air: true }, detection: true }, null, p.x, p.z);
       }
+      // keep repairs and war chests (hero skills)
+      if (fx.healBase) this.baseHp = Math.min(this.baseMax, this.baseHp + fx.healBase);
+      if (fx.cash) { this.cash += fx.cash; this.stats.cashEarned += fx.cash; }
       if (fx.towerBuff) {
         for (const t of this.towers) {
           if (r2(t.x, t.z, p.x, p.z) <= p.def.radius * p.def.radius) {
@@ -904,7 +913,11 @@ export class Match {
   /** Automatic abilities aim at the densest group (or the boss); null if not worth it. */
   _bestAbilitySpot(def) {
     if (def.target === 'self') {
-      if (!this.hero || !this.enemies.length) return null;
+      if (!this.hero) return null;
+      // keep repairs only when the keep has lost at least that much; a war chest whenever ready
+      if (def.effects.healBase && !def.effects.towerBuff) return this.baseHp <= this.baseMax - def.effects.healBase ? { x: this.hero.x, z: this.hero.z } : null;
+      if (def.effects.cash && !def.effects.towerBuff) return { x: this.hero.x, z: this.hero.z };
+      if (!this.enemies.length) return null;
       const near = this.towers.filter((t) => r2(t.x, t.z, this.hero.x, this.hero.z) <= def.radius * def.radius).length;
       return near >= 2 ? { x: this.hero.x, z: this.hero.z } : null;
     }

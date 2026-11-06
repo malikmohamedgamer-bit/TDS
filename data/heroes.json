@@ -2,12 +2,93 @@
   "$doc": "Playable heroes (walking commanders). attack: auto-attacks the nearest enemy in range while the player walks around. abilities reference data/abilities.json.",
   "heroes": [
     {
-      "id": "commander_vale", "name": "Commander Vale", "faction": "hero", "rarity": "rare",
+      "id": "commander_vale",
+      "name": "Commander Vale",
+      "faction": "hero",
+      "rarity": "rare",
       "description": "Spellblade officer: a saber that cuts with arcane light and a commander's rally.",
-      "model": { "builder": "commander" },
-      "attack": { "damage": 12, "damageType": "arcane", "rate": 1.4, "range": 7, "splash": 1.5 },
-      "abilities": ["commanders_rally", "airstrike", "frost_nova"],
+      "model": {
+        "builder": "commander"
+      },
+      "attack": {
+        "damage": 12,
+        "damageType": "arcane",
+        "rate": 1.4,
+        "range": 7,
+        "splash": 1.5
+      },
+      "abilities": [
+        "commanders_rally",
+        "airstrike",
+        "frost_nova"
+      ],
       "hp": 200
+    },
+    {
+      "id": "warmaster_ryn",
+      "name": "Warmaster Ryn",
+      "faction": "hero",
+      "rarity": "rare",
+      "description": "Modern War field commander: rifle fire, artillery on call, keeps the keep standing and the coffers full.",
+      "model": {
+        "builder": "commander",
+        "colors": {
+          "coat": "#3D4451",
+          "coatTrim": "#F28C28",
+          "vest": "#5B6B3A",
+          "pants": "#47552C",
+          "cape": "#5B6B3A",
+          "capeIn": "#3D4451",
+          "blade": "#D9D9D9",
+          "hilt": "#F28C28"
+        }
+      },
+      "attack": {
+        "damage": 16,
+        "damageType": "physical",
+        "rate": 1.3,
+        "range": 9,
+        "splash": 0
+      },
+      "abilities": [
+        "artillery_barrage",
+        "field_repairs",
+        "war_chest"
+      ],
+      "hp": 240
+    },
+    {
+      "id": "archmage_seren",
+      "name": "Archmage Seren",
+      "faction": "hero",
+      "rarity": "rare",
+      "description": "Magic archmage: arcane bolts that splash, a gravity well that stalls a wave and a falling star for bosses.",
+      "model": {
+        "builder": "commander",
+        "colors": {
+          "coat": "#1E1B4B",
+          "coatTrim": "#7FF6FF",
+          "vest": "#2EC4B6",
+          "pants": "#2A2766",
+          "cape": "#2EC4B6",
+          "capeIn": "#1E1B4B",
+          "blade": "#7FF6FF",
+          "hair": "#E8E0FF"
+        }
+      },
+      "attack": {
+        "damage": 10,
+        "damageType": "arcane",
+        "rate": 1.2,
+        "range": 10,
+        "splash": 2
+      },
+      "abilities": [
+        "gravity_well",
+        "starfall",
+        "frost_nova"
+      ],
+      "hp": 170
     }
   ]
 }

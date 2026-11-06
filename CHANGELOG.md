@@ -164,3 +164,20 @@
 - Generated menu alone: Riftline Normal 5/12 -> 12/12, Frostmere 12/12 -> 12/12 (above target,
   BUGS.md #37). Daily Challenge unchanged (62/100). `tools/dev/tower-usage.mjs` shows what the bot
   builds in won and lost runs.
+
+## 0.12.0 - Maps, content batches, heroes (2026-11-06)
+- Seeded map generator `src/core/mapGen.js` (pure, unit-tested): 1-road serpentine, 2-road fork and
+  3-road trident templates, roads validated (frame, 11 m between unrelated stretches, keep), portals,
+  keep and spawn on flats, themed decorations and lamps, hills, scatter with `scatterGap` 1.3, wave
+  tables varied from the campaigns (roads round robin, themed swaps that keep the mechanic, HP knob).
+  6 themes (`tools/map-themes.json`), `tools/gen-maps.mjs` (build space, hero soak, bot calibration).
+- 15 new maps: Glacier Gate, Mirrormire, Starfall Sanctum (hand-made roads, featured new units and
+  bosses) + 12 generated; unlock levels 2-27; a music key per map; scrollable hub map picker.
+- Content batch quaternius_b1 (Rifle Squad, Starwatch Tower, Sanctum of Dawn, Spirit Barracks;
+  8 enemies, 5 bosses) and quaternius_b2 (5 enemies with mechanic combinations: flying + armour,
+  flying splitter, flying + stealth, regenerating, summoner; 2 bosses), one distinct model each.
+  Magic towers on Ultimate Fantasy RTS buildings.
+- Heroes: Warmaster Ryn and Archmage Seren (own colours, hub Hero picker); 5 new hero skills;
+  ability effects slow, healBase and cash implemented (the data doc listed them, the sim did not).
+- Fixes: Boss Rush drew only the 6 weakest bosses (bug 38); wave swaps could turn ground templates
+  into flyers (bug 39); hero choice never reached the match (bug 40).

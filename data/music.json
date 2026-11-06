@@ -1,20 +1,222 @@
 {
   "$doc": "Procedural music (milestone 8). No audio files: src/audio/musicPatterns.js turns this data into notes, src/audio/music.js plays them with WebAudio. A map picks a key (root MIDI note + scale); a mood picks tempo, chord progression (scale degrees, one chord per bar), arpeggio pattern (chord-tone indexes per 8th, -1 = rest), drum pattern (16 steps: k kick, s snare, h hat, . rest) and layer volumes (0 = off). Moods: hub, build (between waves), wave, boss.",
   "scales": {
-    "dorian": [0, 2, 3, 5, 7, 9, 10],
-    "aeolian": [0, 2, 3, 5, 7, 8, 10],
-    "phrygian": [0, 1, 3, 5, 7, 8, 10],
-    "lydian": [0, 2, 4, 6, 7, 9, 11]
+    "dorian": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "aeolian": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "phrygian": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "lydian": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ]
   },
   "keys": {
-    "default": { "root": 50, "scale": "dorian" },
-    "riftline": { "root": 50, "scale": "dorian" },
-    "frostmere": { "root": 45, "scale": "aeolian" }
+    "default": {
+      "root": 50,
+      "scale": "dorian"
+    },
+    "riftline": {
+      "root": 50,
+      "scale": "dorian"
+    },
+    "frostmere": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "glacier_gate": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "mirrormire": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "starfall_sanctum": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_1": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_1": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_1": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_1": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_1": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_1": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_2": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_2": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_2": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_2": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_2": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_2": {
+      "root": 53,
+      "scale": "lydian"
+    }
   },
   "moods": {
-    "hub": { "bpm": 72, "progression": [0, 5, 3, 4], "arp": [0, 1, 2, 1, 3, 2, 1, -1], "drums": "................", "layers": { "pad": 0.32, "arp": 0.16, "bass": 0.14, "drums": 0 } },
-    "build": { "bpm": 84, "progression": [0, 3, 5, 4], "arp": [0, 2, 1, 2, 0, 2, 3, 2], "drums": "h...h...h...h.h.", "layers": { "pad": 0.26, "arp": 0.16, "bass": 0.18, "drums": 0.1 } },
-    "wave": { "bpm": 112, "progression": [0, 0, 5, 6], "arp": [0, 1, 2, 3, 2, 1, 2, -1], "drums": "k.h.s.h.k.k.s.hh", "layers": { "pad": 0.18, "arp": 0.14, "bass": 0.26, "drums": 0.22 } },
-    "boss": { "bpm": 126, "scale": "phrygian", "progression": [0, 1, 0, 6], "arp": [0, 0, 2, 0, 3, 0, 2, 1], "drums": "k.hkskh.k.hks.ss", "layers": { "pad": 0.2, "arp": 0.15, "bass": 0.3, "drums": 0.26 } }
+    "hub": {
+      "bpm": 72,
+      "progression": [
+        0,
+        5,
+        3,
+        4
+      ],
+      "arp": [
+        0,
+        1,
+        2,
+        1,
+        3,
+        2,
+        1,
+        -1
+      ],
+      "drums": "................",
+      "layers": {
+        "pad": 0.32,
+        "arp": 0.16,
+        "bass": 0.14,
+        "drums": 0
+      }
+    },
+    "build": {
+      "bpm": 84,
+      "progression": [
+        0,
+        3,
+        5,
+        4
+      ],
+      "arp": [
+        0,
+        2,
+        1,
+        2,
+        0,
+        2,
+        3,
+        2
+      ],
+      "drums": "h...h...h...h.h.",
+      "layers": {
+        "pad": 0.26,
+        "arp": 0.16,
+        "bass": 0.18,
+        "drums": 0.1
+      }
+    },
+    "wave": {
+      "bpm": 112,
+      "progression": [
+        0,
+        0,
+        5,
+        6
+      ],
+      "arp": [
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        2,
+        -1
+      ],
+      "drums": "k.h.s.h.k.k.s.hh",
+      "layers": {
+        "pad": 0.18,
+        "arp": 0.14,
+        "bass": 0.26,
+        "drums": 0.22
+      }
+    },
+    "boss": {
+      "bpm": 126,
+      "scale": "phrygian",
+      "progression": [
+        0,
+        1,
+        0,
+        6
+      ],
+      "arp": [
+        0,
+        0,
+        2,
+        0,
+        3,
+        0,
+        2,
+        1
+      ],
+      "drums": "k.hkskh.k.hks.ss",
+      "layers": {
+        "pad": 0.2,
+        "arp": 0.15,
+        "bass": 0.3,
+        "drums": 0.26
+      }
+    }
   }
 }

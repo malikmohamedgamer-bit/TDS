@@ -118,6 +118,7 @@ export class Hub {
     const usable = (id) => anyTower || owns(this.save, id);
     return `
       ${maps.length > 1 ? `<fieldset><legend>Map</legend><div class="diffs maps" role="radiogroup" aria-label="Map">${maps.map((m) => `<label><input type="radio" name="map" value="${m.id}" data-testid="map-${m.id}" ${m.id === mapId ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked || `${m.paths.length} road${m.paths.length > 1 ? 's' : ''}${this.save.progress.bestDifficultyWon >= 0 && this.save.progress.best?.[m.id] ? ` · best ${Math.max(...Object.values(this.save.progress.best[m.id]))} waves` : ''}`)}</small></span></label>`).join('')}</div></fieldset>` : ''}
+      ${this.c.heroes.size > 1 ? `<fieldset><legend>Hero</legend><div class="diffs heroes" role="radiogroup" aria-label="Hero">${[...this.c.heroes.values()].map((h) => `<label><input type="radio" name="hero" value="${h.id}" data-testid="hero-${h.id}" ${h.id === this.ctx.heroId ? 'checked' : ''}><span><b>${esc(h.name)}</b><small>${esc(h.abilities.map((a) => this.c.abilities.get(a)?.name || a).join(' · '))}</small></span></label>`).join('')}</div></fieldset>` : ''}
       ${modes.length > 1 ? `<fieldset><legend>Mode</legend><div class="diffs modes" role="radiogroup" aria-label="Mode">${modes.map((m) => `<label><input type="radio" name="mode" value="${m.id}" data-testid="mode-${m.id}" ${m.id === this.cfg.mode ? 'checked' : ''} ${m.locked ? 'disabled' : ''}><span><b>${m.locked ? '🔒 ' : ''}${esc(m.name)}</b><small>${esc(m.locked ? m.locked : m.desc)}</small></span></label>`).join('')}</div></fieldset>` : ''}
       ${mode.modifiers ? `<fieldset><legend>Modifiers <span class="count">reward x${modMul.toFixed(2)}</span></legend><div class="mods">${mods.map((x) => `<label class="row"><input type="checkbox" name="mod" value="${x.id}" ${this.cfg.modifiers.includes(x.id) ? 'checked' : ''}> <b>${esc(x.name)}</b> <small>${esc(x.desc)} · x${x.rewardMul}</small></label>`).join('')}</div></fieldset>` : ''}
       ${daily ? `<fieldset data-testid="daily-challenge"><legend>Today (${daily.date})</legend><p class="note">Difficulty: ${esc(this.c.difficulties.get(daily.difficulty).name)} (fixed). Modifiers: ${daily.modifiers.map((id) => `<b>${esc(this.c.modifiers.get(id).name)}</b> (${esc(this.c.modifiers.get(id).desc)})`).join(', ')}. Loaner loadout below, every tower at level ${Object.values(daily.levels)[0]}. Win for ${Object.entries(daily.reward).map(([k, v]) => `${v} ${k}`).join(' + ')}${this.save.claimed.includes(daily.rewardId) ? ' (already claimed today)' : ''}.</p></fieldset>` : ''}
@@ -230,6 +231,12 @@ export class Hub {
 
   onChange(e) {
     if (e.target.name === 'diff') this.cfg.difficulty = e.target.value;
+    if (e.target.name === 'hero' && e.target.value !== this.ctx.heroId) {
+      this.toast(`${this.c.heroes.get(e.target.value)?.name || e.target.value} takes command…`, 'info');
+      this.saved();
+      this.ctx.switchHero?.(e.target.value);
+      return;
+    }
     if (e.target.name === 'map' && e.target.value !== this.ctx.mapId) {
       this.toast(`Travelling to ${this.c.maps.get(e.target.value)?.name || e.target.value}…`, 'info');
       this.saved();

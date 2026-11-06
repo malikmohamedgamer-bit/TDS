@@ -50,7 +50,7 @@ After unzipping only FBX / glTF / OBJ / PNG / JPG / TXT files were kept; .blend 
 
 | Pack | Page | Download (Google Drive) | Licence | Files kept (raw) | Imported |
 |---|---|---|---|---|---|
-| Ultimate Monsters | https://quaternius.com/packs/ultimatemonsters.html | https://drive.google.com/drive/folders/18m4KpzpEzhC9wl7jzr6dUc0N8Jozr79C | CC0 1.0 (License.txt) | 160: 50 glTF, 50 FBX, 50 OBJ, 9 PNG/JPG, 1 TXT (50 animated monsters: Big, Blob, Flying) | 10 |
+| Ultimate Monsters | https://quaternius.com/packs/ultimatemonsters.html | https://drive.google.com/drive/folders/18m4KpzpEzhC9wl7jzr6dUc0N8Jozr79C | CC0 1.0 (License.txt) | 160: 50 glTF, 50 FBX, 50 OBJ, 9 PNG/JPG, 1 TXT (50 animated monsters: Big, Blob, Flying) | 16 |
 | Animated Tanks | https://quaternius.com/packs/animatedtanks.html | https://drive.google.com/drive/folders/1tHX0RF9l4Nw4EZwxH6xWta0HsICU2h-G | CC0 1.0 (License.txt) | 10: 4 FBX, 4 OBJ, 1 PNG, 1 TXT (4 tanks, drive clips only) | 1 |
 | Animated Mech | https://quaternius.com/packs/animatedmech.html | https://drive.google.com/drive/folders/1sueV_4CGMpZC8y30mWfgKK9UaT3mkHBX | CC0 1.0 (License.txt) | 46: 8 glTF, 8 FBX, 8 OBJ, 21 PNG/JPG, 1 TXT (4 mechs, flat and textured) | 2 |
 | Toon Shooter Game Kit | https://quaternius.com/packs/toonshootergamekit.html | https://drive.google.com/drive/folders/1-BDs_EIyd6uiF2XuoyiZEcqnMQIJrE0C | CC0 (pack page) | 225: 74 glTF, 74 FBX, 74 OBJ, 3 PNG/JPG (3 animated characters, weapons, environment) | 2 |
@@ -58,10 +58,15 @@ After unzipping only FBX / glTF / OBJ / PNG / JPG / TXT files were kept; .blend 
 | Cute Animated Monsters | https://quaternius.com/packs/cutemonsters.html | https://drive.google.com/drive/folders/1zLLO_7ZoWgUsS4uooYnVSErQYRu1VdS0 | CC0 (pack page) | 85: 21 glTF, 21 FBX, 21 OBJ, 22 PNG/JPG | 0 |
 | Easy Enemy | https://quaternius.com/packs/easyenemy.html | https://drive.google.com/drive/folders/1VbJIslXPWK-1KybQN6yezZrfJcw608qe | CC0 1.0 (License.txt) | 14: 6 FBX, 6 OBJ, 1 PNG, 1 TXT | 0 |
 | Steampunk Turrets | https://quaternius.com/packs/turretpack.html | https://drive.google.com/drive/folders/1HenXNzxU2HJMDOGQj9LKRHk9eHrBgoya | CC0 1.0 (License.txt) | 76: 37 FBX, 37 OBJ, 1 PNG, 1 TXT | 0 |
-| Ultimate Fantasy RTS | https://quaternius.com/packs/ultimatefantasyrts.html | https://drive.google.com/drive/folders/1h7sztlZyavWla-JDk3jp6KiWDdMh08yd | CC0 1.0 (License.txt) | 524: 128 glTF, 128 FBX, 128 OBJ, 139 PNG/JPG, 1 TXT | 0 |
+| Ultimate Fantasy RTS | https://quaternius.com/packs/ultimatefantasyrts.html | https://drive.google.com/drive/folders/1h7sztlZyavWla-JDk3jp6KiWDdMh08yd | CC0 1.0 (License.txt) | 524: 128 glTF, 128 FBX, 128 OBJ, 139 PNG/JPG, 1 TXT | 3 |
 | Ultimate Spaceships | https://quaternius.com/packs/ultimatespaceships.html | https://drive.google.com/drive/folders/1NpfT3wqe2k3Jwue2xryi7tzxP4bWzETu | CC0 1.0 (License.txt) | 90: 11 glTF, 11 FBX, 11 OBJ, 56 PNG/JPG, 1 TXT | 0 |
 
-Imported so far: 15 models, listed in `tools/quaternius-models.json`. Each was converted to GLB in
+Imported so far: 25 models (16 Ultimate Monsters, 3 Ultimate Fantasy RTS buildings, 2 mechs, 2 Toon
+Shooter characters, 1 tank, 1 zombie), listed in `tools/quaternius-models.json` (the per-model table
+below covers the first 15; the rest: Blob Alien / Wizard, Flying Armabee Evolved / Squidle / Glub
+Evolved, Big Yeti / Ninja, RTS WatchTower_SecondAge_Level3, Temple_SecondAge_Level2,
+TowerHouse_SecondAge). The cactus monster (Blob Cactoro) was converted and then dropped: it wears a
+sombrero, a caricature we do not want in the game. Each was converted to GLB in
 Blender with `tools/blender/convert_quaternius.py` (decimated to the art-style triangle budget where
 needed; small eye / accent face islands given an emissive material),
 saved in `assets/models/quaternius/<pack>/` and registered by `node tools/import-quaternius.mjs --fit`

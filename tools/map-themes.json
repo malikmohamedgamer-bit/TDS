@@ -1,0 +1,112 @@
+{
+  "$doc": "Map themes for src/core/mapGen.js (used by tools/gen-maps.mjs, not loaded by the game). Colours follow docs/art-style.md. decor: [prop kind, count, footprint radius m]. scatter: same rules as hand-made maps. music: key for data/music.json. enemyScheme: generated enemy variants with this palette replace their template in about swapChance of the wave groups.",
+  "themes": {
+    "verdant": {
+      "label": "Green valley",
+      "ground": { "grass": ["#6BAA4A", "#5A9440", "#7DBE58", "#4B7F36"], "path": ["#C49A6C", "#A97D52", "#D8B184", "#8C6440"], "rim": ["#7A8A55", "#6E6E7A"] },
+      "sky": { "top": "#7FB8F5", "horizon": "#E3F1FF", "fog": "#CFE6FA", "fogNear": 70, "fogFar": 190 },
+      "sun": { "azimuth": 215, "elevation": 52, "color": "#FFF1D6", "intensity": 2.6 },
+      "rim": { "height": 7, "width": 8 },
+      "scatter": [
+        { "kind": "tree_round", "count": 44, "area": [-55, -40, 55, 40], "edgeBand": 11, "minPathDist": 5, "spacing": 3, "scale": [0.8, 1.3] },
+        { "kind": "tree_pine", "count": 26, "area": [-55, -40, 55, 40], "edgeBand": 12, "minPathDist": 5, "spacing": 2.8, "scale": [0.8, 1.3] },
+        { "kind": "bush", "count": 34, "area": [-55, -40, 55, 40], "minPathDist": 4, "spacing": 2 },
+        { "kind": "rock", "count": 14, "area": [-55, -40, 55, 40], "minPathDist": 4.5, "spacing": 4 },
+        { "kind": "rock_small", "count": 24, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2 }
+      ],
+      "decor": [["ruin_pillar", 3], ["runestone", 3], ["fence_wood", 3], ["tent", 2, 2.5], ["crate_stack", 1], ["barrel", 3, 1]],
+      "music": { "root": 52, "scale": "dorian" },
+      "enemyScheme": "blight", "swapChance": 0.4,
+      "names": [["Verdant", "Willow", "Meadow", "Bramble", "Clover"], ["Vale", "Fields", "Hollow", "Crossing", "Downs"]]
+    },
+    "frost": {
+      "label": "Frozen pass",
+      "ground": { "grass": ["#8FA270", "#7E926A", "#A6B48A", "#6F8461"], "path": ["#8A7A68", "#776858", "#9C8C7A", "#65584A"], "rim": ["#8D9AA6", "#B9C6D2"] },
+      "sky": { "top": "#7E9CC4", "horizon": "#E6EDF5", "fog": "#D4DEEA", "fogNear": 85, "fogFar": 210 },
+      "sun": { "azimuth": 160, "elevation": 36, "color": "#FFE4C2", "intensity": 2.3 },
+      "rim": { "height": 8, "width": 8 },
+      "scatter": [
+        { "kind": "tree_pine", "count": 68, "area": [-55, -40, 55, 40], "edgeBand": 12, "minPathDist": 5, "spacing": 2.6, "scale": [0.8, 1.4] },
+        { "kind": "bush", "count": 22, "area": [-55, -40, 55, 40], "minPathDist": 4, "spacing": 2 },
+        { "kind": "rock", "count": 24, "area": [-55, -40, 55, 40], "minPathDist": 4.5, "spacing": 3.5 },
+        { "kind": "rock_small", "count": 32, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2 },
+        { "kind": "crystal_cluster", "count": 6, "area": [-55, -40, 55, 40], "edgeBand": 16, "minPathDist": 5, "spacing": 5 }
+      ],
+      "decor": [["ruin_arch", 1, 3], ["runestone", 4], ["watchtower", 1, 2.5], ["sandbag_wall", 2, 2], ["barbed_fence", 2, 2], ["crate", 2, 1]],
+      "music": { "root": 45, "scale": "aeolian" },
+      "enemyScheme": "blight_frost", "swapChance": 0.6,
+      "names": [["Frost", "Rime", "Hoarfrost", "Glacier", "Winter"], ["Pass", "Reach", "Gate", "Fjord", "Steps"]]
+    },
+    "ember": {
+      "label": "Burning waste",
+      "ground": { "grass": ["#7A6A4A", "#6B5A3E", "#8A7A55", "#5A4A34"], "path": ["#4A3A32", "#3D2F29", "#5A463B", "#2F2420"], "rim": ["#5A4A44", "#3D3436"] },
+      "sky": { "top": "#5A3A4A", "horizon": "#E8A070", "fog": "#C88A6A", "fogNear": 60, "fogFar": 170 },
+      "sun": { "azimuth": 250, "elevation": 30, "color": "#FFC890", "intensity": 2.4 },
+      "rim": { "height": 9, "width": 8 },
+      "scatter": [
+        { "kind": "rock", "count": 34, "area": [-55, -40, 55, 40], "minPathDist": 4.5, "spacing": 3.5 },
+        { "kind": "rock_small", "count": 40, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2 },
+        { "kind": "tree_pine", "count": 18, "area": [-55, -40, 55, 40], "edgeBand": 12, "minPathDist": 5, "spacing": 3, "scale": [0.7, 1.1] },
+        { "kind": "crystal_cluster", "count": 8, "area": [-55, -40, 55, 40], "edgeBand": 16, "minPathDist": 5, "spacing": 5 },
+        { "kind": "mushroom_glow", "count": 10, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 1.6 }
+      ],
+      "decor": [["tank_wreck", 2, 3], ["ruin_pillar", 4], ["barbed_fence", 3, 2], ["sandbag_wall", 2, 2], ["barrel", 4, 1], ["crate_stack", 1]],
+      "music": { "root": 47, "scale": "phrygian" },
+      "enemyScheme": "blight_ember", "swapChance": 0.6,
+      "names": [["Cinder", "Ashen", "Scorch", "Ember", "Brimstone"], ["Wastes", "Flats", "Furnace", "Rift", "Scar"]]
+    },
+    "toxic": {
+      "label": "Blighted marsh",
+      "ground": { "grass": ["#5E7A44", "#4E6A3A", "#6E8A50", "#3E5A30"], "path": ["#6A5A48", "#5A4A3A", "#7A6A55", "#4A3C30"], "rim": ["#4E5A44", "#5A4E5E"] },
+      "sky": { "top": "#6A7A6A", "horizon": "#C8D8B0", "fog": "#A8B890", "fogNear": 55, "fogFar": 160 },
+      "sun": { "azimuth": 200, "elevation": 44, "color": "#E8F0C8", "intensity": 2.2 },
+      "rim": { "height": 6, "width": 8 },
+      "scatter": [
+        { "kind": "mushroom_glow", "count": 30, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 1.6 },
+        { "kind": "tree_magic", "count": 10, "area": [-55, -40, 55, 40], "edgeBand": 14, "minPathDist": 5, "spacing": 4 },
+        { "kind": "tree_round", "count": 24, "area": [-55, -40, 55, 40], "edgeBand": 11, "minPathDist": 5, "spacing": 3, "scale": [0.7, 1.1] },
+        { "kind": "bush", "count": 40, "area": [-55, -40, 55, 40], "minPathDist": 4, "spacing": 2 },
+        { "kind": "rock_small", "count": 20, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2 }
+      ],
+      "decor": [["ruin_arch", 1, 3], ["ruin_pillar", 3], ["runestone", 2], ["fence_wood", 3], ["barrel", 3, 1], ["crate", 2, 1]],
+      "music": { "root": 48, "scale": "phrygian" },
+      "enemyScheme": "blight_toxic", "swapChance": 0.6,
+      "names": [["Mire", "Bog", "Gloam", "Rot", "Fen"], ["Marsh", "Sink", "Wallow", "Mere", "Hollow"]]
+    },
+    "dunes": {
+      "label": "Desert outpost",
+      "ground": { "grass": ["#C8B07A", "#B89E68", "#D8C08A", "#A88E5A"], "path": ["#A07A50", "#8A6640", "#B48C5E", "#745434"], "rim": ["#B89A70", "#9A8060"] },
+      "sky": { "top": "#6FA8E8", "horizon": "#F4E8D0", "fog": "#EAD8B8", "fogNear": 80, "fogFar": 210 },
+      "sun": { "azimuth": 190, "elevation": 60, "color": "#FFF0D0", "intensity": 2.8 },
+      "rim": { "height": 6, "width": 8 },
+      "scatter": [
+        { "kind": "rock", "count": 28, "area": [-55, -40, 55, 40], "minPathDist": 4.5, "spacing": 3.5 },
+        { "kind": "rock_small", "count": 36, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2 },
+        { "kind": "bush", "count": 20, "area": [-55, -40, 55, 40], "minPathDist": 4, "spacing": 2.5 },
+        { "kind": "tree_round", "count": 10, "area": [-55, -40, 55, 40], "edgeBand": 11, "minPathDist": 5, "spacing": 4, "scale": [0.6, 0.9] }
+      ],
+      "decor": [["tent", 3, 2.5], ["sandbag_wall", 3, 2], ["crate_stack", 2], ["barrel", 4, 1], ["watchtower", 1, 2.5], ["tank_wreck", 1, 3]],
+      "music": { "root": 50, "scale": "phrygian" },
+      "enemyScheme": "blight_ember", "swapChance": 0.4,
+      "names": [["Dune", "Sunscorch", "Mirage", "Sandstone", "Dust"], ["Outpost", "Road", "Expanse", "Basin", "Line"]]
+    },
+    "starfall": {
+      "label": "Arcane highland",
+      "ground": { "grass": ["#5E8A6A", "#4E7A5E", "#6E9A7A", "#3E6A50"], "path": ["#9A8AAE", "#867896", "#AE9EC2", "#6E6280"], "rim": ["#6A6A8A", "#5A5A7A"] },
+      "sky": { "top": "#3A3A7A", "horizon": "#C8B8F0", "fog": "#A898D8", "fogNear": 70, "fogFar": 190 },
+      "sun": { "azimuth": 140, "elevation": 40, "color": "#E8E0FF", "intensity": 2.3 },
+      "rim": { "height": 8, "width": 8 },
+      "scatter": [
+        { "kind": "tree_magic", "count": 16, "area": [-55, -40, 55, 40], "edgeBand": 14, "minPathDist": 5, "spacing": 4 },
+        { "kind": "crystal_cluster", "count": 12, "area": [-55, -40, 55, 40], "edgeBand": 16, "minPathDist": 5, "spacing": 5 },
+        { "kind": "tree_pine", "count": 30, "area": [-55, -40, 55, 40], "edgeBand": 12, "minPathDist": 5, "spacing": 2.8, "scale": [0.8, 1.3] },
+        { "kind": "mushroom_glow", "count": 18, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 1.6 },
+        { "kind": "rock_small", "count": 20, "area": [-55, -40, 55, 40], "minPathDist": 3.6, "spacing": 2 }
+      ],
+      "decor": [["ruin_arch", 2, 3], ["ruin_pillar", 4], ["runestone", 5], ["crystal_cluster", 2, 2]],
+      "music": { "root": 53, "scale": "lydian" },
+      "enemyScheme": "blight", "swapChance": 0.4,
+      "names": [["Starfall", "Moonlit", "Aether", "Rune", "Astral"], ["Heights", "Spire", "Plateau", "Sanctum", "Ridge"]]
+    }
+  }
+}

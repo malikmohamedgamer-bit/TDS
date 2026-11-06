@@ -29,6 +29,15 @@ const PROJECTILES = {
   starshard: { color: '#C9A7FF', size: [0.32, 0.32, 0.32], glow: 3 },
 };
 
+/** Hit effects for hero skills added in data (ring colour at cast, particle burst on hit). */
+const ABILITY_FX = {
+  artillery_barrage: { ring: '#F28C28', y: 0.4, count: 60, colors: ['#FF9F1C', '#FFD27A', '#6E6E7A'], speed: 0.6, up: 7, size: 0.24, shake: 0.4 },
+  field_repairs: { ring: '#3FB950', y: 1, count: 30, colors: ['#3FB950', '#FFF3B0'], up: 4, size: 0.14 },
+  war_chest: { ring: '#FFD166', y: 1, count: 30, colors: ['#FFD166', '#FFF3B0'], up: 5, size: 0.14 },
+  gravity_well: { ring: '#B15CFF', y: 0.4, count: 50, colors: ['#B15CFF', '#1E1B4B', '#C9A7FF'], speed: -0.6, up: 1, size: 0.16 },
+  starfall: { ring: '#7FF6FF', y: 0.6, count: 70, colors: ['#7FF6FF', '#FFFFFF', '#B15CFF'], speed: 0.8, up: 8, size: 0.22, shake: 0.35 },
+};
+
 export class MatchView {
   constructor(renderer, match, content, settings, overlay) {
     this.r = renderer;
@@ -294,7 +303,7 @@ export class MatchView {
         case 'allySpawn': this.fx.ring(e.x, 0.1, e.z, { color: '#7FF6FF', r1: 1.5 }); this.fx.burst(e.x, 0.5, e.z, { count: 14, color: '#7FF6FF', up: 3 }); break;
         case 'allyDeath': this.fx.burst(e.x, 0.6, e.z, { count: 14, color: '#7FF6FF', up: 3 }); break;
         case 'heroAttack': this.fx.bolt(e.x, 1.2, e.z, e.tx, 1.0, e.tz, { segments: 3, jitter: 0.15, life: 0.12 }); this.fx.burst(e.tx, 1, e.tz, { count: 6, color: '#C9A7FF', up: 1.5, speed: 2 }); break;
-        case 'abilityCast': this.fx.ring(e.x, 0.1, e.z, { color: e.id === 'frost_nova' ? '#7FDBFF' : e.id === 'airstrike' ? '#E5484D' : '#FFD166', r0: e.radius, r1: e.radius * 1.02, life: Math.max(0.4, e.delay + 0.2), intensity: 2 }); break;
+        case 'abilityCast': this.fx.ring(e.x, 0.1, e.z, { color: ABILITY_FX[e.id]?.ring || (e.id === 'frost_nova' ? '#7FDBFF' : e.id === 'airstrike' ? '#E5484D' : '#FFD166'), r0: e.radius, r1: e.radius * 1.02, life: Math.max(0.4, e.delay + 0.2), intensity: 2 }); break;
         case 'abilityHit': {
           if (e.id === 'airstrike') {
             for (let i = 0; i < 6; i++) {
@@ -305,6 +314,11 @@ export class MatchView {
           }
           if (e.id === 'frost_nova') this.fx.burst(e.x, 0.4, e.z, { count: 50, colors: ['#7FDBFF', '#FFFFFF', '#BDEBFF'], speed: e.radius, up: 2, size: 0.16 });
           if (e.id === 'commanders_rally') this.fx.burst(e.x, 1, e.z, { count: 30, colors: ['#FFD166', '#C9A7FF'], up: 5 });
+          const fx = ABILITY_FX[e.id];
+          if (fx) {
+            this.fx.burst(e.x, fx.y, e.z, { count: fx.count, colors: fx.colors, speed: (fx.speed ?? 1) * e.radius, up: fx.up, size: fx.size });
+            if (fx.shake && !this.settings.reducedMotion) this.shake = fx.shake;
+          }
           this.fx.ring(e.x, 0.1, e.z, { color: '#FFFFFF', r0: 0.5, r1: e.radius, life: 0.5 });
           break;
         }

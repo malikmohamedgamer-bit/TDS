@@ -1,0 +1,507 @@
+{
+ "id": "gen_frost_2",
+ "name": "Rime Pass",
+ "description": "Frozen pass: 3 roads.",
+ "seed": "gf2",
+ "scatterGap": 1.3,
+ "waves": "gen_frost_2_waves",
+ "unlockLevel": 19,
+ "theme": "frost",
+ "generated": {
+  "template": "trident",
+  "seed": "gf2",
+  "theme": "frost"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#7E9CC4",
+  "horizon": "#E6EDF5",
+  "fog": "#D4DEEA",
+  "fogNear": 85,
+  "fogFar": 210
+ },
+ "sun": {
+  "azimuth": 160,
+  "elevation": 36,
+  "color": "#FFE4C2",
+  "intensity": 2.3
+ },
+ "ground": {
+  "grass": [
+   "#8FA270",
+   "#7E926A",
+   "#A6B48A",
+   "#6F8461"
+  ],
+  "path": [
+   "#8A7A68",
+   "#776858",
+   "#9C8C7A",
+   "#65584A"
+  ],
+  "rim": [
+   "#8D9AA6",
+   "#B9C6D2"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 8,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 1,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 17,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": 1,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": -17,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 37.5,
+    "z": 33.5,
+    "r": 9.5,
+    "h": 2.9
+   },
+   {
+    "x": 0,
+    "z": -10.5,
+    "r": 6,
+    "h": 2.7
+   },
+   {
+    "x": 26,
+    "z": 19.5,
+    "r": 5,
+    "h": 2.5
+   },
+   {
+    "x": 27,
+    "z": 33.5,
+    "r": 7.5,
+    "h": 1.2
+   },
+   {
+    "x": 32,
+    "z": 35,
+    "r": 5,
+    "h": 1.3
+   },
+   {
+    "x": 40.5,
+    "z": -30.5,
+    "r": 7,
+    "h": 2
+   },
+   {
+    "x": 39.5,
+    "z": 32.5,
+    "r": 7,
+    "h": 1.6
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "north",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     17
+    ],
+    [
+     -38,
+     17
+    ],
+    [
+     -38,
+     28
+    ],
+    [
+     -20,
+     28
+    ],
+    [
+     -20,
+     17
+    ],
+    [
+     -4.5,
+     17
+    ],
+    [
+     -4.5,
+     30
+    ],
+    [
+     12.5,
+     30
+    ],
+    [
+     12.5,
+     1
+    ],
+    [
+     45,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "middle",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     1
+    ],
+    [
+     45,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "south",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -17
+    ],
+    [
+     -38,
+     -17
+    ],
+    [
+     -38,
+     -30
+    ],
+    [
+     -24.5,
+     -30
+    ],
+    [
+     -24.5,
+     -18.5
+    ],
+    [
+     -8,
+     -18.5
+    ],
+    [
+     -8,
+     -30
+    ],
+    [
+     9,
+     -30
+    ],
+    [
+     9,
+     -19
+    ],
+    [
+     26,
+     -19
+    ],
+    [
+     26,
+     1
+    ],
+    [
+     45,
+     1
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 1
+ },
+ "playerSpawn": {
+  "x": 31.5,
+  "z": 13.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 17,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 1,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -17,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 1,
+   "rot": 0
+  },
+  {
+   "kind": "ruin_arch",
+   "x": 21.5,
+   "z": 11,
+   "rot": 4.35
+  },
+  {
+   "kind": "runestone",
+   "x": -16.5,
+   "z": -8,
+   "rot": 0.64
+  },
+  {
+   "kind": "runestone",
+   "x": -0.5,
+   "z": -9.5,
+   "rot": 0.68
+  },
+  {
+   "kind": "runestone",
+   "x": -22.5,
+   "z": -10.5,
+   "rot": 5.36
+  },
+  {
+   "kind": "runestone",
+   "x": 38,
+   "z": -24.5,
+   "rot": 4.42
+  },
+  {
+   "kind": "watchtower",
+   "x": 27.5,
+   "z": 32.5,
+   "rot": 5.75
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 41,
+   "z": -13,
+   "rot": 0.54
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -13.5,
+   "z": 28.5,
+   "rot": 3.73
+  },
+  {
+   "kind": "barbed_fence",
+   "x": 19.5,
+   "z": -9.5,
+   "rot": 5.19
+  },
+  {
+   "kind": "barbed_fence",
+   "x": 40,
+   "z": -19.5,
+   "rot": 3.24
+  },
+  {
+   "kind": "crate",
+   "x": -40,
+   "z": -8,
+   "rot": 6.09
+  },
+  {
+   "kind": "crate",
+   "x": -36,
+   "z": 9.5,
+   "rot": 2.11
+  },
+  {
+   "kind": "lamp_post",
+   "x": -41.5,
+   "z": 13,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 8.5,
+   "z": 24,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -38,
+   "z": -2.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -17,
+   "z": 4.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -1,
+   "z": 16,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 12.5,
+   "z": -30.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 30,
+   "z": -13.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 32,
+   "z": 5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -6.5,
+   "z": -15,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 0,
+   "z": 21,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 13,
+   "z": -14.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -12,
+   "z": 13.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -16.5,
+   "z": 22,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -9,
+   "z": 22.5,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "tree_pine",
+   "count": 68,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 2.6,
+   "scale": [
+    0.8,
+    1.4
+   ]
+  },
+  {
+   "kind": "bush",
+   "count": 22,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2
+  },
+  {
+   "kind": "rock",
+   "count": 24,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 3.5
+  },
+  {
+   "kind": "rock_small",
+   "count": 32,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  },
+  {
+   "kind": "crystal_cluster",
+   "count": 6,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 16,
+   "minPathDist": 5,
+   "spacing": 5
+  }
+ ]
+}
