@@ -4,7 +4,7 @@ Play at https://malikmohamedgamer-bit.github.io/TDS/ (or `npm run dev`). Sound o
 
 ## Try first (new on 2026-11-06)
 1. **New maps**: Play > Map. Glacier Gate unlocks at player level 2, Mirrormire at 4, Starfall Sanctum at 6,
-   then a generated map every two levels (5 to 27). To try them all now, use Sandbox or open the game with
+   then a generated map every two levels (5 to 27). To try a locked map now, open the game with
    `?map=<id>` (for example `?map=mirrormire`). The three flagships show off the new monsters and bosses.
 2. **Heroes**: Play > Hero. Warmaster Ryn (Artillery Barrage, Field Repairs, War Chest) and Archmage Seren
    (Gravity Well, Starfall, Frost Nova). Picking one reloads the game with that hero.
