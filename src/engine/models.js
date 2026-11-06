@@ -13,7 +13,10 @@ const cache = new Map();
 export function modelSrc(content, def) {
   const glb = def.model?.glb && content.models.get(def.model.glb);
   if (!glb) return null;
-  return def.model.palette ? { ...glb, palette: def.model.palette } : glb;
+  // trim: faction material language (see applyTrim): War paint wear and hazard stripes, Magic rune glints,
+  // Blight corruption veins (enemies carry no faction, so they get the Blight trim)
+  const trim = def.faction === 'war' || def.faction === 'magic' ? def.faction : (def.archetype ? 'blight' : null);
+  return { ...glb, ...(def.model.palette ? { palette: def.model.palette } : {}), ...(trim ? { trim } : {}) };
 }
 
 let schemes = {};
@@ -37,13 +40,15 @@ export function loadGLB(src) {
   const noGlow = typeof src === 'object' && src.glow === false;
   // basePlate: 'war' | 'magic' puts a tower without its own base on a pad (art style: ground contact)
   const plate = typeof src === 'object' ? src.basePlate || null : null;
-  const key = `${url}|${palette || ''}|${scale}|${yaw}|${noGlow}|${plate}`;
+  const trim = typeof src === 'object' ? src.trim || null : null;
+  const key = `${url}|${palette || ''}|${scale}|${yaw}|${noGlow}|${plate}|${trim}`;
   if (!cache.has(key)) {
     cache.set(key, new Promise((resolve, reject) => {
       loader.load(url, (gltf) => {
         let scheme = palette ? schemes[palette] : null;
         if (scheme && noGlow) scheme = noGlowScheme(scheme);
         styleScene(gltf.scene, scheme);
+        if (trim) applyTrim(gltf.scene, trim);
         if (scale !== 1 || yaw || plate) {
           // wrap so node animations (which set the scene's own transforms) keep the scale
           const wrap = new THREE.Group();
@@ -174,6 +179,55 @@ export function styleScene(root, scheme = null) {
       return nm;
     });
     o.material = Array.isArray(o.material) ? out : out[0];
+  });
+}
+
+// Faction material language (ROADMAP Chunk 1). Object-space (so it never swims while units move) pixel-grain
+// detail at 16 texels/m patched into the standard material: every kind gets wear speckle; War turns orange /
+// yellow trim into hazard stripes and chips the paint; Magic makes gold glint and puts glowing rune dots on
+// blue / violet surfaces; Blight lets faint corruption veins glow. Emissive only, as the art style asks.
+const TRIM_GLSL = {
+  war: `
+    float hz = step(0.5, fract((vTrimP.x + vTrimP.y + vTrimP.z) * 4.0));
+    bool haz = diffuseColor.r > 0.55 && diffuseColor.g > 0.3 && diffuseColor.b < 0.35;
+    if (haz) diffuseColor.rgb = mix(vec3(0.07, 0.07, 0.08), diffuseColor.rgb, hz);
+    if (th > 0.9) diffuseColor.rgb *= vec3(0.78, 0.62, 0.5);`,
+  magic: `
+    bool gold = diffuseColor.r > 0.55 && diffuseColor.g > 0.4 && diffuseColor.b < 0.4;
+    bool cool = diffuseColor.b > diffuseColor.r * 1.05 && diffuseColor.b > diffuseColor.g;
+    if (gold) { diffuseColor.rgb *= 1.0 + 0.25 * step(0.8, th); trimGlow = vec3(1.0, 0.75, 0.3) * 0.18 * step(0.9, th); }
+    if (cool && th > 0.93) trimGlow = diffuseColor.rgb * 1.8 + vec3(0.1, 0.25, 0.3);`,
+  blight: `
+    float vein = step(0.965, th) + step(0.99, fract(sin(dot(floor(vTrimP * 8.0), vec3(3.1, 7.7, 5.3))) * 9371.0));
+    trimGlow = vec3(0.55, 0.2, 0.75) * 0.9 * vein;
+    if (th < 0.08) diffuseColor.rgb *= 0.75;`,
+};
+export function applyTrim(root, kind) {
+  const body = TRIM_GLSL[kind];
+  if (!body) return;
+  const done = new Set();
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+      if (done.has(m) || !m.isMeshStandardMaterial) continue;
+      done.add(m);
+      m.onBeforeCompile = (sh) => {
+        sh.vertexShader = sh.vertexShader
+          .replace('#include <common>', '#include <common>\nvarying vec3 vTrimP;')
+          .replace('#include <begin_vertex>', '#include <begin_vertex>\nvTrimP = position;');
+        sh.fragmentShader = sh.fragmentShader
+          .replace('#include <common>', '#include <common>\nvarying vec3 vTrimP;')
+          .replace('#include <color_fragment>', `#include <color_fragment>
+            vec3 trimQ = floor(vTrimP * 16.0);
+            float th = fract(sin(dot(trimQ, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+            vec3 trimGlow = vec3(0.0);
+            diffuseColor.rgb *= 0.92 + 0.08 * th;
+            ${body}`)
+          .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += trimGlow;');
+      };
+      m.customProgramCacheKey = () => `trim-${kind}`;
+      m.needsUpdate = true;
+    }
   });
 }
 

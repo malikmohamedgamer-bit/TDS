@@ -31,7 +31,8 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
         docs/screenshots/identity/kit-b1/match-*.png). Weak spot: dark bodies on dark forest maps rely on the glow accents
   - [x] `KIT_BOSSES` = 40: 5 bodies (wraith 18, colossus 9, brute 5, crawler 5, strider 3), 40 different body+parts sets, 6 hide tints + 5 accents; sheets docs/screenshots/identity/kit-b2; 8 checked in a match (33-40). Weak spot: tints read dark under scene lighting
 - [x] Heroes: each of the 7 has a distinct build (body scale), head, weapon (blade, rifle, staff, launcher, bow) and shoulder gear (pauldrons, mantle, spikes); sheets docs/screenshots/identity/heroes-b1; 10+ heroes is Chunk 2
-- [ ] Tower and enemy materials: emissive details, wear, trim; Magic = runes / crystal / gold, War = painted
+- [x] Tower and enemy materials (first pass, 2026-11-06): `applyTrim` in models.js: object-space 16 texel/m wear, War hazard stripes + chipped paint, Magic gold glints + rune dots, Blight veins (GLB models only; code-built models still flat). Subtle by design; `tools/dev/trim-shot.mjs`, docs/screenshots/identity/trim. Not yet: code-built models, close-up hazard check
+  (was: emissive details, wear, trim; Magic = runes / crystal / gold, War = painted
       metal / camo / hazard stripes (models.js style pass)
 - [ ] Distinct models toward 40% of units for towers and enemies
 - [ ] Readability language: shape, colour, icon, ring for damage type, class, rarity, threat
@@ -107,3 +108,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-06 | Chunk 1 slice 1 | Owner raised the stop line to 99% for this run. Boss kit + 8 kit bosses, reviewed from 4 angles (fixed: cylinders and cones are base-anchored in ModelBuilder, now `centered`; second weapon to the left hand). Then checked in a real match (no errors, scale fine) |
 | 2026-11-06 | Chunk 1 slice 2 | 40 kit bosses (boss models 22 -> 54 distinct), tints, sheets kit-b2, match check; unit 111, lint clean |
 | 2026-11-06 | Chunk 1 slice 3 | Heroes: builds, bow and launcher weapons, pauldrons / mantle / spikes; reviewed from 4 angles |
+| 2026-11-06 | Chunk 1 slice 4 | Faction material trims via applyTrim (shader patch, no console errors in a real match); subtle |
