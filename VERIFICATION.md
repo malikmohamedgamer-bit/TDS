@@ -15,6 +15,7 @@ Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU perfo
 | Hub responsiveness | CDP Performance metrics, same 4 tab clicks | faster | old UI 34 s, new UI 40 s (bug 45) -> 19 s after finite animations + quarter-rate world behind menus |
 | Boss mechanics | test/unit/bosses.test.js (13 tests) | pass | every new action, timers restore exact values, 40 generated bosses each beatable with 3 phases |
 | Boss Rush balance | `node tools/dev/boss-rush.mjs 20` | 55% | below 60-70% target, accepted after 3 attempts (BUGS.md #46) |
+| 30 min soak | `npm run soak -- --minutes 30` (every map) | pass | 30 simulated min per map, about 15.5 km walked each, 0 rescues, 0 failures |
 | Visual check of themes | in-app browser, desktop | pass | Ember lava, Frost ice, Toxic ooze, Starfall night runes, faction decals; not checked on a real phone or GPU |
 
 ## Milestone 1 (2026-11-05)

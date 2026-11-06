@@ -150,7 +150,8 @@ batch; stop at about 95% of the 5-hour window / 97% weekly and schedule a resume
   quests batch (`tools/gen-quests.mjs` -> data/quests/generated_b1.json, data/index.json `quests` is now a list,
   `condProgress` in src/meta/meta.js), faction base decals + rarity rings under towers (src/engine/matchView.js
   `factionDecal`).
-- **Next**: (1) 30 min soak (`npm run soak -- --minutes 30`) for this milestone. (2) Track A unit materials (faction trims, wear, rarity glints on models, eye / weapon glow) in
+- 30 min soak passed (VERIFICATION.md). Resume task `tds-ui-gfx-resume-2` fires after the usage reset.
+- **Next**: (2) Track A unit materials (faction trims, wear, rarity glints on models, eye / weapon glow) in
   src/engine/models.js style pass. (4) Remaining screens: Index detail panel, quests / achievements
   layout, summon banners (more than one), pause screen styling, loading tips per theme. (5) Track D:
   unique-mechanic towers and enemies, new themes / maps, modes, quests, achievements, cosmetics
