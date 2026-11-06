@@ -131,7 +131,15 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-UI / texture / GFX / content update (owner brief 2026-11-06, docs/ui-style.md; checkpoints to wip/ui-gfx before each
+**FINISH THE GAME run (owner brief 2026-11-06, supersedes the UI/GFX brief below).** Checklist and priority tiers:
+`docs/ROADMAP.md`. Chunk 0 done (clean tree, unit 109/109, lint clean, Blender MCP 5.2.2 verified). Stopped at 85%
+of the 5-hour window; resume task `tds-finish-game-resume-1` (Bypass permissions mode saved) fires 2026-11-06 19:10
+local and carries the verbatim brief. **Next:** Chunk 1 batch 1, boss visual identity: a modular code-built boss kit
+(body, horns, wings, armour, weapons, totems, auras in `src/engine/unitModels.js`) so 40+ bosses get distinct bodies
+whose silhouette hints at their mechanic (shield = armour, summon = totems, cloak = veils, ...). Checkpoint to
+`wip/final` first. The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
+
+Older brief, UI / texture / GFX / content update (owner brief 2026-11-06, docs/ui-style.md; checkpoints to wip/ui-gfx before each
 batch; stop at about 95% of the 5-hour window / 97% weekly and schedule a resume).
 - Done (batch UI/GFX 1 + bosses): docs/ui-style.md, styles/tokens.css + styles/theme.css (war-table panels,
   faction dress), src/ui/icons.js (SVG set: classes, archetypes, damage types, abilities, rarity badges),
