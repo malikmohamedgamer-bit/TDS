@@ -14,3 +14,4 @@ _site/
 # raw downloaded asset packs (re-fetch: tools/fetch-kenney.mjs, links in docs/credits.md)
 assets/packs/*
 !assets/packs/.gitkeep
+.run-lock
