@@ -104,11 +104,11 @@
         }
       },
       "attack": {
-        "damage": 10,
+        "damage": 8,
         "damageType": "arcane",
         "rate": 1.2,
         "range": 10,
-        "splash": 2
+        "splash": 1.5
       },
       "abilities": [
         "gravity_well",
@@ -203,9 +203,9 @@
         }
       },
       "attack": {
-        "damage": 6,
+        "damage": 5,
         "damageType": "physical",
-        "rate": 3,
+        "rate": 2.6,
         "range": 8,
         "splash": 0
       },
@@ -250,13 +250,13 @@
         }
       },
       "attack": {
-        "damage": 10,
+        "damage": 8,
         "damageType": "poison",
         "rate": 1.2,
         "range": 9,
         "splash": 0,
         "slow": {
-          "amount": 0.2,
+          "amount": 0.15,
           "duration": 1.5
         }
       },
@@ -301,7 +301,7 @@
         }
       },
       "attack": {
-        "damage": 30,
+        "damage": 18,
         "damageType": "physical",
         "rate": 0.5,
         "range": 16,
@@ -403,11 +403,11 @@
         }
       },
       "attack": {
-        "damage": 20,
+        "damage": 11,
         "damageType": "explosive",
         "rate": 0.8,
         "range": 9,
-        "splash": 2
+        "splash": 1.5
       },
       "abilities": [
         "carpet_bomb",
@@ -450,7 +450,7 @@
         }
       },
       "attack": {
-        "damage": 26,
+        "damage": 24,
         "damageType": "dark",
         "rate": 1.6,
         "range": 6,

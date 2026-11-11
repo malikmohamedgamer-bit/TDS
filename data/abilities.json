@@ -89,10 +89,10 @@
       "delay": 0,
       "radius": 3,
       "effects": {
-        "cash": 120
+        "cash": 100
       },
       "unlockWave": 1,
-      "description": "Requisitioned funds: +120 cash."
+      "description": "Requisitioned funds: +100 cash."
     },
     {
       "id": "gravity_well",
@@ -106,23 +106,23 @@
         "damage": 30,
         "damageType": "arcane",
         "slow": {
-          "amount": 0.5,
-          "duration": 5
+          "amount": 0.4,
+          "duration": 4
         }
       },
       "unlockWave": 1,
-      "description": "Warps space: enemies in the area are halved in speed for 5 s."
+      "description": "Warps space: enemies in the area lose 40% of their speed for 4 s."
     },
     {
       "id": "starfall",
       "name": "Starfall",
       "faction": "magic",
-      "cooldown": 70,
+      "cooldown": 80,
       "target": "point",
       "delay": 1.2,
       "radius": 6,
       "effects": {
-        "damage": 320,
+        "damage": 260,
         "damageType": "arcane"
       },
       "unlockWave": 1,
@@ -169,21 +169,21 @@
       "id": "arcane_chain",
       "name": "Arcane Chain",
       "faction": "magic",
-      "cooldown": 30,
+      "cooldown": 40,
       "target": "point",
       "delay": 0.2,
       "radius": 6,
       "effects": {
-        "damage": 110,
+        "damage": 60,
         "damageType": "arcane",
         "chain": {
-          "count": 8,
+          "count": 6,
           "falloff": 0.85,
           "range": 7
         }
       },
       "unlockWave": 1,
-      "description": "A bolt strikes the enemy nearest the point and jumps to 7 more."
+      "description": "A bolt strikes the enemy nearest the point and jumps to 5 more."
     },
     {
       "id": "meteor",
@@ -194,7 +194,7 @@
       "delay": 1.6,
       "radius": 6,
       "effects": {
-        "damage": 260,
+        "damage": 220,
         "damageType": "fire",
         "stun": 0.4,
         "burn": {
@@ -217,12 +217,12 @@
         "damage": 25,
         "damageType": "fire",
         "burn": {
-          "dps": 30,
+          "dps": 22,
           "duration": 6
         }
       },
       "unlockWave": 1,
-      "description": "Sets a wide area ablaze: 30 fire damage per second for 6 s."
+      "description": "Sets a wide area ablaze: 22 fire damage per second for 6 s."
     },
     {
       "id": "kindle",
@@ -253,25 +253,25 @@
       "effects": {
         "damage": 60,
         "damageType": "fire",
-        "knockback": 4
+        "knockback": 3
       },
       "unlockWave": 1,
-      "description": "A blast wave that throws ground enemies 4 m back along the road (bosses 1 m)."
+      "description": "A blast wave that throws ground enemies 3 m back along the road (bosses less)."
     },
     {
       "id": "reinforcements",
       "name": "Reinforcements",
       "faction": "war",
-      "cooldown": 50,
+      "cooldown": 65,
       "target": "point",
       "delay": 0.8,
       "radius": 4,
       "effects": {
         "allies": {
-          "count": 3,
+          "count": 2,
           "unit": {
             "id": "rifle_trooper",
-            "hp": 160,
+            "hp": 80,
             "damage": 14,
             "rate": 1.5,
             "speed": 4,
@@ -281,7 +281,7 @@
         }
       },
       "unlockWave": 1,
-      "description": "Three riflemen drop onto the road nearest the point and hold it."
+      "description": "Two riflemen drop onto the road nearest the point and hold it."
     },
     {
       "id": "frag_volley",
@@ -292,12 +292,12 @@
       "delay": 0.6,
       "radius": 7,
       "effects": {
-        "damage": 90,
+        "damage": 70,
         "damageType": "explosive",
-        "knockback": 3
+        "knockback": 2
       },
       "unlockWave": 1,
-      "description": "Grenades knock ground enemies 3 m back (bosses less)."
+      "description": "Grenades knock ground enemies 2 m back (bosses less)."
     },
     {
       "id": "overclock",
@@ -309,12 +309,12 @@
       "radius": 12,
       "effects": {
         "towerBuff": {
-          "rate": 0.5,
-          "duration": 6
+          "rate": 0.35,
+          "duration": 5
         }
       },
       "unlockWave": 1,
-      "description": "Nearby towers fire 50% faster for 6 s."
+      "description": "Nearby towers fire 35% faster for 5 s."
     },
     {
       "id": "supply_drop",
@@ -325,33 +325,33 @@
       "delay": 0,
       "radius": 3,
       "effects": {
-        "cash": 80,
-        "healBase": 8
+        "cash": 50,
+        "healBase": 4
       },
       "unlockWave": 1,
-      "description": "A crate with +80 cash and spare parts for the keep (+8 health)."
+      "description": "A crate with +50 cash and spare parts for the keep (+4 health)."
     },
     {
       "id": "entangling_roots",
       "name": "Entangling Roots",
       "faction": "magic",
-      "cooldown": 40,
+      "cooldown": 50,
       "target": "point",
       "delay": 0.5,
       "radius": 7,
       "effects": {
-        "damage": 30,
+        "damage": 20,
         "damageType": "poison",
-        "stun": 2
+        "stun": 1.0
       },
       "unlockWave": 1,
-      "description": "Roots hold every enemy in the area for 2 s (bosses 0.5 s)."
+      "description": "Roots hold every enemy in the area for 1 s (bosses less)."
     },
     {
       "id": "spirit_pack",
       "name": "Spirit Pack",
       "faction": "magic",
-      "cooldown": 55,
+      "cooldown": 70,
       "target": "point",
       "delay": 0.5,
       "radius": 4,
@@ -360,7 +360,7 @@
           "count": 2,
           "unit": {
             "id": "spirit_wolf",
-            "hp": 180,
+            "hp": 100,
             "damage": 18,
             "rate": 1.2,
             "speed": 4.5,
@@ -376,7 +376,7 @@
       "id": "cleansing_bloom",
       "name": "Cleansing Bloom",
       "faction": "magic",
-      "cooldown": 45,
+      "cooldown": 55,
       "target": "point",
       "delay": 0.4,
       "radius": 9,
@@ -398,14 +398,14 @@
       "delay": 0,
       "radius": 14,
       "effects": {
-        "healBase": 12,
+        "healBase": 8,
         "towerBuff": {
           "rate": 0.15,
           "duration": 10
         }
       },
       "unlockWave": 1,
-      "description": "Restores 12 keep health and quickens nearby towers by 15% for 10 s."
+      "description": "Restores 8 keep health and quickens nearby towers by 15% for 10 s."
     },
     {
       "id": "marked_for_death",
@@ -416,15 +416,15 @@
       "delay": 0.3,
       "radius": 4,
       "effects": {
-        "damage": 120,
+        "damage": 90,
         "damageType": "physical",
         "mark": {
-          "amount": 0.4,
+          "amount": 0.2,
           "duration": 8
         }
       },
       "unlockWave": 1,
-      "description": "A spotter round: 120 damage and +40% damage taken for 8 s."
+      "description": "A spotter round: 90 damage and +20% damage taken for 8 s."
     },
     {
       "id": "emp_burst",
@@ -438,10 +438,10 @@
         "damage": 50,
         "damageType": "lightning",
         "shieldBreak": 1,
-        "stun": 1.2
+        "stun": 1.0
       },
       "unlockWave": 1,
-      "description": "Fries shields (bosses half) and stuns for 1.2 s."
+      "description": "Fries shields (bosses half) and stuns for 1 s."
     },
     {
       "id": "recon_drone",
@@ -454,28 +454,28 @@
       "effects": {
         "reveal": true,
         "mark": {
-          "amount": 0.15,
+          "amount": 0.1,
           "duration": 10
         }
       },
       "unlockWave": 1,
-      "description": "A drone sweep: reveals stealth and marks a huge area (+15% damage taken for 10 s)."
+      "description": "A drone sweep: reveals stealth and marks a huge area (+10% damage taken for 10 s)."
     },
     {
       "id": "headhunter",
       "name": "Headhunter",
       "faction": "war",
-      "cooldown": 55,
+      "cooldown": 65,
       "target": "point",
       "delay": 0.4,
       "radius": 5,
       "effects": {
-        "damage": 150,
+        "damage": 100,
         "damageType": "physical",
-        "execute": 0.25
+        "execute": 0.15
       },
       "unlockWave": 1,
-      "description": "Finishes every non-boss below 25% health in the area, then 150 damage."
+      "description": "Finishes every non-boss below 15% health in the area, then 100 damage."
     },
     {
       "id": "tidal_surge",
@@ -488,7 +488,7 @@
       "effects": {
         "damage": 50,
         "damageType": "ice",
-        "knockback": 5,
+        "knockback": 4,
         "slow": {
           "amount": 0.4,
           "duration": 3
@@ -508,10 +508,10 @@
       "effects": {
         "damage": 70,
         "damageType": "ice",
-        "freeze": 3
+        "freeze": 2.2
       },
       "unlockWave": 1,
-      "description": "Ice erupts from the road and freezes everything in the circle for 3 s."
+      "description": "Ice erupts from the road and freezes everything in the circle for 2.2 s."
     },
     {
       "id": "tempest_call",
@@ -522,7 +522,7 @@
       "delay": 0.8,
       "radius": 7,
       "effects": {
-        "damage": 140,
+        "damage": 100,
         "damageType": "lightning",
         "chain": {
           "count": 6,
@@ -555,12 +555,12 @@
       "id": "carpet_bomb",
       "name": "Carpet Bomb",
       "faction": "war",
-      "cooldown": 65,
+      "cooldown": 75,
       "target": "point",
       "delay": 2.5,
       "radius": 12,
       "effects": {
-        "damage": 200,
+        "damage": 140,
         "damageType": "explosive",
         "stun": 0.4
       },
@@ -571,17 +571,17 @@
       "id": "sapper_charge",
       "name": "Sapper Charge",
       "faction": "war",
-      "cooldown": 30,
+      "cooldown": 50,
       "target": "point",
       "delay": 1.5,
       "radius": 5,
       "effects": {
-        "damage": 260,
+        "damage": 140,
         "damageType": "explosive",
-        "stun": 1.5
+        "stun": 1.0
       },
       "unlockWave": 1,
-      "description": "A planted charge goes off after 1.5 s: huge damage and a long stun in a small circle."
+      "description": "A planted charge goes off after 1.5 s: heavy damage and a stun in a small circle."
     },
     {
       "id": "scrap_haul",
@@ -592,11 +592,11 @@
       "delay": 0,
       "radius": 3,
       "effects": {
-        "cash": 100,
+        "cash": 50,
         "healBase": 10
       },
       "unlockWave": 1,
-      "description": "Salvage from the field: +100 cash and +10 keep health."
+      "description": "Salvage from the field: +50 cash and +10 keep health."
     },
     {
       "id": "tripwire_field",
@@ -610,12 +610,12 @@
         "damage": 35,
         "damageType": "physical",
         "slow": {
-          "amount": 0.6,
-          "duration": 5
+          "amount": 0.45,
+          "duration": 4
         }
       },
       "unlockWave": 1,
-      "description": "Wires and caltrops: enemies in the circle are slowed by 60% for 5 s."
+      "description": "Wires and caltrops: enemies in the circle are slowed by 45% for 4 s."
     },
     {
       "id": "shadow_strike",
@@ -626,12 +626,12 @@
       "delay": 0.2,
       "radius": 4,
       "effects": {
-        "damage": 180,
+        "damage": 150,
         "damageType": "dark",
-        "execute": 0.3
+        "execute": 0.25
       },
       "unlockWave": 1,
-      "description": "A blade of shadow: heavy damage, and finishes every non-boss below 30% health."
+      "description": "A blade of shadow: heavy damage, and finishes every non-boss below 25% health."
     },
     {
       "id": "umbral_snare",
@@ -644,10 +644,10 @@
       "effects": {
         "damage": 30,
         "damageType": "dark",
-        "stun": 2.2
+        "stun": 1.8
       },
       "unlockWave": 1,
-      "description": "Shadows bind every enemy in the circle for 2.2 s."
+      "description": "Shadows bind every enemy in the circle for 1.8 s."
     },
     {
       "id": "dusk_veil",
@@ -660,12 +660,12 @@
       "effects": {
         "reveal": true,
         "mark": {
-          "amount": 0.3,
+          "amount": 0.2,
           "duration": 8
         }
       },
       "unlockWave": 1,
-      "description": "Reveals hidden enemies and marks them: +30% damage taken for 8 s."
+      "description": "Reveals hidden enemies and marks them: +20% damage taken for 8 s."
     },
     {
       "id": "soul_harvest",

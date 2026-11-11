@@ -32,14 +32,14 @@ test('Field Repairs heals the keep (capped), War Chest adds cash, Gravity Well s
   assert.equal(m.baseHp, m.baseMax, 'never above the maximum');
   const cash = m.cash;
   resolve(m, 'war_chest');
-  assert.equal(m.cash, cash + 120);
+  assert.equal(m.cash, cash + m.content.abilities.get('war_chest').effects.cash);
 
   const s = match('archmage_seren');
   const p = s.paths[0].pointAt(30, {});
   s.spawnEnemy('husk', { d: 30 });
   const e = s.enemies[0];
   resolve(s, 'gravity_well', p.x, p.z);
-  assert.ok(e.slow >= 0.5 && e.slowUntil > s.time, `slow ${e.slow}`);
+  assert.ok(e.slow >= s.content.abilities.get('gravity_well').effects.slow.amount && e.slowUntil > s.time, `slow ${e.slow}`);
 });
 
 test('automatic Field Repairs waits until the keep has lost at least the repair amount', () => {
@@ -64,10 +64,10 @@ test('new skill effects: knockback, reveal, shield break, execute, chain, allies
   const e = m.spawnEnemy('husk', { d: 40 });
   e.hp = e.maxHp = 1e5;
   resolve(m, 'frag_volley', p.x, p.z);
-  assert.ok(Math.abs(e.d - 37) < 0.01, `knocked back to ${e.d}`);
+  assert.ok(Math.abs(e.d - (40 - m.content.abilities.get('frag_volley').effects.knockback)) < 0.01, `knocked back to ${e.d}`);
   const allies = m.allies.length;
   resolve(m, 'reinforcements', p.x, p.z);
-  assert.equal(m.allies.length, allies + 3);
+  assert.equal(m.allies.length, allies + m.content.abilities.get('reinforcements').effects.allies.count);
   assert.ok(m.allies.every((a) => a.kind === 'rifle_trooper' && a.owner === -1));
 
   const h = match('captain_holt');
@@ -79,7 +79,7 @@ test('new skill effects: knockback, reveal, shield break, execute, chain, allies
   assert.ok(a.markUntil > h.time);
   resolve(h, 'emp_burst', q.x, q.z);
   assert.equal(a.shield, 0, 'shield broken');
-  a.hp = a.maxHp * 0.2;
+  a.hp = a.maxHp * (h.content.abilities.get('headhunter').effects.execute - 0.05);
   resolve(h, 'headhunter', q.x, q.z);
   assert.equal(a.alive, false, 'executed');
 

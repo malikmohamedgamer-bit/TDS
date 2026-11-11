@@ -133,7 +133,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 **FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in
 `docs/COMPLETION.md`). Session 2026-11-11 finished Chunk 2 and parts of 4, 5, 6, 7, 8. In order:
-1. Chunk 3 balance sweep: BUGS #44 (new heroes too strong: Kade, Holt, Nyra, Seren), then 20 seeds per map
+1. Chunk 3 balance sweep: heroes done (BUGS #44; Kade 77% and Brik 83% are the leftovers, measure heroes with 30 seeds). Next: 20 seeds per map
    on Standard Normal (`node tools/balance.mjs --map all --seeds 20 --loadout <core 12>`), ladder check,
    Endless with the 200-enemy pool.
 2. Chunk 2 leftovers: new path templates in src/core/mapGen.js (loop, crossover, air route), more flagships,
