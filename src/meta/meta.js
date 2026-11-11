@@ -163,6 +163,19 @@ export function questBoard(save, quests, date) {
 }
 
 /** Progress of a story / achievement condition as {progress, target} (bars show partial progress). */
+/** First clears recorded in save.claimed as `firstclear:<map>:<difficulty>:<mode>` (granted once each). */
+function firstClears(save) {
+  const maps = new Set();
+  const modes = new Set();
+  for (const id of save.claimed || []) {
+    if (!id.startsWith('firstclear:')) continue;
+    const [, map, , mode] = id.split(':');
+    if (mode === 'campaign') maps.add(map);
+    modes.add(mode);
+  }
+  return { maps, modes };
+}
+
 export function condProgress(q, save, content) {
   const s = save.stats;
   const owned = Object.keys(save.towers.owned);
@@ -174,6 +187,7 @@ export function condProgress(q, save, content) {
   if (q.ownFaction) { const n = owned.filter((id) => content.towers.get(id)?.faction === q.ownFaction.faction).length; return { progress: Math.min(n, q.ownFaction.count), target: q.ownFaction.count }; }
   if (q.discovered) return { progress: Math.min(seenEnemies.filter((id) => !content.enemies.get(id)?.boss).length, q.discovered), target: q.discovered };
   if (q.discoveredBosses) return { progress: Math.min(seenEnemies.filter((id) => content.enemies.get(id)?.boss).length, q.discoveredBosses), target: q.discoveredBosses };
+  if (q.mapsWon) return { progress: Math.min(firstClears(save).maps.size, q.mapsWon), target: q.mapsWon };
   const done = condDone(q, save, content);
   return { progress: done ? 1 : 0, target: 1 };
 }
@@ -182,6 +196,9 @@ function condDone(q, save, content, prog = null) {
   const s = save.stats;
   if (q.stat) return (s[q.stat] || 0) >= q.target;
   if (q.ownFaction || q.discovered || q.discoveredBosses) { const p = condProgress(q, save, content); return p.progress >= p.target; }
+  if (q.mapWon) return firstClears(save).maps.has(q.mapWon);
+  if (q.modeWon) return firstClears(save).modes.has(q.modeWon);
+  if (q.mapsWon) return firstClears(save).maps.size >= q.mapsWon;
   if (q.winDifficulty) return (save.progress.bestDifficultyWon ?? -1) >= DIFF_ORDER.indexOf(q.winDifficulty);
   if (q.summons) return (s.summons || 0) >= q.summons;
   if (q.towerLevel) return Object.values(save.towers.owned).some((t) => t.level >= q.towerLevel);
