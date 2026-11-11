@@ -315,3 +315,12 @@ test('balance: bot wins Normal with level-1 towers, a 2-tower strategy loses', (
   const weak = playBot({ content: C, mapWorld: buildMapWorld(MAP, C.props), difficulty: 'normal', seed: 'bal0', weak: true, loadout: coreTowers(C) });
   assert.equal(weak.won, false);
 });
+
+test('battle report shape from a hand-made match state', async () => {
+  const { battleReport } = await import('../../src/sim/report.js');
+  const rep = battleReport({ towers: [{ defId: 'a', def: { name: 'A' }, damage: 300, kills: 3, spent: 100 }, { defId: 'b', def: { name: 'B' }, damage: 500, kills: 1, spent: 250 }, { defId: 'a', def: { name: 'A' }, damage: 100, kills: 1, spent: 100 }], stats: { damage: 1000, kills: 6 } });
+  assert.deepEqual(rep.rows.map((r) => [r.id, r.count, r.damage, r.kills]), [['b', 1, 500, 1], ['a', 2, 400, 4]]);
+  assert.equal(rep.hero, 100);
+  assert.equal(rep.rows[1].perCash, 2);
+  assert.deepEqual(battleReport({ towers: [], stats: {} }).rows, []);
+});

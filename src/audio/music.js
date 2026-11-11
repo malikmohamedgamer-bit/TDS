@@ -12,6 +12,7 @@ export class Music {
     this.data = data;
     this.mood = null;
     this.key = 'default';
+    this.style = null;
     this.bar = 0;
     this.nextBar = 0;
     this.timer = null;
@@ -35,10 +36,11 @@ export class Music {
     this.bus.gain.setTargetAtTime(this.mood ? this.settings.musicVolume : 0, t, 0.3);
   }
 
-  /** mood: hub | build | wave | boss | null (silence). key: map id. */
-  setMood(mood, key = this.key) {
+  /** mood: hub | build | wave | boss | boss_final | victory | defeat | null (silence). key: map id. style: map theme. */
+  setMood(mood, key = this.key, style = this.style) {
     if (!this.data) return;
-    const changed = mood !== this.mood || key !== this.key;
+    const changed = mood !== this.mood || key !== this.key || style !== this.style;
+    this.style = style;
     this.mood = mood;
     this.key = this.data.keys[key] ? key : 'default';
     if (!this._ensureBus()) return; // audio not unlocked yet; the mood is remembered
@@ -62,9 +64,9 @@ export class Music {
     if (!ctx || !this.mood) return;
     if (this.nextBar < ctx.currentTime) this.nextBar = ctx.currentTime + 0.05;
     while (this.nextBar < ctx.currentTime + LOOKAHEAD) {
-      const spb = beatSeconds(this.data, this.mood);
+      const spb = beatSeconds(this.data, this.mood, this.style);
       if (this.settings.musicVolume > 0 && !this.settings.muted) {
-        for (const e of barEvents(this.data, { mood: this.mood, key: this.key, bar: this.bar })) this._voice(e, this.nextBar + e.beat * spb, e.dur * spb);
+        for (const e of barEvents(this.data, { mood: this.mood, key: this.key, bar: this.bar, style: this.style })) this._voice(e, this.nextBar + e.beat * spb, e.dur * spb);
       }
       this.nextBar += 4 * spb;
       this.bar++;

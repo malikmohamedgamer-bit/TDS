@@ -1,43 +1,194 @@
 {
-  "$doc": "Meta progression: starter towers, player levels, speed unlocks, summoning (slot machine), shop, daily login rewards. Currencies: crowns (earned in matches; tower levels and shop) and sigils (summoning; from quests, achievements, level-ups, daily rewards and the shop). Free in-game currency only: there are no real-money purchases.",
-  "starterTowers": ["rifleman", "ember_adept", "frost_weaver", "marksman", "gunner"],
-  "starterWallet": { "crowns": 200, "sigils": 100 },
-  "player": {
-    "xpBase": 120,
-    "xpPerLevel": 80,
-    "maxLevel": 50,
-    "levelReward": { "crowns": 150, "sigils": 20 },
-    "milestones": { "5": { "sigils": 100 }, "10": { "sigils": 200 }, "20": { "sigils": 400 } }
+ "$doc": "Meta progression: starter towers, player levels, speed unlocks, summoning (slot machine), shop, daily login rewards. Currencies: crowns (earned in matches; tower levels and shop) and sigils (summoning; from quests, achievements, level-ups, daily rewards and the shop). Free in-game currency only: there are no real-money purchases.",
+ "starterTowers": [
+  "rifleman",
+  "ember_adept",
+  "frost_weaver",
+  "marksman",
+  "gunner"
+ ],
+ "starterWallet": {
+  "crowns": 200,
+  "sigils": 100
+ },
+ "player": {
+  "xpBase": 120,
+  "xpPerLevel": 80,
+  "maxLevel": 50,
+  "levelReward": {
+   "crowns": 150,
+   "sigils": 20
   },
-  "speeds": [
-    { "speed": 0.5, "level": 1 },
-    { "speed": 1, "level": 1 },
-    { "speed": 1.5, "level": 1 },
-    { "speed": 2, "level": 3, "label": "Reach player level 3" },
-    { "speed": 3, "level": 8, "label": "Reach player level 8" }
+  "milestones": {
+   "5": {
+    "sigils": 100
+   },
+   "10": {
+    "sigils": 200
+   },
+   "20": {
+    "sigils": 400
+   }
+  }
+ },
+ "speeds": [
+  {
+   "speed": 0.5,
+   "level": 1
+  },
+  {
+   "speed": 1,
+   "level": 1
+  },
+  {
+   "speed": 1.5,
+   "level": 1
+  },
+  {
+   "speed": 2,
+   "level": 3,
+   "label": "Reach player level 3"
+  },
+  {
+   "speed": 3,
+   "level": 8,
+   "label": "Reach player level 8"
+  }
+ ],
+ "summon": {
+  "banners": [
+   {
+    "id": "standard",
+    "name": "Riftforge Slots",
+    "cost": 100,
+    "cost10": 900,
+    "currency": "sigils",
+    "pool": "all",
+    "description": "Every tower can drop. Epic or better guaranteed at least once every 30 pulls."
+   },
+   {
+    "id": "war",
+    "name": "Arsenal Draft",
+    "cost": 120,
+    "cost10": 1080,
+    "currency": "sigils",
+    "pool": {
+     "faction": "war"
+    },
+    "description": "Modern War towers only. Its own pity counter: Epic or better at least once every 30 pulls."
+   },
+   {
+    "id": "magic",
+    "name": "Arcane Convergence",
+    "cost": 120,
+    "cost10": 1080,
+    "currency": "sigils",
+    "pool": {
+     "faction": "magic"
+    },
+    "description": "Magic towers only. Its own pity counter: Epic or better at least once every 30 pulls."
+   }
   ],
-  "summon": {
-    "banners": [
-      { "id": "standard", "name": "Riftforge Slots", "cost": 100, "cost10": 900, "currency": "sigils", "pool": "all", "description": "Every tower can drop. Epic or better guaranteed at least once every 30 pulls." }
-    ],
-    "rarityWeights": { "common": 46, "uncommon": 32, "rare": 15, "epic": 6, "legendary": 1 },
-    "pity": { "pulls": 30, "minRarity": "epic" },
-    "duplicateCrowns": { "common": 40, "uncommon": 80, "rare": 200, "epic": 500, "legendary": 1200 },
-    "symbols": ["◆", "★", "✦", "⚔", "☄", "♛", "❖"]
+  "rarityWeights": {
+   "common": 46,
+   "uncommon": 32,
+   "rare": 15,
+   "epic": 6,
+   "legendary": 1
   },
-  "rarityOrder": ["common", "uncommon", "rare", "epic", "legendary", "mythic"],
-  "shop": {
-    "towerPrices": { "common": 300, "uncommon": 900, "rare": 2200, "epic": 5500, "legendary": 14000 },
-    "dailyDealDiscount": 0.4,
-    "bundles": [
-      { "id": "sigils_small", "name": "Sigil pouch", "price": { "crowns": 400 }, "gives": { "sigils": 100 } },
-      { "id": "sigils_large", "name": "Sigil chest", "price": { "crowns": 1800 }, "gives": { "sigils": 500 } }
-    ]
+  "pity": {
+   "pulls": 30,
+   "minRarity": "epic"
   },
-  "daily": {
-    "rewards": [
-      { "crowns": 100 }, { "sigils": 30 }, { "crowns": 200 }, { "sigils": 50 }, { "crowns": 300 }, { "sigils": 80 }, { "crowns": 500, "sigils": 150 }
-    ]
+  "duplicateCrowns": {
+   "common": 40,
+   "uncommon": 80,
+   "rare": 200,
+   "epic": 500,
+   "legendary": 1200
   },
-  "matchRewards": { "winCrowns": 120, "lossCrowns": 20, "crownsPerWave": 8, "xpPerWave": 10, "winXp": 150, "firstClearSigils": 60 }
+  "symbols": [
+   "◆",
+   "★",
+   "✦",
+   "⚔",
+   "☄",
+   "♛",
+   "❖"
+  ]
+ },
+ "rarityOrder": [
+  "common",
+  "uncommon",
+  "rare",
+  "epic",
+  "legendary",
+  "mythic"
+ ],
+ "shop": {
+  "towerPrices": {
+   "common": 300,
+   "uncommon": 900,
+   "rare": 2200,
+   "epic": 5500,
+   "legendary": 14000
+  },
+  "dailyDealDiscount": 0.4,
+  "bundles": [
+   {
+    "id": "sigils_small",
+    "name": "Sigil pouch",
+    "price": {
+     "crowns": 400
+    },
+    "gives": {
+     "sigils": 100
+    }
+   },
+   {
+    "id": "sigils_large",
+    "name": "Sigil chest",
+    "price": {
+     "crowns": 1800
+    },
+    "gives": {
+     "sigils": 500
+    }
+   }
+  ]
+ },
+ "daily": {
+  "rewards": [
+   {
+    "crowns": 100
+   },
+   {
+    "sigils": 30
+   },
+   {
+    "crowns": 200
+   },
+   {
+    "sigils": 50
+   },
+   {
+    "crowns": 300
+   },
+   {
+    "sigils": 80
+   },
+   {
+    "crowns": 500,
+    "sigils": 150
+   }
+  ]
+ },
+ "matchRewards": {
+  "winCrowns": 120,
+  "lossCrowns": 20,
+  "crownsPerWave": 8,
+  "xpPerWave": 10,
+  "winXp": 150,
+  "firstClearSigils": 60
+ }
 }

@@ -2,6 +2,8 @@
 // match flow (loadout -> match -> results) on a fixed-timestep loop.
 import { mapTheme } from './ui/mapThumb.js';
 import { initPwa } from './pwa.js';
+import { equippedCosmetic } from './meta/cosmetics.js';
+import { applyUiTheme } from './ui/applyCosmetics.js';
 import { loadContent, browserReadJson } from './core/content.js';
 import { buildMapWorld } from './core/mapLayout.js';
 import { Character } from './core/character.js';
@@ -56,6 +58,7 @@ async function boot() {
   setPalettes(content.palettes);
   const { save } = loadSave(storage, content, Date.now());
   ensureStarters(save, content.meta);
+  applyUiTheme(save, content);
   // ?map= (links, tests) wins; otherwise the map last picked in the hub, if it is still unlocked
   const unlocked = (m) => m && !(m.unlockLevel && save.profile.level < m.unlockLevel);
   const mapId = params.get('map') || (unlocked(content.maps.get(settings.map)) ? settings.map : 'riftline');
@@ -74,7 +77,7 @@ async function boot() {
 
   const hero = new Character(mw.world, map.playerSpawn);
   const heroDef = content.heroes.get(settings.hero) || [...content.heroes.values()][0];
-  const heroView = new HeroView(renderer.scene, heroDef?.model?.colors, heroDef?.model?.gear);
+  const heroView = new HeroView(renderer.scene, { ...(heroDef?.model?.colors || {}), ...(equippedCosmetic(save, content, 'heroOutfit')?.colors || {}) }, heroDef?.model?.gear);
   const rig = new CameraRig(renderer.camera, mw, settings);
   rig.yaw = (map.playerSpawn.yaw ?? 0) + Math.PI;
 

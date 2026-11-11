@@ -42,6 +42,7 @@ export class MatchHud {
       <div class="banner" aria-live="assertive" data-testid="banner"></div>
       <dialog class="modal panel pause-modal" data-testid="pause">
         <h2>Paused</h2>
+        <div class="report" data-testid="battle-report"></div>
         <div class="col">
           <button class="btn primary" data-act="resume">${icon('play')} Resume</button>
           <button class="btn" data-act="settings">${icon('settings')} Settings</button>
@@ -270,6 +271,17 @@ export class MatchHud {
     b.className = `banner show ${kind}`;
     clearTimeout(this._bt);
     this._bt = setTimeout(() => { b.className = 'banner'; }, 2600);
+  }
+
+  /** Battle report table (pause screen): damage share, kills and damage per cash for each tower type. */
+  setReport(rep) {
+    const el = this.$('.report');
+    if (!rep || !rep.rows.length) { el.innerHTML = '<p class="note">No towers placed yet.</p>'; return; }
+    const f = (n) => Math.round(n).toLocaleString('en-US');
+    el.innerHTML = `<table class="rep"><caption>Battle report: ${f(rep.total)} damage, ${f(rep.stats.kills)} kills, $${f(rep.stats.cashEarned)} earned, ${f(rep.stats.leaks)} leaked</caption>
+      <thead><tr><th scope="col">Tower</th><th scope="col">Damage</th><th scope="col">Kills</th><th scope="col" title="Damage per cash spent">Dmg / $</th></tr></thead>
+      <tbody>${rep.rows.slice(0, 8).map((r) => `<tr><th scope="row">${esc(r.name)}${r.count > 1 ? ` x${r.count}` : ''}<span class="rep-bar" aria-hidden="true"><i style="width:${(r.share * 100).toFixed(1)}%"></i></span></th><td>${f(r.damage)} <small>${Math.round(r.share * 100)}%</small></td><td>${f(r.kills)}</td><td>${r.perCash.toFixed(1)}</td></tr>`).join('')}
+      ${rep.hero > 0 ? `<tr><th scope="row">Hero, abilities and allies</th><td>${f(rep.hero)} <small>${Math.round((rep.hero / rep.total) * 100)}%</small></td><td></td><td></td></tr>` : ''}</tbody></table>`;
   }
 
   setPaused(on) {

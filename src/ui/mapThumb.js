@@ -3,8 +3,9 @@
 
 const THEME_LABEL = {
   verdant: 'Verdant', frost: 'Frost', toxic: 'Toxic Mire', ember: 'Ember', dunes: 'Dunes', starfall: 'Starfall',
+  autumn: 'Autumn', polar: 'Polar Night', crimson: 'Crimson Mire', ashfall: 'Ashfall', canyon: 'Red Canyon', void: 'Void Rift',
 };
-const THEME_ORDER = ['verdant', 'frost', 'toxic', 'ember', 'dunes', 'starfall'];
+const THEME_ORDER = ['verdant', 'frost', 'toxic', 'ember', 'dunes', 'starfall', 'autumn', 'polar', 'crimson', 'ashfall', 'canyon', 'void'];
 
 /** Theme id of a map (the first two hand-made maps predate the theme field). */
 export function mapTheme(map) {

@@ -47,3 +47,22 @@ test('note helpers', () => {
   assert.equal(degreeNote(50, [0, 2, 3, 5, 7, 9, 10], 7), 62, 'degree 7 is the octave');
   assert.equal(degreeNote(50, [0, 2, 3, 5, 7, 9, 10], -1), 48, 'negative degrees go below the root');
 });
+
+test('styles and extra moods: every theme style changes the piece, all moods produce notes', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const M = JSON.parse(await readFile(new URL('../../data/music.json', import.meta.url), 'utf8'));
+  const { barEvents: ev, moodDef, beatSeconds: bs } = await import('../../src/audio/musicPatterns.js');
+  for (const mood of ['boss_final', 'victory', 'defeat']) assert.ok(ev(M, { mood, bar: 0 }).length > 3, mood);
+  assert.ok(bs(M, 'boss_final') < bs(M, 'boss'), 'the final boss piece is faster');
+  const sig = (style) => JSON.stringify(['build', 'wave', 'boss'].map((mood) => [bs(M, mood, style), ev(M, { mood, bar: 1, style }).map((e) => [e.beat, e.voice, e.midi])]));
+  const styles = Object.keys(M.styles);
+  assert.ok(styles.length >= 6);
+  assert.equal(new Set(styles.map(sig)).size, styles.length, 'no two themes sound the same');
+  for (const st of styles) for (const mood of Object.keys(M.styles[st])) {
+    const md = moodDef(M, mood, st);
+    assert.ok(M.moods[mood], `${st}.${mood} overrides a real mood`);
+    assert.ok(md.bpm > 40 && md.drums.length === 16 && md.arp.length === 8 && M.scales[md.scale || 'dorian']);
+    assert.deepEqual(Object.keys(md.layers).sort(), ['arp', 'bass', 'drums', 'pad']);
+  }
+  assert.deepEqual(moodDef(M, 'wave', 'no-such-style'), M.moods.wave);
+});

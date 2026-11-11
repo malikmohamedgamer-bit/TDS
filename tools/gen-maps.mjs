@@ -21,7 +21,9 @@ const args = process.argv.slice(2);
 const opt = (k, d) => (args.includes(`--${k}`) ? args[args.indexOf(`--${k}`) + 1] : d);
 const BATCH = 'tools/map-batches.json';
 const spec = JSON.parse(readFileSync(BATCH, 'utf8'));
-const themes = JSON.parse(readFileSync('tools/map-themes.json', 'utf8')).themes;
+const rawThemes = JSON.parse(readFileSync('tools/map-themes.json', 'utf8')).themes;
+// `parent`: a re-skin that keeps the layout rules of its parent (same seed = same roads, props and waves)
+const themes = Object.fromEntries(Object.entries(rawThemes).map(([id, t]) => [id, t.parent ? { ...rawThemes[t.parent], ...t } : t]));
 const readJson = (p) => JSON.parse(readFileSync(`data/${p}`, 'utf8'));
 const CORE = ['rifleman', 'marksman', 'gunner', 'rocket_battery', 'gunship', 'supply_depot', 'mine_layer', 'ember_adept', 'frost_weaver', 'storm_caller', 'rune_totem', 'spirit_summoner'];
 const MIN_SPOTS = 60;
@@ -38,6 +40,28 @@ function nameFor(theme, seed, used) {
   throw new Error(`no free name for ${seed}`);
 }
 
+// Maps with `feature: true` show off the mechanics batches: each core enemy type may be swapped for
+// a kit enemy of the same archetype (weaker ones on early maps), and both boss waves get kit bosses.
+// The assignment walks every list in order, so the featured maps together cover all of them.
+const FEATURED = spec.batch.filter((e) => e.feature);
+const byHp = (a, b) => a.hp - b.hp || (a.id < b.id ? -1 : 1);
+const KIT_ENEMIES = [...content.enemies.values()].filter((e) => !e.boss && !e.summonOnly && e.generated?.batch?.startsWith('mechanics_')).sort(byHp);
+const KIT_BOSSES = [...content.enemies.values()].filter((e) => e.boss && e.model?.kit).sort(byHp);
+const CORE_ENEMIES = [...content.enemies.values()].filter((e) => !e.boss && !e.generated && !e.summonOnly);
+function featureFor(entry) {
+  const i = FEATURED.indexOf(entry);
+  if (i < 0) return {};
+  const swaps = { ...(entry.swaps || {}) };
+  for (const tpl of CORE_ENEMIES) {
+    const pool = KIT_ENEMIES.filter((e) => e.archetype === tpl.archetype);
+    if (!pool.length || swaps[tpl.id]) continue;
+    const pick = pool[Math.floor((i * pool.length) / FEATURED.length)];
+    swaps[tpl.id] = { enemy: pick.id, countMul: +Math.min(2.5, Math.max(0.4, tpl.hp / pick.hp)).toFixed(2) };
+  }
+  const featureBosses = entry.boss ? null : { mid: KIT_BOSSES[(2 * i) % KIT_BOSSES.length].id, final: KIT_BOSSES[(2 * i + 1) % KIT_BOSSES.length].id };
+  return { swaps, featureBosses };
+}
+
 function build(entry, usedNames) {
   const theme = { id: entry.theme, ...themes[entry.theme] };
   const roads = entry.paths ? { paths: entry.paths, zKeep: entry.zKeep } : null;
@@ -46,7 +70,7 @@ function build(entry, usedNames) {
   return generateMap({
     id: entry.id, name: entry.name || nameFor(entry.theme, entry.seed, usedNames), seed: entry.seed, template: entry.template,
     roads, theme, unlockLevel: entry.unlockLevel, description: entry.description, baseWaves: base, enemies: content.enemies, hpMul: entry.hpMul ?? 1,
-    swaps: entry.swaps, boss: entry.boss, timeOfDay: entry.timeOfDay,
+    swaps: entry.swaps, boss: entry.boss, timeOfDay: entry.timeOfDay, ...featureFor(entry),
   });
 }
 

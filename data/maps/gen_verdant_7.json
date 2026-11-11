@@ -1,50 +1,50 @@
 {
  "id": "gen_verdant_7",
- "name": "Bramble Fields",
- "description": "Green valley: 2 roads.",
+ "name": "Maple Orchard",
+ "description": "Autumn woods: 2 roads.",
  "seed": "ve7x",
  "scatterGap": 1.3,
  "waves": "gen_verdant_7_waves",
  "unlockLevel": 28,
- "theme": "verdant",
+ "theme": "autumn",
  "generated": {
   "template": "fork",
   "seed": "ve7x",
-  "theme": "verdant"
+  "theme": "autumn"
  },
  "size": {
   "w": 110,
   "d": 80
  },
  "sky": {
-  "top": "#7FB8F5",
-  "horizon": "#E3F1FF",
-  "fog": "#CFE6FA",
-  "fogNear": 70,
-  "fogFar": 190
+  "top": "#8AA6C8",
+  "horizon": "#FFE2B8",
+  "fog": "#F0D2A8",
+  "fogNear": 65,
+  "fogFar": 185
  },
  "sun": {
-  "azimuth": 215,
-  "elevation": 52,
-  "color": "#FFF1D6",
-  "intensity": 2.6
+  "azimuth": 235,
+  "elevation": 34,
+  "color": "#FFD9A0",
+  "intensity": 2.5
  },
  "ground": {
   "grass": [
-   "#6BAA4A",
-   "#5A9440",
-   "#7DBE58",
-   "#4B7F36"
+   "#C2853A",
+   "#A96F2E",
+   "#D49A48",
+   "#8E5A26"
   ],
   "path": [
-   "#C49A6C",
-   "#A97D52",
-   "#D8B184",
-   "#8C6440"
+   "#8A6A4E",
+   "#75583F",
+   "#9E7C5E",
+   "#5E4632"
   ],
   "rim": [
-   "#7A8A55",
-   "#6E6E7A"
+   "#8A6A3E",
+   "#6E5E56"
   ]
  },
  "terrain": {

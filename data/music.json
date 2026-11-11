@@ -1,5 +1,5 @@
 {
-  "$doc": "Procedural music (milestone 8). No audio files: src/audio/musicPatterns.js turns this data into notes, src/audio/music.js plays them with WebAudio. A map picks a key (root MIDI note + scale); a mood picks tempo, chord progression (scale degrees, one chord per bar), arpeggio pattern (chord-tone indexes per 8th, -1 = rest), drum pattern (16 steps: k kick, s snare, h hat, . rest) and layer volumes (0 = off). Moods: hub, build (between waves), wave, boss.",
+  "$doc": "Procedural music (milestone 8). No audio files: src/audio/musicPatterns.js turns this data into notes, src/audio/music.js plays them with WebAudio. A map picks a key (root MIDI note + scale); a mood picks tempo, chord progression (scale degrees, one chord per bar), arpeggio pattern (chord-tone indexes per 8th, -1 = rest), drum pattern (16 steps: k kick, s snare, h hat, . rest) and layer volumes (0 = off). Moods: hub, build (between waves), wave, boss. More moods: boss_final (last wave), victory, defeat. styles: per map theme, optional overrides per mood (any mood field: bpm, scale, progression, arp, drums, layers) so every theme has its own set of pieces; the player passes the map's theme as the style.",
   "scales": {
     "dorian": [
       0,
@@ -184,63 +184,63 @@
       "scale": "lydian"
     },
     "gen_verdant_6": {
-      "root": 52,
+      "root": 50,
       "scale": "dorian"
     },
     "gen_frost_6": {
-      "root": 45,
+      "root": 43,
       "scale": "aeolian"
     },
     "gen_ember_6": {
-      "root": 47,
+      "root": 45,
       "scale": "phrygian"
     },
     "gen_toxic_6": {
-      "root": 48,
+      "root": 46,
       "scale": "phrygian"
     },
     "gen_dunes_6": {
-      "root": 50,
+      "root": 52,
       "scale": "phrygian"
     },
     "gen_starfall_6": {
-      "root": 53,
+      "root": 49,
       "scale": "lydian"
     },
     "gen_verdant_7": {
-      "root": 52,
+      "root": 50,
       "scale": "dorian"
     },
     "gen_frost_7": {
-      "root": 45,
+      "root": 43,
       "scale": "aeolian"
     },
     "gen_ember_7": {
-      "root": 47,
+      "root": 45,
       "scale": "phrygian"
     },
     "gen_toxic_7": {
-      "root": 48,
+      "root": 46,
       "scale": "phrygian"
     },
     "gen_dunes_7": {
-      "root": 50,
+      "root": 52,
       "scale": "phrygian"
     },
     "gen_starfall_7": {
-      "root": 53,
+      "root": 49,
       "scale": "lydian"
     },
     "gen_verdant_8": {
-      "root": 52,
+      "root": 50,
       "scale": "dorian"
     },
     "gen_frost_8": {
-      "root": 45,
+      "root": 43,
       "scale": "aeolian"
     },
     "gen_ember_8": {
-      "root": 47,
+      "root": 45,
       "scale": "phrygian"
     }
   },
@@ -348,6 +348,473 @@
         "arp": 0.15,
         "bass": 0.3,
         "drums": 0.26
+      }
+    },
+    "boss_final": {
+      "bpm": 138,
+      "scale": "phrygian",
+      "progression": [
+        0,
+        1,
+        3,
+        1,
+        0,
+        6,
+        5,
+        1
+      ],
+      "arp": [
+        0,
+        2,
+        3,
+        2,
+        0,
+        3,
+        2,
+        1
+      ],
+      "drums": "k.hkskhkk.hksksk",
+      "layers": {
+        "pad": 0.22,
+        "arp": 0.17,
+        "bass": 0.32,
+        "drums": 0.3
+      }
+    },
+    "victory": {
+      "bpm": 104,
+      "scale": "lydian",
+      "progression": [
+        0,
+        4,
+        3,
+        0
+      ],
+      "arp": [
+        0,
+        1,
+        2,
+        3,
+        2,
+        3,
+        2,
+        1
+      ],
+      "drums": "k.h.s.h.k.h.s.hh",
+      "layers": {
+        "pad": 0.3,
+        "arp": 0.2,
+        "bass": 0.2,
+        "drums": 0.12
+      }
+    },
+    "defeat": {
+      "bpm": 58,
+      "scale": "aeolian",
+      "progression": [
+        0,
+        5,
+        3,
+        4
+      ],
+      "arp": [
+        0,
+        -1,
+        1,
+        -1,
+        2,
+        -1,
+        1,
+        -1
+      ],
+      "drums": "................",
+      "layers": {
+        "pad": 0.34,
+        "arp": 0.1,
+        "bass": 0.16,
+        "drums": 0
+      }
+    }
+  },
+  "styles": {
+    "verdant": {},
+    "frost": {
+      "build": {
+        "bpm": 76,
+        "arp": [
+          2,
+          -1,
+          1,
+          -1,
+          3,
+          -1,
+          1,
+          0
+        ],
+        "drums": "h.......h......."
+      },
+      "wave": {
+        "bpm": 106,
+        "arp": [
+          0,
+          2,
+          3,
+          2,
+          1,
+          2,
+          3,
+          -1
+        ],
+        "drums": "k.h.s.h.k...s.h."
+      },
+      "boss": {
+        "progression": [
+          0,
+          5,
+          1,
+          6
+        ]
+      }
+    },
+    "ember": {
+      "build": {
+        "bpm": 90,
+        "drums": "k...h...k.h.h..."
+      },
+      "wave": {
+        "bpm": 120,
+        "progression": [
+          0,
+          1,
+          0,
+          5
+        ],
+        "drums": "k.hks.h.k.hks.hk"
+      },
+      "boss": {
+        "bpm": 132,
+        "drums": "k.kkskh.k.kks.ss"
+      }
+    },
+    "toxic": {
+      "build": {
+        "bpm": 80,
+        "progression": [
+          0,
+          1,
+          5,
+          4
+        ],
+        "arp": [
+          0,
+          3,
+          1,
+          -1,
+          2,
+          3,
+          1,
+          -1
+        ]
+      },
+      "wave": {
+        "bpm": 108,
+        "progression": [
+          0,
+          1,
+          6,
+          5
+        ],
+        "arp": [
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          2,
+          -1
+        ],
+        "drums": "k..hs..hk.k.s..h"
+      }
+    },
+    "dunes": {
+      "build": {
+        "scale": "phrygian",
+        "arp": [
+          0,
+          1,
+          2,
+          1,
+          0,
+          -1,
+          3,
+          2
+        ],
+        "drums": "h..hh...h..hh.h."
+      },
+      "wave": {
+        "bpm": 116,
+        "scale": "phrygian",
+        "progression": [
+          0,
+          1,
+          0,
+          3
+        ],
+        "drums": "k.hhs.hhk.khs.hh"
+      }
+    },
+    "starfall": {
+      "build": {
+        "bpm": 78,
+        "scale": "lydian",
+        "arp": [
+          0,
+          2,
+          3,
+          2,
+          1,
+          3,
+          2,
+          3
+        ]
+      },
+      "wave": {
+        "bpm": 110,
+        "progression": [
+          0,
+          4,
+          5,
+          3
+        ],
+        "arp": [
+          0,
+          2,
+          3,
+          1,
+          3,
+          2,
+          1,
+          2
+        ]
+      },
+      "boss": {
+        "progression": [
+          0,
+          1,
+          5,
+          6
+        ]
+      }
+    },
+    "autumn": {
+      "build": {
+        "bpm": 80,
+        "arp": [
+          0,
+          1,
+          3,
+          1,
+          2,
+          1,
+          0,
+          -1
+        ]
+      },
+      "wave": {
+        "bpm": 108,
+        "progression": [
+          0,
+          3,
+          5,
+          4
+        ],
+        "drums": "k.h.s.hhk.h.s.h."
+      }
+    },
+    "polar": {
+      "build": {
+        "bpm": 70,
+        "arp": [
+          3,
+          -1,
+          2,
+          -1,
+          1,
+          -1,
+          0,
+          -1
+        ],
+        "drums": "................"
+      },
+      "wave": {
+        "bpm": 102,
+        "arp": [
+          0,
+          3,
+          2,
+          3,
+          1,
+          3,
+          2,
+          -1
+        ],
+        "drums": "k...s.h.k.h.s..."
+      },
+      "boss": {
+        "bpm": 120,
+        "progression": [
+          0,
+          5,
+          6,
+          1
+        ]
+      }
+    },
+    "ashfall": {
+      "build": {
+        "bpm": 86,
+        "progression": [
+          0,
+          1,
+          0,
+          4
+        ],
+        "drums": "k.......k...h..."
+      },
+      "wave": {
+        "bpm": 124,
+        "progression": [
+          0,
+          1,
+          3,
+          1
+        ],
+        "drums": "k.kks.h.k.kks.hh"
+      },
+      "boss": {
+        "bpm": 134,
+        "drums": "kkhkskhkk.kkskss"
+      }
+    },
+    "crimson": {
+      "build": {
+        "bpm": 76,
+        "progression": [
+          0,
+          6,
+          1,
+          0
+        ],
+        "arp": [
+          0,
+          -1,
+          3,
+          1,
+          -1,
+          2,
+          1,
+          -1
+        ]
+      },
+      "wave": {
+        "bpm": 104,
+        "progression": [
+          0,
+          6,
+          1,
+          5
+        ],
+        "arp": [
+          0,
+          1,
+          3,
+          1,
+          0,
+          2,
+          3,
+          -1
+        ],
+        "drums": "k..hs.h.k..hs.hh"
+      }
+    },
+    "canyon": {
+      "build": {
+        "scale": "phrygian",
+        "bpm": 88,
+        "arp": [
+          0,
+          2,
+          1,
+          3,
+          2,
+          1,
+          0,
+          -1
+        ],
+        "drums": "h.h...h.h.h...hh"
+      },
+      "wave": {
+        "bpm": 118,
+        "scale": "phrygian",
+        "progression": [
+          0,
+          3,
+          1,
+          0
+        ],
+        "drums": "k.hhk.shk.hhk.sh"
+      }
+    },
+    "void": {
+      "build": {
+        "bpm": 72,
+        "scale": "lydian",
+        "progression": [
+          0,
+          6,
+          4,
+          3
+        ],
+        "arp": [
+          0,
+          3,
+          -1,
+          2,
+          3,
+          -1,
+          1,
+          2
+        ]
+      },
+      "wave": {
+        "bpm": 114,
+        "progression": [
+          0,
+          6,
+          4,
+          5
+        ],
+        "arp": [
+          0,
+          3,
+          2,
+          3,
+          0,
+          3,
+          1,
+          3
+        ],
+        "drums": "k..hs...k.khs..h"
+      },
+      "boss": {
+        "progression": [
+          0,
+          6,
+          1,
+          5
+        ],
+        "bpm": 130
       }
     }
   }

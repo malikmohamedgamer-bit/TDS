@@ -50,8 +50,18 @@ export function ensureStarters(save, meta) {
 export const owns = (save, id) => !!save.towers.owned[id];
 
 // ------------------------------------------------------------------ summoning ---------------
-function rarityPool(content, rarity) {
-  return [...content.towers.values()].filter((t) => t.rarity === rarity).map((t) => t.id).sort();
+function rarityPool(content, rarity, banner = null) {
+  const f = banner?.pool?.faction;
+  return [...content.towers.values()].filter((t) => t.rarity === rarity && (!f || t.faction === f)).map((t) => t.id).sort();
+}
+
+/** Pity counter of a banner: the first banner keeps save.summon.pity, the others count in pityBy. */
+export function bannerPity(save, meta, bannerId) {
+  return bannerId === meta.summon.banners[0].id ? save.summon.pity || 0 : save.summon.pityBy?.[bannerId] || 0;
+}
+function setPity(save, meta, bannerId, n) {
+  if (bannerId === meta.summon.banners[0].id) save.summon.pity = n;
+  else save.summon.pityBy = { ...(save.summon.pityBy || {}), [bannerId]: n };
 }
 
 /**
@@ -73,16 +83,16 @@ export function summon(save, content, meta, bannerId, count = 1) {
   for (let i = 0; i < count; i++) {
     const rng = new Rng((save.summon.seed ^ hashString(`pull:${save.summon.pulls}`)) >>> 0);
     save.summon.pulls++;
-    save.summon.pity++;
+    setPity(save, meta, bannerId, bannerPity(save, meta, bannerId) + 1);
     let rarity = rng.weighted(Object.keys(weights), (r) => weights[r]);
-    const forced = save.summon.pity >= meta.summon.pity.pulls && order.indexOf(rarity) < pityMin;
+    const forced = bannerPity(save, meta, bannerId) >= meta.summon.pity.pulls && order.indexOf(rarity) < pityMin;
     if (forced) rarity = meta.summon.pity.minRarity;
     // fall back to the nearest lower rarity that has towers
     let ri = order.indexOf(rarity);
-    let pool = rarityPool(content, order[ri]);
-    while (!pool.length && ri > 0) pool = rarityPool(content, order[--ri]);
+    let pool = rarityPool(content, order[ri], banner);
+    while (!pool.length && ri > 0) pool = rarityPool(content, order[--ri], banner);
     rarity = order[ri];
-    if (ri >= pityMin) save.summon.pity = 0;
+    if (ri >= pityMin) setPity(save, meta, bannerId, 0);
     const tower = pool[Math.floor(rng.next() * pool.length)];
     const duplicate = owns(save, tower);
     let crowns = 0;

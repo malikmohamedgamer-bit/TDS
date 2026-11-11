@@ -89,6 +89,7 @@ export function sanitize(s, content) {
   out.progress.tutorialDone = !!out.progress.tutorialDone;
   out.heroes = { ...base.heroes, ...(isObj(s.heroes) ? s.heroes : {}) };
   out.summon = { pity: nonNeg(s.summon?.pity), pulls: nonNeg(s.summon?.pulls), seed: nonNeg(s.summon?.seed) };
+  if (isObj(s.summon?.pityBy)) out.summon.pityBy = Object.fromEntries(Object.entries(s.summon.pityBy).map(([k, v]) => [k, nonNeg(v)]));
   out.daily = { last: typeof s.daily?.last === 'string' ? s.daily.last : null, streak: nonNeg(s.daily?.streak) };
   out.progress.bestDifficultyWon = Number.isFinite(out.progress.bestDifficultyWon) ? out.progress.bestDifficultyWon : -1;
   out.quests = isObj(s.quests) ? { ...s.quests } : {};
@@ -97,6 +98,7 @@ export function sanitize(s, content) {
   else out.quests.daily = { date: dq.date, ids: dq.ids.map(String), progress: numMap(dq.progress) };
   if (out.quests.story !== undefined && !isObj(out.quests.story)) delete out.quests.story;
   out.achievements = isObj(s.achievements) ? s.achievements : {};
+  out.cosmetics = Object.fromEntries(Object.entries(isObj(s.cosmetics) ? s.cosmetics : {}).filter(([, v]) => typeof v === 'string'));
   const strList = (v) => [...new Set((Array.isArray(v) ? v : []).filter((x) => typeof x === 'string'))];
   out.index = { towers: strList(s.index?.towers), enemies: strList(s.index?.enemies) };
   return out;

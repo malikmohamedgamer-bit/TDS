@@ -1,50 +1,50 @@
 {
  "id": "gen_frost_8",
- "name": "Rime Fjord",
- "description": "Frozen pass: 1 road.",
+ "name": "Boreal Floe",
+ "description": "Polar night: 1 road.",
  "seed": "fr8x",
  "scatterGap": 1.3,
  "waves": "gen_frost_8_waves",
  "unlockLevel": 35,
- "theme": "frost",
+ "theme": "polar",
  "generated": {
   "template": "serpentine",
   "seed": "fr8x",
-  "theme": "frost"
+  "theme": "polar"
  },
  "size": {
   "w": 110,
   "d": 80
  },
  "sky": {
-  "top": "#7E9CC4",
-  "horizon": "#E6EDF5",
-  "fog": "#D4DEEA",
-  "fogNear": 85,
-  "fogFar": 210
+  "top": "#101C3E",
+  "horizon": "#3E5C8E",
+  "fog": "#2E4670",
+  "fogNear": 75,
+  "fogFar": 200
  },
  "sun": {
-  "azimuth": 160,
-  "elevation": 36,
-  "color": "#FFE4C2",
-  "intensity": 2.3
+  "azimuth": 120,
+  "elevation": 28,
+  "color": "#BFD4FF",
+  "intensity": 1.9
  },
  "ground": {
   "grass": [
-   "#8FA270",
-   "#7E926A",
-   "#A6B48A",
-   "#6F8461"
+   "#C9D6E6",
+   "#B4C4D8",
+   "#DCE6F2",
+   "#9FB2C8"
   ],
   "path": [
-   "#8A7A68",
-   "#776858",
-   "#9C8C7A",
-   "#65584A"
+   "#6E7C92",
+   "#5C6A80",
+   "#8290A6",
+   "#4A566A"
   ],
   "rim": [
-   "#8D9AA6",
-   "#B9C6D2"
+   "#9FB0C6",
+   "#D6E2F0"
   ]
  },
  "terrain": {

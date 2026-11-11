@@ -2,6 +2,7 @@
 // upgrading, abilities), maps sim events to VFX / audio / banners, and grants rewards once.
 import * as THREE from 'three';
 import { Match } from '../sim/match.js';
+import { battleReport } from '../sim/report.js';
 import { nextStep } from '../sim/stats.js';
 import { MatchView } from '../engine/matchView.js';
 import { MatchHud, HOTBAR_KEYS, DEFAULT_LOADOUT } from '../ui/matchHud.js';
@@ -11,6 +12,7 @@ import { FIRE_SOUND } from '../audio/sfx.js';
 import { writeSave } from '../save/save.js';
 import { applyMatchResult, localDate, unlockedSpeeds, dailyChallenge } from '../meta/meta.js';
 import { Hub } from '../ui/hub.js';
+import { mapTheme } from '../ui/mapThumb.js';
 import { towerThumbnail as tThumb, enemyThumbnail } from '../engine/thumbnails.js';
 import { buildMapWorld } from '../core/mapLayout.js';
 
@@ -120,7 +122,7 @@ export class MatchController {
   // ------------------------------------------------------------------------ lifecycle ------
   async toLobby() {
     this.end();
-    this.music?.setMood('hub', this.map.id);
+    this.music?.setMood('hub', this.map.id, mapTheme(this.map));
     this.mhud.setVisible(true);
     const cfg = await this.hub.open({
       difficulty: this.lastConfig?.difficulty || 'normal',
@@ -192,6 +194,7 @@ export class MatchController {
 
   setPaused(on) {
     this.paused = on;
+    if (on && this.match) this.mhud.setReport(battleReport(this.match));
     this.mhud.setPaused(on);
   }
 
@@ -439,7 +442,7 @@ export class MatchController {
         case 'death': sfx.play(e.boss ? 'bossDeath' : 'death', e, { gap: 0.05 }); if (e.boss) this.mhud.banner('The boss falls!', 'good'); break;
         case 'upgrade': sfx.play(e.evolved ? 'evolve' : 'upgrade'); if (e.evolved) this.mhud.banner(`Evolved: ${e.evolved.to}!`, 'good'); break;
         case 'sell': sfx.play('sell'); break;
-        case 'waveStart': this.music?.setMood(e.boss ? 'boss' : 'wave', this.map.id); sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;
+        case 'waveStart': this.music?.setMood(e.boss ? (e.wave >= e.total ? 'boss_final' : 'boss') : 'wave', this.map.id); sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;
         case 'bossSpawn': sfx.play('boss'); break;
         case 'mutation': this.mhud.banner(`Mutation: ${e.name}. ${e.desc}`, 'warn'); break;
         case 'bossPhase': sfx.play('boss'); this.mhud.banner(`${e.name}!`, 'boss'); break;
@@ -458,8 +461,8 @@ export class MatchController {
         case 'bossPortal': this.mhud.caption('Portal opens on another road'); break;
         case 'bossRegen': this.mhud.caption('The boss regenerates: fire stops it'); break;
         case 'heroDown': this.mhud.banner('Commander down! Back in 6 s', 'warn'); break;
-        case 'won': this.music?.setMood('hub', this.map.id); sfx.play('win'); break;
-        case 'lost': this.music?.setMood('hub', this.map.id); sfx.play('lose'); break;
+        case 'won': this.music?.setMood('victory', this.map.id); sfx.play('win'); break;
+        case 'lost': this.music?.setMood('defeat', this.map.id); sfx.play('lose'); break;
         default: break;
       }
     }

@@ -51,6 +51,7 @@ export async function loadContent(readJson) {
     })() : null,
     music: index.music ? await readJson(index.music) : null,
     help: await readJson(index.help || 'help.json').catch(() => null),
+    cosmetics: await readJson(index.cosmetics || 'cosmetics.json').catch(() => null),
     palettes: index.palettes ? await readJson(index.palettes) : null,
     themes: index.themes ? (await readJson(index.themes)).themes : {},
     vfx: index.vfx ? await readJson(index.vfx) : null,

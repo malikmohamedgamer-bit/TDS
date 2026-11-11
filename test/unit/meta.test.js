@@ -135,3 +135,25 @@ test('save v2 migrates to v3 and meta state survives export/import', () => {
   assert.equal(back.daily.last, '2026-11-05');
   assert.equal(claimDaily(back, META, '2026-11-05').ok, false);
 });
+
+test('faction banners: only that faction drops, pity counts per banner', async () => {
+  const { bannerPity } = await import('../../src/meta/meta.js');
+  const { sanitize } = await import('../../src/save/save.js');
+  assert.ok(META.summon.banners.length >= 3);
+  const s = newSave(7);
+  s.wallet.sigils = 1e6;
+  for (const id of ['war', 'magic']) {
+    const r = summon(s, C, META, id, 10);
+    assert.ok(r.ok && r.results.every((x) => C.towers.get(x.tower).faction === id), id);
+  }
+  assert.equal(bannerPity(s, META, 'standard'), 0, 'other banners leave the standard pity alone');
+  // 40 pulls on one banner always contain an epic or better (pity 30)
+  const t = newSave(8);
+  t.wallet.sigils = 1e6;
+  const all = [];
+  for (let i = 0; i < 4; i++) all.push(...summon(t, C, META, 'war', 10).results);
+  assert.ok(all.some((x) => ['epic', 'legendary'].includes(x.rarity)));
+  assert.ok(bannerPity(t, META, 'war') < META.summon.pity.pulls);
+  const back = sanitize(JSON.parse(JSON.stringify(t)), C);
+  assert.equal(bannerPity(back, META, 'war'), bannerPity(t, META, 'war'), 'pity per banner survives a save round trip');
+});

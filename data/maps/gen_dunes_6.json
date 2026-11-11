@@ -1,50 +1,50 @@
 {
  "id": "gen_dunes_6",
- "name": "Sunscorch Line",
- "description": "Desert outpost: 2 roads.",
+ "name": "Mesa Gulch",
+ "description": "Red canyon: 2 roads.",
  "seed": "du6x",
  "scatterGap": 1.3,
  "waves": "gen_dunes_6_waves",
  "unlockLevel": 26,
- "theme": "dunes",
+ "theme": "canyon",
  "generated": {
   "template": "fork",
   "seed": "du6x",
-  "theme": "dunes"
+  "theme": "canyon"
  },
  "size": {
   "w": 110,
   "d": 80
  },
  "sky": {
-  "top": "#6FA8E8",
-  "horizon": "#F4E8D0",
-  "fog": "#EAD8B8",
-  "fogNear": 80,
-  "fogFar": 210
+  "top": "#4E9AE0",
+  "horizon": "#FFD8B0",
+  "fog": "#F2C098",
+  "fogNear": 85,
+  "fogFar": 215
  },
  "sun": {
-  "azimuth": 190,
-  "elevation": 60,
-  "color": "#FFF0D0",
-  "intensity": 2.8
+  "azimuth": 175,
+  "elevation": 48,
+  "color": "#FFE8C8",
+  "intensity": 2.7
  },
  "ground": {
   "grass": [
-   "#C8B07A",
-   "#B89E68",
-   "#D8C08A",
-   "#A88E5A"
+   "#C26A42",
+   "#AE5A36",
+   "#D47C52",
+   "#964A2C"
   ],
   "path": [
-   "#A07A50",
-   "#8A6640",
-   "#B48C5E",
-   "#745434"
+   "#E0B890",
+   "#CCA47C",
+   "#EEC8A2",
+   "#B48C66"
   ],
   "rim": [
-   "#B89A70",
-   "#9A8060"
+   "#A8553A",
+   "#8A4430"
   ]
  },
  "terrain": {

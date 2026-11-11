@@ -17,8 +17,8 @@ export function degreeNote(root, scale, deg) {
  * voices: pad (chord tones, whole bar), arp (8ths), bass (root on beats 1 and 3, with pickups),
  * kick / snare / hat (16 steps from the drum string).
  */
-export function barEvents(music, { mood = 'hub', key = 'default', bar = 0, seed = 'tds' } = {}) {
-  const md = music.moods[mood] || music.moods.hub;
+export function barEvents(music, { mood = 'hub', key = 'default', bar = 0, seed = 'tds', style = null } = {}) {
+  const md = moodDef(music, mood, style);
   const kd = music.keys[key] || music.keys.default;
   const scale = music.scales[md.scale || kd.scale] || music.scales.dorian;
   const prog = md.progression;
@@ -55,5 +55,12 @@ export function barEvents(music, { mood = 'hub', key = 'default', bar = 0, seed 
   return ev.sort((a, b) => a.beat - b.beat);
 }
 
-/** Seconds per beat for a mood. */
-export const beatSeconds = (music, mood) => 60 / (music.moods[mood] || music.moods.hub).bpm;
+/** A mood with the style's overrides (music.styles[style][mood]) merged in; layers merge per layer. */
+export function moodDef(music, mood, style = null) {
+  const base = music.moods[mood] || music.moods.hub;
+  const over = music.styles?.[style]?.[mood];
+  return over ? { ...base, ...over, layers: { ...base.layers, ...(over.layers || {}) } } : base;
+}
+
+/** Seconds per beat for a mood (and style). */
+export const beatSeconds = (music, mood, style = null) => 60 / moodDef(music, mood, style).bpm;

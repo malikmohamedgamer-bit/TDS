@@ -1,50 +1,50 @@
 {
  "id": "gen_toxic_7",
- "name": "Bog Wallow",
- "description": "Blighted marsh: 2 roads.",
+ "name": "Bloodroot Slough",
+ "description": "Crimson mire: 2 roads.",
  "seed": "to7x",
  "scatterGap": 1.3,
  "waves": "gen_toxic_7_waves",
  "unlockLevel": 31,
- "theme": "toxic",
+ "theme": "crimson",
  "generated": {
   "template": "fork",
   "seed": "to7x",
-  "theme": "toxic"
+  "theme": "crimson"
  },
  "size": {
   "w": 110,
   "d": 80
  },
  "sky": {
-  "top": "#6A7A6A",
-  "horizon": "#C8D8B0",
-  "fog": "#A8B890",
-  "fogNear": 55,
-  "fogFar": 160
+  "top": "#4A2A3A",
+  "horizon": "#D09AA0",
+  "fog": "#A87880",
+  "fogNear": 50,
+  "fogFar": 150
  },
  "sun": {
-  "azimuth": 200,
-  "elevation": 44,
-  "color": "#E8F0C8",
-  "intensity": 2.2
+  "azimuth": 210,
+  "elevation": 38,
+  "color": "#FFD0C8",
+  "intensity": 2.1
  },
  "ground": {
   "grass": [
-   "#5E7A44",
-   "#4E6A3A",
-   "#6E8A50",
-   "#3E5A30"
+   "#7A4A4E",
+   "#6A3C42",
+   "#8C585C",
+   "#582E34"
   ],
   "path": [
-   "#6A5A48",
-   "#5A4A3A",
-   "#7A6A55",
-   "#4A3C30"
+   "#4E3A3E",
+   "#402E32",
+   "#5E484C",
+   "#322428"
   ],
   "rim": [
-   "#4E5A44",
-   "#5A4E5E"
+   "#5A3A42",
+   "#4A3A4E"
   ]
  },
  "terrain": {

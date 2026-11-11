@@ -14,11 +14,11 @@
   {
    "groups": [
     {
-     "enemy": "husk",
-     "count": 6,
-     "interval": 1.4,
+     "enemy": "mech_009",
+     "count": 11,
+     "interval": 0.76,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -29,15 +29,15 @@
      "count": 6,
      "interval": 1.2,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "skeleton_ember",
+     "enemy": "skitter",
      "count": 4,
      "interval": 1,
      "delay": 6,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -48,34 +48,34 @@
      "count": 12,
      "interval": 0.9,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "skitter",
+     "enemy": "skeleton_ember",
      "count": 5,
      "interval": 0.8,
      "delay": 6,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "husk",
-     "count": 8,
-     "interval": 1,
+     "enemy": "mech_009",
+     "count": 15,
+     "interval": 0.53,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "ironshell",
-     "count": 2,
-     "interval": 3,
+     "enemy": "mech_015",
+     "count": 5,
+     "interval": 1.2,
      "delay": 6,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -86,15 +86,15 @@
      "count": 20,
      "interval": 0.35,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "gloomwing",
+     "enemy": "ufo_b_ember",
      "count": 4,
      "interval": 1.5,
      "delay": 4,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -105,7 +105,7 @@
      "count": 4,
      "interval": 1.6,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "husk",
@@ -113,26 +113,26 @@
      "interval": 0.8,
      "delay": 3,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "mossback",
-     "count": 2,
-     "interval": 5,
+     "enemy": "mech_005",
+     "count": 5,
+     "interval": 2,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "skitter",
+     "enemy": "skeleton_ember",
      "count": 10,
      "interval": 0.6,
      "delay": 5,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -143,34 +143,34 @@
      "count": 4,
      "interval": 2.5,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "mender",
-     "count": 2,
-     "interval": 4,
+     "enemy": "mech_012",
+     "count": 5,
+     "interval": 1.6,
      "delay": 4,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "husk",
-     "count": 10,
-     "interval": 0.8,
+     "enemy": "mech_009",
+     "count": 19,
+     "interval": 0.42,
      "delay": 2,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "brood_sac",
-     "count": 6,
-     "interval": 2,
+     "enemy": "mech_035",
+     "count": 15,
+     "interval": 0.8,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "gloomwing",
@@ -178,7 +178,7 @@
      "interval": 1.2,
      "delay": 8,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -186,38 +186,38 @@
    "boss": true,
    "groups": [
     {
-     "enemy": "gravemaw",
+     "enemy": "boss_mech_12",
      "count": 1,
-     "hpMul": 0.382,
+     "hpMul": 0.398,
      "leak": 60,
      "path": 0
     },
     {
-     "enemy": "husk",
-     "count": 12,
-     "interval": 1.2,
+     "enemy": "mech_009",
+     "count": 23,
+     "interval": 0.63,
      "delay": 2,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "bulwark",
-     "count": 4,
-     "interval": 3,
+     "enemy": "mech_028",
+     "count": 10,
+     "interval": 1.2,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "skeleton_ember",
-     "count": 12,
-     "interval": 0.5,
+     "enemy": "mech_003",
+     "count": 14,
+     "interval": 0.43,
      "delay": 2,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -228,33 +228,33 @@
      "count": 2,
      "interval": 6,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "husk",
-     "count": 16,
-     "interval": 0.6,
+     "enemy": "mech_009",
+     "count": 30,
+     "interval": 0.32,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "shade",
-     "count": 8,
-     "interval": 1.2,
+     "enemy": "mech_024",
+     "count": 14,
+     "interval": 0.69,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "ufo_b_ember",
-     "count": 6,
-     "interval": 1.1,
+     "enemy": "mech_030",
+     "count": 10,
+     "interval": 0.66,
      "delay": 8,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -265,7 +265,7 @@
      "count": 8,
      "interval": 1.8,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "mossback",
@@ -273,7 +273,7 @@
      "interval": 4,
      "delay": 6,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "mender",
@@ -281,7 +281,7 @@
      "interval": 4,
      "delay": 3,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -292,7 +292,7 @@
      "count": 40,
      "interval": 0.2,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "brood_sac",
@@ -300,18 +300,18 @@
      "interval": 1.5,
      "delay": 5,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "shade",
-     "count": 10,
-     "interval": 1,
+     "enemy": "mech_024",
+     "count": 18,
+     "interval": 0.56,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "vampire_ember",
@@ -319,18 +319,18 @@
      "interval": 2.5,
      "delay": 4,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "gloomwing",
-     "count": 12,
-     "interval": 0.8,
+     "enemy": "mech_030",
+     "count": 21,
+     "interval": 0.46,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "mossback",
@@ -338,18 +338,18 @@
      "interval": 3.5,
      "delay": 5,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
   {
    "groups": [
     {
-     "enemy": "caller",
-     "count": 4,
-     "interval": 5,
+     "enemy": "mech_020",
+     "count": 10,
+     "interval": 2,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "ironshell",
@@ -357,7 +357,7 @@
      "interval": 1.5,
      "delay": 2,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "mender",
@@ -365,7 +365,7 @@
      "interval": 3,
      "delay": 6,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -376,31 +376,31 @@
      "count": 22,
      "interval": 0.4,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "skeleton_ember",
-     "count": 16,
-     "interval": 0.5,
+     "enemy": "mech_003",
+     "count": 18,
+     "interval": 0.44,
      "delay": 3,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "ironshell",
-     "count": 6,
-     "interval": 2,
+     "enemy": "mech_015",
+     "count": 15,
+     "interval": 0.8,
      "delay": 5,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
-     "enemy": "bulwark",
-     "count": 6,
-     "interval": 2,
+     "enemy": "mech_028",
+     "count": 15,
+     "interval": 0.8,
      "delay": 8,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   },
@@ -408,18 +408,18 @@
    "boss": true,
    "groups": [
     {
-     "enemy": "thornmother",
+     "enemy": "boss_mech_03",
      "count": 1,
-     "hpMul": 0.812,
+     "hpMul": 0.681,
      "path": 0
     },
     {
-     "enemy": "bulwark",
-     "count": 4,
-     "interval": 3,
+     "enemy": "mech_028",
+     "count": 10,
+     "interval": 1.2,
      "delay": 5,
      "path": 0,
-     "hpMul": 0.955
+     "hpMul": 1.133
     },
     {
      "enemy": "mender",
@@ -427,7 +427,7 @@
      "interval": 5,
      "delay": 8,
      "path": 1,
-     "hpMul": 0.955
+     "hpMul": 1.133
     }
    ]
   }

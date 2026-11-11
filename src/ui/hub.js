@@ -3,10 +3,12 @@
 // Quests and Daily rewards. All state changes go through src/meta/meta.js and are saved immediately.
 // Look: docs/ui-style.md (war-table panels, faction dress, code-drawn SVG icons).
 import { filterHelp } from './helpSearch.js';
+import { cosmeticStatus, equipCosmetic } from '../meta/cosmetics.js';
+import { applyUiTheme } from './applyCosmetics.js';
 import { exportSave, importSave } from '../save/save.js';
 import {
   levelForXp, summon, dailyDeal, buyTower, buyBundle, levelUpTower, levelUpCost, towerPrice, questStatus, claimQuest,
-  dailyStatus, claimDaily, localDate, owns, unlockedSpeeds, dailyChallenge,
+  dailyStatus, claimDaily, localDate, owns, unlockedSpeeds, dailyChallenge, bannerPity,
 } from '../meta/meta.js';
 import { towerStats } from '../sim/stats.js';
 import { SlotMachine, RARITY_LABEL, revealCutscene } from './slotMachine.js';
@@ -285,22 +287,26 @@ export class Hub {
   }
 
   _summon() {
-    const b = this.meta.summon.banners[0];
+    const banners = this.meta.summon.banners;
+    const b = banners.find((x) => x.id === this.banner) || banners[0];
+    const pity = bannerPity(this.save, this.meta, b.id);
+    const inPool = (t) => !b.pool?.faction || t.faction === b.pool.faction;
     const w = this.meta.summon.rarityWeights;
     const total = Object.values(w).reduce((a, x) => a + x, 0);
     const counts = {};
-    for (const t of this.c.towers.values()) counts[t.rarity] = (counts[t.rarity] || 0) + 1;
-    const featured = [...this.c.towers.values()].filter((t) => ORDER.indexOf(t.rarity) >= 3).slice(0, 4);
+    for (const t of this.c.towers.values()) if (inPool(t)) counts[t.rarity] = (counts[t.rarity] || 0) + 1;
+    const featured = [...this.c.towers.values()].filter((t) => inPool(t) && ORDER.indexOf(t.rarity) >= 3).slice(0, 4);
     return `<div class="summon">
       <div class="sm-host"></div>
       <div class="sm-side">
+        ${banners.length > 1 ? `<div class="banner-tabs" role="radiogroup" aria-label="Banner">${banners.map((x) => `<button class="chip ${x.id === b.id ? 'on' : ''}" role="radio" aria-checked="${x.id === b.id}" data-banner="${x.id}" data-testid="banner-${x.id}">${esc(x.name)}</button>`).join('')}</div>` : ''}
         <div class="banner-card"><h3>${esc(b.name)}</h3><p class="note">${esc(b.description)} Free in-game sigils only.</p>
           ${featured.length ? `<div class="feat" aria-label="Featured towers">${featured.map((t) => `<img alt="${esc(t.name)}" title="${esc(t.name)}" data-thumb="t:${t.id}:0">`).join('')}</div>` : ''}</div>
         <div class="row2"><button class="btn primary big" data-pull="1" data-testid="pull-1">Pull ${icon('sigil')} ${b.cost}</button><button class="btn brass big" data-pull="10" data-testid="pull-10">10x ${icon('sigil')} ${b.cost10}</button></div>
         <button class="btn ghost" data-act="skip-anim" data-testid="skip-anim">Skip animation</button>
         <label class="row"><input type="checkbox" name="alwaysSkip" ${this.ctx.settings.skipSummonAnim ? 'checked' : ''}> Always skip animations</label>
-        <p class="note">Pity: ${this.save.summon.pity}/${this.meta.summon.pity.pulls} pulls towards a guaranteed ${RARITY_LABEL[this.meta.summon.pity.minRarity]}. Duplicates turn into crowns.</p>
-        <div class="seg-bar" role="progressbar" aria-label="Pity ${this.save.summon.pity} of ${this.meta.summon.pity.pulls}" aria-valuemin="0" aria-valuemax="${this.meta.summon.pity.pulls}" aria-valuenow="${this.save.summon.pity}"><span style="display:block;height:100%;width:${(this.save.summon.pity / this.meta.summon.pity.pulls) * 100}%"></span></div>
+        <p class="note">Pity: ${pity}/${this.meta.summon.pity.pulls} pulls towards a guaranteed ${RARITY_LABEL[this.meta.summon.pity.minRarity]}. Duplicates turn into crowns.</p>
+        <div class="seg-bar" role="progressbar" aria-label="Pity ${pity} of ${this.meta.summon.pity.pulls}" aria-valuemin="0" aria-valuemax="${this.meta.summon.pity.pulls}" aria-valuenow="${pity}"><span style="display:block;height:100%;width:${Math.min(100, (pity / this.meta.summon.pity.pulls) * 100)}%"></span></div>
         <table class="odds"><caption>Odds</caption>${Object.entries(w).map(([r, x]) => `<tr><th>${rarityBadge(r)}</th><td>${((x / total) * 100).toFixed(1)}%</td><td>${counts[r] ? `${counts[r]} towers` : 'none yet (falls back)'}</td></tr>`).join('')}</table>
         <div class="pull-results" data-testid="pull-results"></div>
       </div></div>`;
@@ -323,8 +329,22 @@ export class Hub {
     const prog = (n, of) => `<div class="ix-progress"><div class="seg-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${of}" aria-valuenow="${n}"><span style="width:${(n / of) * 100}%"></span></div>${Math.round((n / of) * 100)}% discovered</div>`;
     const nt = towers.filter((t) => seenT.has(t.id)).length;
     const ne = enemies.filter((e) => seenE.has(e.id)).length;
-    return `<h3>${icon('tower')} Towers <span class="count">${nt}/${towers.length}</span></h3>${prog(nt, towers.length)}<div class="ix-grid">${towers.map((t) => card('t', t, seenT.has(t.id))).join('')}</div>
+    return `${this._cosmetics()}<h3>${icon('tower')} Towers <span class="count">${nt}/${towers.length}</span></h3>${prog(nt, towers.length)}<div class="ix-grid">${towers.map((t) => card('t', t, seenT.has(t.id))).join('')}</div>
       <h3>${icon('skull')} Enemies <span class="count" data-testid="ix-enemy-count">${ne}/${enemies.length}</span></h3>${prog(ne, enemies.length)}<div class="ix-grid">${enemies.map((e) => card('e', e, seenE.has(e.id))).join('')}</div>`;
+  }
+
+  /** Cosmetics (top of the Index): earned looks, one equipped per kind. */
+  _cosmetics() {
+    const all = cosmeticStatus(this.save, this.c);
+    if (!all.length) return '';
+    const kinds = this.c.cosmetics.kinds || {};
+    const sw = (it) => (it.kind === 'uiTheme' ? [it.vars?.['--brass'] || '#ffd166', it.vars?.['--brass-2'] || '#b8903c'] : [it.colors?.coat || '#2A2766', it.colors?.coatTrim || '#FFD166', it.colors?.cape || '#7B4DFF']);
+    return Object.entries(kinds).map(([kind, title]) => {
+      const list = all.filter((x) => x.kind === kind);
+      return `<h3>${icon('star')} ${esc(title)} <span class="count">${list.filter((x) => x.unlocked).length}/${list.length}</span></h3><div class="cos-grid">${list.map((it) => `<button class="cos ${it.equipped ? 'on' : ''} ${it.unlocked ? '' : 'locked'}" data-cosmetic="${it.id}" data-testid="cos-${it.id}" aria-pressed="${it.equipped}" ${it.unlocked ? '' : 'aria-disabled="true"'}>
+        <span class="cos-sw" aria-hidden="true">${sw(it).map((c) => `<i style="background:${esc(c)}"></i>`).join('')}</span>
+        <b>${it.unlocked ? '' : `${icon('lock')} `}${esc(it.name)}</b><small>${esc(it.unlocked ? it.desc : `${it.how}${it.target > 1 ? ` (${fmt(it.progress)}/${fmt(it.target)})` : ''}`)}</small>${it.equipped ? '<em>Equipped</em>' : ''}</button>`).join('')}</div>`;
+    }).join('');
   }
 
   _quests() {
@@ -503,6 +523,18 @@ export class Hub {
       return;
     }
     if (d.act === 'skip-anim') { this.slot?.skip(); this.skipReveal = true; return; }
+    if (d.cosmetic) {
+      const r = equipCosmetic(this.save, this.c, d.cosmetic);
+      if (!r.ok) { this.toast(r.reason, 'warn'); sfx?.play('error'); return; }
+      this.saved();
+      sfx?.play('ui');
+      applyUiTheme(this.save, this.c);
+      // the hero model is built with the world: an outfit change reloads into it, like a hero change
+      if (r.item.kind === 'heroOutfit') { this.ctx.switchHero?.(this.ctx.heroId); return; }
+      this.render();
+      return;
+    }
+    if (d.banner) { this.banner = d.banner; sfx?.play('ui'); this.render(); return; }
     if (d.pull) await this.pull(Number(d.pull));
   }
 
@@ -514,7 +546,7 @@ export class Hub {
 
   async pull(count) {
     if (this.pulling) return;
-    const r = summon(this.save, this.c, this.meta, 'standard', count);
+    const r = summon(this.save, this.c, this.meta, this.banner || this.meta.summon.banners[0].id, count);
     if (!r.ok) { this.toast(r.reason, 'warn'); this.ctx.sfx?.play('error'); return; }
     this.saved(); // result is final before any animation: skipping or closing cannot change it
     this.pulling = true;

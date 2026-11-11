@@ -152,3 +152,19 @@
 .save-io { display: grid; gap: 8px; margin-bottom: 14px; }
 .save-io textarea { width: 100%; box-sizing: border-box; border-radius: 10px; border: 2px solid var(--border); background: #12141c; color: inherit; padding: 8px; font: 0.8rem/1.3 ui-monospace, monospace; resize: vertical; }
 .save-io .btn.danger { border-color: #E5484D; color: #FFB3B5; }
+
+/* Summon banners */
+.banner-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.banner-tabs .chip { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 2px solid var(--border); background: #1b1f2c; color: inherit; font-weight: 700; cursor: pointer; }
+.banner-tabs .chip.on { border-color: var(--accent, #FFD166); color: var(--accent, #FFD166); }
+
+/* Cosmetics (Index) */
+.cos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; margin-bottom: 8px; }
+.cos { display: grid; gap: 3px; text-align: left; padding: 10px; min-height: 44px; border-radius: 12px; background: #1b1f2c; border: 2px solid var(--border); color: inherit; cursor: pointer; font: inherit; }
+.cos small { color: var(--text-2); font-size: 0.76rem; }
+.cos em { font-style: normal; font-size: 0.72rem; font-weight: 700; color: var(--brass); text-transform: uppercase; letter-spacing: 0.06em; }
+.cos.on { border-color: var(--brass); }
+.cos.locked { opacity: 0.62; cursor: not-allowed; }
+.cos:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+.cos-sw { display: flex; height: 14px; border-radius: 4px; overflow: hidden; }
+.cos-sw i { flex: 1; }
