@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.11.0 - Content to target, modes, meta, PWA (2026-11-11)
+- Maps: 50 (33 new generated maps, each calibrated with the balance bot). 14 themes: Autumn, Polar Night,
+  Ashfall, Crimson Mire, Red Canyon and Void Rift are new looks (ground, sky, light, particles, colour
+  grade, music style) on existing layout rules.
+- Campaign now shows the whole roster: the 33 new maps swap in kit enemies of the same archetype and put
+  kit bosses on both boss waves (252 of 300 units appear in wave tables; before: 37).
+- Modes: Skirmish (10 waves), Mutation (a seeded mutation every wave), War Chest (one budget, no kill or
+  wave cash), Last Stand (keep has 40 health). 11 modes.
+- Meta: 87 quests (one liberation quest per map, one per mode), 109 achievements, two faction summon
+  banners with their own pity, cosmetics earned in play (7 interface themes, 7 hero outfits, in the Index).
+- Help tab: searchable help, save export / import code, credits, privacy, terms.
+- Pause screen battle report: damage share, kills and damage per cash for each tower type.
+- Music: final-boss, victory and defeat pieces; one style per theme.
+- PWA: web app manifest, code-made icons, service worker (offline play after the first visit, a cache per
+  build, pack models cached on first use, update applies at the next start).
+- Save safety: the sanitizer repairs damaged records, quest boards and index lists (fuzz test, 400 saves).
+
 ## 0.10.0 - UI / GFX update, batch 1 + boss mechanics (2026-11-06)
 - UI: docs/ui-style.md, design tokens, war-table theme with Magic / War faction dress, code-drawn SVG icon
   set (tower classes, enemy archetypes, damage types, abilities, rarity badges with shapes), new lobby

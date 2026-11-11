@@ -42,12 +42,12 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Bosses 100+ (100 bosses: 19 earlier + 81 generated kit bosses in mechanics_b1 / b2; 83 mechanically distinct, 94 models) (2026-11-06)
 - [x] Towers 100+ (100: 63 kit towers with 7 new sim mechanics: execute, crit, ramp, shred, pushback, bounty, multishot; 85 mechanically distinct, 91 models) (2026-11-06). Still thin: air, aura, summoner, trap, hero-linked classes (all kit towers are direct-fire) - add in a later batch
 - [x] Enemies 200+ (200: 158 kit enemies from tools/gen-enemies.mjs; new sim mechanics blink + burst; 12 traits, every trait set used once; 168 distinct, 191 models) (2026-11-06). They appear in Endless / Daily pools only; campaign tables unchanged (maps batch will feature them)
-- [ ] Maps 50+: 6+ new themes, path templates (loops, crossovers, multi-lane, air routes), 8+ new flagships,
-      picker scales to 50+
+- [x] Maps 50 on 14 themes (6 new looks), picker groups all of them (2026-11-11). Still open: new path templates
+      (loops, crossovers, air routes), 8 more hand-made flagships (5 of 13)
 - [x] Heroes 10+, skills 30+ (10 heroes, 39 skills: Tidecaller Maren, Blastmaster Brik, Shadowblade Vex + 12 abilities) (2026-11-06). Balance of the new three not yet measured (Chunk 3, with BUGS #44)
-- [ ] 3+ new modes (10+ total)
+- [x] 4 new modes, 11 total: Skirmish, Mutation, War Chest, Last Stand (2026-11-11)
 - [ ] More CC0 packs (Kenney, Quaternius first), credits recorded
-- [ ] Balance bot quick check (12 seeds) on every new map and mode
+- [x] Balance bot quick check (12 seeds) on every new map and mode (maps: tools/map-batches.json `calibration`; modes: BUGS 49, 50)
 
 ## Chunk 3: balance sweep (MUST)
 - [ ] BUGS #44 heroes too strong, #37 generated towers too strong, #46 Boss Rush 55% (global multipliers)
@@ -58,20 +58,20 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 
 ## Chunk 4: meta and cosmetics (SHOULD)
 - [ ] Index covers everything, completion rewards
-- [ ] 80+ quests, 80+ achievements with distinct conditions
-- [ ] Several summon banners with pity
-- [ ] Cosmetics: tower skins, hero outfits, projectile effects, UI themes, map decorations (earned in play)
+- [x] 87 quests, 109 achievements (21 distinct condition kinds; most achievements are tiers)
+- [x] 3 summon banners, pity per banner
+- [ ] Cosmetics: hero outfits and UI themes done (14 items, earned in play). Open: tower skins, projectile effects, map decorations
 - [ ] Daily and weekly rewards; every reward granted exactly once (tested)
 
 ## Chunk 5: audio (SHOULD)
-- [ ] Music set per theme + boss, victory, defeat themes; crossfades; Music volume
+- [x] Music style per theme (12), boss, final boss, victory and defeat pieces; volume dip on changes; Music volume. Not checked by ear
 - [ ] SFX per unit class and damage type, UI sounds, ducking, captions, mute, mix pass, reduced sound option
 
 ## Chunk 6: UI and tutorial (MUST)
 - [ ] Every screen in docs/ui-style.md finished (hub, pickers, loadout, shop, summon, Index, quests, settings,
       HUD, pause, results, credits, privacy, terms)
 - [ ] Tutorial v2 (< 5 min, skippable with confirm, replayable)
-- [ ] Stat tooltips, searchable Help, income / DPS breakdown, first-run difficulty choice, strings in data files
+- [ ] Searchable Help and battle report (damage breakdown) done. Open: stat tooltips everywhere, first-run difficulty choice, all strings in data files
 - [ ] Accessibility audit with fixes; screenshots at phone / tablet / desktop
 - [ ] Milestone: full e2e + 30 min soak
 
@@ -79,11 +79,11 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Budgets reported (frame time, draw calls, triangles, memory, load size)
 - [ ] LOD, instancing, effect and shadow caps, compression only if it helps, atlasing, lazy loading
 - [ ] Low / Medium / High / Ultra presets change cost; auto-Low on weak devices
-- [ ] PWA: manifest, code-made icons, service worker (offline, versioned caches, update notice)
+- [x] PWA: manifest, code-made icons, service worker (offline, cache per build, update notice). Not yet tested on the live URL or a phone
 
 ## Chunk 8: QA and safety (MUST)
 - [ ] Full e2e, soak on every map, fuzz tests (inputs, settings)
-- [ ] Save safety: corrupt / old / huge / hand-edited saves, migrations, export / import, crash-safe autosave
+- [x] Save safety: corrupt / old / hand-edited saves (fuzz test), migrations, export / import UI (Help tab), backup copy. Open: huge saves
 - [ ] Error boundaries per unit, memory leak checks (GPU, JS), client security review
 - [ ] Milestone: full e2e + 30 min soak
 
@@ -113,3 +113,8 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-06 | Chunk 2 towers | 7 new tower mechanics in the sim (tests), `src/engine/towerKit.js`, `tools/gen-towers.mjs` -> data/towers/mechanics_b1.json (63 towers). Generated-only Riftline / Frostmere Normal: PRICE_MUL 1.1 12/12 + 11/12, 1.5 5/12, 1.3 12/12, 1.4 9/12 + 8/12 (3 attempts, kept 1.4; BUGS #48). Unit 119, lint clean |
 | 2026-11-06 | Chunk 2 enemies | Enemy mechanics blink + burst (sim, tests), boss-kit bodies shrunk via model.scale (baked in rigFromProcedural), `tools/gen-enemies.mjs` -> data/enemies/mechanics_b1.json (158). Unit 122, lint clean. No balance run yet on Endless with the 200 pool (Chunk 3) |
 | 2026-11-06 | Chunk 2 heroes | 3 heroes + 12 abilities (goggles / crown heads, dagger weapon in HeroView, icons), sheets heroes-b2. Unit 122, lint clean |
+| 2026-11-11 | Chunk 2 maps + modes | 33 generated maps calibrated (12 seeds, core towers), 4 modes (sim flags maxWaves, keepHpFixed, mutations), balance tool --mode. Unit 124 |
+| 2026-11-11 | Chunk 7 PWA | manifest, icons (tools/gen-icons.mjs), sw.js stamped by tools/build-site.mjs, src/pwa.js |
+| 2026-11-11 | Chunk 4 + 6 + 8 | Quests 87, Help tab with save export / import, save fuzz test and sanitizer fixes, banners, cosmetics, battle report |
+| 2026-11-11 | Chunk 2 featuring | Kit enemies and bosses on the 33 new maps (252 of 300 units in waves), recalibrated; 6 re-skin themes (waves and layouts verified identical); music styles. Unit 132 |
+

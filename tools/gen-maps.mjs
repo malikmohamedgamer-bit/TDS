@@ -150,7 +150,11 @@ if (args.includes('--calibrate')) {
   const only = opt('calibrate', '')?.startsWith('--') ? null : opt('calibrate', '')?.split(',').filter(Boolean);
   const seeds = Number(opt('seeds', 12));
   const parse = (txt) => [...(txt || '').matchAll(/hpMul ([\d.]+) -> (\d+)%/g)].map((m) => ({ hp: +m[1], rate: +m[2] / 100 }));
-  const best = (pts) => pts.reduce((b, p) => (Math.abs(p.rate - 0.65) < Math.abs(b.rate - 0.65) ? p : b));
+  // closest to 65%; on a tie the point further in the helpful direction (harder when too easy)
+  const best = (pts) => pts.reduce((b, p) => {
+    const d = Math.abs(p.rate - 0.65) - Math.abs(b.rate - 0.65);
+    return d < 0 || (d === 0 && (p.rate > 0.65 ? p.hp > b.hp : p.hp < b.hp)) ? p : b;
+  });
   for (const entry of [...spec.flagships, ...spec.batch]) {
     if (only?.length && !only.includes(entry.id)) continue;
     let pts = parse(entry.calibration);
@@ -177,7 +181,9 @@ if (args.includes('--calibrate')) {
       } else {
         // secant between the two measurements towards 65%, clamped to a sane range
         const [p, q] = pts;
-        next = p.rate === q.rate ? (p.hp + q.hp) / 2 : p.hp + ((0.65 - p.rate) * (q.hp - p.hp)) / (q.rate - p.rate);
+        // same rate twice (often 100% or 0% both times): keep going in the direction that helps
+        if (p.rate === q.rate) next = p.rate > 0.65 ? Math.max(p.hp, q.hp) * 1.15 : Math.min(p.hp, q.hp) * 0.87;
+        else next = p.hp + ((0.65 - p.rate) * (q.hp - p.hp)) / (q.rate - p.rate);
         next = Math.max(Math.min(p.hp, q.hp) * 0.85, Math.min(Math.max(p.hp, q.hp) * 1.15, next));
       }
       await apply(next);

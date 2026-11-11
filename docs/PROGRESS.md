@@ -18,23 +18,23 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
 | 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
 | 11. UI / GFX / content update | **In progress** (2026-11-06): see Next exact action |
+| 12. Finish-the-game run, session 2026-11-11 | **Done to 91% of the scoreboard**: 50 maps / 14 themes, campaign features the whole roster, 11 modes, 87 quests, banners, cosmetics, Help, battle report, music styles, PWA, save fuzz. Open work: see Next exact action |
 | 10. Asset packs + content growth | **Done** (2026-11-06): 10 Kenney + 10 Quaternius CC0 packs, 48 imported pack models (23 Kenney, 25 Quaternius), seeded map generator + 15 new maps (3 hand-made flagships, 12 generated), content batches kenney_b1, quaternius_b1, quaternius_b2, 2 new heroes, 5 new hero skills, Lancer Mech boss killer. Full e2e + 30 min soak for this batch: see VERIFICATION.md |
 
-## Real content counts (2026-11-06, counted from data/ by script)
+## Real content counts (2026-11-11, `node tools/count-content.mjs`)
 
 | Content | Count |
 |---|---|
-| Maps | 17: Riftline Valley, Frostmere Crossing (L3), 3 hand-made flagships (Glacier Gate L2, Mirrormire L4, Starfall Sanctum L6) and 12 generated (L5-L27, every 2 levels); 6 themes; 6 one-road, 6 two-road, 5 three-road |
-| Towers | 37 (21 War, 16 Magic) on **28 distinct models**: 12 core + 2 legendary + 19 kenney_b1 (incl. Lancer Mech) + 4 quaternius_b1 (Rifle Squad; Magic: Starwatch Tower, Sanctum of Dawn, Spirit Barracks) |
-| Enemies / bosses | 42 on **33 distinct models** / 19 on **14 distinct models**: 11 core + 18 kenney_b1 + 8 quaternius_b1 + 5 quaternius_b2 (one model each) / 2 core + 10 kenney_b1 + 5 quaternius_b1 + 2 quaternius_b2. New units: flagship waves (featured swaps + final bosses), Endless, Boss Rush (6 bosses drawn per run from all 19) |
-| Imported pack models | 48: 23 Kenney + 25 Quaternius. data/models.json: 55 (7 Blender + 48 pack), **all 55 used by units**. All units: 98 on 75 distinct models (code-built models counted once each) |
-| Heroes / abilities | 7 heroes, 4 skills each (Commander Vale default, Warmaster Ryn, Archmage Seren, Ignis Emberheart, Sergeant Kade, Grovewarden Nyra, Captain Mara Holt; own colours + headgear/weapon gear on the code model) / 27 skills |
-| Tuning presets | 3 (Standard default, Original, Relaxed) + 5 Assist toggles |
-| Quests / achievements | 8 daily (3 per day) + 6 story / 8 achievements |
-| Daily login rewards | 7-day streak |
-| Modes / modifiers | 7 / 9 |
-| Music | 4 moods (hub, build, wave, boss), 17 map keys (one per map, theme scale), procedural (no audio files) |
-| Unit tests / E2E tests | 84 / 24 |
+| Maps | 50 on 14 themes: 5 hand-made (Riftline, Frostmere, Glacier Gate, Mirrormire, Starfall Sanctum), 45 generated on 3 road templates (serpentine, fork, trident); unlock levels 1 to 36 |
+| Towers | 100 (57 War, 43 Magic), 85 mechanically distinct, 91 models |
+| Enemies / bosses | 200 (168 distinct, 191 models) / 100 (83 distinct, 94 models). 252 of the 300 appear in Campaign wave tables; all in Endless / Boss Rush |
+| Heroes / abilities | 10 heroes, 4 skills each / 39 skills |
+| Modes / modifiers | 11 (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) / 9 |
+| Quests / achievements | 87 (23 daily pool, 64 story: 6 hand-written, 50 map liberations, 8 mode wins) / 109 |
+| Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
+| Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
+| Music | 7 moods, 12 theme styles, one key per map; procedural |
+| Unit tests / E2E tests | 132 / see VERIFICATION.md |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -131,15 +131,27 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-**FINISH THE GAME run (owner brief 2026-11-06, supersedes the UI/GFX brief below).** Checklist and priority tiers:
-`docs/ROADMAP.md`. Chunk 0 done. Chunk 1 slice 1 done (2026-11-06): `src/engine/bossKit.js` (pure: 5 bodies, 14 mechanic
-parts, `buildBossRig(kit)`; enemy data `model.kit = { body, parts, accent }`), `enemyRigDef()` in unitModels.js (matches,
-thumbnails, viewer), boss_mech_01-08 on kit builds from tools/gen-bosses.mjs (`KIT_BOSSES = 8`, body from the lead
-mechanic, one part per mechanic, glow accent from the resist profile). Sheets: docs/screenshots/identity/kit-b1.
-Note: ModelBuilder `cyl` / `cone` are base-anchored unless `centered: true`.
-**Next:** Chunk 1 mostly done. Chunk 2: bosses 100, towers 100, enemies 200, heroes 10 done. Now: maps 50+ (tools/gen-maps.mjs + tools/map-batches.json: add 33 maps, 6+ new themes, new path templates, picker for 50+, featured swaps so new enemies appear in campaign waves), modes 10+. Open from Chunk 1: readability language. Kit towers are direct-fire only (add air / aura / summoner / trap kit towers later).
-`tds-finish-game-resume-1` (19:10 local) has an overlap guard (`.run-lock`, git-ignored, plus a session check).
-The open items of the older brief below are folded into ROADMAP Chunks 1, 2, 4 and 6.
+**FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in
+`docs/COMPLETION.md`). Session 2026-11-11 finished Chunk 2 and parts of 4, 5, 6, 7, 8. In order:
+1. Chunk 3 balance sweep: BUGS #44 (new heroes too strong: Kade, Holt, Nyra, Seren), then 20 seeds per map
+   on Standard Normal (`node tools/balance.mjs --map all --seeds 20 --loadout <core 12>`), ladder check,
+   Endless with the 200-enemy pool.
+2. Chunk 2 leftovers: new path templates in src/core/mapGen.js (loop, crossover, air route), more flagships,
+   kit towers for the thin classes (air, aura, summoner, trap).
+3. Chunk 6: stat tooltips, first-run difficulty choice, tutorial v2, accessibility audit, screenshots at
+   three sizes (`node tools/ui-shots.mjs after2`).
+4. Chunk 7: budgets (frame time, draw calls, load size), LOD; test the PWA on the live URL and a phone.
+5. Chunk 4 leftovers: tower skins, projectile effects, weekly rewards. Chunk 8 / 10 / 11 as listed.
+
+How things added this session work:
+- Featured maps: `feature: true` in tools/map-batches.json; `featureFor()` in tools/gen-maps.mjs picks kit
+  enemies by archetype and kit bosses; a theme with `parent` in tools/map-themes.json is a re-skin (same
+  seed gives the same roads, props and waves; verified by diff).
+- Hand calibration when the calibrator fails: set `hpMul`, run `node tools/gen-maps.mjs`, measure with
+  `node tools/balance.mjs --map <id> --seeds 12 --loadout <core 12>`, record it in `calibration`.
+- Modes are data (data/modes.json): `maxWaves`, `keepHpFixed`, `mutations`, `rewardMul`, `tune`.
+- Cosmetics: data/cosmetics.json + src/meta/cosmetics.js (ownership is derived from the save, never stored).
+- Help text: data/help.json. PWA: sw.js is stamped by tools/build-site.mjs; no service worker on localhost.
 
 Older brief, UI / texture / GFX / content update (owner brief 2026-11-06, docs/ui-style.md; checkpoints to wip/ui-gfx before each
 batch; stop at about 95% of the 5-hour window / 97% weekly and schedule a resume).
