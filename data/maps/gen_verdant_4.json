@@ -1,0 +1,496 @@
+{
+ "id": "gen_verdant_4",
+ "name": "Verdant Vale",
+ "description": "Green valley: 2 roads.",
+ "seed": "ve4x",
+ "scatterGap": 1.3,
+ "waves": "gen_verdant_4_waves",
+ "unlockLevel": 10,
+ "theme": "verdant",
+ "generated": {
+  "template": "fork",
+  "seed": "ve4x",
+  "theme": "verdant"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#7FB8F5",
+  "horizon": "#E3F1FF",
+  "fog": "#CFE6FA",
+  "fogNear": 70,
+  "fogFar": 190
+ },
+ "sun": {
+  "azimuth": 215,
+  "elevation": 52,
+  "color": "#FFF1D6",
+  "intensity": 2.6
+ },
+ "ground": {
+  "grass": [
+   "#6BAA4A",
+   "#5A9440",
+   "#7DBE58",
+   "#4B7F36"
+  ],
+  "path": [
+   "#C49A6C",
+   "#A97D52",
+   "#D8B184",
+   "#8C6440"
+  ],
+  "rim": [
+   "#7A8A55",
+   "#6E6E7A"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 7,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": -1,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 12,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": -12,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 36,
+    "z": -23,
+    "r": 9.5,
+    "h": 2.8
+   },
+   {
+    "x": 46,
+    "z": 20.5,
+    "r": 9.5,
+    "h": 1.2
+   },
+   {
+    "x": 38.5,
+    "z": 21,
+    "r": 6.5,
+    "h": 2.7
+   },
+   {
+    "x": 34.5,
+    "z": 28.5,
+    "r": 9.5,
+    "h": 1.6
+   },
+   {
+    "x": 42,
+    "z": 35.5,
+    "r": 6.5,
+    "h": 2.7
+   },
+   {
+    "x": -1,
+    "z": 4.5,
+    "r": 7,
+    "h": 2.8
+   },
+   {
+    "x": 31,
+    "z": 28.5,
+    "r": 7.5,
+    "h": 2.5
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "north",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     12
+    ],
+    [
+     -40.5,
+     12
+    ],
+    [
+     -40.5,
+     28
+    ],
+    [
+     -27,
+     28
+    ],
+    [
+     -27,
+     15
+    ],
+    [
+     -12,
+     15
+    ],
+    [
+     -12,
+     27
+    ],
+    [
+     12,
+     27
+    ],
+    [
+     12,
+     -1
+    ],
+    [
+     45,
+     -1
+    ]
+   ]
+  },
+  {
+   "id": "south",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -12
+    ],
+    [
+     -37.5,
+     -12
+    ],
+    [
+     -37.5,
+     -28
+    ],
+    [
+     -20,
+     -28
+    ],
+    [
+     -20,
+     -13
+    ],
+    [
+     -6,
+     -13
+    ],
+    [
+     -6,
+     -28.5
+    ],
+    [
+     7.5,
+     -28.5
+    ],
+    [
+     7.5,
+     -13
+    ],
+    [
+     23,
+     -13
+    ],
+    [
+     23,
+     -1
+    ],
+    [
+     45,
+     -1
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": -1
+ },
+ "playerSpawn": {
+  "x": 19,
+  "z": -19,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 12,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -12,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": -1,
+   "rot": 0
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 24.5,
+   "z": 19,
+   "rot": 3.73
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": -22.5,
+   "z": -4,
+   "rot": 6.22
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 30,
+   "z": -8.5,
+   "rot": 5.46
+  },
+  {
+   "kind": "runestone",
+   "x": -1.5,
+   "z": -3,
+   "rot": 5.29
+  },
+  {
+   "kind": "runestone",
+   "x": 33,
+   "z": -22.5,
+   "rot": 0.1
+  },
+  {
+   "kind": "runestone",
+   "x": -31.5,
+   "z": 9.5,
+   "rot": 5.93
+  },
+  {
+   "kind": "fence_wood",
+   "x": -4,
+   "z": 18,
+   "rot": 2.86
+  },
+  {
+   "kind": "fence_wood",
+   "x": 19.5,
+   "z": -25.5,
+   "rot": 6.24
+  },
+  {
+   "kind": "fence_wood",
+   "x": 28.5,
+   "z": -21,
+   "rot": 1.65
+  },
+  {
+   "kind": "tent",
+   "x": -29.5,
+   "z": -16.5,
+   "rot": 4.09
+  },
+  {
+   "kind": "tent",
+   "x": -45,
+   "z": -22,
+   "rot": 1.3
+  },
+  {
+   "kind": "crate_stack",
+   "x": 20.5,
+   "z": 26,
+   "rot": 3.37
+  },
+  {
+   "kind": "barrel",
+   "x": 36.5,
+   "z": -15,
+   "rot": 1.13
+  },
+  {
+   "kind": "barrel",
+   "x": -38,
+   "z": 5,
+   "rot": 6.17
+  },
+  {
+   "kind": "barrel",
+   "x": 27,
+   "z": 13,
+   "rot": 1.19
+  },
+  {
+   "kind": "lamp_post",
+   "x": -14,
+   "z": -17.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -29.5,
+   "z": -23.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 4,
+   "z": -22.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 8,
+   "z": 3.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 17,
+   "z": -5.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 16,
+   "z": 11,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -45,
+   "z": 25.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 7,
+   "z": 23,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -13.5,
+   "z": 10.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -9.5,
+   "z": -25.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -6,
+   "z": -9,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 24,
+   "z": -16.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -23,
+   "z": 18.5,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "tree_round",
+   "count": 44,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 11,
+   "minPathDist": 5,
+   "spacing": 3,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "tree_pine",
+   "count": 26,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 2.8,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "bush",
+   "count": 34,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2
+  },
+  {
+   "kind": "rock",
+   "count": 14,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 4
+  },
+  {
+   "kind": "rock_small",
+   "count": 24,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  }
+ ]
+}

@@ -1,0 +1,492 @@
+{
+ "id": "gen_dunes_4",
+ "name": "Sandstone Road",
+ "description": "Desert outpost: 3 roads.",
+ "seed": "du4x",
+ "scatterGap": 1.3,
+ "waves": "gen_dunes_4_waves",
+ "unlockLevel": 14,
+ "theme": "dunes",
+ "generated": {
+  "template": "trident",
+  "seed": "du4x",
+  "theme": "dunes"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#6FA8E8",
+  "horizon": "#F4E8D0",
+  "fog": "#EAD8B8",
+  "fogNear": 80,
+  "fogFar": 210
+ },
+ "sun": {
+  "azimuth": 190,
+  "elevation": 60,
+  "color": "#FFF0D0",
+  "intensity": 2.8
+ },
+ "ground": {
+  "grass": [
+   "#C8B07A",
+   "#B89E68",
+   "#D8C08A",
+   "#A88E5A"
+  ],
+  "path": [
+   "#A07A50",
+   "#8A6640",
+   "#B48C5E",
+   "#745434"
+  ],
+  "rim": [
+   "#B89A70",
+   "#9A8060"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 6,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 0,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 30,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": 0,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": -17,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 17.5,
+    "z": 33,
+    "r": 8,
+    "h": 1.7
+   },
+   {
+    "x": 44.5,
+    "z": -31.5,
+    "r": 8,
+    "h": 2.8
+   },
+   {
+    "x": 35,
+    "z": 30,
+    "r": 5,
+    "h": 1.5
+   },
+   {
+    "x": 26,
+    "z": 27.5,
+    "r": 9.5,
+    "h": 1.8
+   },
+   {
+    "x": 41,
+    "z": -23.5,
+    "r": 8.5,
+    "h": 2
+   },
+   {
+    "x": 37,
+    "z": 27.5,
+    "r": 7.5,
+    "h": 1.7
+   },
+   {
+    "x": 43.5,
+    "z": 34.5,
+    "r": 9,
+    "h": 2.7
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "north",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     30
+    ],
+    [
+     -36.5,
+     30
+    ],
+    [
+     -36.5,
+     18.5
+    ],
+    [
+     -22,
+     18.5
+    ],
+    [
+     -22,
+     30
+    ],
+    [
+     -4.5,
+     30
+    ],
+    [
+     -4.5,
+     18
+    ],
+    [
+     14.5,
+     18
+    ],
+    [
+     14.5,
+     0
+    ],
+    [
+     45,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "middle",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     0
+    ],
+    [
+     45,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "south",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -17
+    ],
+    [
+     -36.5,
+     -17
+    ],
+    [
+     -36.5,
+     -29.5
+    ],
+    [
+     -18.5,
+     -29.5
+    ],
+    [
+     -18.5,
+     -18
+    ],
+    [
+     -2,
+     -18
+    ],
+    [
+     -2,
+     -30
+    ],
+    [
+     26.5,
+     -30
+    ],
+    [
+     26.5,
+     0
+    ],
+    [
+     45,
+     0
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 0
+ },
+ "playerSpawn": {
+  "x": 19.5,
+  "z": 8,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 30,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 0,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -17,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 0,
+   "rot": 0
+  },
+  {
+   "kind": "tent",
+   "x": 13,
+   "z": -23,
+   "rot": 5
+  },
+  {
+   "kind": "tent",
+   "x": -40.5,
+   "z": -8,
+   "rot": 5.89
+  },
+  {
+   "kind": "tent",
+   "x": 38.5,
+   "z": -21.5,
+   "rot": 0.72
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 41.5,
+   "z": 32,
+   "rot": 4.46
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 19.5,
+   "z": -18,
+   "rot": 3.46
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -27.5,
+   "z": -11.5,
+   "rot": 0.05
+  },
+  {
+   "kind": "crate_stack",
+   "x": 5,
+   "z": -17.5,
+   "rot": 0.33
+  },
+  {
+   "kind": "crate_stack",
+   "x": 25.5,
+   "z": 20,
+   "rot": 3.6
+  },
+  {
+   "kind": "barrel",
+   "x": -11.5,
+   "z": -24.5,
+   "rot": 3.91
+  },
+  {
+   "kind": "barrel",
+   "x": 5.5,
+   "z": 11,
+   "rot": 1.86
+  },
+  {
+   "kind": "barrel",
+   "x": -30.5,
+   "z": -19.5,
+   "rot": 5.37
+  },
+  {
+   "kind": "barrel",
+   "x": 40.5,
+   "z": -16.5,
+   "rot": 4.89
+  },
+  {
+   "kind": "watchtower",
+   "x": 30,
+   "z": 30.5,
+   "rot": 3.62
+  },
+  {
+   "kind": "tank_wreck",
+   "x": 41,
+   "z": 10,
+   "rot": 1.06
+  },
+  {
+   "kind": "lamp_post",
+   "x": -8,
+   "z": 16,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -26,
+   "z": 24,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -9,
+   "z": 21.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -37.5,
+   "z": 4,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 12,
+   "z": 22,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 0,
+   "z": 29.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -40,
+   "z": -24,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 7.5,
+   "z": 4.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -20.5,
+   "z": -4,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 32,
+   "z": 3.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -18,
+   "z": 4,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 24.5,
+   "z": 4,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -33,
+   "z": -26,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "rock",
+   "count": 28,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 3.5
+  },
+  {
+   "kind": "rock_small",
+   "count": 36,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  },
+  {
+   "kind": "bush",
+   "count": 20,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2.5
+  },
+  {
+   "kind": "tree_round",
+   "count": 10,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 11,
+   "minPathDist": 5,
+   "spacing": 4,
+   "scale": [
+    0.6,
+    0.9
+   ]
+  }
+ ]
+}

@@ -1,0 +1,435 @@
+{
+ "$doc": "Generated from frostmere_campaign by src/core/mapGen.js (theme verdant, 2 roads).",
+ "id": "gen_verdant_7_waves",
+ "name": "Frostmere Campaign",
+ "startCash": 800,
+ "baseHp": 150,
+ "hpScalePerWave": 0.07,
+ "intermission": 6,
+ "firstWaveDelay": 12,
+ "maxDuration": 75,
+ "bonusBase": 130,
+ "bonusPerWave": 26,
+ "waves": [
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 6,
+     "interval": 1.4,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "zombie_base",
+     "count": 6,
+     "interval": 1.2,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "skeleton_base",
+     "count": 4,
+     "interval": 1,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 12,
+     "interval": 0.9,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "skeleton_base",
+     "count": 5,
+     "interval": 0.8,
+     "delay": 6,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 8,
+     "interval": 1,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "ironshell",
+     "count": 2,
+     "interval": 3,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mite",
+     "count": 20,
+     "interval": 0.35,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "gloomwing",
+     "count": 4,
+     "interval": 1.5,
+     "delay": 4,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "shade",
+     "count": 4,
+     "interval": 1.6,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "husk",
+     "count": 10,
+     "interval": 0.8,
+     "delay": 3,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mossback",
+     "count": 2,
+     "interval": 5,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "skitter",
+     "count": 10,
+     "interval": 0.6,
+     "delay": 5,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "ironshell",
+     "count": 4,
+     "interval": 2.5,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "keeper_base",
+     "count": 2,
+     "interval": 4,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "zombie_base",
+     "count": 10,
+     "interval": 0.8,
+     "delay": 2,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "brood_sac",
+     "count": 6,
+     "interval": 2,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "ufo_b_base",
+     "count": 6,
+     "interval": 1.2,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "boss": true,
+   "groups": [
+    {
+     "enemy": "gravemaw",
+     "count": 1,
+     "hpMul": 0.459,
+     "leak": 60,
+     "path": 0
+    },
+    {
+     "enemy": "zombie_base",
+     "count": 12,
+     "interval": 1.2,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "vampire_base",
+     "count": 4,
+     "interval": 3,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "skitter",
+     "count": 12,
+     "interval": 0.5,
+     "delay": 2,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "caller",
+     "count": 2,
+     "interval": 6,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "zombie_base",
+     "count": 16,
+     "interval": 0.6,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "shade",
+     "count": 8,
+     "interval": 1.2,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "gloomwing",
+     "count": 6,
+     "interval": 1.1,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "ironshell",
+     "count": 8,
+     "interval": 1.8,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "mossback",
+     "count": 3,
+     "interval": 4,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "mender",
+     "count": 3,
+     "interval": 4,
+     "delay": 3,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mite",
+     "count": 40,
+     "interval": 0.2,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "brood_sac",
+     "count": 8,
+     "interval": 1.5,
+     "delay": 5,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "ghost_base",
+     "count": 10,
+     "interval": 1,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "vampire_base",
+     "count": 5,
+     "interval": 2.5,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "gloomwing",
+     "count": 12,
+     "interval": 0.8,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "mossback",
+     "count": 4,
+     "interval": 3.5,
+     "delay": 5,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "caller",
+     "count": 4,
+     "interval": 5,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "ironshell",
+     "count": 10,
+     "interval": 1.5,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "keeper_base",
+     "count": 4,
+     "interval": 3,
+     "delay": 6,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 22,
+     "interval": 0.4,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "skeleton_base",
+     "count": 16,
+     "interval": 0.5,
+     "delay": 3,
+     "path": 1,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "ironshell",
+     "count": 6,
+     "interval": 2,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "vampire_base",
+     "count": 6,
+     "interval": 2,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  },
+  {
+   "boss": true,
+   "groups": [
+    {
+     "enemy": "thornmother",
+     "count": 1,
+     "hpMul": 0.975,
+     "path": 0
+    },
+    {
+     "enemy": "bulwark",
+     "count": 4,
+     "interval": 3,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.147
+    },
+    {
+     "enemy": "mender",
+     "count": 2,
+     "interval": 5,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.147
+    }
+   ]
+  }
+ ]
+}

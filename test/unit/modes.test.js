@@ -117,3 +117,41 @@ test('balance smoke: boss rush and daily challenge are winnable; endless lasts b
   const e = run('endless', 'e0');
   assert.ok(e.wave > 20, `endless reached wave ${e.wave}`);
 });
+
+test('skirmish stops at wave 10; last stand fixes the keep; war chest pays no kill or wave cash', () => {
+  const sk = mk({ mode: 'skirmish' });
+  assert.equal(sk.waveCount(), 10);
+  assert.equal(sk.result().rewardMul, 0.5);
+  const ls = new Match({ content: C, mapWorld: buildMapWorld(MAP, C.props), seed: 'mode', difficulty: 'easy', options: { mode: 'last_stand' } });
+  assert.equal(ls.baseMax, C.modes.get('last_stand').keepHpFixed);
+  const wc = mk({ mode: 'war_chest' });
+  assert.equal(wc.cash, C.modes.get('war_chest').startCash);
+  const before = wc.cash;
+  wc._gainCash(50, 'kill');
+  wc.wave = 1;
+  wc._payWaveRewards();
+  assert.equal(wc.cash, before, 'no kill cash, no wave bonus');
+});
+
+test('mutation: one seeded mutation per wave from wave 2, applied to spawns, bosses keep their health', () => {
+  const a = mk({ mode: 'mutation' });
+  const b = mk({ mode: 'mutation' });
+  assert.equal(a.mutationFor(1), null);
+  const ids = new Set();
+  for (let n = 2; n <= 20; n++) {
+    assert.equal(a.mutationFor(n).id, b.mutationFor(n).id, 'same seed, same mutation');
+    ids.add(a.mutationFor(n).id);
+  }
+  assert.ok(ids.size >= 3, 'several different mutations in one run');
+  assert.equal(mk({ mode: 'campaign' }).mutationFor(5), null);
+  const plain = mk({ mode: 'campaign' });
+  const n = [...Array(19).keys()].map((i) => i + 2).find((w) => a.mutationFor(w).speed && a.mutationFor(w).speed !== 1);
+  const mut = a.mutationFor(n);
+  const e1 = a.spawnEnemy('husk', { wave: n });
+  const e0 = plain.spawnEnemy('husk', { wave: n });
+  assert.ok(Math.abs(e1.baseSpeed / e0.baseSpeed - mut.speed) < 1e-9);
+  assert.ok(Math.abs(e1.maxHp / e0.maxHp - (mut.hp ?? 1)) < 1e-9);
+  const boss = [...C.enemies.values()].find((e) => e.boss).id;
+  const hpWave = [...Array(19).keys()].map((i) => i + 2).find((w) => a.mutationFor(w).hp);
+  assert.equal(a.spawnEnemy(boss, { wave: hpWave }).maxHp, plain.spawnEnemy(boss, { wave: hpWave }).maxHp);
+});

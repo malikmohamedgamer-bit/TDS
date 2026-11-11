@@ -26,7 +26,9 @@ test('map picker: every map lands in exactly one theme group, groups are ordered
 });
 
 test('map picker: search matches name, description and theme; theme and lock filters combine', () => {
-  assert.deepEqual(filterMaps(maps, { query: 'glacier' }).map((m) => m.id), ['glacier_gate']);
+  const glacier = filterMaps(maps, { query: 'glacier' });
+  assert.ok(glacier.some((m) => m.id === 'glacier_gate'));
+  assert.ok(glacier.every((m) => /glacier/i.test(`${m.name} ${m.description}`)) && glacier.length < maps.length);
   assert.ok(filterMaps(maps, { query: 'FROST' }).length >= 3, 'theme label is searchable');
   const ember = filterMaps(maps, { theme: 'ember' });
   assert.ok(ember.length >= 2 && ember.every((m) => mapTheme(m) === 'ember'));

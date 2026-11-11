@@ -71,7 +71,7 @@ export class Match {
     this.nextWaveAt = this.options.manualStart ? Infinity : this.waveSet.firstWaveDelay ?? 10;
     this.paidWaves = 0;
     this.cash = Math.round((this.options.startCash ?? this.mode.startCash ?? this.waveSet.startCash) * this.tune.startCash * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1)) + this.tune.startCashAdd;
-    this.baseMax = Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1) * this.tune.keepHp);
+    this.baseMax = this.mode.keepHpFixed ?? Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1) * this.tune.keepHp);
     this.baseHp = this.baseMax;
     this.enemies = [];
     this.towers = [];
@@ -331,7 +331,16 @@ export class Match {
 
   // ---------------------------------------------------------------- waves ------------------
   waveCount() {
-    return this.mode.endless ? Infinity : this.waveSet.waves.length;
+    return this.mode.endless ? Infinity : Math.min(this.waveSet.waves.length, this.mode.maxWaves ?? Infinity);
+  }
+
+  /** Mutation mode: one seeded mutation per wave (same seed, same list), applied to that wave's enemies. */
+  mutationFor(n) {
+    const list = this.mode.mutations;
+    if (!list?.length || n < (this.mode.mutationsFrom ?? 2)) return null;
+    if (!this._mut) this._mut = new Map();
+    if (!this._mut.has(n)) this._mut.set(n, new Rng(`${this.seed}:mut:${n}`).pick(list));
+    return this._mut.get(n);
   }
 
   /** Wave n (1-based): from the table, or generated (endless), with boss rotation for boss rush. */
@@ -375,8 +384,9 @@ export class Match {
     this.waveStartTime = this.time;
     this.nextWaveAt = this.time + this.maxDuration;
     const w = this.waveDef(n);
+    const mut = this.mutationFor(n);
     w.groups.forEach((g, gi) => {
-      const count = Math.max(1, Math.round(g.count * (this.content.enemies.get(g.enemy)?.boss ? 1 : this.tune.enemyCount)));
+      const count = Math.max(1, Math.round(g.count * (this.content.enemies.get(g.enemy)?.boss ? 1 : this.tune.enemyCount * (mut?.count ?? 1))));
       const interval = (g.interval || 1) * g.count / count; // same group duration, denser or sparser
       for (let i = 0; i < count; i++) {
         this.spawnQueue.push({ at: this.time + (g.delay || 0) + i * interval, enemy: g.enemy, hpMul: g.hpMul || 1, leak: g.leak, pathIdx: g.path ?? (i + gi) % this.paths.length, wave: n, order: gi * 1000 + i });
@@ -384,6 +394,7 @@ export class Match {
     });
     this.spawnQueue.sort((a, b) => a.at - b.at || a.order - b.order);
     this.events.push({ type: 'waveStart', wave: n, boss: !!w.boss, total: this.waveCount() });
+    if (mut) this.events.push({ type: 'mutation', wave: n, id: mut.id, name: mut.name, desc: mut.desc });
   }
 
   /** Wave clear bonus + income for every finished wave, paid once each. */
@@ -410,13 +421,15 @@ export class Match {
     if (!def) throw new Error(`Unknown enemy "${id}"`);
     if (!Number.isFinite(d)) throw new Error(`spawnEnemy: bad path distance ${d}`);
     // difficulty.bossHpMul softens boss scaling on a difficulty (bosses are the cliff: a leak loses)
-    const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul * (def.boss ? this.tune.bossHp * (this.difficulty.bossHpMul ?? 1) : 1);
+    // wave mutations (Mutation mode) leave bosses alone except for speed and armour
+    const mut = this.mutationFor(wave);
+    const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul * (def.boss ? this.tune.bossHp * (this.difficulty.bossHpMul ?? 1) : mut?.hp ?? 1);
     const e = {
       id: this.nextId++, defId: id, def, path: this.paths[pathIdx % this.paths.length],
       d, progress: d, x: 0, y: 0, z: 0, hp: def.hp * scale, maxHp: def.hp * scale,
       shield: (def.shield || 0) * scale, maxShield: (def.shield || 0) * scale,
-      armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd), flying: !!def.flying, stealth: !!def.stealth, alive: true,
-      baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed, speedMul: 1, curSpeed: def.speed,
+      armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd + (mut?.armor ?? 0)), flying: !!def.flying, stealth: !!def.stealth, alive: true,
+      baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed * (mut?.speed ?? 1), speedMul: 1, curSpeed: def.speed,
       shred: 0, shredUntil: 0, slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
       phase: 0, regenUntil: 0, regenRate: 0, cloakUntil: 0, immune: null, armorUntil: 0, armorAdd: 0, dashUntil: 0, dashMul: 1, revive: 0, revived: false, deathSpawn: null,
       blinkT: def.blink?.every ?? 0, burstT: def.burst?.every ?? 0, burstUntil: 0, healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,

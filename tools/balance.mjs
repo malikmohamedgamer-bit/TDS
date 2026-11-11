@@ -72,7 +72,7 @@ for (const mapId of maps) {
       let keep = 0;
       const t0 = performance.now();
       for (let s = 0; s < seeds; s++) {
-        const r = playBot({ content, mapWorld: buildMapWorld(map, content.props), difficulty: d, seed: `bal-${s}`, levels, loadout, strategy, skill, hero, options: { preset } });
+        const r = playBot({ content, mapWorld: buildMapWorld(map, content.props), difficulty: d, seed: `bal-${s}`, levels, loadout, strategy, skill, hero, options: { preset, mode: opt('mode', undefined) } });
         if (r.won) { wins++; keep += r.baseHp; }
         waves += r.won ? r.waves : r.wave - 1;
         if (verbose) console.log(`  ${preset} ${d} seed ${s}: ${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.waves} keep ${Math.round(r.baseHp)} placed ${r.bot.placed} upg ${r.bot.upgrades}`);

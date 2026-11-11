@@ -110,6 +110,138 @@
     "gen_starfall_2": {
       "root": 53,
       "scale": "lydian"
+    },
+    "gen_verdant_3": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_3": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_3": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_3": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_3": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_3": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_4": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_4": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_4": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_4": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_4": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_4": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_5": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_5": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_5": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_5": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_5": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_5": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_6": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_6": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_6": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_6": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_6": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_6": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_7": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_7": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_7": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_toxic_7": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_7": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "gen_starfall_7": {
+      "root": 53,
+      "scale": "lydian"
+    },
+    "gen_verdant_8": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_frost_8": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_ember_8": {
+      "root": 47,
+      "scale": "phrygian"
     }
   },
   "moods": {

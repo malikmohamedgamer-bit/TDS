@@ -441,6 +441,7 @@ export class MatchController {
         case 'sell': sfx.play('sell'); break;
         case 'waveStart': this.music?.setMood(e.boss ? 'boss' : 'wave', this.map.id); sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;
         case 'bossSpawn': sfx.play('boss'); break;
+        case 'mutation': this.mhud.banner(`Mutation: ${e.name}. ${e.desc}`, 'warn'); break;
         case 'bossPhase': sfx.play('boss'); this.mhud.banner(`${e.name}!`, 'boss'); break;
         case 'telegraph': sfx.play('telegraph'); break;
         case 'telegraphHit': sfx.play('stomp'); break;

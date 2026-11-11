@@ -1,6 +1,7 @@
 // TDS bootstrap: loads content and the save, builds the world (map, hero, cameras), then runs the
 // match flow (loadout -> match -> results) on a fixed-timestep loop.
 import { mapTheme } from './ui/mapThumb.js';
+import { initPwa } from './pwa.js';
 import { loadContent, browserReadJson } from './core/content.js';
 import { buildMapWorld } from './core/mapLayout.js';
 import { Character } from './core/character.js';
@@ -287,6 +288,7 @@ async function boot() {
   $('#loading').classList.add('done');
   setTimeout(() => $('#loading')?.remove(), 600);
   requestAnimationFrame((t) => { last = t; frame(t); });
+  initPwa((text) => hud.toast(text, 5000));
   if (params.has('nolobby')) return;
   ctrl.toLobby();
 }

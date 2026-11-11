@@ -464,6 +464,303 @@
       "unlockLevel": 27,
       "hpMul": 1.05,
       "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 58%, hpMul 1.03 -> 83%"
+    },
+    {
+      "id": "gen_verdant_3",
+      "template": "serpentine",
+      "theme": "verdant",
+      "seed": "ve3x",
+      "unlockLevel": 4,
+      "hpMul": 1.175,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 67%"
+    },
+    {
+      "id": "gen_frost_3",
+      "template": "fork",
+      "theme": "frost",
+      "seed": "fr3x",
+      "unlockLevel": 5,
+      "hpMul": 0.883,
+      "calibration": "hpMul 1 -> 42%, hpMul 0.883 -> 67%"
+    },
+    {
+      "id": "gen_ember_3",
+      "template": "trident",
+      "theme": "ember",
+      "seed": "em3x",
+      "unlockLevel": 6,
+      "hpMul": 0.925,
+      "calibration": "hpMul 1 -> 50%, hpMul 0.925 -> 75%, hpMul 0.955 -> 50%"
+    },
+    {
+      "id": "gen_toxic_3",
+      "template": "serpentine",
+      "theme": "toxic",
+      "seed": "to3x",
+      "unlockLevel": 7,
+      "hpMul": 1.5,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.087 -> 100%, hand-set hpMul 1.35 -> 92%, 1.5 -> 50%"
+    },
+    {
+      "id": "gen_dunes_3",
+      "template": "fork",
+      "theme": "dunes",
+      "seed": "du3x",
+      "unlockLevel": 8,
+      "hpMul": 0.955,
+      "calibration": "hpMul 1 -> 50%, hpMul 0.925 -> 75%, hpMul 0.955 -> 67%"
+    },
+    {
+      "id": "gen_starfall_3",
+      "template": "trident",
+      "theme": "starfall",
+      "seed": "st3x",
+      "unlockLevel": 9,
+      "hpMul": 0.8,
+      "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 75%, hpMul 0.827 -> 92%"
+    },
+    {
+      "id": "gen_verdant_4",
+      "template": "fork",
+      "theme": "verdant",
+      "seed": "ve4x",
+      "unlockLevel": 10,
+      "hpMul": 1,
+      "calibration": "hpMul 1 -> 58%, hpMul 0.967 -> 42%, hpMul 1.013 -> 33%"
+    },
+    {
+      "id": "gen_frost_4",
+      "template": "trident",
+      "theme": "frost",
+      "seed": "fr4x",
+      "unlockLevel": 11,
+      "hpMul": 0.914,
+      "calibration": "hpMul 1 -> 33%, hpMul 0.842 -> 92%, hpMul 0.914 -> 75%"
+    },
+    {
+      "id": "gen_ember_4",
+      "template": "serpentine",
+      "theme": "ember",
+      "seed": "em4x",
+      "unlockLevel": 12,
+      "hpMul": 1,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 83%, hpMul 0.94 -> 75%"
+    },
+    {
+      "id": "gen_toxic_4",
+      "template": "fork",
+      "theme": "toxic",
+      "seed": "to4x",
+      "unlockLevel": 13,
+      "hpMul": 0.864,
+      "calibration": "hpMul 1 -> 8%, hpMul 0.8 -> 92%, hpMul 0.864 -> 67%"
+    },
+    {
+      "id": "gen_dunes_4",
+      "template": "trident",
+      "theme": "dunes",
+      "seed": "du4x",
+      "unlockLevel": 14,
+      "hpMul": 0.925,
+      "calibration": "hpMul 1 -> 33%, hpMul 0.842 -> 100%, hpMul 0.925 -> 58%"
+    },
+    {
+      "id": "gen_starfall_4",
+      "template": "serpentine",
+      "theme": "starfall",
+      "seed": "st4x",
+      "unlockLevel": 15,
+      "hpMul": 1.133,
+      "calibration": "hpMul 1 -> 92%, hpMul 1.133 -> 75%, hpMul 1.213 -> 42%"
+    },
+    {
+      "id": "gen_verdant_5",
+      "template": "trident",
+      "theme": "verdant",
+      "seed": "ve5x",
+      "unlockLevel": 16,
+      "hpMul": 1.092,
+      "calibration": "hpMul 1 -> 83%, hpMul 1.092 -> 58%, hpMul 1.067 -> 33%"
+    },
+    {
+      "id": "gen_frost_5",
+      "template": "serpentine",
+      "theme": "frost",
+      "seed": "fr5x",
+      "unlockLevel": 17,
+      "hpMul": 1.245,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 75%, hpMul 1.245 -> 67%"
+    },
+    {
+      "id": "gen_ember_5",
+      "template": "fork",
+      "theme": "ember",
+      "seed": "em5x",
+      "unlockLevel": 18,
+      "hpMul": 1.092,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 33%, hpMul 1.092 -> 58%"
+    },
+    {
+      "id": "gen_toxic_5",
+      "template": "trident",
+      "theme": "toxic",
+      "seed": "to5x",
+      "unlockLevel": 19,
+      "hpMul": 0.8,
+      "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 75%, hpMul 0.827 -> 42%"
+    },
+    {
+      "id": "gen_dunes_5",
+      "template": "serpentine",
+      "theme": "dunes",
+      "seed": "du5x",
+      "unlockLevel": 20,
+      "hpMul": 1.175,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 50%, hpMul 1.123 -> 92%"
+    },
+    {
+      "id": "gen_starfall_5",
+      "template": "fork",
+      "theme": "starfall",
+      "seed": "st5x",
+      "unlockLevel": 21,
+      "hpMul": 0.8,
+      "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 58%, hpMul 0.777 -> 25%"
+    },
+    {
+      "id": "gen_verdant_6",
+      "template": "serpentine",
+      "theme": "verdant",
+      "seed": "ve6x",
+      "unlockLevel": 22,
+      "hpMul": 1.35,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.087 -> 100%, hand-set hpMul 1.35 -> 75%"
+    },
+    {
+      "id": "gen_frost_6",
+      "template": "fork",
+      "theme": "frost",
+      "seed": "fr6x",
+      "unlockLevel": 23,
+      "hpMul": 1.105,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 42%, hpMul 1.105 -> 67%"
+    },
+    {
+      "id": "gen_ember_6",
+      "template": "trident",
+      "theme": "ember",
+      "seed": "em6x",
+      "unlockLevel": 24,
+      "hpMul": 1.092,
+      "calibration": "hpMul 1 -> 83%, hpMul 1.092 -> 50%, hpMul 1.051 -> 50%"
+    },
+    {
+      "id": "gen_toxic_6",
+      "template": "serpentine",
+      "theme": "toxic",
+      "seed": "to6x",
+      "unlockLevel": 25,
+      "hpMul": 1.245,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 75%, hpMul 1.245 -> 58%"
+    },
+    {
+      "id": "gen_dunes_6",
+      "template": "fork",
+      "theme": "dunes",
+      "seed": "du6x",
+      "unlockLevel": 26,
+      "hpMul": 0.934,
+      "calibration": "hpMul 1 -> 42%, hpMul 0.883 -> 83%, hpMul 0.934 -> 75%"
+    },
+    {
+      "id": "gen_starfall_6",
+      "template": "trident",
+      "theme": "starfall",
+      "seed": "st6x",
+      "unlockLevel": 27,
+      "hpMul": 0.925,
+      "calibration": "hpMul 1 -> 33%, hpMul 0.842 -> 100%, hpMul 0.925 -> 75%"
+    },
+    {
+      "id": "gen_verdant_7",
+      "template": "fork",
+      "theme": "verdant",
+      "seed": "ve7x",
+      "unlockLevel": 28,
+      "hpMul": 1.147,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 58%, hpMul 1.147 -> 67%"
+    },
+    {
+      "id": "gen_frost_7",
+      "template": "trident",
+      "theme": "frost",
+      "seed": "fr7x",
+      "unlockLevel": 29,
+      "hpMul": 0.8,
+      "calibration": "hpMul 1 -> 25%, hpMul 0.8 -> 75%, hpMul 0.84 -> 83%"
+    },
+    {
+      "id": "gen_ember_7",
+      "template": "serpentine",
+      "theme": "ember",
+      "seed": "em7x",
+      "unlockLevel": 30,
+      "hpMul": 1.26,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 83%, hpMul 1.351 -> 42%, hand-set hpMul 1.26 -> 50%"
+    },
+    {
+      "id": "gen_toxic_7",
+      "template": "fork",
+      "theme": "toxic",
+      "seed": "to7x",
+      "unlockLevel": 31,
+      "hpMul": 1.092,
+      "calibration": "hpMul 1 -> 83%, hpMul 1.092 -> 67%"
+    },
+    {
+      "id": "gen_dunes_7",
+      "template": "trident",
+      "theme": "dunes",
+      "seed": "du7x",
+      "unlockLevel": 32,
+      "hpMul": 0.844,
+      "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 83%, hpMul 0.844 -> 50%"
+    },
+    {
+      "id": "gen_starfall_7",
+      "template": "serpentine",
+      "theme": "starfall",
+      "seed": "st7x",
+      "unlockLevel": 33,
+      "hpMul": 1.202,
+      "calibration": "hpMul 1 -> 83%, hpMul 1.092 -> 75%, hpMul 1.202 -> 58%"
+    },
+    {
+      "id": "gen_verdant_8",
+      "template": "trident",
+      "theme": "verdant",
+      "seed": "ve8x",
+      "unlockLevel": 34,
+      "hpMul": 0.871,
+      "calibration": "hpMul 1 -> 17%, hpMul 0.8 -> 92%, hpMul 0.871 -> 58%"
+    },
+    {
+      "id": "gen_frost_8",
+      "template": "serpentine",
+      "theme": "frost",
+      "seed": "fr8x",
+      "unlockLevel": 35,
+      "hpMul": 1.105,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 42%, hpMul 1.105 -> 75%"
+    },
+    {
+      "id": "gen_ember_8",
+      "template": "fork",
+      "theme": "ember",
+      "seed": "em8x",
+      "unlockLevel": 36,
+      "hpMul": 0.855,
+      "calibration": "hpMul 1 -> 17%, hpMul 0.8 -> 83%, hpMul 0.855 -> 75%"
     }
   ]
 }

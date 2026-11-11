@@ -1,0 +1,473 @@
+{
+ "id": "gen_dunes_6",
+ "name": "Sunscorch Line",
+ "description": "Desert outpost: 2 roads.",
+ "seed": "du6x",
+ "scatterGap": 1.3,
+ "waves": "gen_dunes_6_waves",
+ "unlockLevel": 26,
+ "theme": "dunes",
+ "generated": {
+  "template": "fork",
+  "seed": "du6x",
+  "theme": "dunes"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#6FA8E8",
+  "horizon": "#F4E8D0",
+  "fog": "#EAD8B8",
+  "fogNear": 80,
+  "fogFar": 210
+ },
+ "sun": {
+  "azimuth": 190,
+  "elevation": 60,
+  "color": "#FFF0D0",
+  "intensity": 2.8
+ },
+ "ground": {
+  "grass": [
+   "#C8B07A",
+   "#B89E68",
+   "#D8C08A",
+   "#A88E5A"
+  ],
+  "path": [
+   "#A07A50",
+   "#8A6640",
+   "#B48C5E",
+   "#745434"
+  ],
+  "rim": [
+   "#B89A70",
+   "#9A8060"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 6,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 0.5,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 12,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   },
+   {
+    "x": -51.5,
+    "z": -12,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 32,
+    "z": 28.5,
+    "r": 8.5,
+    "h": 1.8
+   },
+   {
+    "x": 39.5,
+    "z": -33,
+    "r": 7.5,
+    "h": 2.1
+   },
+   {
+    "x": 43.5,
+    "z": -21,
+    "r": 6,
+    "h": 1.5
+   },
+   {
+    "x": 39,
+    "z": 26.5,
+    "r": 9.5,
+    "h": 2.5
+   },
+   {
+    "x": 37,
+    "z": -16,
+    "r": 7,
+    "h": 1.8
+   },
+   {
+    "x": 32.5,
+    "z": -32,
+    "r": 8,
+    "h": 3
+   },
+   {
+    "x": 41,
+    "z": 28,
+    "r": 8.5,
+    "h": 1.8
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "north",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     12
+    ],
+    [
+     -38.5,
+     12
+    ],
+    [
+     -38.5,
+     29.5
+    ],
+    [
+     -22.5,
+     29.5
+    ],
+    [
+     -22.5,
+     13.5
+    ],
+    [
+     -5,
+     13.5
+    ],
+    [
+     -5,
+     27.5
+    ],
+    [
+     11,
+     27.5
+    ],
+    [
+     11,
+     0.5
+    ],
+    [
+     45,
+     0.5
+    ]
+   ]
+  },
+  {
+   "id": "south",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -12
+    ],
+    [
+     -37.5,
+     -12
+    ],
+    [
+     -37.5,
+     -27
+    ],
+    [
+     -23.5,
+     -27
+    ],
+    [
+     -23.5,
+     -16
+    ],
+    [
+     -9.5,
+     -16
+    ],
+    [
+     -9.5,
+     -30
+    ],
+    [
+     7,
+     -30
+    ],
+    [
+     7,
+     -12.5
+    ],
+    [
+     23,
+     -12.5
+    ],
+    [
+     23,
+     0.5
+    ],
+    [
+     45,
+     0.5
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 0.5
+ },
+ "playerSpawn": {
+  "x": 19.5,
+  "z": 9.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 12,
+   "rot": 0
+  },
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -12,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 0.5,
+   "rot": 0
+  },
+  {
+   "kind": "tent",
+   "x": 23,
+   "z": -21,
+   "rot": 1.9
+  },
+  {
+   "kind": "tent",
+   "x": 33.5,
+   "z": 25.5,
+   "rot": 2.43
+  },
+  {
+   "kind": "tent",
+   "x": 18.5,
+   "z": 29.5,
+   "rot": 3.6
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -1,
+   "z": 4,
+   "rot": 1.26
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -19,
+   "z": -3.5,
+   "rot": 3.85
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -45.5,
+   "z": -32,
+   "rot": 1.51
+  },
+  {
+   "kind": "crate_stack",
+   "x": 22,
+   "z": 25,
+   "rot": 4.16
+  },
+  {
+   "kind": "crate_stack",
+   "x": -29,
+   "z": -1.5,
+   "rot": 2.59
+  },
+  {
+   "kind": "barrel",
+   "x": 38,
+   "z": 20.5,
+   "rot": 6.06
+  },
+  {
+   "kind": "barrel",
+   "x": -11,
+   "z": 32.5,
+   "rot": 3.85
+  },
+  {
+   "kind": "barrel",
+   "x": 36,
+   "z": -22,
+   "rot": 3.21
+  },
+  {
+   "kind": "barrel",
+   "x": -45,
+   "z": -23,
+   "rot": 5.3
+  },
+  {
+   "kind": "watchtower",
+   "x": -30.5,
+   "z": 13,
+   "rot": 4.05
+  },
+  {
+   "kind": "tank_wreck",
+   "x": -9,
+   "z": 2,
+   "rot": 0.21
+  },
+  {
+   "kind": "lamp_post",
+   "x": -43,
+   "z": 18.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 5,
+   "z": 31,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 15,
+   "z": 19,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -38,
+   "z": -8.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -34,
+   "z": -17,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -18.5,
+   "z": 18,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 21.5,
+   "z": 4.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -19,
+   "z": -24,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 10.5,
+   "z": -29,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -23,
+   "z": 10,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 11.5,
+   "z": -21.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 27.5,
+   "z": -12,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -1,
+   "z": 23,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "rock",
+   "count": 28,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 3.5
+  },
+  {
+   "kind": "rock_small",
+   "count": 36,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  },
+  {
+   "kind": "bush",
+   "count": 20,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2.5
+  },
+  {
+   "kind": "tree_round",
+   "count": 10,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 11,
+   "minPathDist": 5,
+   "spacing": 4,
+   "scale": [
+    0.6,
+    0.9
+   ]
+  }
+ ]
+}

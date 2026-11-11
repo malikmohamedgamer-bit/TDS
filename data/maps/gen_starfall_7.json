@@ -1,0 +1,386 @@
+{
+ "id": "gen_starfall_7",
+ "name": "Aether Sanctum",
+ "description": "Arcane highland: 1 road.",
+ "seed": "st7x",
+ "scatterGap": 1.3,
+ "waves": "gen_starfall_7_waves",
+ "unlockLevel": 33,
+ "theme": "starfall",
+ "generated": {
+  "template": "serpentine",
+  "seed": "st7x",
+  "theme": "starfall"
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#3A3A7A",
+  "horizon": "#C8B8F0",
+  "fog": "#A898D8",
+  "fogNear": 70,
+  "fogFar": 190
+ },
+ "sun": {
+  "azimuth": 140,
+  "elevation": 40,
+  "color": "#E8E0FF",
+  "intensity": 2.3
+ },
+ "ground": {
+  "grass": [
+   "#5E8A6A",
+   "#4E7A5E",
+   "#6E9A7A",
+   "#3E6A50"
+  ],
+  "path": [
+   "#9A8AAE",
+   "#867896",
+   "#AE9EC2",
+   "#6E6280"
+  ],
+  "rim": [
+   "#6A6A8A",
+   "#5A5A7A"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 8,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": -8.5,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": -13,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 35,
+    "z": 26,
+    "r": 9.5,
+    "h": 3
+   },
+   {
+    "x": 23.5,
+    "z": 11.5,
+    "r": 8,
+    "h": 1.4
+   },
+   {
+    "x": -43,
+    "z": -36,
+    "r": 8,
+    "h": 2
+   },
+   {
+    "x": 36.5,
+    "z": 25,
+    "r": 10,
+    "h": 1.6
+   },
+   {
+    "x": 14.5,
+    "z": 26.5,
+    "r": 5,
+    "h": 1.6
+   },
+   {
+    "x": 36,
+    "z": 6.5,
+    "r": 7.5,
+    "h": 1.8
+   },
+   {
+    "x": 45,
+    "z": 11,
+    "r": 6,
+    "h": 2
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "main",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -13
+    ],
+    [
+     -40.5,
+     -13
+    ],
+    [
+     -40.5,
+     27
+    ],
+    [
+     -25.5,
+     27
+    ],
+    [
+     -25.5,
+     -29
+    ],
+    [
+     -12,
+     -29
+    ],
+    [
+     -12,
+     28
+    ],
+    [
+     2,
+     28
+    ],
+    [
+     2,
+     -30
+    ],
+    [
+     30,
+     -30
+    ],
+    [
+     30,
+     -8.5
+    ],
+    [
+     45,
+     -8.5
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": -8.5
+ },
+ "playerSpawn": {
+  "x": 24.5,
+  "z": 25,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -13,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": -8.5,
+   "rot": 0
+  },
+  {
+   "kind": "ruin_arch",
+   "x": 42,
+   "z": 22,
+   "rot": 2.31
+  },
+  {
+   "kind": "ruin_arch",
+   "x": -45.5,
+   "z": -20.5,
+   "rot": 3.75
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 37,
+   "z": 3.5,
+   "rot": 2.33
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 32,
+   "z": 9,
+   "rot": 2.67
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": -34,
+   "z": 18.5,
+   "rot": 1.52
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 10,
+   "z": 15.5,
+   "rot": 1.12
+  },
+  {
+   "kind": "runestone",
+   "x": 29.5,
+   "z": 31,
+   "rot": 4.55
+  },
+  {
+   "kind": "runestone",
+   "x": 26,
+   "z": 0.5,
+   "rot": 2.44
+  },
+  {
+   "kind": "runestone",
+   "x": 25,
+   "z": 18.5,
+   "rot": 2.36
+  },
+  {
+   "kind": "runestone",
+   "x": 11.5,
+   "z": -16,
+   "rot": 5.67
+  },
+  {
+   "kind": "runestone",
+   "x": 36,
+   "z": 17.5,
+   "rot": 5.07
+  },
+  {
+   "kind": "crystal_cluster",
+   "x": 21.5,
+   "z": 8,
+   "rot": 5.69
+  },
+  {
+   "kind": "crystal_cluster",
+   "x": 36.5,
+   "z": -21,
+   "rot": 3.59
+  },
+  {
+   "kind": "lamp_post",
+   "x": -8.5,
+   "z": -5.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -15.5,
+   "z": -11.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -8.5,
+   "z": -25.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 5.5,
+   "z": -15.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -44,
+   "z": 7.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 5.5,
+   "z": 7.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 16.5,
+   "z": -25.5,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "tree_magic",
+   "count": 16,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 14,
+   "minPathDist": 5,
+   "spacing": 4
+  },
+  {
+   "kind": "crystal_cluster",
+   "count": 12,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 16,
+   "minPathDist": 5,
+   "spacing": 5
+  },
+  {
+   "kind": "tree_pine",
+   "count": 30,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 2.8,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "mushroom_glow",
+   "count": 18,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 1.6
+  },
+  {
+   "kind": "rock_small",
+   "count": 20,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  }
+ ]
+}
