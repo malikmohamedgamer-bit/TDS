@@ -1,0 +1,321 @@
+{
+ "summary": {
+  "date": "2026-11-11",
+  "seeds": 20,
+  "loadout": "core 12",
+  "difficulty": "normal",
+  "preset": "standard",
+  "maps": 50,
+  "mean": 0.669,
+  "in60to70": 30,
+  "in50to80": 50,
+  "below50": [],
+  "above80": [],
+  "note": "3 maps above 80% were re-tuned after the sweep and re-measured with the same 20 seeds (their old wins are in `before`)"
+ },
+ "results": [
+  {
+   "map": "riftline",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "frostmere",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "glacier_gate",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "mirrormire",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "starfall_sanctum",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_verdant_1",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55
+  },
+  {
+   "map": "gen_frost_1",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7,
+   "before": 19
+  },
+  {
+   "map": "gen_ember_1",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_toxic_1",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_dunes_1",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_starfall_1",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_verdant_2",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_frost_2",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_ember_2",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_toxic_2",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6,
+   "before": 17
+  },
+  {
+   "map": "gen_dunes_2",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_starfall_2",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "gen_verdant_3",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_frost_3",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_ember_3",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_toxic_3",
+   "wins": 10,
+   "seeds": 20,
+   "rate": 0.5
+  },
+  {
+   "map": "gen_dunes_3",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "gen_starfall_3",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_verdant_4",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55
+  },
+  {
+   "map": "gen_frost_4",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_ember_4",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_toxic_4",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_dunes_4",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_starfall_4",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_verdant_5",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55
+  },
+  {
+   "map": "gen_frost_5",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55
+  },
+  {
+   "map": "gen_ember_5",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7,
+   "before": 18
+  },
+  {
+   "map": "gen_toxic_5",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_dunes_5",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_starfall_5",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "gen_verdant_6",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_frost_6",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_ember_6",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_toxic_6",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_dunes_6",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_starfall_6",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_verdant_7",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_frost_7",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8
+  },
+  {
+   "map": "gen_ember_7",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "gen_toxic_7",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_dunes_7",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_starfall_7",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_verdant_8",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_frost_8",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "gen_ember_8",
+   "wins": 10,
+   "seeds": 20,
+   "rate": 0.5
+  }
+ ]
+}

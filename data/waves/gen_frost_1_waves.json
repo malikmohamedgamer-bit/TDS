@@ -17,7 +17,8 @@
      "enemy": "husk",
      "count": 6,
      "interval": 1.4,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -27,14 +28,16 @@
      "enemy": "husk",
      "count": 6,
      "interval": 1.2,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "skitter",
      "count": 4,
      "interval": 1,
      "delay": 6,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -44,14 +47,16 @@
      "enemy": "husk",
      "count": 12,
      "interval": 0.9,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "skitter",
      "count": 5,
      "interval": 0.8,
      "delay": 6,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -61,14 +66,16 @@
      "enemy": "husk",
      "count": 8,
      "interval": 1,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "ironshell",
      "count": 2,
      "interval": 3,
      "delay": 6,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -78,14 +85,16 @@
      "enemy": "mite",
      "count": 20,
      "interval": 0.35,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "ufo_a_frost",
      "count": 4,
      "interval": 1.5,
      "delay": 4,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -95,14 +104,16 @@
      "enemy": "ghost_frost",
      "count": 4,
      "interval": 1.6,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "husk",
      "count": 10,
      "interval": 0.8,
      "delay": 3,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -112,14 +123,16 @@
      "enemy": "mossback",
      "count": 2,
      "interval": 5,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "skitter",
      "count": 10,
      "interval": 0.6,
      "delay": 5,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -129,21 +142,24 @@
      "enemy": "ironshell",
      "count": 4,
      "interval": 2.5,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "mender",
      "count": 2,
      "interval": 4,
      "delay": 4,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "husk",
      "count": 10,
      "interval": 0.8,
      "delay": 2,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -153,14 +169,16 @@
      "enemy": "brood_sac",
      "count": 6,
      "interval": 2,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "ufo_a_frost",
      "count": 6,
      "interval": 1.2,
      "delay": 8,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -170,7 +188,7 @@
     {
      "enemy": "gravemaw",
      "count": 1,
-     "hpMul": 0.4,
+     "hpMul": 0.412,
      "leak": 60,
      "path": 0
     },
@@ -179,7 +197,8 @@
      "count": 12,
      "interval": 1.2,
      "delay": 2,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -189,14 +208,16 @@
      "enemy": "bulwark",
      "count": 4,
      "interval": 3,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "skitter",
      "count": 12,
      "interval": 0.5,
      "delay": 2,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -206,13 +227,15 @@
      "enemy": "caller",
      "count": 2,
      "interval": 6,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "husk",
      "count": 16,
      "interval": 0.6,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -222,14 +245,16 @@
      "enemy": "ghost_frost",
      "count": 8,
      "interval": 1.2,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "gloomwing",
      "count": 6,
      "interval": 1.1,
      "delay": 8,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -239,21 +264,24 @@
      "enemy": "ironshell",
      "count": 8,
      "interval": 1.8,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "mossback",
      "count": 3,
      "interval": 4,
      "delay": 6,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "mender",
      "count": 3,
      "interval": 4,
      "delay": 3,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -263,14 +291,16 @@
      "enemy": "mite",
      "count": 40,
      "interval": 0.2,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "brood_sac",
      "count": 8,
      "interval": 1.5,
      "delay": 5,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -280,14 +310,16 @@
      "enemy": "ghost_frost",
      "count": 10,
      "interval": 1,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "bulwark",
      "count": 5,
      "interval": 2.5,
      "delay": 4,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     }
    ]
   },
@@ -297,14 +329,16 @@
      "enemy": "ufo_a_frost",
      "count": 12,
      "interval": 0.8,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "mossback",
      "count": 4,
      "interval": 3.5,
      "delay": 5,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -314,21 +348,24 @@
      "enemy": "caller",
      "count": 4,
      "interval": 5,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "ironshell",
      "count": 10,
      "interval": 1.5,
      "delay": 2,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "mender",
      "count": 4,
      "interval": 3,
      "delay": 6,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -338,28 +375,32 @@
      "enemy": "husk",
      "count": 22,
      "interval": 0.4,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "skitter",
      "count": 16,
      "interval": 0.5,
      "delay": 3,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     },
     {
      "enemy": "ironshell",
      "count": 6,
      "interval": 2,
      "delay": 5,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "bulwark",
      "count": 6,
      "interval": 2,
      "delay": 8,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   },
@@ -369,7 +410,7 @@
     {
      "enemy": "thornmother",
      "count": 1,
-     "hpMul": 0.85,
+     "hpMul": 0.875,
      "path": 0
     },
     {
@@ -377,14 +418,16 @@
      "count": 4,
      "interval": 3,
      "delay": 5,
-     "path": 0
+     "path": 0,
+     "hpMul": 1.03
     },
     {
      "enemy": "mender",
      "count": 2,
      "interval": 5,
      "delay": 8,
-     "path": 1
+     "path": 1,
+     "hpMul": 1.03
     }
    ]
   }

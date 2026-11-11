@@ -18,7 +18,7 @@
      "count": 11,
      "interval": 0.76,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -29,7 +29,7 @@
      "count": 6,
      "interval": 1.2,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_043",
@@ -37,7 +37,7 @@
      "interval": 2,
      "delay": 6,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -48,7 +48,7 @@
      "count": 23,
      "interval": 0.47,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_043",
@@ -56,7 +56,7 @@
      "interval": 1.33,
      "delay": 6,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -67,7 +67,7 @@
      "count": 15,
      "interval": 0.53,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_031",
@@ -75,7 +75,7 @@
      "interval": 1.2,
      "delay": 6,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -86,7 +86,7 @@
      "count": 20,
      "interval": 0.35,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_072",
@@ -94,7 +94,7 @@
      "interval": 3,
      "delay": 4,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -105,7 +105,7 @@
      "count": 3,
      "interval": 2.13,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_009",
@@ -113,7 +113,7 @@
      "interval": 0.42,
      "delay": 3,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -124,7 +124,7 @@
      "count": 2,
      "interval": 5,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_043",
@@ -132,7 +132,7 @@
      "interval": 1,
      "delay": 5,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -143,7 +143,7 @@
      "count": 10,
      "interval": 1,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_051",
@@ -151,7 +151,7 @@
      "interval": 2,
      "delay": 4,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_009",
@@ -159,7 +159,7 @@
      "interval": 0.42,
      "delay": 2,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -170,7 +170,7 @@
      "count": 9,
      "interval": 1.33,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "ufo_b_ember",
@@ -178,7 +178,7 @@
      "interval": 1.2,
      "delay": 8,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -188,7 +188,7 @@
     {
      "enemy": "boss_mech_49",
      "count": 1,
-     "hpMul": 0.467,
+     "hpMul": 0.48,
      "leak": 60,
      "path": 0
     },
@@ -198,7 +198,7 @@
      "interval": 0.63,
      "delay": 2,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -209,7 +209,7 @@
      "count": 8,
      "interval": 1.5,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "skeleton_ember",
@@ -217,7 +217,7 @@
      "interval": 0.5,
      "delay": 2,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -228,14 +228,14 @@
      "count": 4,
      "interval": 3,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_009",
      "count": 30,
      "interval": 0.32,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -246,7 +246,7 @@
      "count": 8,
      "interval": 1.2,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_072",
@@ -254,7 +254,7 @@
      "interval": 1.65,
      "delay": 8,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -265,7 +265,7 @@
      "count": 20,
      "interval": 0.72,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_049",
@@ -273,7 +273,7 @@
      "interval": 1.5,
      "delay": 6,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_051",
@@ -281,7 +281,7 @@
      "interval": 2,
      "delay": 3,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -292,7 +292,7 @@
      "count": 40,
      "interval": 0.2,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "brood_sac",
@@ -300,7 +300,7 @@
      "interval": 1.5,
      "delay": 5,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -311,7 +311,7 @@
      "count": 10,
      "interval": 1,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_048",
@@ -319,7 +319,7 @@
      "interval": 1.39,
      "delay": 4,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -330,7 +330,7 @@
      "count": 7,
      "interval": 1.37,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_049",
@@ -338,7 +338,7 @@
      "interval": 1.4,
      "delay": 5,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -349,7 +349,7 @@
      "count": 8,
      "interval": 2.5,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_031",
@@ -357,7 +357,7 @@
      "interval": 0.6,
      "delay": 2,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_051",
@@ -365,7 +365,7 @@
      "interval": 1.5,
      "delay": 6,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -376,7 +376,7 @@
      "count": 22,
      "interval": 0.4,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "skeleton_ember",
@@ -384,7 +384,7 @@
      "interval": 0.5,
      "delay": 3,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "ironshell",
@@ -392,7 +392,7 @@
      "interval": 2,
      "delay": 5,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "bulwark",
@@ -400,7 +400,7 @@
      "interval": 2,
      "delay": 8,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   },
@@ -410,7 +410,7 @@
     {
      "enemy": "boss_mech_81",
      "count": 1,
-     "hpMul": 0.804,
+     "hpMul": 0.826,
      "path": 0
     },
     {
@@ -419,7 +419,7 @@
      "interval": 1.5,
      "delay": 5,
      "path": 0,
-     "hpMul": 1.47
+     "hpMul": 1.51
     },
     {
      "enemy": "mech_051",
@@ -427,7 +427,7 @@
      "interval": 2.5,
      "delay": 8,
      "path": 1,
-     "hpMul": 1.47
+     "hpMul": 1.51
     }
    ]
   }

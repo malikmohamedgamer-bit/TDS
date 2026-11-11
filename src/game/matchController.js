@@ -125,7 +125,8 @@ export class MatchController {
     this.music?.setMood('hub', this.map.id, mapTheme(this.map));
     this.mhud.setVisible(true);
     const cfg = await this.hub.open({
-      difficulty: this.lastConfig?.difficulty || 'normal',
+      // a new commander starts on Easy: starter towers at level 1 cannot hold Normal yet
+      difficulty: this.lastConfig?.difficulty || (this.save.stats.wins > 0 ? 'normal' : 'easy'),
       mode: this.lastConfig?.mode || 'campaign',
       loadout: this.lastConfig?.loadout || (this.save.towers.loadout?.length ? this.save.towers.loadout : DEFAULT_LOADOUT),
     });

@@ -372,8 +372,8 @@
       "theme": "frost",
       "seed": "gf1",
       "unlockLevel": 7,
-      "hpMul": 1,
-      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 42%, hpMul 1.015 -> 75%"
+      "hpMul": 1.03,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 42%, hpMul 1.015 -> 75%, 20 seeds: hpMul 1 -> 95%, 1.03 -> 70%"
     },
     {
       "id": "gen_ember_1",
@@ -444,8 +444,8 @@
       "theme": "toxic",
       "seed": "gt2",
       "unlockLevel": 23,
-      "hpMul": 0.893,
-      "calibration": "hpMul 1 -> 25%, hpMul 0.8 -> 100%, hpMul 0.893 -> 67%"
+      "hpMul": 0.91,
+      "calibration": "hpMul 1 -> 25%, hpMul 0.8 -> 100%, hpMul 0.893 -> 67%, 20 seeds: hpMul 0.893 -> 85%, 0.93 -> 45%, 0.91 -> 60%"
     },
     {
       "id": "gen_dunes_2",
@@ -611,9 +611,9 @@
       "theme": "ember",
       "seed": "em5x",
       "unlockLevel": 18,
-      "hpMul": 1.47,
+      "hpMul": 1.51,
       "feature": true,
-      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.087 -> 100%, hand-set hpMul 1.4 -> 83%, hand-set hpMul 1.55 -> 42%, hand-set hpMul 1.47 -> 92%"
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.087 -> 100%, hand-set hpMul 1.4 -> 83%, hand-set hpMul 1.55 -> 42%, hand-set hpMul 1.47 -> 92%, 20 seeds: hpMul 1.47 -> 90%, 1.51 -> 70%"
     },
     {
       "id": "gen_toxic_5",

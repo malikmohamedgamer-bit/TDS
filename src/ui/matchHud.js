@@ -9,6 +9,30 @@ import { countUp } from './counter.js';
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const TARGET_LABEL = { first: 'First', last: 'Last', strongest: 'Strongest', weakest: 'Weakest', fastest: 'Fastest', closest: 'Closest', flying: 'Flying only' };
 const ABILITY_KEYS = ['Z', 'X', 'G', 'V'];
+/** What each tower stat means (tooltips on the tower panel; hover or keyboard focus). */
+export const STAT_TIPS = {
+  Damage: 'Damage of one hit, before the enemy armour and resistances',
+  'Attacks/s': 'Shots per second',
+  DPS: 'Damage per second against one target: damage x attacks per second',
+  Range: 'How far it reaches, in metres (the ring on the ground)',
+  Splash: 'Radius around the hit that is also damaged',
+  Chain: 'How many enemies one shot jumps through',
+  Slow: 'Enemies hit move slower for a while',
+  Burn: 'Fire damage per second after a hit',
+  Income: 'Cash paid at the end of every wave',
+  Aura: 'Bonus for every tower in range',
+  Summons: 'Units it keeps on the road to block and fight',
+  Execute: 'Bonus damage to non-boss enemies below this health',
+  Critical: 'Every few shots deal multiplied damage',
+  Ramp: 'Damage grows while it keeps hitting the same enemy',
+  Shred: 'Hits lower the enemy armour for a while, for every tower',
+  Pushback: 'Ground enemies are pushed back along the road (bosses less)',
+  Bounty: 'Extra cash for enemies this tower kills',
+  Multishot: 'Each shot also hits nearby enemies for part of the damage',
+  'Hits air': 'Whether it can target flying enemies',
+  Detection: 'Whether it can target stealth enemies',
+  Kills: 'Enemies this tower has killed in this match',
+};
 export const HOTBAR_KEYS = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'];
 export const DEFAULT_LOADOUT = ['rifleman', 'ember_adept', 'frost_weaver', 'marksman', 'rocket_battery', 'storm_caller'];
 
@@ -201,6 +225,14 @@ export class MatchHud {
     if (b.income) stats.push(['Income', `$${b.income}/wave`]);
     if (b.aura) stats.push(['Aura', Object.entries(b.aura).map(([k, v]) => (v === true ? k : `+${Math.round(v * 100)}% ${k}`)).join(', ')]);
     if (b.summon) stats.push(['Summons', `${b.summon.max} x ${b.summon.unit.id.replace('_', ' ')}`]);
+    const pc = (v) => `${Math.round(v * 100)}%`;
+    if (b.execute) stats.push(['Execute', `x${b.execute.mul} below ${pc(b.execute.below)}`]);
+    if (b.crit) stats.push(['Critical', `x${b.crit.mul} every ${b.crit.every} shots`]);
+    if (b.ramp) stats.push(['Ramp', `+${pc(b.ramp.perHit)} per hit, up to +${pc(b.ramp.max)}`]);
+    if (b.shred) stats.push(['Shred', `-${pc(b.shred.amount)} armour for ${b.shred.duration}s`]);
+    if (b.pushback) stats.push(['Pushback', `${b.pushback} m`]);
+    if (b.bounty) stats.push(['Bounty', `+${pc(b.bounty)} kill cash`]);
+    if (b.multishot) stats.push(['Multishot', `${b.multishot.count} extra targets at ${pc(b.multishot.falloff)}`]);
     stats.push(['Hits air', b.targets?.air ? 'Yes' : 'No']);
     stats.push(['Detection', eff.detection ? 'Yes' : 'No']);
     stats.push(['Kills', t.kills]);
@@ -225,7 +257,7 @@ export class MatchHud {
       <header><div><h2 data-testid="tower-name">${esc(t.name)}</h2><div class="pips" aria-label="Tier ${t.tier} of ${totalSteps}">${pips.join('')}</div></div>
       <button class="icon-btn" data-act="close" aria-label="Close">${icon('cross')}</button></header>
       ${t.stunUntil > m.time ? `<p class="stunned">${icon('warn')} Stunned</p>` : ''}
-      <dl>${stats.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+      <dl>${stats.map(([k, v]) => `<dt${STAT_TIPS[k] ? ` data-tip="${esc(STAT_TIPS[k])}" tabindex="0"` : ''}>${k}</dt><dd>${v}</dd>`).join('')}</dl>
       ${b.damage || b.trap ? `<div class="targeting" role="radiogroup" aria-label="Targeting">${TARGET_MODES.map((mode) => `<button role="radio" aria-checked="${t.targeting === mode}" data-target="${mode}">${TARGET_LABEL[mode]}</button>`).join('')}</div>` : ''}
       ${upgrade}
       <div class="row2"><button class="btn" data-act="move" data-testid="move">Move <kbd>M</kbd></button><button class="btn danger" data-act="sell" data-testid="sell">Sell $${refund}</button></div>`;

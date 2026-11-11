@@ -40,6 +40,9 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 | Setup | Win rate |
 |---|---|
+| **All 50 maps, 12 core towers, Normal, Standard, 20 seeds each (2026-11-12, `node tools/sweep.mjs`, docs/balance-sweep.json)** | mean 67%; 30 of 50 maps in 60-70%, 50 of 50 in 50-80%, none below 50%, none above 80% after 3 maps were re-tuned |
+| 10 heroes, 12 core towers, Riftline Normal, 30 seeds (2026-11-12) | Vale 63%, Ryn 70%, Ignis 70%, Vex 70%, Holt 67%, Maren 63%, Nyra 57%, Seren 57%, Kade 77%, Brik 83% |
+| New modes, 12 core towers, Riftline Normal, 12 seeds | Skirmish 100% (all towers), Mutation 58%, War Chest 83%, Last Stand 0% at tower level 1 and 83% at level 5 |
 | All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
 | Frostmere, 12 regular towers, Normal, Standard | 13/20 (65%); starters Easy 11/12; lazy 0/8 |
 | Daily Challenge, fixed Easy, 10 dates x 6 seeds | 39/60 (65%); held-out dates 45/60 (75%) |
@@ -133,9 +136,8 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 **FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in
 `docs/COMPLETION.md`). Session 2026-11-11 finished Chunk 2 and parts of 4, 5, 6, 7, 8. In order:
-1. Chunk 3 balance sweep: heroes done (BUGS #44; Kade 77% and Brik 83% are the leftovers, measure heroes with 30 seeds). Next: 20 seeds per map
-   on Standard Normal (`node tools/balance.mjs --map all --seeds 20 --loadout <core 12>`), ladder check,
-   Endless with the 200-enemy pool.
+1. Chunk 3 balance sweep: heroes done (BUGS #44; Kade 77% and Brik 83% are the leftovers, measure heroes with 30 seeds). Maps done: 20-seed sweep in docs/balance-sweep.json (re-run with `node tools/sweep.mjs`). Still open: difficulty
+   ladder at gate levels with the new content, Endless with the 200-enemy pool, economy / exploit check, 30 min soak.
 2. Chunk 2 leftovers: new path templates in src/core/mapGen.js (loop, crossover, air route), more flagships,
    kit towers for the thin classes (air, aura, summoner, trap).
 3. Chunk 6: stat tooltips, first-run difficulty choice, tutorial v2, accessibility audit, screenshots at

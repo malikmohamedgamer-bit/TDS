@@ -50,8 +50,8 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Balance bot quick check (12 seeds) on every new map and mode (maps: tools/map-batches.json `calibration`; modes: BUGS 49, 50)
 
 ## Chunk 3: balance sweep (MUST)
-- [ ] BUGS #44 heroes too strong, #37 generated towers too strong, #46 Boss Rush 55% (global multipliers)
-- [ ] 20 seeds per map / mode / difficulty; Standard Normal 60-70%; smooth ladder; Relaxed + Original work
+- [x] BUGS #44 heroes (30 seeds: 57-83%, was 75-100%). #37 and #46 were accepted earlier
+- [ ] 20 seeds per map done (mean 67%, all 50 maps in 50-80%, docs/balance-sweep.json). Open: modes and the difficulty ladder with 20 seeds, Relaxed + Original re-check
 - [ ] New-player path, pacing (first win, first evolution, first summon rarity), no dead ends or exploits
 - [ ] Economy and sandbox exploit check; results in TUNING.md and VERIFICATION.md
 - [ ] Milestone: full e2e + 30 min soak
@@ -71,7 +71,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Every screen in docs/ui-style.md finished (hub, pickers, loadout, shop, summon, Index, quests, settings,
       HUD, pause, results, credits, privacy, terms)
 - [ ] Tutorial v2 (< 5 min, skippable with confirm, replayable)
-- [ ] Searchable Help and battle report (damage breakdown) done. Open: stat tooltips everywhere, first-run difficulty choice, all strings in data files
+- [ ] Searchable Help, battle report, tower stat tooltips and the first-run Easy default with a hint are done. Open: all strings in data files
 - [ ] Accessibility audit with fixes; screenshots at phone / tablet / desktop
 - [ ] Milestone: full e2e + 30 min soak
 
@@ -117,4 +117,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-11 | Chunk 7 PWA | manifest, icons (tools/gen-icons.mjs), sw.js stamped by tools/build-site.mjs, src/pwa.js |
 | 2026-11-11 | Chunk 4 + 6 + 8 | Quests 87, Help tab with save export / import, save fuzz test and sanitizer fixes, banners, cosmetics, battle report |
 | 2026-11-11 | Chunk 2 featuring | Kit enemies and bosses on the 33 new maps (252 of 300 units in waves), recalibrated; 6 re-skin themes (waves and layouts verified identical); music styles. Unit 132 |
-
+| 2026-11-12 | Chunk 3 (part) | Heroes tuned in 3 rounds (30 seeds), tools/sweep.mjs: 50 maps x 20 seeds, 3 outliers re-tuned. E2E 26/26 before the hero pass. First-run Easy default, tower stat tooltips |

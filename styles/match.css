@@ -214,3 +214,6 @@ body.in-match .hud-top .brand { visibility: hidden; }
 .rep small { color: var(--text-3); }
 .rep-bar { display: block; height: 4px; margin-top: 3px; background: var(--ink-4); border-radius: 2px; overflow: hidden; }
 .rep-bar i { display: block; height: 100%; background: var(--brass); }
+
+.tower-panel dt[data-tip] { cursor: help; text-decoration: underline dotted var(--ink-5); text-underline-offset: 3px; }
+.tower-panel dt[data-tip]::after { left: 0; transform: none; width: max-content; max-width: 240px; white-space: normal; }
