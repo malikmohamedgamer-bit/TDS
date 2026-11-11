@@ -82,13 +82,23 @@ export function sanitize(s, content) {
   out.stats = { ...base.stats, ...(isObj(s.stats) ? s.stats : {}) };
   for (const k of Object.keys(out.stats)) out.stats[k] = nonNeg(out.stats[k]);
   out.progress = { ...base.progress, ...(isObj(s.progress) ? s.progress : {}) };
+  // records: {map: {difficulty: waves}} and {map: number}; anything else is dropped
+  const numMap = (v) => Object.fromEntries(Object.entries(isObj(v) ? v : {}).filter(([, n]) => Number.isFinite(n) && n >= 0));
+  out.progress.best = Object.fromEntries(Object.entries(isObj(out.progress.best) ? out.progress.best : {}).filter(([, v]) => isObj(v)).map(([k, v]) => [k, numMap(v)]));
+  for (const k of ['bestTime', 'bestEndless']) if (out.progress[k] !== undefined) out.progress[k] = numMap(out.progress[k]);
+  out.progress.tutorialDone = !!out.progress.tutorialDone;
   out.heroes = { ...base.heroes, ...(isObj(s.heroes) ? s.heroes : {}) };
   out.summon = { pity: nonNeg(s.summon?.pity), pulls: nonNeg(s.summon?.pulls), seed: nonNeg(s.summon?.seed) };
   out.daily = { last: typeof s.daily?.last === 'string' ? s.daily.last : null, streak: nonNeg(s.daily?.streak) };
   out.progress.bestDifficultyWon = Number.isFinite(out.progress.bestDifficultyWon) ? out.progress.bestDifficultyWon : -1;
-  out.quests = isObj(s.quests) ? s.quests : {};
+  out.quests = isObj(s.quests) ? { ...s.quests } : {};
+  const dq = out.quests.daily;
+  if (!isObj(dq) || typeof dq.date !== 'string' || !Array.isArray(dq.ids) || !isObj(dq.progress)) delete out.quests.daily;
+  else out.quests.daily = { date: dq.date, ids: dq.ids.map(String), progress: numMap(dq.progress) };
+  if (out.quests.story !== undefined && !isObj(out.quests.story)) delete out.quests.story;
   out.achievements = isObj(s.achievements) ? s.achievements : {};
-  out.index = { towers: [...new Set(s.index?.towers || [])], enemies: [...new Set(s.index?.enemies || [])] };
+  const strList = (v) => [...new Set((Array.isArray(v) ? v : []).filter((x) => typeof x === 'string'))];
+  out.index = { towers: strList(s.index?.towers), enemies: strList(s.index?.enemies) };
   return out;
 }
 

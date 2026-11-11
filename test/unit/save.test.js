@@ -87,3 +87,43 @@ test('rewards are granted exactly once', () => {
   const back = importSave(exportSave(s), C);
   assert.equal(grantReward(back, 'quest:first_win', { crowns: 100 }), false);
 });
+
+test('fuzz: hand-edited and damaged saves never crash loading or the meta screens', async () => {
+  const { Rng } = await import('../../src/core/rng.js');
+  const meta = await import('../../src/meta/meta.js');
+  const rng = new Rng('save-fuzz');
+  const JUNK = [null, undefined, -1, 1e308, NaN, 'x', '', [], {}, true, [1, 2, 3], { level: 'a' }, '__proto__', 1.5, -0, '9'.repeat(400)];
+  const mutate = (obj, depth = 0) => {
+    if (!obj || typeof obj !== 'object') return rng.pick(JUNK);
+    const keys = Object.keys(obj);
+    if (!keys.length || rng.chance(0.15)) return rng.pick(JUNK);
+    const k = rng.pick(keys);
+    const copy = Array.isArray(obj) ? [...obj] : { ...obj };
+    copy[k] = depth < 3 && rng.chance(0.6) ? mutate(obj[k], depth + 1) : rng.pick(JUNK);
+    if (rng.chance(0.2)) copy[`junk${rng.int(0, 9)}`] = rng.pick(JUNK);
+    return copy;
+  };
+  const good = newSave(1);
+  good.towers.owned = { rifleman: { level: 3 }, ember_adept: { level: 2 } };
+  good.claimed = ['firstclear:riftline:easy:campaign', 'match:a'];
+  good.progress.best = { riftline: { easy: 20 } };
+  let repaired = 0;
+  for (let i = 0; i < 400; i++) {
+    let s = good;
+    for (let n = rng.int(1, 4); n > 0; n--) s = mutate(s);
+    const backend = memBackend();
+    backend.setItem(SAVE_KEY, rng.chance(0.1) ? JSON.stringify(s ?? null).slice(0, rng.int(0, 200)) : JSON.stringify(s ?? null));
+    const { save, source } = loadSave(createStorage(backend), C, 5);
+    if (source === 'main') repaired++;
+    assert.equal(save.schema, SAVE_SCHEMA);
+    assert.ok(Number.isFinite(save.wallet.crowns) && save.wallet.crowns >= 0 && save.profile.level >= 1);
+    // every screen that reads the save
+    meta.questStatus(save, C.quests, C, '2026-11-11');
+    meta.dailyStatus(save, C.meta, '2026-11-11');
+    meta.levelForXp(C.meta, save.profile.xp);
+    meta.applyMatchResult(save, { seed: `f${i}`, map: 'riftline', difficulty: 'easy', mode: 'campaign', won: true, wave: 20, waves: 20, stats: { kills: 5 }, seen: ['husk'], loadout: ['rifleman'] }, C, C.meta, '2026-11-11');
+    writeSave(createStorage(backend), save, 6);
+    assert.doesNotThrow(() => JSON.parse(backend.getItem(SAVE_KEY)));
+  }
+  assert.ok(repaired > 100, `most damaged saves are repaired, not reset (${repaired}/400)`);
+});
