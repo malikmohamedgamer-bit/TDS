@@ -141,3 +141,14 @@
 .hero-detail.f-magic { border-color: #4B3A99; }
 .hero-detail .skills { margin: 6px 0 0; padding-left: 1.3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 4px 14px; }
 .hero-detail .skills small { color: var(--text-2); }
+
+/* Help tab */
+.help-search { display: flex; margin-bottom: 8px; }
+.help-q { border: 2px solid var(--border); border-radius: 12px; background: #1b1f2c; margin: 6px 0; }
+.help-q summary { cursor: pointer; padding: 12px 14px; min-height: 44px; font-weight: 700; list-style-position: inside; }
+.help-q summary:focus-visible { outline: 3px solid var(--focus, #FFD166); outline-offset: 2px; border-radius: 10px; }
+.help-q p { margin: 0; padding: 0 14px 12px; color: var(--text-2); line-height: 1.5; }
+.help-q.about { background: transparent; }
+.save-io { display: grid; gap: 8px; margin-bottom: 14px; }
+.save-io textarea { width: 100%; box-sizing: border-box; border-radius: 10px; border: 2px solid var(--border); background: #12141c; color: inherit; padding: 8px; font: 0.8rem/1.3 ui-monospace, monospace; resize: vertical; }
+.save-io .btn.danger { border-color: #E5484D; color: #FFB3B5; }

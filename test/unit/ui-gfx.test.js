@@ -149,3 +149,14 @@ test('ambient particles stay inside their box for every kind (no leak, no NaN)',
   const ember = ambientMotion('embers', { x: 0, y: 10, z: 0, ph: 0, sp: 1 }, 0, 1, box);
   assert.ok(snow[1] < 10 && ember[1] > 10, 'snow falls, embers rise');
 });
+
+test('help: every topic has entries, search needs every word, about pages exist', async () => {
+  const { filterHelp } = await import('../../src/ui/helpSearch.js');
+  const H = content.help;
+  assert.ok(H.topics.length >= 4 && H.topics.every((t) => t.entries.length >= 3 && t.entries.every((e) => e.q && e.a)));
+  assert.deepEqual(H.about.map((a) => a.id), ['credits', 'privacy', 'terms']);
+  assert.equal(filterHelp(H.topics, '').length, H.topics.length);
+  const fly = filterHelp(H.topics, 'FLYING air');
+  assert.ok(fly.length >= 1 && fly.every((t) => t.entries.every((e) => /flying/i.test(`${e.q} ${e.a} ${e.tags}`))));
+  assert.equal(filterHelp(H.topics, 'zzz-nothing').length, 0);
+});

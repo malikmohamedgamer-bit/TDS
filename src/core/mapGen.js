@@ -264,7 +264,7 @@ export function generateMap(opts) {
     props,
     scatter: theme.scatter.map((s) => ({ ...s })),
   };
-  const waves = opts.baseWaves ? generateWaves(rng.fork('waves'), opts.baseWaves, { id: `${id}_waves`, roads: paths.length, theme, enemies: opts.enemies, hpMul: opts.hpMul ?? 1, swaps: opts.swaps, boss: opts.boss }) : null;
+  const waves = opts.baseWaves ? generateWaves(rng.fork('waves'), opts.baseWaves, { id: `${id}_waves`, roads: paths.length, theme, enemies: opts.enemies, hpMul: opts.hpMul ?? 1, swaps: opts.swaps, boss: opts.boss, featureBosses: opts.featureBosses }) : null;
   return { map, waves };
 }
 
@@ -273,9 +273,10 @@ export function generateMap(opts) {
  * themed enemy swaps (a group's enemy may become a generated variant of the same template with
  * the theme's palette: same HP x speed budget), and one HP multiplier for calibration.
  * featured: {enemyId: replacementId} explicit swaps (same chance; e.g. a map that shows off new
- * units); boss: the final boss id.
+ * units; a value may be {enemy, countMul} to keep the health budget); boss: the final boss id;
+ * featureBosses: {mid, final} boss ids for the boss waves, scaled to the base boss's health.
  */
-export function generateWaves(rng, base, { id, roads, theme, enemies, hpMul = 1, swaps: featured = null, boss = null }) {
+export function generateWaves(rng, base, { id, roads, theme, enemies, hpMul = 1, swaps: featured = null, boss = null, featureBosses = null }) {
   const swaps = new Map();
   if (enemies && theme.enemyScheme) {
     for (const e of enemies.values()) {
@@ -295,9 +296,22 @@ export function generateWaves(rng, base, { id, roads, theme, enemies, hpMul = 1,
     w.groups.forEach((g, gi) => {
       const def = enemies?.get(g.enemy);
       g.path = def?.boss ? 0 : (gi + wi) % roads;
-      if (!def?.boss && featured?.[g.enemy] && rng.chance(theme.swapChance ?? 0.5)) g.enemy = featured[g.enemy];
-      else if (!def?.boss && swaps.has(g.enemy) && rng.chance(theme.swapChance ?? 0.5)) g.enemy = swaps.get(g.enemy);
-      if (def?.boss && boss && wi === out.waves.length - 1) g.enemy = boss;
+      const f = featured?.[g.enemy];
+      if (!def?.boss && f && rng.chance(theme.swapChance ?? 0.5)) {
+        if (typeof f === 'string') g.enemy = f;
+        else {
+          // a featured unit with other health: keep the group's health budget and its duration
+          const count = Math.max(1, Math.round(g.count * (f.countMul ?? 1)));
+          if (g.interval) g.interval = +((g.interval * g.count) / count).toFixed(2);
+          g.count = count;
+          g.enemy = f.enemy;
+        }
+      } else if (!def?.boss && swaps.has(g.enemy) && rng.chance(theme.swapChance ?? 0.5)) g.enemy = swaps.get(g.enemy);
+      const last = wi === out.waves.length - 1;
+      if (def?.boss && boss && last) g.enemy = boss;
+      // featureBosses {mid, final}: other bosses at the base boss's health (their own mechanics)
+      const fb = def?.boss && featureBosses ? (last ? featureBosses.final : featureBosses.mid) : null;
+      if (fb && enemies.get(fb)) { g.enemy = fb; g.hpMul = +((g.hpMul ?? 1) * def.hp / enemies.get(fb).hp).toFixed(3); }
       if (hpMul !== 1) g.hpMul = +((g.hpMul ?? 1) * hpMul).toFixed(3);
     });
   });

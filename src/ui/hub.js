@@ -2,6 +2,8 @@
 // levels and evolutions), Summon (banner + slot machine), Shop, Index (silhouettes until discovered),
 // Quests and Daily rewards. All state changes go through src/meta/meta.js and are saved immediately.
 // Look: docs/ui-style.md (war-table panels, faction dress, code-drawn SVG icons).
+import { filterHelp } from './helpSearch.js';
+import { exportSave, importSave } from '../save/save.js';
 import {
   levelForXp, summon, dailyDeal, buyTower, buyBundle, levelUpTower, levelUpCost, towerPrice, questStatus, claimQuest,
   dailyStatus, claimDaily, localDate, owns, unlockedSpeeds, dailyChallenge,
@@ -13,7 +15,7 @@ import { mapPreviewSvg, mapTheme, themeLabel, groupMapsByTheme } from './mapThum
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const ORDER = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
-const TABS = [['play', 'Play', 'play'], ['towers', 'Towers', 'tower'], ['summon', 'Summon', 'summon'], ['shop', 'Shop', 'shop'], ['index', 'Index', 'book'], ['quests', 'Quests', 'scroll'], ['daily', 'Daily', 'gift']];
+const TABS = [['play', 'Play', 'play'], ['towers', 'Towers', 'tower'], ['summon', 'Summon', 'summon'], ['shop', 'Shop', 'shop'], ['index', 'Index', 'book'], ['quests', 'Quests', 'scroll'], ['daily', 'Daily', 'gift'], ['help', 'Help', 'help']];
 const fmt = (n) => Math.round(n).toLocaleString('en-US');
 const CUR = { crowns: ['crown', 'Crowns'], sigils: ['sigil', 'Sigils'] };
 /** Reward / price as markup with currency icons. */
@@ -109,7 +111,10 @@ export class Hub {
     const body = this.el.querySelector('.hub-body');
     body.onclick = (e) => this.onClick(e);
     body.onchange = (e) => this.onChange(e);
-    body.oninput = (e) => { if (e.target.name === 'mapq') { this.mapFilter.query = e.target.value; this.applyMapFilter(); } };
+    body.oninput = (e) => {
+      if (e.target.name === 'mapq') { this.mapFilter.query = e.target.value; this.applyMapFilter(); }
+      if (e.target.name === 'helpq') { this.helpQuery = e.target.value; this.el.querySelector('.help-list').innerHTML = this.helpList(); }
+    };
     body.scrollTop = scroll;
     const mg = this.el.querySelector('.map-groups');
     if (mg) { mg.scrollTop = mapScroll; this.applyMapFilter(); }
@@ -348,6 +353,25 @@ export class Hub {
       <button class="btn primary big" data-act="daily" data-testid="claim-daily" ${st.claimedToday ? 'disabled' : ''}>${st.claimedToday ? 'Come back tomorrow' : `Claim day ${st.nextDay}: ${rewardHtml(st.reward)}`}</button>`;
   }
 
+  helpList() {
+    const topics = filterHelp(this.c.help?.topics || [], this.helpQuery);
+    if (!topics.length) return '<p class="note" data-testid="help-empty">Nothing found. Try another word, for example "flying", "save" or "speed".</p>';
+    return topics.map((t) => `<h3>${esc(t.title)}</h3>${t.entries.map((e) => `<details class="help-q" ${this.helpQuery ? 'open' : ''}><summary>${esc(e.q)}</summary><p>${esc(e.a)}</p></details>`).join('')}`).join('');
+  }
+
+  _help() {
+    const about = this.c.help?.about || [];
+    return `<label class="search help-search">${icon('search')}<input type="search" name="helpq" value="${esc(this.helpQuery || '')}" placeholder="Search help" aria-label="Search help" autocomplete="off" data-testid="help-search"></label>
+      <div class="help-list" aria-live="polite">${this.helpList()}</div>
+      <h3>${icon('scroll')} Save backup</h3>
+      <p class="note">Your progress lives in this browser. Export a code and keep it somewhere safe; importing a code replaces the current progress.</p>
+      <div class="save-io"><button class="btn" data-act="export-save" data-testid="export-save">Export save code</button>
+      <textarea name="savecode" rows="3" placeholder="Paste a save code here to import it" aria-label="Save code" spellcheck="false" data-testid="save-code"></textarea>
+      <button class="btn" data-act="import-save" data-testid="import-save">Import save code</button></div>
+      ${about.map((a) => `<details class="help-q about" data-testid="about-${a.id}"><summary>${esc(a.title)}</summary>${a.body.map((p) => `<p>${esc(p)}</p>`).join('')}</details>`).join('')}
+      <p class="note">TDS · content version ${esc(String(this.c.version || ''))}</p>`;
+  }
+
   // ------------------------------------------------------------------------- actions -------
   saved() {
     this.ctx.persist();
@@ -387,6 +411,28 @@ export class Hub {
     if (!t || t.disabled) return;
     const d = t.dataset;
     const sfx = this.ctx.sfx;
+    if (d.act === 'export-save') {
+      const code = exportSave(this.save);
+      const ta = this.el.querySelector('[name=savecode]');
+      ta.value = code;
+      ta.select();
+      try { await navigator.clipboard.writeText(code); this.toast('Save code copied to the clipboard', 'good'); } catch { this.toast('Save code is in the box: copy it and keep it safe', 'good'); }
+      return;
+    }
+    if (d.act === 'import-save') {
+      const text = this.el.querySelector('[name=savecode]').value;
+      let next;
+      try { next = importSave(text, this.c); } catch (err) { this.toast(err.message, 'warn'); sfx?.play('error'); return; }
+      // two presses: the first only arms the button
+      if (t.dataset.armed !== text) { t.dataset.armed = text; t.textContent = `Replace current progress with this save (level ${next.profile.level})?`; t.classList.add('danger'); return; }
+      const s = this.save;
+      for (const k of Object.keys(s)) delete s[k];
+      Object.assign(s, next);
+      this.saved();
+      this.toast('Save imported', 'good');
+      this.render();
+      return;
+    }
     if (d.themeFilter) { this.mapFilter.theme = d.themeFilter; sfx?.play('ui'); this.applyMapFilter(); return; }
     if (d.tower) {
       const m = this.c.modes?.get(this.cfg.mode);

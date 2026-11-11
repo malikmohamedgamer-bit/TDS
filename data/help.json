@@ -1,0 +1,44 @@
+{
+ "$doc": "Help screen text (hub > Help). topics: {id, title, entries: [{q, a, tags}]}; about: static pages (credits, privacy, terms). Plain text only; the search matches q, a and tags.",
+ "topics": [
+  { "id": "basics", "title": "Basics", "entries": [
+   { "q": "How do I win a match?", "a": "Enemies walk the road from the portal to your keep. Build towers beside the road to stop them. You win when the last wave is cleared and lose when the keep's health reaches zero.", "tags": "goal lose keep waves" },
+   { "q": "How do I place a tower?", "a": "Pick a tower from the bar at the bottom (keys 1 to 6), then click or tap the ground next to a road. A green ring means the spot is free; a red cross means it is blocked or too close to the road or another tower.", "tags": "build place hotbar" },
+   { "q": "How do I upgrade, retarget or sell?", "a": "Click or tap a placed tower to open its panel. Upgrades cost cash. At the evolution level you choose path A or B. Selling returns part of what you spent.", "tags": "upgrade evolve sell refund targeting first last strongest closest" },
+   { "q": "How do waves start?", "a": "The next wave starts on a timer. Press N or the Next wave button to start it early for bonus cash.", "tags": "next wave skip early bonus" },
+   { "q": "What does my commander do?", "a": "Your hero walks the map (WASD or the joystick), attacks nearby enemies on its own and has up to four abilities (keys Z, X, G, V). Each ability can be set to auto.", "tags": "hero abilities skills cooldown auto" }
+  ] },
+  { "id": "combat", "title": "Combat", "entries": [
+   { "q": "Why are my towers doing little damage?", "a": "Armour blocks part of physical and explosive damage, and many enemies resist some damage types. Magic and explosives cut through armour. The icon on a tower shows its damage type; enemy cards in the Index list weaknesses.", "tags": "armour armor resist weak damage types physical explosive fire frost lightning arcane poison holy dark" },
+   { "q": "How do I stop flying enemies?", "a": "Only towers that can hit air damage them, and traps and road blockers do not stop them. Bring at least one anti-air tower into every match.", "tags": "air flying gloomwing anti-air" },
+   { "q": "How do I hit stealth enemies?", "a": "Stealth enemies can only be targeted by towers with detection, inside a detection aura, or after a hero skill reveals them.", "tags": "stealth cloak invisible detection reveal shade" },
+   { "q": "What are the status effects?", "a": "Burn deals damage over time. Slow and freeze reduce speed. Stun stops an enemy. Mark makes it take more damage. Shred lowers armour for a while.", "tags": "burn slow freeze stun mark shred status" },
+   { "q": "How do bosses work?", "a": "Bosses arrive on boss waves and change behaviour as they lose health: shields, summons, dashes, cloaks, stuns on your towers and more. A ring on the ground warns before a big attack. A boss that reaches the keep usually ends the match.", "tags": "boss phases telegraph ring shield summon" }
+  ] },
+  { "id": "modes", "title": "Modes and difficulty", "entries": [
+   { "q": "Which mode should I play first?", "a": "Campaign on Easy. Skirmish is a 10-wave match for a short session. Other modes unlock with player level.", "tags": "campaign skirmish first new player easy" },
+   { "q": "What are the other modes?", "a": "Endless never stops. Boss Rush is bosses back to back. Time Attack has short wave timers. Challenge lets you pick modifiers for more rewards. Mutation changes every wave. War Chest gives one big budget and no kill cash. Last Stand gives the keep very little health. Daily Challenge is the same for everyone each day. Sandbox has infinite cash and no rewards.", "tags": "endless boss rush time attack challenge mutation war chest last stand daily sandbox" },
+   { "q": "The game is too hard or too easy.", "a": "Change the difficulty on the Play screen. In Settings you can also pick a tuning preset (Standard, Original, Relaxed) and turn on Assist options. Assisted runs still pay Crowns and XP but do not count for quests, records or achievements.", "tags": "difficulty preset relaxed assist easier harder" },
+   { "q": "How do game speeds work?", "a": "0.5x, 1x and 1.5x are always available. 2x unlocks at player level 3 and 3x at level 8.", "tags": "speed fast forward 2x 3x" }
+  ] },
+  { "id": "progress", "title": "Progress and rewards", "entries": [
+   { "q": "What are Crowns and Sigils?", "a": "Crowns come from every match and pay for the Shop and permanent tower levels. Sigils come from quests, first clears and daily rewards and pay for Summons.", "tags": "currency crowns sigils money" },
+   { "q": "How do I get new towers?", "a": "Buy them in the Shop or pull them from the Summon reels. Summons have a pity counter that guarantees a rare result after a set number of pulls.", "tags": "unlock towers shop summon pity odds rarity" },
+   { "q": "What are permanent tower levels?", "a": "In the Towers tab you can spend Crowns to raise a tower's permanent level. The bonus applies in every match.", "tags": "levels permanent upgrade towers tab" },
+   { "q": "How do I unlock maps?", "a": "Maps unlock with player level. You gain XP for every wave you clear and extra for a win.", "tags": "maps unlock level xp" },
+   { "q": "Can I lose my save?", "a": "Progress is saved in this browser after every change. Clearing the browser's site data deletes it. The Save backup section at the bottom of this Help screen exports a code you can keep and import later.", "tags": "save export import backup lost progress" }
+  ] },
+  { "id": "controls", "title": "Controls and settings", "entries": [
+   { "q": "Keyboard and mouse", "a": "WASD moves the hero, Shift sprints, Space jumps. Right-drag turns the camera and the wheel zooms. V is first person, F the free camera, T the overview and C returns to the hero. 1 to 6 pick towers, N starts the next wave, P pauses, Z X G V use abilities, Esc cancels.", "tags": "keys keyboard mouse camera shortcuts" },
+   { "q": "Touch", "a": "The left joystick moves the hero. Drag to look, pinch to zoom. Tap a tower button, then tap the ground to build.", "tags": "phone tablet touch joystick mobile" },
+   { "q": "The game runs slowly.", "a": "Open Settings and lower Quality, or lower the resolution scale. Low quality turns off most effects and is the default on phones.", "tags": "performance fps lag slow quality low" },
+   { "q": "Accessibility", "a": "Settings has reduced motion, high contrast, text size and interface size. Sounds have captions. Rarity and damage types are always shown with an icon or a name as well as a colour.", "tags": "accessibility reduced motion contrast captions colour blind text size" },
+   { "q": "Can I play offline or install the game?", "a": "Yes. After the first visit the game works without a connection. In most browsers you can install it from the address bar or the browser menu (Add to Home screen).", "tags": "offline install app pwa home screen" }
+  ] }
+ ],
+ "about": [
+  { "id": "credits", "title": "Credits", "body": ["TDS is built with Three.js 0.187 (MIT licence).", "3D models: built in code and in Blender for this project, plus CC0 packs by Kenney (kenney.nl) and Quaternius (quaternius.com), recoloured to the game's palettes.", "Music and sound effects are synthesized in code. Icons are drawn in code.", "The full list with sources and licences is in docs/credits.md in the project."] },
+  { "id": "privacy", "title": "Privacy", "body": ["The game stores your progress and settings in this browser only (local storage).", "It has no accounts, no ads, no analytics and no tracking, and it sends nothing about you to any server.", "Deleting the site's data in your browser removes everything the game stored."] },
+  { "id": "terms", "title": "Terms", "body": ["The game is provided free of charge and as is, without any warranty.", "There are no purchases. Everything is earned by playing.", "Save data lives on your device; keep an exported backup if your progress matters to you."] }
+ ]
+}
