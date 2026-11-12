@@ -1,7 +1,7 @@
 // Player settings (device-local, separate from game progress so a cloud save never overrides
 // someone's graphics or accessibility choices).
 
-import { defaultQuality } from '../ui/autoQuality.js';
+import { defaultQuality, QUALITY_ORDER } from '../ui/autoQuality.js';
 
 const KEY = 'tds.settings.v1';
 
@@ -52,6 +52,7 @@ export function loadSettings(storage, env) {
     for (const k of Object.keys(defaults)) {
       if (k in saved && typeof saved[k] === typeof defaults[k]) out[k] = saved[k];
     }
+    if (!QUALITY_ORDER.includes(out.quality)) out.quality = defaults.quality;
     return out;
   } catch {
     return defaults;

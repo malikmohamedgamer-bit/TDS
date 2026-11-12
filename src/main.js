@@ -2,7 +2,7 @@
 // match flow (loadout -> match -> results) on a fixed-timestep loop.
 import { mapTheme } from './ui/mapThumb.js';
 import { initPwa } from './pwa.js';
-import { QualityGovernor } from './ui/autoQuality.js';
+import { QualityGovernor, QUALITY_ORDER } from './ui/autoQuality.js';
 import { equippedCosmetic } from './meta/cosmetics.js';
 import { applyUiTheme } from './ui/applyCosmetics.js';
 import { loadContent, browserReadJson } from './core/content.js';
@@ -54,7 +54,8 @@ async function boot() {
     deviceMemory: navigator.deviceMemory,
     cores: navigator.hardwareConcurrency,
   });
-  if (params.get('quality')) settings.quality = params.get('quality');
+  // ?quality= (tests, tools): only a known tier is accepted
+  if (QUALITY_ORDER.includes(params.get('quality'))) settings.quality = params.get('quality');
   // automatic step-down for slow devices; off in automated tests and when a quality is forced
   let lastMatch = null;
   const governor = settings.qualityAuto !== false && !params.get('quality') && !navigator.webdriver ? new QualityGovernor() : null;

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { QualityGovernor, defaultQuality } from '../../src/ui/autoQuality.js';
-import { defaultSettings } from '../../src/save/settings.js';
+import { defaultSettings, loadSettings } from '../../src/save/settings.js';
 
 test('quality governor: steps down one tier after sustained slow play, waits, never below low', () => {
   const g = new QualityGovernor({ minFps: 24, windows: 4, cooldown: 3, warmup: 2 });
@@ -30,4 +30,11 @@ test('default quality: touch and weak hardware start on Low, others on Medium; a
   assert.equal(defaultSettings({ deviceMemory: 2 }).quality, 'low');
   assert.equal(defaultSettings({ deviceMemory: 16, cores: 12 }).quality, 'medium');
   assert.equal(defaultSettings({}).qualityAuto, true);
+});
+
+test('stored settings: an unknown quality falls back to the device default', () => {
+  const store = (v) => ({ get: () => JSON.stringify(v), set() {} });
+  assert.equal(loadSettings(store({ quality: '<b>x</b>' }), {}).quality, 'medium');
+  assert.equal(loadSettings(store({ quality: 'ultra' }), {}).quality, 'ultra');
+  assert.equal(loadSettings(store({ quality: 'nope' }), { coarsePointer: true }).quality, 'low');
 });

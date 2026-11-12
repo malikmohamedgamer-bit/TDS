@@ -3,6 +3,29 @@
 Results are from real runs on the owner's Windows 11 machine. "Headless" means Playwright
 Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU performance.
 
+## Milestone checks after the 2026-11-12 batches
+
+| Check | How | Result |
+|---|---|---|
+| End to end | `npx playwright test` | 26 / 26 passed (10.1 min), after the leak fix, auto quality and launch prep |
+| 30 minute soak | `npm run soak -- --minutes 30` | all 56 maps: 30 simulated minutes of hero walking each, 0 rescues, 0 failures |
+| Leak check | `node tools/leak-check.mjs --cycles 5` | GPU geometries 381 after every match (was +1,974 per match) |
+| Unit tests / lint | `npm test`, `npm run lint` | 139 / 139, clean |
+
+## Client security review (2026-11-12)
+
+Read-only review of every place where data a player controls (an imported save code, URL
+parameters, browser storage) reaches the page or the game.
+
+| Area | Finding | Status |
+|---|---|---|
+| HTML injection | Templates escape data with `esc()`; error messages, toasts and banners use `textContent`; the two raw HTML inserts are fixed strings; no `eval`, `new Function` or `document.write` | no issue |
+| Imported / edited saves | `sanitize` turns every field into a number, a known id or a fixed shape; strings from a save are never rendered as HTML; fuzz test over 400 damaged saves | no issue |
+| Save code checksum | Detects damage, not tampering (anyone can edit a local save); fine for a single-player game, must be replaced by server checks if online play is added (docs/online-plan.md) | accepted |
+| `?map=` | Opens a map before its unlock level. Single-player, local save; the screenshot and test tools rely on it | accepted |
+| `?quality=` | Any text was accepted and could be saved (the renderer fell back to Medium) | fixed after this review: only known tiers |
+| Service worker | Same-origin GET requests only, cache per build | no issue |
+
 ## Content to target, modes, meta, PWA (2026-11-11 / 12)
 
 | Check | How | Result | Evidence |
