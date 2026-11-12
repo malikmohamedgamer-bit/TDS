@@ -3,6 +3,24 @@
 Results are from real runs on the owner's Windows 11 machine. "Headless" means Playwright
 Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU performance.
 
+## Content to target, modes, meta, PWA (2026-11-11 / 12)
+
+| Check | How | Result | Evidence |
+|---|---|---|---|
+| Unit tests | `npm test` | 132 / 132 pass | run after the last code change |
+| Lint | `npm run lint` | clean | |
+| End to end | `npm run test:e2e` | Run 1: 26 / 26. Run 2 (after hero balance, first-run default, tooltips): 25 / 26; the failure was the flaky summon test (BUGS 55), fixed and passed 3 of 3 alone. No full run after that fix | 12 min per run, software WebGL |
+| All 50 maps valid | `node tools/gen-maps.mjs --check` | roads valid, 378+ build spots, hero soak without rescues on the 48 generated / flagship entries | |
+| Map balance | `node tools/sweep.mjs` (20 seeds, 12 core towers, Standard Normal) | mean 67%, 30 of 50 maps in 60-70%, 50 of 50 in 50-80% | docs/balance-sweep.json |
+| Hero balance | `node tools/balance.mjs --hero all --seeds 30` | 57% to 83% (Kade 77%, Brik 83% a little strong) | BUGS 44 |
+| Re-skin themes keep balance | built 15 maps with the parent theme and with the new theme, diffed waves and layout fields | 0 differences | session log |
+| New screens in a real browser | Help search, save export / import, cosmetics equip, pause battle report, 3 new themes in a match | worked, no console errors | checked by hand in the app browser on localhost |
+| Pages deploy | `gh run list` | green after every push | |
+
+Not verified this session: the service worker on the live URL or on a phone (it does not register on localhost),
+install prompt, music by ear, frame time on a real GPU, the 30 minute soak, the difficulty ladder and the modes
+with 20 seeds, screenshots at phone and tablet sizes for the new screens.
+
 ## UI / GFX update, batch 1 (2026-11-06)
 
 | Feature | How tested | Result | Notes |

@@ -40,10 +40,14 @@ test('slot-machine summon: spends sigils, can be skipped, unlocks or refunds; re
   await expect(page.getByTestId('slot-machine')).toBeVisible();
   const owned0 = await page.evaluate(() => Object.keys(window.TDS.save.towers.owned).length);
   await page.getByTestId('pull-10').click();
-  await page.getByTestId('skip-anim').click();
   const reveal = page.getByTestId('reveal');
-  // epic+ results show a reveal; continue through any of them
-  for (let i = 0; i < 10 && await reveal.isVisible().catch(() => false); i++) await reveal.getByRole('button', { name: 'Continue' }).click();
+  const results = page.getByTestId('pull-results');
+  // epic+ results show a reveal over the page (the summon seed differs per run, so it may come
+  // before or after the skip): continue through reveals, skip the reels in between
+  for (let i = 0; i < 40 && !(await results.textContent()).includes('Results'); i++) {
+    if (await reveal.isVisible().catch(() => false)) await reveal.getByRole('button', { name: 'Continue' }).click({ timeout: 3000 }).catch(() => {});
+    else await page.getByTestId('skip-anim').click({ timeout: 2000 }).catch(() => {});
+  }
   await expect(page.getByTestId('pull-results')).toContainText('Results', { timeout: 30_000 });
   const s = await page.evaluate(() => ({ sigils: window.TDS.save.wallet.sigils, pulls: window.TDS.save.summon.pulls, owned: Object.keys(window.TDS.save.towers.owned).length }));
   expect(s.sigils).toBe(2000 - 900);
