@@ -1,7 +1,7 @@
 /* Design tokens: docs/ui-style.md. Loaded first; every other sheet reads these. */
 :root {
   --ink-0: #07080c; --ink-1: #0d0f15; --ink-2: #12141c; --ink-3: #1a1e2a; --ink-4: #262b3d; --ink-5: #353c54;
-  --text: #f4f6fb; --text-2: #a9b0c2; --text-3: #6f7891;
+  --text: #f4f6fb; --text-2: #a9b0c2; --text-3: #8f98b0;
   --brass: #ffd166; --brass-2: #b8903c; --brass-dim: rgba(255, 209, 102, 0.28);
   --go: #3fb950; --go-2: #7be08a; --go-ink: #08210d; --stop: #e5484d; --stop-2: #ff8a8e;
   --m-1: #7b4dff; --m-2: #2ec4b6; --m-gold: #ffd166; --m-night: #1e1b4b; --m-glow: #c9a7ff;

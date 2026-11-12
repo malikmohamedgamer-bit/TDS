@@ -5,7 +5,26 @@ A 3D browser tower defense game. Two factions, **Magic** (mages, summoners, spir
 Blight**. You walk around the map as a commander, build towers anywhere off the road, upgrade
 them down branching paths, and fight with your own abilities.
 
-Status: in development. See `docs/PROGRESS.md` for what works today.
+**Play:** https://malikmohamedgamer-bit.github.io/TDS/ (free, no account, no ads, no purchases; works
+offline after the first visit and can be installed from the browser menu).
+
+Status: late development (version in `package.json`). `docs/PROGRESS.md` has the current state,
+`docs/COMPLETION.md` the scoreboard, `docs/HANDOFF.md` how to keep working on it.
+
+## Features
+
+- **56 maps** on 14 themes and 5 road layouts (winding, fork, trident, split lanes, crossover), each
+  balanced with a bot to a 50-80% win rate on Normal.
+- **100 towers** (Magic and Modern War) with branching upgrades and evolutions, **200 enemies**,
+  **100 bosses** with phase mechanics, **10 heroes** with 4 abilities each.
+- **11 modes:** Campaign, Endless, Boss Rush, Daily Challenge, Time Attack, Challenge, Skirmish,
+  Mutation, War Chest, Last Stand, Sandbox. 9 challenge modifiers, 8 difficulties, 3 tuning presets
+  and Assist options.
+- **Progression:** player levels, permanent tower levels, a shop with daily deals, 3 summon banners
+  with pity, 93 quests, 109 achievements, an Index of everything met, earned cosmetics (interface
+  themes, hero outfits), a daily login streak.
+- Procedural music and sound, data-driven effects, searchable Help, save export / import, keyboard,
+  mouse and touch controls, reduced motion, high contrast, text and interface scale.
 
 ## Run it
 
@@ -114,6 +133,13 @@ Every content file is listed in `data/index.json`.
    header), then `node tools/import-quaternius.mjs --fit` registers them with engine-measured scale.
 5. **Meshy** (paid plans only): `npm exec --yes --package=meshy-cli@0.4.0 -- meshy make "<prompt>" --dry-run`
    shows the cost first.
+
+## Publishing
+
+- GitHub Pages deploys on every push to `feature/vertical-slice` (`.github/workflows/pages.yml`:
+  unit tests, then `node tools/build-site.mjs`).
+- itch.io: `node tools/package-itch.mjs` writes `dist/tds-<version>-web.zip` (upload as an HTML5
+  game, "This file will be played in the browser").
 
 ## Tests and tools
 

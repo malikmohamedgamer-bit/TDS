@@ -3,6 +3,7 @@
 // Quests and Daily rewards. All state changes go through src/meta/meta.js and are saved immediately.
 // Look: docs/ui-style.md (war-table panels, faction dress, code-drawn SVG icons).
 import { filterHelp } from './helpSearch.js';
+import { VERSION } from '../version.js';
 import { cosmeticStatus, equipCosmetic } from '../meta/cosmetics.js';
 import { applyUiTheme } from './applyCosmetics.js';
 import { exportSave, importSave } from '../save/save.js';
@@ -390,7 +391,7 @@ export class Hub {
       <textarea name="savecode" rows="3" placeholder="Paste a save code here to import it" aria-label="Save code" spellcheck="false" data-testid="save-code"></textarea>
       <button class="btn" data-act="import-save" data-testid="import-save">Import save code</button></div>
       ${about.map((a) => `<details class="help-q about" data-testid="about-${a.id}"><summary>${esc(a.title)}</summary>${a.body.map((p) => `<p>${esc(p)}</p>`).join('')}</details>`).join('')}
-      <p class="note">TDS · content version ${esc(String(this.c.version || ''))}</p>`;
+      <p class="note" data-testid="version">TDS version ${VERSION} · content ${esc(String(this.c.version || ''))}</p>`;
   }
 
   // ------------------------------------------------------------------------- actions -------

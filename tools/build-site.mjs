@@ -2,12 +2,12 @@
 // hosting (GitHub Pages). No bundling: the game runs as plain ES modules with relative paths.
 import { cpSync, rmSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const out = join(root, process.argv[2] || '_site');
-const ENTRIES = ['index.html', 'viewer.html', 'manifest.webmanifest', 'sw.js', 'src', 'styles', 'data', 'vendor', 'assets/models', 'assets/icons'];
+const out = resolve(root, process.argv[2] || '_site');
+const ENTRIES = ['index.html', '404.html', 'viewer.html', 'manifest.webmanifest', 'sw.js', 'src', 'styles', 'data', 'vendor', 'assets/models', 'assets/icons'];
 
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
@@ -23,7 +23,7 @@ writeFileSync(join(out, '.nojekyll'), '');
 const files = readdirSync(out, { recursive: true, withFileTypes: true })
   .filter((d) => d.isFile())
   .map((d) => join(d.parentPath, d.name).slice(out.length + 1).replaceAll('\\', '/'))
-  .filter((f) => f !== 'sw.js' && f !== '.nojekyll' && f !== 'viewer.html')
+  .filter((f) => f !== 'sw.js' && f !== '.nojekyll' && f !== 'viewer.html' && f !== '404.html')
   .sort();
 const hash = createHash('sha256');
 for (const f of files) hash.update(f).update(readFileSync(join(out, f)));
