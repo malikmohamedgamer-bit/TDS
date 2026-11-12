@@ -2,6 +2,7 @@
 // match flow (loadout -> match -> results) on a fixed-timestep loop.
 import { mapTheme } from './ui/mapThumb.js';
 import { initPwa } from './pwa.js';
+import { QualityGovernor } from './ui/autoQuality.js';
 import { equippedCosmetic } from './meta/cosmetics.js';
 import { applyUiTheme } from './ui/applyCosmetics.js';
 import { loadContent, browserReadJson } from './core/content.js';
@@ -50,8 +51,13 @@ async function boot() {
   const settings = loadSettings(storage, {
     coarsePointer: matchMedia('(pointer: coarse)').matches,
     prefersReducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+    deviceMemory: navigator.deviceMemory,
+    cores: navigator.hardwareConcurrency,
   });
   if (params.get('quality')) settings.quality = params.get('quality');
+  // automatic step-down for slow devices; off in automated tests and when a quality is forced
+  let lastMatch = null;
+  const governor = settings.qualityAuto !== false && !params.get('quality') && !navigator.webdriver ? new QualityGovernor() : null;
 
   setLoading('Loading content…', 15);
   const content = await loadContent(browserReadJson('data/'));
@@ -235,6 +241,16 @@ async function boot() {
       stats.frames = 0;
       stats.acc = 0;
       hud.setFps(stats.fps, stats.frameMs, renderer.frameMs);
+      if (governor && ctrl?.match !== lastMatch) { lastMatch = ctrl?.match; governor.reset(); }
+      const playing = !!ctrl?.match && ctrl.ready && !ctrl.paused && !ctrl.hub?.el.open && !document.hidden;
+      const next = governor && settings.qualityAuto !== false ? governor.sample(stats.fps, playing, settings.quality) : null;
+      if (next) {
+        settings.quality = next;
+        persist();
+        renderer.applySettings();
+        ctrl?.view?.setQuality(renderer.q);
+        hud.toast(`Graphics lowered to ${next[0].toUpperCase()}${next.slice(1)} to keep the game smooth. Change it in Settings.`, 6000);
+      }
     }
   }
 

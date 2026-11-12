@@ -152,7 +152,9 @@ export class Hud {
   _readForm() {
     const f = this.form.elements;
     const s = this.settings;
-    s.quality = [...f.quality].find((r) => r.checked)?.value || s.quality;
+    const picked = [...f.quality].find((r) => r.checked)?.value || s.quality;
+    if (picked !== s.quality) s.qualityAuto = false; // the player chose: never change it for them
+    s.quality = picked;
     s.pixelation = Number(f.pixelation.value);
     for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) s[k] = f[k].checked;
     s.resolutionScale = Number(f.resolutionScale.value);

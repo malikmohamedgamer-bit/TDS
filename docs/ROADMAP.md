@@ -76,15 +76,15 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Milestone: full e2e + 30 min soak
 
 ## Chunk 7: performance and PWA (MUST)
-- [ ] Budgets reported (frame time, draw calls, triangles, memory, load size)
+- [x] Budgets reported in docs/PERF.md (draw calls, triangles, GPU objects, memory, load size; frame time needs a real GPU)
 - [ ] LOD, instancing, effect and shadow caps, compression only if it helps, atlasing, lazy loading
-- [ ] Low / Medium / High / Ultra presets change cost; auto-Low on weak devices
+- [x] Presets change cost (Low about half the calls of Medium+); weak devices start on Low; automatic step-down during play
 - [x] PWA: manifest, code-made icons, service worker (offline, cache per build, update notice). Not yet tested on the live URL or a phone
 
 ## Chunk 8: QA and safety (MUST)
 - [ ] Full e2e, soak on every map, fuzz tests (inputs, settings)
 - [x] Save safety: corrupt / old / hand-edited saves (fuzz test), migrations, export / import UI (Help tab), backup copy. Open: huge saves
-- [ ] Error boundaries per unit, memory leak checks (GPU, JS), client security review
+- [ ] Memory leak check done (tools/leak-check.mjs; leak fixed, BUGS 62). Open: error boundaries per unit, client security review
 - [ ] Milestone: full e2e + 30 min soak
 
 ## Chunk 9: online (COULD, only after 1-8 pass)
@@ -120,3 +120,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-12 | Chunk 3 (part) | Heroes tuned in 3 rounds (30 seeds), tools/sweep.mjs: 50 maps x 20 seeds, 3 outliers re-tuned. E2E 26/26 before the hero pass. First-run Easy default, tower stat tooltips |
 | 2026-11-12 | Chunk 2 templates | Diamond + crossover templates, 6 maps (cohort 2), 4-agent review found 6 bugs (BUGS 56-59), cloud glare in the overview fixed (BUGS 60). Unit 134 |
 | 2026-11-12 | Chunk 3 + 10 | Re-sweep after the ally fix: 56 maps, mean 66%, all in 50-80%. Launch prep (version, meta tags, 404, itch.io zip packager), weekly quests, contrast fix. Unit 136 |
+| 2026-11-12 | Chunk 7 + 8 | Perf budgets (docs/PERF.md), memory leak fixed (2,000 geometries per match), auto quality step-down, weak-device default. Unit 138 |

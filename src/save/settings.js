@@ -1,12 +1,14 @@
 // Player settings (device-local, separate from game progress so a cloud save never overrides
 // someone's graphics or accessibility choices).
 
+import { defaultQuality } from '../ui/autoQuality.js';
+
 const KEY = 'tds.settings.v1';
 
 export function defaultSettings(env = {}) {
-  const coarse = !!env.coarsePointer;
   return {
-    quality: coarse ? 'low' : 'medium',
+    quality: defaultQuality(env),
+    qualityAuto: true, // false once the player picks a quality: the game then never changes it
     pixelation: 1, // 1 = off, 2..4 = pixel size
     bloom: true,
     vignette: true,

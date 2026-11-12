@@ -103,6 +103,10 @@ method that got the project from 59% to 91% of the scoreboard in one session. Fo
 | Saves | `src/save/save.js` (`sanitize` must repair every new field; add it to the fuzz test) |
 | Offline / install | `sw.js` (stamped by `tools/build-site.mjs`), `src/pwa.js`, `manifest.webmanifest` |
 | Test hooks in the page | `window.TDS` (`save`, `match`, `ctrl`, `debug.fastForward`, `debug.setCash`, ...) |
+| Balance of every map | `node tools/sweep.mjs --seeds 20` -> docs/balance-sweep.json |
+| Performance per quality preset | `node tools/perf-report.mjs` -> docs/perf.json (software WebGL: compare presets, not fps) |
+| Memory leaks | `node tools/leak-check.mjs --cycles 5`: geometries must stay flat after the first match |
+| itch.io upload | `node tools/package-itch.mjs` -> dist/tds-<version>-web.zip |
 
 ## Adding common things
 
@@ -116,6 +120,8 @@ method that got the project from 59% to 91% of the scoreboard in one session. Fo
   3), otherwise the enemies of already balanced maps change. After `gen-maps.mjs`, check with
   `git status --short data/maps data/waves` that no existing map changed unless you meant it to.
 - **A save field:** default in `newSave`, repair in `sanitize`, and the fuzz test must still pass.
+- **Anything a match creates on the GPU** (meshes, geometry, materials) must be freed in
+  `MatchView.dispose` / `Effects.dispose`; run `tools/leak-check.mjs` after touching src/engine.
 - **A hub screen or section:** a `_name()` method returning markup, a `data-*` attribute handled in
   `onClick`, styles in `styles/hub.css` using the tokens in `styles/tokens.css`, touch targets 44 px.
 
