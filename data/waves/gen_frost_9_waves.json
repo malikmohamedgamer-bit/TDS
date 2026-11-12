@@ -1,0 +1,435 @@
+{
+ "$doc": "Generated from frostmere_campaign by src/core/mapGen.js (theme frost, 2 roads).",
+ "id": "gen_frost_9_waves",
+ "name": "Frostmere Campaign",
+ "startCash": 800,
+ "baseHp": 150,
+ "hpScalePerWave": 0.07,
+ "intermission": 6,
+ "firstWaveDelay": 12,
+ "maxDuration": 75,
+ "bonusBase": 130,
+ "bonusPerWave": 26,
+ "waves": [
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 6,
+     "interval": 1.4,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_009",
+     "count": 11,
+     "interval": 0.65,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_043",
+     "count": 2,
+     "interval": 2,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 12,
+     "interval": 0.9,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_043",
+     "count": 3,
+     "interval": 1.33,
+     "delay": 6,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_009",
+     "count": 15,
+     "interval": 0.53,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "ironshell",
+     "count": 2,
+     "interval": 3,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mite",
+     "count": 20,
+     "interval": 0.35,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_078",
+     "count": 3,
+     "interval": 2,
+     "delay": 4,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_068",
+     "count": 4,
+     "interval": 1.6,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "husk",
+     "count": 10,
+     "interval": 0.8,
+     "delay": 3,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mossback",
+     "count": 2,
+     "interval": 5,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_043",
+     "count": 6,
+     "interval": 1,
+     "delay": 5,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_031",
+     "count": 10,
+     "interval": 1,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mender",
+     "count": 2,
+     "interval": 4,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_009",
+     "count": 19,
+     "interval": 0.42,
+     "delay": 2,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_077",
+     "count": 10,
+     "interval": 1.2,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "gloomwing",
+     "count": 6,
+     "interval": 1.2,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "boss": true,
+   "groups": [
+    {
+     "enemy": "boss_mech_15",
+     "count": 1,
+     "hpMul": 0.349,
+     "leak": 60,
+     "path": 0
+    },
+    {
+     "enemy": "mech_009",
+     "count": 23,
+     "interval": 0.63,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_033",
+     "count": 8,
+     "interval": 1.5,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_043",
+     "count": 7,
+     "interval": 0.86,
+     "delay": 2,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "caller",
+     "count": 2,
+     "interval": 6,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "husk",
+     "count": 16,
+     "interval": 0.6,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_068",
+     "count": 7,
+     "interval": 1.37,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "ufo_a_frost",
+     "count": 6,
+     "interval": 1.1,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_031",
+     "count": 20,
+     "interval": 0.72,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_049",
+     "count": 8,
+     "interval": 1.5,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_032",
+     "count": 7,
+     "interval": 1.71,
+     "delay": 3,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mite",
+     "count": 40,
+     "interval": 0.2,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_077",
+     "count": 13,
+     "interval": 0.92,
+     "delay": 5,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_068",
+     "count": 9,
+     "interval": 1.11,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_033",
+     "count": 10,
+     "interval": 1.25,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_078",
+     "count": 8,
+     "interval": 1.2,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mossback",
+     "count": 4,
+     "interval": 3.5,
+     "delay": 5,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "caller",
+     "count": 4,
+     "interval": 5,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_031",
+     "count": 25,
+     "interval": 0.6,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mender",
+     "count": 4,
+     "interval": 3,
+     "delay": 6,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_009",
+     "count": 42,
+     "interval": 0.21,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "skitter",
+     "count": 16,
+     "interval": 0.5,
+     "delay": 3,
+     "path": 1,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mech_031",
+     "count": 15,
+     "interval": 0.8,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "bulwark",
+     "count": 6,
+     "interval": 2,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  },
+  {
+   "boss": true,
+   "groups": [
+    {
+     "enemy": "boss_mech_19",
+     "count": 1,
+     "hpMul": 0.601,
+     "path": 0
+    },
+    {
+     "enemy": "bulwark",
+     "count": 4,
+     "interval": 3,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.351
+    },
+    {
+     "enemy": "mender",
+     "count": 2,
+     "interval": 5,
+     "delay": 8,
+     "path": 1,
+     "hpMul": 1.351
+    }
+   ]
+  }
+ ]
+}

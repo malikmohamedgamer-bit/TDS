@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { content } from '../helpers.js';
-import { generateMap, generateRoads, validateRoads, FRAME } from '../../src/core/mapGen.js';
+import { generateMap, generateRoads, validateRoads, FRAME, TEMPLATE_ROADS } from '../../src/core/mapGen.js';
 import { buildMapWorld } from '../../src/core/mapLayout.js';
 import { soakMap } from '../../src/core/soak.js';
 import { Rng } from '../../src/core/rng.js';
@@ -21,13 +21,13 @@ test('mapGen: same seed gives the same map and waves; another seed gives another
 });
 
 test('mapGen: every template makes valid road networks over many seeds (frame, spacing, keep)', () => {
-  for (const template of ['serpentine', 'fork', 'trident']) {
+  for (const template of ['serpentine', 'fork', 'trident', 'diamond', 'crossover']) {
     let ok = 0;
     for (let s = 0; s < 40; s++) {
       const rng = new Rng(`roads-${template}-${s}`);
-      const { paths, zKeep } = generateRoads(rng, template);
-      assert.equal(paths.length, { serpentine: 1, fork: 2, trident: 3 }[template]);
-      if (!validateRoads(paths, zKeep).length) ok++;
+      const { paths, zKeep, crossings } = generateRoads(rng, template);
+      assert.equal(paths.length, TEMPLATE_ROADS[template]);
+      if (!validateRoads(paths, zKeep, { crossings: crossings || 0 }).length) ok++;
     }
     // the generator re-rolls invalid layouts; most first rolls must already be valid
     assert.ok(ok >= 20, `${template}: only ${ok}/40 first rolls valid`);
@@ -49,7 +49,7 @@ test('generated maps in data/: valid roads, music key, unlock level in range, wa
   const maxLevel = C.meta.player.maxLevel;
   const music = JSON.parse(readFileSync('data/music.json', 'utf8'));
   for (const m of gen) {
-    assert.deepEqual(validateRoads(m.paths, m.base.z), [], m.id);
+    assert.deepEqual(validateRoads(m.paths, m.base.z, { crossings: m.generated?.crossings || 0 }), [], m.id);
     assert.ok(m.unlockLevel >= 1 && m.unlockLevel <= maxLevel, `${m.id} unlock ${m.unlockLevel}`);
     assert.ok(music.keys[m.id], `${m.id}: no music key`);
     assert.equal(m.scatterGap, 1.3);
@@ -64,4 +64,24 @@ test('a generated map: the hero walks it for 2 simulated minutes without rescues
   assert.equal(r.rescues, 0);
   assert.deepEqual(r.failures, []);
   assert.ok(r.distance > 100);
+});
+
+test('new templates: a diamond splits from one portal and rejoins; a crossover crosses itself exactly once', () => {
+  const C2 = generateRoads(new Rng('cross-1'), 'crossover');
+  assert.equal(C2.crossings, 1);
+  assert.ok(validateRoads(C2.paths, C2.zKeep).some((p) => /apart/.test(p)), 'without the allowance the crossing is an error');
+  const D = generateRoads(new Rng('dia-1'), 'diamond');
+  assert.deepEqual(D.starts.length, 1, 'one portal');
+  const [n, so] = D.paths.map((p) => p.points);
+  assert.deepEqual(n[0], so[0], 'same start');
+  assert.deepEqual(n.at(-1), so.at(-1), 'same end');
+  assert.ok(n.some(([, z]) => z >= 13) && so.some(([, z]) => z <= -13), 'lanes go north and south');
+  // a full map builds, has one portal per distinct start, and a hero soak finds no stuck spots
+  for (const template of ['diamond', 'crossover']) {
+    const m = generateMap({ id: `t_${template}`, name: 'T', seed: `${template}-full`, template, theme: theme('verdant'), unlockLevel: 1 });
+    assert.equal(m.map.paths.length, TEMPLATE_ROADS[template]);
+    assert.equal(m.map.props.filter((p) => p.kind === 'enemy_portal').length, 1);
+    const r = soakMap(buildMapWorld(m.map, C.props), { seconds: 60, seed: template });
+    assert.deepEqual([r.rescues, r.failures], [0, []], `${template}: soak`);
+  }
 });

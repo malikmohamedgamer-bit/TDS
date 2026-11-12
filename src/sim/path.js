@@ -28,6 +28,17 @@ export class Path {
     return this.segs[lo];
   }
 
+  /** Distance along this path of a point that lies on it (within eps metres), or -1. Used where two
+   *  roads share a stretch (fork trunks, diamond lanes): a point on the shared part has a d on both. */
+  dAt(x, z, eps = 0.05) {
+    for (const g of this.segs) {
+      const t = (x - g.ax) * g.dx + (z - g.az) * g.dz;
+      if (t < -eps || t > g.len + eps) continue;
+      if (Math.abs((x - g.ax) * g.dz - (z - g.az) * g.dx) <= eps) return g.start + Math.max(0, Math.min(g.len, t));
+    }
+    return -1;
+  }
+
   /** Position and heading at distance d (clamped to the path). */
   pointAt(d, out = {}) {
     const dd = d < 0 ? 0 : d > this.length ? this.length : d;

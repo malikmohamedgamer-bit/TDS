@@ -571,7 +571,9 @@ export class Match {
       e.blocked = false;
       if (!e.flying) {
         for (const a of this.allies) {
-          if (!a.dead && a.path === e.path && Math.abs(a.d - e.d) < 1.1 + (def.size || 1) * 0.4) {
+          if (a.dead) continue;
+          const ad = this._allyDOn(a, e.path);
+          if (ad >= 0 && Math.abs(ad - e.d) < 1.1 + (def.size || 1) * 0.4) {
             e.blocked = true;
             if (!stunned) {
               a.hp -= (def.melee ?? (e.boss ? 60 : MELEE_DEFAULT)) * dt;
@@ -701,14 +703,26 @@ export class Match {
     a.y = this.mw.terrain.height(p.x, p.z);
   }
 
+  /** Where ally `a` stands on path p: its own d, its d on a stretch p shares with its lane (fork
+   *  trunks, diamond lanes), or -1 when it is not on p. Cached per tick. */
+  _allyDOn(a, p) {
+    if (a.path === p) return a.d;
+    if (a.onTick !== this.tick) { a.onTick = this.tick; a.onPath = new Map(); }
+    let d = a.onPath.get(p);
+    if (d === undefined) { d = p.dAt(a.x, a.z); a.onPath.set(p, d); }
+    return d;
+  }
+
   _updateAllies(dt) {
     for (const a of this.allies) {
       if (a.dead) continue;
       let target = null;
       let best = Infinity;
       for (const e of this.enemies) {
-        if (!e.alive || e.flying || e.path !== a.path) continue;
-        const gap = Math.abs(e.d - a.d);
+        if (!e.alive || e.flying) continue;
+        const ad = this._allyDOn(a, e.path);
+        if (ad < 0) continue;
+        const gap = Math.abs(e.d - ad);
         if (gap < best && gap <= a.range + 0.6) { best = gap; target = e; }
       }
       a.fighting = !!target;
@@ -954,7 +968,10 @@ export class Match {
         break;
       }
       case 'portal': { // minions from the start of every other road (own road on one-road maps)
-        const roads = this.paths.length > 1 ? this.paths.map((_, i) => i).filter((i) => i !== pathIdx) : [pathIdx];
+        // roads that start somewhere else (diamond lanes share one portal: that counts as its own)
+        const own = this.paths[pathIdx].pointAt(0);
+        const other = this.paths.map((_, i) => i).filter((i) => { const q = this.paths[i].pointAt(0); return i !== pathIdx && Math.hypot(q.x - own.x, q.z - own.z) > 1; });
+        const roads = other.length ? other : [pathIdx];
         for (const r of roads) {
           for (let i = 0; i < a.count; i++) this.spawnEnemy(a.into, { pathIdx: r, d: i * 0.8, wave: e.wave, parent: e.id });
           const p = this.paths[r].pointAt(0);

@@ -91,7 +91,13 @@
     "waves/gen_starfall_7_waves.json",
     "waves/gen_verdant_8_waves.json",
     "waves/gen_frost_8_waves.json",
-    "waves/gen_ember_8_waves.json"
+    "waves/gen_ember_8_waves.json",
+    "waves/gen_verdant_9_waves.json",
+    "waves/gen_ember_9_waves.json",
+    "waves/gen_frost_9_waves.json",
+    "waves/gen_toxic_8_waves.json",
+    "waves/gen_dunes_8_waves.json",
+    "waves/gen_starfall_8_waves.json"
   ],
   "maps": [
     "maps/riftline.json",
@@ -143,6 +149,12 @@
     "maps/gen_starfall_7.json",
     "maps/gen_verdant_8.json",
     "maps/gen_frost_8.json",
-    "maps/gen_ember_8.json"
+    "maps/gen_ember_8.json",
+    "maps/gen_verdant_9.json",
+    "maps/gen_ember_9.json",
+    "maps/gen_frost_9.json",
+    "maps/gen_toxic_8.json",
+    "maps/gen_dunes_8.json",
+    "maps/gen_starfall_8.json"
   ]
 }

@@ -324,3 +324,23 @@ test('battle report shape from a hand-made match state', async () => {
   assert.equal(rep.rows[1].perCash, 2);
   assert.deepEqual(battleReport({ towers: [], stats: {} }).rows, []);
 });
+
+test('allies block and fight enemies of another lane on a shared stretch; boss portals skip a shared start', async () => {
+  const { content: load } = await import('../helpers.js');
+  const { buildMapWorld: bmw } = await import('../../src/core/mapLayout.js');
+  const { Match: M } = await import('../../src/sim/match.js');
+  const C2 = await load();
+  const map = C2.maps.get('gen_verdant_9');
+  assert.equal(map.generated.template, 'diamond');
+  const m = new M({ content: C2, mapWorld: bmw(map, C2.props), seed: 'lanes', difficulty: 'easy' });
+  const [N, S] = m.paths;
+  // a point on the shared keep stretch, 12 m before the end of the north lane
+  const p = N.pointAt(N.length - 12, {});
+  assert.ok(S.dAt(p.x, p.z) >= 0, 'the keep stretch is shared');
+  m._abilityAllies({ unit: { id: 'u', hp: 1e6, damage: 0, rate: 1, speed: 0, range: 1 }, count: 1 }, p.x, p.z);
+  const e1 = m.spawnEnemy('husk', { pathIdx: 0, d: N.length - 15 });
+  const e2 = m.spawnEnemy('husk', { pathIdx: 1, d: S.length - 15 });
+  for (let i = 0; i < 180; i++) m.step();
+  assert.ok(e1.blocked && e2.blocked, 'both lanes are held');
+  assert.equal(S.dAt(1000, 1000), -1);
+});

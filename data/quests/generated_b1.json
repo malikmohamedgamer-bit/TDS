@@ -490,8 +490,8 @@
   },
   {
    "id": "s_map_gen_verdant_6",
-   "name": "Liberate Willow Crossing",
-   "desc": "Win a Campaign match on Willow Crossing",
+   "name": "Liberate Russet Thicket",
+   "desc": "Win a Campaign match on Russet Thicket",
    "mapWon": "gen_verdant_6",
    "reward": {
     "sigils": 280,
@@ -500,8 +500,8 @@
   },
   {
    "id": "s_map_gen_frost_6",
-   "name": "Liberate Winter Gate",
-   "desc": "Win a Campaign match on Winter Gate",
+   "name": "Liberate Pale Tundra",
+   "desc": "Win a Campaign match on Pale Tundra",
    "mapWon": "gen_frost_6",
    "reward": {
     "sigils": 290,
@@ -520,8 +520,8 @@
   },
   {
    "id": "s_map_gen_ember_6",
-   "name": "Liberate Ashen Furnace",
-   "desc": "Win a Campaign match on Ashen Furnace",
+   "name": "Liberate Caldera Shelf",
+   "desc": "Win a Campaign match on Caldera Shelf",
    "mapWon": "gen_ember_6",
    "reward": {
     "sigils": 300,
@@ -540,8 +540,8 @@
   },
   {
    "id": "s_map_gen_toxic_6",
-   "name": "Liberate Mire Sink",
-   "desc": "Win a Campaign match on Mire Sink",
+   "name": "Liberate Crimson Fen",
+   "desc": "Win a Campaign match on Crimson Fen",
    "mapWon": "gen_toxic_6",
    "reward": {
     "sigils": 310,
@@ -550,8 +550,8 @@
   },
   {
    "id": "s_map_gen_dunes_6",
-   "name": "Liberate Sunscorch Line",
-   "desc": "Win a Campaign match on Sunscorch Line",
+   "name": "Liberate Mesa Gulch",
+   "desc": "Win a Campaign match on Mesa Gulch",
    "mapWon": "gen_dunes_6",
    "reward": {
     "sigils": 320,
@@ -570,8 +570,8 @@
   },
   {
    "id": "s_map_gen_starfall_6",
-   "name": "Liberate Rune Sanctum",
-   "desc": "Win a Campaign match on Rune Sanctum",
+   "name": "Liberate Eclipse Expanse",
+   "desc": "Win a Campaign match on Eclipse Expanse",
    "mapWon": "gen_starfall_6",
    "reward": {
     "sigils": 330,
@@ -580,8 +580,8 @@
   },
   {
    "id": "s_map_gen_verdant_7",
-   "name": "Liberate Bramble Fields",
-   "desc": "Win a Campaign match on Bramble Fields",
+   "name": "Liberate Maple Orchard",
+   "desc": "Win a Campaign match on Maple Orchard",
    "mapWon": "gen_verdant_7",
    "reward": {
     "sigils": 340,
@@ -590,8 +590,8 @@
   },
   {
    "id": "s_map_gen_frost_7",
-   "name": "Liberate Frost Pass",
-   "desc": "Win a Campaign match on Frost Pass",
+   "name": "Liberate Polar Shelf",
+   "desc": "Win a Campaign match on Polar Shelf",
    "mapWon": "gen_frost_7",
    "reward": {
     "sigils": 350,
@@ -600,8 +600,8 @@
   },
   {
    "id": "s_map_gen_ember_7",
-   "name": "Liberate Ember Flats",
-   "desc": "Win a Campaign match on Ember Flats",
+   "name": "Liberate Obsidian Vents",
+   "desc": "Win a Campaign match on Obsidian Vents",
    "mapWon": "gen_ember_7",
    "reward": {
     "sigils": 360,
@@ -610,8 +610,8 @@
   },
   {
    "id": "s_map_gen_toxic_7",
-   "name": "Liberate Bog Wallow",
-   "desc": "Win a Campaign match on Bog Wallow",
+   "name": "Liberate Bloodroot Slough",
+   "desc": "Win a Campaign match on Bloodroot Slough",
    "mapWon": "gen_toxic_7",
    "reward": {
     "sigils": 360,
@@ -620,8 +620,8 @@
   },
   {
    "id": "s_map_gen_dunes_7",
-   "name": "Liberate Sandstone Outpost",
-   "desc": "Win a Campaign match on Sandstone Outpost",
+   "name": "Liberate Copper Gorge",
+   "desc": "Win a Campaign match on Copper Gorge",
    "mapWon": "gen_dunes_7",
    "reward": {
     "sigils": 360,
@@ -630,8 +630,8 @@
   },
   {
    "id": "s_map_gen_starfall_7",
-   "name": "Liberate Aether Sanctum",
-   "desc": "Win a Campaign match on Aether Sanctum",
+   "name": "Liberate Umbral Expanse",
+   "desc": "Win a Campaign match on Umbral Expanse",
    "mapWon": "gen_starfall_7",
    "reward": {
     "sigils": 360,
@@ -640,8 +640,8 @@
   },
   {
    "id": "s_map_gen_verdant_8",
-   "name": "Liberate Meadow Vale",
-   "desc": "Win a Campaign match on Meadow Vale",
+   "name": "Liberate Harvest Grove",
+   "desc": "Win a Campaign match on Harvest Grove",
    "mapWon": "gen_verdant_8",
    "reward": {
     "sigils": 360,
@@ -650,8 +650,8 @@
   },
   {
    "id": "s_map_gen_frost_8",
-   "name": "Liberate Rime Fjord",
-   "desc": "Win a Campaign match on Rime Fjord",
+   "name": "Liberate Boreal Floe",
+   "desc": "Win a Campaign match on Boreal Floe",
    "mapWon": "gen_frost_8",
    "reward": {
     "sigils": 360,
@@ -660,9 +660,69 @@
   },
   {
    "id": "s_map_gen_ember_8",
-   "name": "Liberate Cinder Flats",
-   "desc": "Win a Campaign match on Cinder Flats",
+   "name": "Liberate Ash Vents",
+   "desc": "Win a Campaign match on Ash Vents",
    "mapWon": "gen_ember_8",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_verdant_9",
+   "name": "Liberate Willow Crossing",
+   "desc": "Win a Campaign match on Willow Crossing",
+   "mapWon": "gen_verdant_9",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_ember_9",
+   "name": "Liberate Brimstone Flats",
+   "desc": "Win a Campaign match on Brimstone Flats",
+   "mapWon": "gen_ember_9",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_frost_9",
+   "name": "Liberate Frost Reach",
+   "desc": "Win a Campaign match on Frost Reach",
+   "mapWon": "gen_frost_9",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_toxic_8",
+   "name": "Liberate Gloam Mere",
+   "desc": "Win a Campaign match on Gloam Mere",
+   "mapWon": "gen_toxic_8",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_dunes_8",
+   "name": "Liberate Redrock Bluff",
+   "desc": "Win a Campaign match on Redrock Bluff",
+   "mapWon": "gen_dunes_8",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_starfall_8",
+   "name": "Liberate Abyssal Breach",
+   "desc": "Win a Campaign match on Abyssal Breach",
+   "mapWon": "gen_starfall_8",
    "reward": {
     "sigils": 360,
     "crowns": 900
@@ -1761,10 +1821,10 @@
    }
   },
   {
-   "id": "a_maps_50",
+   "id": "a_maps_56",
    "name": "The whole valley",
-   "desc": "Liberate 50 maps (Campaign wins)",
-   "mapsWon": 50,
+   "desc": "Liberate 56 maps (Campaign wins)",
+   "mapsWon": 56,
    "reward": {
     "sigils": 790,
     "crowns": 2500

@@ -1,0 +1,438 @@
+{
+ "id": "gen_ember_9",
+ "name": "Brimstone Flats",
+ "description": "Burning waste: 1 road.",
+ "seed": "em9c",
+ "scatterGap": 1.3,
+ "waves": "gen_ember_9_waves",
+ "unlockLevel": 38,
+ "theme": "ember",
+ "generated": {
+  "template": "crossover",
+  "seed": "em9c",
+  "theme": "ember",
+  "crossings": 1
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#5A3A4A",
+  "horizon": "#E8A070",
+  "fog": "#C88A6A",
+  "fogNear": 60,
+  "fogFar": 170
+ },
+ "sun": {
+  "azimuth": 250,
+  "elevation": 30,
+  "color": "#FFC890",
+  "intensity": 2.4
+ },
+ "ground": {
+  "grass": [
+   "#7A6A4A",
+   "#6B5A3E",
+   "#8A7A55",
+   "#5A4A34"
+  ],
+  "path": [
+   "#4A3A32",
+   "#3D2F29",
+   "#5A463B",
+   "#2F2420"
+  ],
+  "rim": [
+   "#5A4A44",
+   "#3D3436"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 9,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 0,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 16.5,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": -39,
+    "z": -34.5,
+    "r": 5,
+    "h": 2.8
+   },
+   {
+    "x": -33.5,
+    "z": -35.5,
+    "r": 5,
+    "h": 2.4
+   },
+   {
+    "x": -38.5,
+    "z": -12,
+    "r": 8,
+    "h": 1.2
+   },
+   {
+    "x": -38.5,
+    "z": -4.5,
+    "r": 7.5,
+    "h": 2.5
+   },
+   {
+    "x": -42,
+    "z": -3.5,
+    "r": 6.5,
+    "h": 1.6
+   },
+   {
+    "x": -35,
+    "z": -25.5,
+    "r": 6,
+    "h": 1.5
+   },
+   {
+    "x": -47,
+    "z": -28,
+    "r": 8,
+    "h": 2.7
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "main",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     16.5
+    ],
+    [
+     -39,
+     16.5
+    ],
+    [
+     -39,
+     30
+    ],
+    [
+     -25,
+     30
+    ],
+    [
+     -25,
+     16
+    ],
+    [
+     -11.5,
+     16
+    ],
+    [
+     -11.5,
+     28.5
+    ],
+    [
+     3,
+     28.5
+    ],
+    [
+     3,
+     17
+    ],
+    [
+     20.5,
+     17
+    ],
+    [
+     20.5,
+     29.5
+    ],
+    [
+     37,
+     29.5
+    ],
+    [
+     37,
+     -24.5
+    ],
+    [
+     -24,
+     -24.5
+    ],
+    [
+     -24,
+     0
+    ],
+    [
+     45,
+     0
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 0
+ },
+ "playerSpawn": {
+  "x": 29,
+  "z": 7.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 16.5,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 0,
+   "rot": 0
+  },
+  {
+   "kind": "tank_wreck",
+   "x": 21,
+   "z": 8.5,
+   "rot": 2.74
+  },
+  {
+   "kind": "tank_wreck",
+   "x": -5.5,
+   "z": 10.5,
+   "rot": 3.67
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": -0.5,
+   "z": -10,
+   "rot": 1.81
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": -42.5,
+   "z": -15,
+   "rot": 0.05
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": -36.5,
+   "z": -29.5,
+   "rot": 3.27
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 6.5,
+   "z": 7.5,
+   "rot": 2.03
+  },
+  {
+   "kind": "barbed_fence",
+   "x": -35,
+   "z": 4.5,
+   "rot": 2.13
+  },
+  {
+   "kind": "barbed_fence",
+   "x": -38,
+   "z": -5,
+   "rot": 6.12
+  },
+  {
+   "kind": "barbed_fence",
+   "x": 14,
+   "z": -13,
+   "rot": 3.29
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": 20,
+   "z": -12.5,
+   "rot": 3.61
+  },
+  {
+   "kind": "sandbag_wall",
+   "x": -36,
+   "z": -10.5,
+   "rot": 5.59
+  },
+  {
+   "kind": "barrel",
+   "x": 29,
+   "z": 18,
+   "rot": 3.21
+  },
+  {
+   "kind": "barrel",
+   "x": 1.5,
+   "z": 10,
+   "rot": 1.46
+  },
+  {
+   "kind": "barrel",
+   "x": -7,
+   "z": -14,
+   "rot": 5.4
+  },
+  {
+   "kind": "barrel",
+   "x": 8,
+   "z": -12.5,
+   "rot": 3.94
+  },
+  {
+   "kind": "crate_stack",
+   "x": -8,
+   "z": -9.5,
+   "rot": 1.99
+  },
+  {
+   "kind": "lamp_post",
+   "x": -1,
+   "z": 25,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -19.5,
+   "z": -5.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 33,
+   "z": -7.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 41,
+   "z": 25,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -6,
+   "z": 24.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 27.5,
+   "z": 25,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -43.5,
+   "z": 23,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 41.5,
+   "z": -13.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -15,
+   "z": 27.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -19,
+   "z": 4,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "rock",
+   "count": 34,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 3.5
+  },
+  {
+   "kind": "rock_small",
+   "count": 40,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  },
+  {
+   "kind": "tree_pine",
+   "count": 18,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 3,
+   "scale": [
+    0.7,
+    1.1
+   ]
+  },
+  {
+   "kind": "crystal_cluster",
+   "count": 8,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 16,
+   "minPathDist": 5,
+   "spacing": 5
+  },
+  {
+   "kind": "mushroom_glow",
+   "count": 10,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 1.6
+  }
+ ]
+}

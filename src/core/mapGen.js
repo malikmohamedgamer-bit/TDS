@@ -4,6 +4,11 @@
 //   serpentine: 1 road winding through the whole valley
 //   fork:       2 portals (north / south halves), each road winds in its half and merges into one trunk
 //   trident:    3 portals; the straight middle road is the trunk, north and south roads wind and merge into it
+//   diamond:    1 portal; the road splits into a north and a south lane that wind apart and rejoin
+//               near the keep (2 paths sharing the first and the last stretch: groups alternate lanes)
+//   crossover:  1 road that winds along the north, runs down the east side past the keep row, back
+//               west along the south, then up and east to the keep, crossing its own east column once
+//               (towers at the crossing reach enemies twice)
 // Every road includes every merge point on the shared trunk, so shared stretches are identical
 // segments (the sim treats each road separately; the bot counts shared road twice, as it should).
 import { Rng } from './rng.js';
@@ -40,8 +45,59 @@ function serpentine(rng, { zStart, band: [lo, hi], xTo }) {
   return { pts, zLast: z };
 }
 
-/** Road polylines for a template. Returns {paths:[{id,width,points}], zKeep, starts:[z]}. */
+/** Winding run from (x0, z0): columns 13-18 m apart, alternating far / near side of the band. */
+function wind(rng, { x0, z0, band: [lo, hi], xTo, upFirst }) {
+  const pts = [[x0, z0]];
+  let x = x0;
+  let z = z0;
+  let up = upFirst;
+  const span = hi - lo;
+  while (x < xTo - 13) {
+    pts.push([x, z]);
+    let nz = up ? rng.range(hi - Math.min(5, span * 0.25), hi) : rng.range(lo, lo + Math.min(5, span * 0.25));
+    if (Math.abs(nz - z) < FRAME.minSep) nz = Math.abs(hi - z) > Math.abs(lo - z) ? hi : lo;
+    z = r05(nz);
+    pts.push([x, z]);
+    up = !up;
+    x = r05(x + rng.range(13, 18));
+  }
+  return { pts, zLast: z };
+}
+
+/** Templates beyond the band grammar: diamond (split and rejoin) and crossover (one self-crossing). */
+const SPECIAL = {
+  diamond(rng) {
+    const zKeep = r05(rng.range(-2, 2));
+    const zStart = r05(rng.range(-4, 4));
+    const xs = r05(rng.range(-42, -36));
+    const xm = r05(rng.range(18, 26));
+    const lane = (band, upFirst) => {
+      const w = wind(rng, { x0: xs, z0: zStart, band, xTo: xm, upFirst });
+      return dedupe([[FRAME.xIn, zStart], ...w.pts, [xm, w.zLast], [xm, zKeep], [FRAME.xEnd, zKeep]]);
+    };
+    const north = lane([13, 30], true);
+    const south = lane([-30, -13], false);
+    return { paths: [{ id: 'north', width: 5, points: north }, { id: 'south', width: 5, points: south }], zKeep, starts: [zStart] };
+  },
+  crossover(rng) {
+    const zKeep = r05(rng.range(-3, 3));
+    // enter at the low edge of the north band so the first turn up can travel minSep
+    const zA = r05(rng.range(15, 17));
+    const xR = r05(rng.range(33, 37));
+    const zB = r05(rng.range(-28, -24));
+    const xW = r05(rng.range(-30, -20));
+    const w = wind(rng, { x0: r05(rng.range(-42, -36)), z0: zA, band: [15, 30], xTo: xR, upFirst: true });
+    const pts = dedupe([[FRAME.xIn, zA], ...w.pts, [xR, w.zLast], [xR, zB], [xW, zB], [xW, zKeep], [FRAME.xEnd, zKeep]]);
+    return { paths: [{ id: 'main', width: 5, points: pts }], zKeep, starts: [zA], crossings: 1 };
+  },
+};
+
+/** Road counts per template (the wave table to vary depends on it). */
+export const TEMPLATE_ROADS = { serpentine: 1, fork: 2, trident: 3, diamond: 2, crossover: 1 };
+
+/** Road polylines for a template. Returns {paths:[{id,width,points}], zKeep, starts:[z], crossings?}. */
 export function generateRoads(rng, template) {
+  if (SPECIAL[template]) return SPECIAL[template](rng);
   const bands = BANDS[template];
   if (!bands) throw new Error(`unknown map template "${template}"`);
   const n = bands.length;
@@ -122,7 +178,8 @@ function segDist(a, b, c, d) {
  * road segments that do not touch stay at least FRAME.minSep apart (room for towers, no overlaps).
  * Returns a list of problems (empty = fine).
  */
-export function validateRoads(paths, zKeep) {
+export function validateRoads(paths, zKeep, { crossings = 0 } = {}) {
+  let crossed = 0;
   const problems = [];
   const key = (s) => s.map((p) => p.join(',')).sort().join('|');
   const segs = new Map();
@@ -146,9 +203,13 @@ export function validateRoads(paths, zKeep) {
     for (let j = i + 1; j < list.length; j++) {
       if (touches(list[i], list[j])) continue;
       const d = segDist(list[i][0], list[i][1], list[j][0], list[j][1]);
+      // a planned crossover: one vertical and one horizontal segment that cross at a right angle
+      const perp = (list[i][0][0] === list[i][1][0]) !== (list[j][0][0] === list[j][1][0]);
+      if (d < 1e-6 && perp && crossed < crossings) { crossed++; continue; }
       if (d < FRAME.minSep) problems.push(`segments ${JSON.stringify(list[i])} and ${JSON.stringify(list[j])} only ${d.toFixed(1)} m apart`);
     }
   }
+  if (crossed < crossings) problems.push(`expected ${crossings} crossing(s), found ${crossed}`);
   return problems;
 }
 
@@ -182,7 +243,7 @@ export function generateMap(opts) {
   // opts.roads: hand-authored roads {paths, zKeep} (flagship maps); otherwise generated
   for (let attempt = 0; attempt < 40; attempt++) {
     roads = opts.roads ? { ...opts.roads, starts: opts.roads.paths.map((pa) => pa.points[0][1]) } : generateRoads(rng.fork(`roads${attempt}`), template);
-    problems = validateRoads(roads.paths, roads.zKeep);
+    problems = validateRoads(roads.paths, roads.zKeep, { crossings: roads.crossings || 0 });
     if (!problems.length) break;
   }
   if (problems.length) throw new Error(`map ${id}: no valid layout: ${problems[0]}`);
@@ -246,7 +307,7 @@ export function generateMap(opts) {
     unlockLevel: opts.unlockLevel,
     theme: theme.id,
     ...(opts.timeOfDay ? { timeOfDay: opts.timeOfDay } : {}), // visual only (src/engine/mapView.js TIME_OF_DAY)
-    generated: { template: opts.roads ? 'hand' : template, seed: `${seed}`, theme: theme.id },
+    generated: { template: opts.roads ? 'hand' : template, seed: `${seed}`, theme: theme.id, ...(roads.crossings ? { crossings: roads.crossings } : {}) },
     size: { w: FRAME.w, d: FRAME.d },
     sky: theme.sky,
     sun: theme.sun,

@@ -318,6 +318,8 @@ export class MapView {
           const off = p.half + rng.range(-0.1, 0.5);
           const x = a.x + (c.x - a.x) * t + nx * off * side;
           const z = a.z + (c.z - a.z) * t + nz * off * side;
+          // not on another road's surface (junctions, crossings)
+          if (terrain.pathInfo(x, z).d < p.half - 0.05) continue;
           list.push({ x, y: terrain.height(x, z), z, rot: rng.range(0, 6.28), scale: rng.range(0.6, 1.5), tint: rng.range(0.85, 1.05) });
         }
       }
@@ -345,7 +347,9 @@ export class MapView {
     this._updateClouds(0);
   }
 
-  _updateClouds(dt) {
+  /** Clouds drift east. When the camera is up at cloud height (top-down overview), a cloud over the
+   *  play area would sit between the camera and the battlefield, so those shrink away smoothly. */
+  _updateClouds(dt, cameraPos = null) {
     const m = new THREE.Matrix4();
     const q = new THREE.Quaternion();
     const up = new THREE.Vector3(0, 1, 0);
@@ -356,7 +360,10 @@ export class MapView {
       if (c.x > 240) c.x = -240;
       p.set(c.x, c.y, c.z);
       q.setFromAxisAngle(up, c.rot);
-      s.setScalar(c.scale);
+      const overField = Math.abs(c.x) < 75 + 8 * c.scale && Math.abs(c.z) < 60 + 8 * c.scale;
+      const hide = overField && cameraPos && cameraPos.y > c.y - 8 ? 0 : 1;
+      c.k = c.k === undefined ? hide : c.k + (hide - c.k) * Math.min(1, dt * 4);
+      s.setScalar(c.scale * Math.max(0.001, c.k));
       m.compose(p, q, s);
       this.clouds.setMatrixAt(i, m);
     });
@@ -446,7 +453,7 @@ export class MapView {
   update(dt, cameraPos) {
     this.time += dt;
     if (this.swirlUniforms && !this.settings.reducedMotion) this.swirlUniforms.uTime.value = this.time;
-    if (this.clouds) this._updateClouds(dt);
+    if (this.clouds) this._updateClouds(dt, cameraPos);
     const calm = this.settings.reducedMotion;
     if (this.sky) this.sky.material.uniforms.time.value = calm ? 0 : this.time;
     if (this.grassUniforms) this.grassUniforms.uTime.value = calm ? 0 : this.time;

@@ -242,6 +242,30 @@
     "gen_ember_8": {
       "root": 45,
       "scale": "phrygian"
+    },
+    "gen_verdant_9": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_ember_9": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_frost_9": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_toxic_8": {
+      "root": 48,
+      "scale": "phrygian"
+    },
+    "gen_dunes_8": {
+      "root": 52,
+      "scale": "phrygian"
+    },
+    "gen_starfall_8": {
+      "root": 49,
+      "scale": "lydian"
     }
   },
   "moods": {

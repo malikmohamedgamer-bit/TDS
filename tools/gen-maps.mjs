@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { loadContent, validateContent } from '../src/core/content.js';
 import { buildMapWorld } from '../src/core/mapLayout.js';
-import { generateMap, validateRoads } from '../src/core/mapGen.js';
+import { generateMap, validateRoads, TEMPLATE_ROADS } from '../src/core/mapGen.js';
 import { soakMap } from '../src/core/soak.js';
 import { Match } from '../src/sim/match.js';
 import { playBot } from '../src/sim/bot.js';
@@ -40,10 +40,14 @@ function nameFor(theme, seed, used) {
   throw new Error(`no free name for ${seed}`);
 }
 
-// Maps with `feature: true` show off the mechanics batches: each core enemy type may be swapped for
-// a kit enemy of the same archetype (weaker ones on early maps), and both boss waves get kit bosses.
-// The assignment walks every list in order, so the featured maps together cover all of them.
+// Maps with `feature` show off the mechanics batches: each core enemy type may be swapped for a kit
+// enemy of the same archetype (weaker ones on early maps), and both boss waves get kit bosses.
+// `feature: true` is cohort 1, `feature: <n>` cohort n. Enemy picks walk the pool across ONE cohort,
+// so each cohort covers the whole pool and adding a new cohort never changes an existing map's waves
+// (their balance was measured on those waves). Bosses use the index over all featured maps, which
+// only grows at the end.
 const FEATURED = spec.batch.filter((e) => e.feature);
+const cohortOf = (e) => (e.feature === true ? 1 : e.feature);
 const byHp = (a, b) => a.hp - b.hp || (a.id < b.id ? -1 : 1);
 const KIT_ENEMIES = [...content.enemies.values()].filter((e) => !e.boss && !e.summonOnly && e.generated?.batch?.startsWith('mechanics_')).sort(byHp);
 const KIT_BOSSES = [...content.enemies.values()].filter((e) => e.boss && e.model?.kit).sort(byHp);
@@ -51,11 +55,13 @@ const CORE_ENEMIES = [...content.enemies.values()].filter((e) => !e.boss && !e.g
 function featureFor(entry) {
   const i = FEATURED.indexOf(entry);
   if (i < 0) return {};
+  const cohort = FEATURED.filter((e) => cohortOf(e) === cohortOf(entry));
+  const ci = cohort.indexOf(entry);
   const swaps = { ...(entry.swaps || {}) };
   for (const tpl of CORE_ENEMIES) {
     const pool = KIT_ENEMIES.filter((e) => e.archetype === tpl.archetype);
     if (!pool.length || swaps[tpl.id]) continue;
-    const pick = pool[Math.floor((i * pool.length) / FEATURED.length)];
+    const pick = pool[Math.floor((ci * pool.length) / cohort.length)];
     swaps[tpl.id] = { enemy: pick.id, countMul: +Math.min(2.5, Math.max(0.4, tpl.hp / pick.hp)).toFixed(2) };
   }
   const featureBosses = entry.boss ? null : { mid: KIT_BOSSES[(2 * i) % KIT_BOSSES.length].id, final: KIT_BOSSES[(2 * i + 1) % KIT_BOSSES.length].id };
@@ -65,7 +71,7 @@ function featureFor(entry) {
 function build(entry, usedNames) {
   const theme = { id: entry.theme, ...themes[entry.theme] };
   const roads = entry.paths ? { paths: entry.paths, zKeep: entry.zKeep } : null;
-  const nRoads = roads ? roads.paths.length : { serpentine: 1, fork: 2, trident: 3 }[entry.template];
+  const nRoads = roads ? roads.paths.length : TEMPLATE_ROADS[entry.template];
   const base = content.waves.get(nRoads === 1 ? 'riftline_campaign' : 'frostmere_campaign');
   return generateMap({
     id: entry.id, name: entry.name || nameFor(entry.theme, entry.seed, usedNames), seed: entry.seed, template: entry.template,
@@ -108,7 +114,7 @@ function buildSpots(map) {
 }
 
 function check(map) {
-  const problems = validateRoads(map.paths, map.base.z);
+  const problems = validateRoads(map.paths, map.base.z, { crossings: map.generated?.crossings || 0 });
   const spots = buildSpots(map);
   if (spots < MIN_SPOTS) problems.push(`only ${spots} build spots near the road (< ${MIN_SPOTS})`);
   const mw = buildMapWorld(map, content.props);
