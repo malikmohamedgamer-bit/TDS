@@ -1,17 +1,16 @@
 {
  "summary": {
-  "date": "2026-11-11",
+  "date": "2026-11-12",
   "seeds": 20,
   "loadout": "core 12",
   "difficulty": "normal",
   "preset": "standard",
-  "maps": 50,
-  "mean": 0.669,
-  "in60to70": 30,
-  "in50to80": 50,
+  "maps": 56,
+  "mean": 0.664,
+  "in60to70": 33,
+  "in50to80": 56,
   "below50": [],
-  "above80": [],
-  "note": "3 maps above 80% were re-tuned after the sweep and re-measured with the same 20 seeds (their old wins are in `before`)"
+  "above80": []
  },
  "results": [
   {
@@ -54,8 +53,7 @@
    "map": "gen_frost_1",
    "wins": 14,
    "seeds": 20,
-   "rate": 0.7,
-   "before": 19
+   "rate": 0.7
   },
   {
    "map": "gen_ember_1",
@@ -103,8 +101,7 @@
    "map": "gen_toxic_2",
    "wins": 12,
    "seeds": 20,
-   "rate": 0.6,
-   "before": 17
+   "rate": 0.6
   },
   {
    "map": "gen_dunes_2",
@@ -206,8 +203,7 @@
    "map": "gen_ember_5",
    "wins": 14,
    "seeds": 20,
-   "rate": 0.7,
-   "before": 18
+   "rate": 0.7
   },
   {
    "map": "gen_toxic_5",
@@ -316,6 +312,42 @@
    "wins": 10,
    "seeds": 20,
    "rate": 0.5
+  },
+  {
+   "map": "gen_verdant_9",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
+  },
+  {
+   "map": "gen_ember_9",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55
+  },
+  {
+   "map": "gen_frost_9",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_toxic_8",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_dunes_8",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_starfall_8",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55
   }
  ]
 }

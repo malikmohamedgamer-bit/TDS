@@ -51,7 +51,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 
 ## Chunk 3: balance sweep (MUST)
 - [x] BUGS #44 heroes (30 seeds: 57-83%, was 75-100%). #37 and #46 were accepted earlier
-- [ ] 20 seeds per map done (mean 67%, all 50 maps in 50-80%, docs/balance-sweep.json). Open: modes and the difficulty ladder with 20 seeds, Relaxed + Original re-check
+- [ ] 20 seeds per map done (mean 66%, all 56 maps in 50-80%, docs/balance-sweep.json). Open: modes and the difficulty ladder with 20 seeds, Relaxed + Original re-check
 - [ ] New-player path, pacing (first win, first evolution, first summon rarity), no dead ends or exploits
 - [ ] Economy and sandbox exploit check; results in TUNING.md and VERIFICATION.md
 - [ ] Milestone: full e2e + 30 min soak
@@ -61,7 +61,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] 87 quests, 109 achievements (21 distinct condition kinds; most achievements are tiers)
 - [x] 3 summon banners, pity per banner
 - [ ] Cosmetics: hero outfits and UI themes done (14 items, earned in play). Open: tower skins, projectile effects, map decorations
-- [ ] Daily and weekly rewards; every reward granted exactly once (tested)
+- [x] Daily login streak, daily quests and weekly quests; every reward granted exactly once (tested)
 
 ## Chunk 5: audio (SHOULD)
 - [x] Music style per theme (12), boss, final boss, victory and defeat pieces; volume dip on changes; Music volume. Not checked by ear
@@ -92,7 +92,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Safety features, trading behind a flag, docs/online-limits.md
 
 ## Chunk 10: launch preparation (SHOULD)
-- [ ] Credits screen + credits.md audit, privacy + terms pages, naming / branding doc, icons, meta tags, 404
+- [ ] Credits, privacy and terms (Help tab), icons, meta tags, 404 page done. Open: credits.md audit, naming / branding doc
 - [ ] README, store text, feature list, 10 screenshots + frame sequence, itch.io zip script, CHANGELOG,
       version string, daily live-URL smoke test in CI, docs/LEGAL-CHECKLIST.md; no monetization by default
 
@@ -119,3 +119,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-11 | Chunk 2 featuring | Kit enemies and bosses on the 33 new maps (252 of 300 units in waves), recalibrated; 6 re-skin themes (waves and layouts verified identical); music styles. Unit 132 |
 | 2026-11-12 | Chunk 3 (part) | Heroes tuned in 3 rounds (30 seeds), tools/sweep.mjs: 50 maps x 20 seeds, 3 outliers re-tuned. E2E 26/26 before the hero pass. First-run Easy default, tower stat tooltips |
 | 2026-11-12 | Chunk 2 templates | Diamond + crossover templates, 6 maps (cohort 2), 4-agent review found 6 bugs (BUGS 56-59), cloud glare in the overview fixed (BUGS 60). Unit 134 |
+| 2026-11-12 | Chunk 3 + 10 | Re-sweep after the ally fix: 56 maps, mean 66%, all in 50-80%. Launch prep (version, meta tags, 404, itch.io zip packager), weekly quests, contrast fix. Unit 136 |

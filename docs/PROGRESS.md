@@ -25,22 +25,22 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 | Content | Count |
 |---|---|
-| Maps | 50 on 14 themes: 5 hand-made (Riftline, Frostmere, Glacier Gate, Mirrormire, Starfall Sanctum), 45 generated on 3 road templates (serpentine, fork, trident); unlock levels 1 to 36 |
+| Maps | 56 on 14 themes: 5 hand-made (Riftline, Frostmere, Glacier Gate, Mirrormire, Starfall Sanctum), 51 generated on 5 road templates (serpentine, fork, trident, diamond, crossover); unlock levels 1 to 42 |
 | Towers | 100 (57 War, 43 Magic), 85 mechanically distinct, 91 models |
 | Enemies / bosses | 200 (168 distinct, 191 models) / 100 (83 distinct, 94 models). 252 of the 300 appear in Campaign wave tables; all in Endless / Boss Rush |
 | Heroes / abilities | 10 heroes, 4 skills each / 39 skills |
 | Modes / modifiers | 11 (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) / 9 |
-| Quests / achievements | 87 (23 daily pool, 64 story: 6 hand-written, 50 map liberations, 8 mode wins) / 109 |
+| Quests / achievements | 105: 23 daily pool (3 a day), 12 weekly pool (3 a week), 70 story (6 hand-written, 56 map liberations, 8 mode wins) / 109 |
 | Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
 | Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
 | Music | 7 moods, 12 theme styles, one key per map; procedural |
-| Unit tests / E2E tests | 132 / see VERIFICATION.md |
+| Unit tests / E2E tests | 136 / see VERIFICATION.md |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
 | Setup | Win rate |
 |---|---|
-| **All 50 maps, 12 core towers, Normal, Standard, 20 seeds each (2026-11-12, `node tools/sweep.mjs`, docs/balance-sweep.json)** | mean 67%; 30 of 50 maps in 60-70%, 50 of 50 in 50-80%, none below 50%, none above 80% after 3 maps were re-tuned |
+| **All 56 maps, 12 core towers, Normal, Standard, 20 seeds each (2026-11-12, after the shared-stretch ally fix; `node tools/sweep.mjs`, docs/balance-sweep.json)** | mean 66%; 33 of 56 maps in 60-70%, 56 of 56 in 50-80%, none below 50% or above 80% |
 | 10 heroes, 12 core towers, Riftline Normal, 30 seeds (2026-11-12) | Vale 63%, Ryn 70%, Ignis 70%, Vex 70%, Holt 67%, Maren 63%, Nyra 57%, Seren 57%, Kade 77%, Brik 83% |
 | New modes, 12 core towers, Riftline Normal, 12 seeds | Skirmish 100% (all towers), Mutation 58%, War Chest 83%, Last Stand 0% at tower level 1 and 83% at level 5 |
 | All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
