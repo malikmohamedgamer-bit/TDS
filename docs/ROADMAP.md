@@ -42,8 +42,8 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Bosses 100+ (100 bosses: 19 earlier + 81 generated kit bosses in mechanics_b1 / b2; 83 mechanically distinct, 94 models) (2026-11-06)
 - [x] Towers 100+ (100: 63 kit towers with 7 new sim mechanics: execute, crit, ramp, shred, pushback, bounty, multishot; 85 mechanically distinct, 91 models) (2026-11-06). Still thin: air, aura, summoner, trap, hero-linked classes (all kit towers are direct-fire) - add in a later batch
 - [x] Enemies 200+ (200: 158 kit enemies from tools/gen-enemies.mjs; new sim mechanics blink + burst; 12 traits, every trait set used once; 168 distinct, 191 models) (2026-11-06). They appear in Endless / Daily pools only; campaign tables unchanged (maps batch will feature them)
-- [x] Maps 50 on 14 themes (6 new looks), picker groups all of them (2026-11-11). Still open: new path templates
-      (loops, crossovers, air routes), 8 more hand-made flagships (5 of 13)
+- [x] Maps 56 on 14 themes (6 new looks), picker groups all of them. Path templates: diamond (split lanes) and
+      crossover added 2026-11-12 (5 templates). Still open: air routes, 8 more hand-made flagships (5 of 13)
 - [x] Heroes 10+, skills 30+ (10 heroes, 39 skills: Tidecaller Maren, Blastmaster Brik, Shadowblade Vex + 12 abilities) (2026-11-06). Balance of the new three not yet measured (Chunk 3, with BUGS #44)
 - [x] 4 new modes, 11 total: Skirmish, Mutation, War Chest, Last Stand (2026-11-11)
 - [ ] More CC0 packs (Kenney, Quaternius first), credits recorded
@@ -118,3 +118,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-11 | Chunk 4 + 6 + 8 | Quests 87, Help tab with save export / import, save fuzz test and sanitizer fixes, banners, cosmetics, battle report |
 | 2026-11-11 | Chunk 2 featuring | Kit enemies and bosses on the 33 new maps (252 of 300 units in waves), recalibrated; 6 re-skin themes (waves and layouts verified identical); music styles. Unit 132 |
 | 2026-11-12 | Chunk 3 (part) | Heroes tuned in 3 rounds (30 seeds), tools/sweep.mjs: 50 maps x 20 seeds, 3 outliers re-tuned. E2E 26/26 before the hero pass. First-run Easy default, tower stat tooltips |
+| 2026-11-12 | Chunk 2 templates | Diamond + crossover templates, 6 maps (cohort 2), 4-agent review found 6 bugs (BUGS 56-59), cloud glare in the overview fixed (BUGS 60). Unit 134 |

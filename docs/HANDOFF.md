@@ -109,11 +109,24 @@ method that got the project from 59% to 91% of the scoreboard in one session. Fo
 - **A mode:** entry in `data/modes.json`; a new rule only if no existing flag does it; unit test in
   `test/unit/modes.test.js`; measure it; a line in `data/help.json`. A liberation / mode quest appears
   by re-running `node tools/gen-quests.mjs`.
-- **Maps:** entries in `tools/map-batches.json` (`feature: true` puts kit enemies and kit bosses in the
-  waves), `node tools/gen-maps.mjs`, calibrate, then `node tools/gen-quests.mjs`.
+- **Maps:** entries in `tools/map-batches.json`, `node tools/gen-maps.mjs`, calibrate, then
+  `node tools/gen-quests.mjs`. Templates: serpentine (1 road), fork (2), trident (3), diamond (2 lanes
+  from one portal), crossover (1 road that crosses itself once). `feature: <n>` puts kit enemies and kit
+  bosses in the waves; **a new batch of featured maps must use a NEW cohort number** (the next one is
+  3), otherwise the enemies of already balanced maps change. After `gen-maps.mjs`, check with
+  `git status --short data/maps data/waves` that no existing map changed unless you meant it to.
 - **A save field:** default in `newSave`, repair in `sanitize`, and the fuzz test must still pass.
 - **A hub screen or section:** a `_name()` method returning markup, a `data-*` attribute handled in
   `onClick`, styles in `styles/hub.css` using the tokens in `styles/tokens.css`, touch targets 44 px.
+
+## Independent review
+
+For risky changes (sim rules, generators, saves), an independent read-only review before committing
+pays off: on 2026-11-12 a 4-agent review (3 reviewers with different angles, 1 skeptic who tries to
+disprove each finding) found 6 real bugs in a change that passed every unit test, including one that
+silently changed the balance of 30 maps. Only do this when the owner has opted into multi-agent work
+(ultracode) or for high-risk systems; otherwise review the diff yourself against the same three angles:
+geometry / logic, runtime consumers of the changed data, and whether the tests can pass while broken.
 
 ## Finishing a session
 

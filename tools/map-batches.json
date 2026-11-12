@@ -822,7 +822,8 @@
       "seed": "fr9d",
       "unlockLevel": 39,
       "hpMul": 1.351,
-      "feature": 2
+      "feature": 2,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 95%, hpMul 1.351 -> 65%"
     },
     {
       "id": "gen_toxic_8",
@@ -830,8 +831,9 @@
       "theme": "toxic",
       "seed": "to8c",
       "unlockLevel": 40,
-      "hpMul": 1,
-      "feature": 2
+      "hpMul": 1.45,
+      "feature": 2,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.351 -> 85%, hand-set hpMul 1.45 -> 65%"
     },
     {
       "id": "gen_dunes_8",
@@ -839,8 +841,9 @@
       "theme": "canyon",
       "seed": "du8d",
       "unlockLevel": 41,
-      "hpMul": 1,
-      "feature": 2
+      "hpMul": 1.48,
+      "feature": 2,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.351 -> 90%, hand-set hpMul 1.48 -> 60%"
     },
     {
       "id": "gen_starfall_8",
@@ -848,8 +851,9 @@
       "theme": "void",
       "seed": "st8c",
       "unlockLevel": 42,
-      "hpMul": 1,
-      "feature": 2
+      "hpMul": 1.6,
+      "feature": 2,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.351 -> 95%, hand-set hpMul 1.52 -> 85%, hand-set hpMul 1.6 -> 55%"
     }
   ]
 }
