@@ -79,7 +79,15 @@ export class Tutorial {
     this.el.hidden = true;
     root.appendChild(this.el);
     this.el.addEventListener('click', (e) => {
-      if (e.target.closest('[data-act="skip"]')) this.finish(true);
+      const b = e.target.closest('[data-act="skip"]');
+      if (!b) return;
+      // two presses: the first asks, so a stray tap never throws the tutorial away
+      if (b.dataset.armed) { this.finish(true); return; }
+      b.dataset.armed = '1';
+      b.textContent = 'Skip for good? Tap again';
+      b.classList.add('armed');
+      clearTimeout(this.armT);
+      this.armT = setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = 'Skip tutorial'; b.classList.remove('armed'); } }, 4000);
     });
   }
 

@@ -184,12 +184,24 @@
   .slot img { width: 56px; height: 40px; }
   .slot .nm, .slot kbd { display: none; }
   .slot .cost { position: absolute; bottom: 2px; left: 0; right: 0; text-align: center; font-size: 0.68rem; }
+  .slot .why { top: 0; font-size: 0.56rem; } /* top of the slot: the price sits at the bottom */
   .abilities { bottom: 150px; right: 10px; flex-direction: column; }
   .abtn { width: 54px; height: 54px; }
   .tower-panel { right: 8px; left: 80px; width: auto; top: auto; bottom: 8px; max-height: 45vh; }
   .tutorial { left: 80px; right: 8px; width: auto; top: auto; bottom: 8px; }
   .bossbar { top: 54px; }
   .banner { font-size: 1.4rem; }
+}
+
+/* phones held upright: the status bar spans the width without its icons (it was cut off on the
+   left at 390 px), and the boss bar sits right of the tower column instead of on top of it */
+@media (max-width: 520px) {
+  .status { left: 6px; right: 6px; transform: none; justify-content: space-between; gap: 4px; padding: 4px 6px; overflow: hidden; }
+  .status .st > .ic { display: none; }
+  .status .hp .bar { width: 44px; }
+  .status .speed { min-width: 40px; padding: 4px 6px; }
+  .bossbar { left: 80px; right: 8px; width: auto; transform: none; top: 56px; padding: 6px 10px 8px; }
+  .bossbar .bname { font-size: 0.82rem; }
 }
 
 /* overlays never block clicks on the 3D view (beats the generic "#ui > *" rule) */
@@ -217,3 +229,5 @@ body.in-match .hud-top .brand { visibility: hidden; }
 
 .tower-panel dt[data-tip] { cursor: help; text-decoration: underline dotted var(--ink-5); text-underline-offset: 3px; }
 .tower-panel dt[data-tip]::after { left: 0; transform: none; width: max-content; max-width: 240px; white-space: normal; }
+
+.tutorial .link.armed { color: var(--stop-2); font-weight: 700; }

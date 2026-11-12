@@ -168,3 +168,8 @@
 .cos:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
 .cos-sw { display: flex; height: 14px; border-radius: 4px; overflow: hidden; }
 .cos-sw i { flex: 1; }
+
+.cos-kind { border: 2px solid var(--border); border-radius: 12px; background: #161a25; margin: 6px 0; }
+.cos-kind > summary { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; cursor: pointer; font-weight: 700; }
+.cos-kind > summary small { color: var(--brass); font-weight: 600; font-size: 0.78rem; }
+.cos-kind > .cos-grid { padding: 0 8px 8px; }

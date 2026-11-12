@@ -113,6 +113,12 @@ export class Hub {
     };
     const body = this.el.querySelector('.hub-body');
     body.onclick = (e) => this.onClick(e);
+    body.addEventListener('toggle', (e) => {
+      const k = e.target.dataset?.cosKind;
+      if (!k) return;
+      this.openCos ||= new Set();
+      if (e.target.open) this.openCos.add(k); else this.openCos.delete(k);
+    }, true);
     body.onchange = (e) => this.onChange(e);
     body.oninput = (e) => {
       if (e.target.name === 'mapq') { this.mapFilter.query = e.target.value; this.applyMapFilter(); }
@@ -348,9 +354,11 @@ export class Hub {
     };
     return Object.entries(kinds).map(([kind, title]) => {
       const list = all.filter((x) => x.kind === kind);
-      return `<h3>${icon('star')} ${esc(title)} <span class="count">${list.filter((x) => x.unlocked).length}/${list.length}</span></h3><div class="cos-grid">${list.map((it) => `<button class="cos ${it.equipped ? 'on' : ''} ${it.unlocked ? '' : 'locked'}" data-cosmetic="${it.id}" data-testid="cos-${it.id}" aria-pressed="${it.equipped}" ${it.unlocked ? '' : 'aria-disabled="true"'}>
+      const on = list.find((x) => x.equipped);
+      const open = this.openCos?.has(kind) ? 'open' : '';
+      return `<details class="cos-kind" data-cos-kind="${kind}" ${open}><summary><span>${icon('star')} ${esc(title)} <span class="count">${list.filter((x) => x.unlocked).length}/${list.length}</span></span><small>${esc(on?.name || '')}</small></summary><div class="cos-grid">${list.map((it) => `<button class="cos ${it.equipped ? 'on' : ''} ${it.unlocked ? '' : 'locked'}" data-cosmetic="${it.id}" data-testid="cos-${it.id}" aria-pressed="${it.equipped}" ${it.unlocked ? '' : 'aria-disabled="true"'}>
         <span class="cos-sw" aria-hidden="true">${sw(it).map((c) => `<i style="background:${esc(c)}"></i>`).join('')}</span>
-        <b>${it.unlocked ? '' : `${icon('lock')} `}${esc(it.name)}</b><small>${esc(it.unlocked ? it.desc : `${it.how}${it.target > 1 ? ` (${fmt(it.progress)}/${fmt(it.target)})` : ''}`)}</small>${it.equipped ? '<em>Equipped</em>' : ''}</button>`).join('')}</div>`;
+        <b>${it.unlocked ? '' : `${icon('lock')} `}${esc(it.name)}</b><small>${esc(it.unlocked ? it.desc : `${it.how}${it.target > 1 ? ` (${fmt(it.progress)}/${fmt(it.target)})` : ''}`)}</small>${it.equipped ? '<em>Equipped</em>' : ''}</button>`).join('')}</div></details>`;
     }).join('');
   }
 

@@ -288,7 +288,7 @@ body.reduced-motion .btn.primary.big::after, body.reduced-motion .card::before, 
   .hub-head { padding: 8px 10px; }
   .hub-brand { display: none; }
   .hub-tabs { grid-column: 1; grid-row: 3; flex-direction: row; justify-content: space-between; padding: 4px 4px max(4px, env(safe-area-inset-bottom)); border-right: none; border-top: 1px solid rgba(255, 209, 102, 0.2); gap: 0; overflow-x: auto; }
-  .hub-tabs button { flex: 1 0 52px; flex-direction: column; gap: 2px; min-height: 52px; padding: 4px 2px; font-size: 0.58rem; letter-spacing: 0.04em; justify-content: center; position: relative; }
+  .hub-tabs button { flex: 1 0 44px; flex-direction: column; gap: 2px; min-height: 52px; padding: 4px 1px; font-size: 0.56rem; letter-spacing: 0.02em; justify-content: center; position: relative; }
   .hub-tabs .badge { position: absolute; top: 2px; right: 6px; margin: 0; }
   .hub-body { grid-column: 1; grid-row: 2; padding: 10px; }
   .mission { grid-template-columns: 1fr; position: sticky; bottom: 0; top: auto; z-index: 2; padding: 10px; }

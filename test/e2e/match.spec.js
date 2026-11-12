@@ -169,6 +169,9 @@ test('tutorial advances on real actions and can be skipped', async ({ page }) =>
   await expect(tut).toHaveAttribute('data-step', 'wave', { timeout: 30_000 });
   await expect(page.getByTestId('skip')).toHaveClass(/tut-glow/);
   await page.getByRole('button', { name: 'Skip tutorial' }).click();
+  // the first press only asks; the tutorial is still running
+  await expect(page.getByTestId('tutorial')).toBeVisible();
+  await page.getByRole('button', { name: 'Skip for good? Tap again' }).click();
   await expect(tut).toBeHidden();
   expect(await page.evaluate(() => window.TDS.save.progress.tutorialDone)).toBe(true);
 });
