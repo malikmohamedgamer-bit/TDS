@@ -1,8 +1,8 @@
 # TDS: project notes for Claude
 
 Browser 3D tower defense (Magic vs Modern War defending against "the Blight"). Owner works on
-Windows 11 in the Claude desktop app. Read `docs/PROGRESS.md` first: it has status, counts and the
-exact next action.
+Windows 11 in the Claude desktop app. Read `docs/HANDOFF.md` first (how to work: method, balance
+rules, shell pitfalls), then `docs/PROGRESS.md`: it has status, counts and the exact next action.
 
 ## Rules that matter
 - `src/core/` and `src/sim/` stay pure: no DOM, no Three.js, deterministic (seeded `Rng`, fixed
