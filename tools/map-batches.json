@@ -354,6 +354,306 @@
       "boss": "boss_archfiend",
       "calibration": "hpMul 1 -> 8%, hpMul 0.8 -> 92%, hpMul 0.864 -> 50%",
       "timeOfDay": "night"
+    },
+    {
+      "id": "russet_spiral",
+      "name": "Russet Spiral",
+      "theme": "autumn",
+      "unlockLevel": 12,
+      "seed": "russet-spiral-1",
+      "hpMul": 2.4,
+      "feature": 3,
+      "crossings": 2,
+      "description": "One road spirals in through the autumn woods and cuts across its own path twice on the way to the keep. Towers at the crossings fire on every lap.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "main",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -28
+            ],
+            [
+              34,
+              -28
+            ],
+            [
+              34,
+              28
+            ],
+            [
+              -44,
+              28
+            ],
+            [
+              -44,
+              -14
+            ],
+            [
+              20,
+              -14
+            ],
+            [
+              20,
+              14
+            ],
+            [
+              -30,
+              14
+            ],
+            [
+              -30,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.351 -> 100%, hand-set hpMul 1.75 -> 100%, hand-set hpMul 2.4 -> 65%"
+    },
+    {
+      "id": "crimson_crossing",
+      "name": "Crimson Crossing",
+      "theme": "crimson",
+      "unlockLevel": 18,
+      "seed": "crimson-crossing-1",
+      "hpMul": 0.9,
+      "feature": 3,
+      "crossings": 1,
+      "description": "Two roads cross in the middle of the mire before they merge at the keep. Hold the crossing and you hold both.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "north",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              26
+            ],
+            [
+              -24,
+              26
+            ],
+            [
+              -24,
+              -26
+            ],
+            [
+              8,
+              -26
+            ],
+            [
+              8,
+              0
+            ],
+            [
+              22,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "south",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -12
+            ],
+            [
+              -38,
+              -12
+            ],
+            [
+              -38,
+              12
+            ],
+            [
+              22,
+              12
+            ],
+            [
+              22,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "calibration": "hpMul 1 -> 40%, hpMul 0.875 -> 85%, hpMul 0.931 -> 45%, hand-set hpMul 0.9 -> 70%"
+    },
+    {
+      "id": "redrock_switchbacks",
+      "name": "Redrock Switchbacks",
+      "theme": "canyon",
+      "unlockLevel": 24,
+      "seed": "redrock-switchbacks-1",
+      "hpMul": 1.294,
+      "feature": 3,
+      "description": "Five long switchbacks run the width of the canyon. The longest road in the game: plenty of time, if you build to cover every row.",
+      "zKeep": -25,
+      "paths": [
+        {
+          "id": "main",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              27
+            ],
+            [
+              32,
+              27
+            ],
+            [
+              32,
+              14
+            ],
+            [
+              -42,
+              14
+            ],
+            [
+              -42,
+              1
+            ],
+            [
+              32,
+              1
+            ],
+            [
+              32,
+              -12
+            ],
+            [
+              -42,
+              -12
+            ],
+            [
+              -42,
+              -25
+            ],
+            [
+              45,
+              -25
+            ]
+          ]
+        }
+      ],
+      "calibration": "hpMul 1 -> 90%, hpMul 1.125 -> 90%, hpMul 1.294 -> 70%"
+    },
+    {
+      "id": "void_convergence",
+      "name": "Void Convergence",
+      "theme": "void",
+      "unlockLevel": 30,
+      "seed": "void-convergence-1",
+      "hpMul": 0.77,
+      "feature": 3,
+      "description": "Three short roads fall out of the rift and converge on one trunk. The shortest roads in the game: the Blight is at your keep fast.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "north",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              27
+            ],
+            [
+              -36,
+              27
+            ],
+            [
+              -36,
+              14
+            ],
+            [
+              -8,
+              14
+            ],
+            [
+              -8,
+              0
+            ],
+            [
+              20,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "middle",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              0
+            ],
+            [
+              -8,
+              0
+            ],
+            [
+              20,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "south",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -27
+            ],
+            [
+              -36,
+              -27
+            ],
+            [
+              -36,
+              -14
+            ],
+            [
+              20,
+              -14
+            ],
+            [
+              20,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 20%, hpMul 0.68 -> 100%, hand-set hpMul 0.74 -> 85%, hand-set hpMul 0.77 -> 60%"
     }
   ],
   "batch": [

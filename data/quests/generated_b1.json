@@ -483,6 +483,16 @@
    }
   },
   {
+   "id": "s_map_russet_spiral",
+   "name": "Liberate Russet Spiral",
+   "desc": "Win a Campaign match on Russet Spiral",
+   "mapWon": "russet_spiral",
+   "reward": {
+    "sigils": 180,
+    "crowns": 450
+   }
+  },
+  {
    "id": "s_map_gen_dunes_1",
    "name": "Liberate Sunscorch Expanse",
    "desc": "Win a Campaign match on Sunscorch Expanse",
@@ -560,6 +570,16 @@
    "reward": {
     "sigils": 230,
     "crowns": 575
+   }
+  },
+  {
+   "id": "s_map_crimson_crossing",
+   "name": "Liberate Crimson Crossing",
+   "desc": "Win a Campaign match on Crimson Crossing",
+   "mapWon": "crimson_crossing",
+   "reward": {
+    "sigils": 240,
+    "crowns": 600
    }
   },
   {
@@ -663,6 +683,16 @@
    }
   },
   {
+   "id": "s_map_redrock_switchbacks",
+   "name": "Liberate Redrock Switchbacks",
+   "desc": "Win a Campaign match on Redrock Switchbacks",
+   "mapWon": "redrock_switchbacks",
+   "reward": {
+    "sigils": 300,
+    "crowns": 750
+   }
+  },
+  {
    "id": "s_map_gen_dunes_2",
    "name": "Liberate Dust Outpost",
    "desc": "Win a Campaign match on Dust Outpost",
@@ -737,6 +767,16 @@
    "name": "Liberate Obsidian Vents",
    "desc": "Win a Campaign match on Obsidian Vents",
    "mapWon": "gen_ember_7",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_void_convergence",
+   "name": "Liberate Void Convergence",
+   "desc": "Win a Campaign match on Void Convergence",
+   "mapWon": "void_convergence",
    "reward": {
     "sigils": 360,
     "crowns": 900
@@ -1955,10 +1995,10 @@
    }
   },
   {
-   "id": "a_maps_56",
+   "id": "a_maps_60",
    "name": "The whole valley",
-   "desc": "Liberate 56 maps (Campaign wins)",
-   "mapsWon": 56,
+   "desc": "Liberate 60 maps (Campaign wins)",
+   "mapsWon": 60,
    "reward": {
     "sigils": 790,
     "crowns": 2500

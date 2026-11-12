@@ -13,16 +13,17 @@ Status: late development (version in `package.json`). `docs/PROGRESS.md` has the
 
 ## Features
 
-- **56 maps** on 14 themes and 5 road layouts (winding, fork, trident, split lanes, crossover), each
-  balanced with a bot to a 50-80% win rate on Normal.
+- **60 maps** on 14 themes: 9 hand-made flagships (spirals, crossings, switchbacks, converging roads)
+  and 51 generated on 5 road layouts (winding, fork, trident, split lanes, crossover), each balanced
+  with a bot to a 50-80% win rate on Normal.
 - **100 towers** (Magic and Modern War) with branching upgrades and evolutions, **200 enemies**,
   **100 bosses** with phase mechanics, **10 heroes** with 4 abilities each.
 - **11 modes:** Campaign, Endless, Boss Rush, Daily Challenge, Time Attack, Challenge, Skirmish,
   Mutation, War Chest, Last Stand, Sandbox. 9 challenge modifiers, 8 difficulties, 3 tuning presets
   and Assist options.
 - **Progression:** player levels, permanent tower levels, a shop with daily deals, 3 summon banners
-  with pity, 93 quests, 109 achievements, an Index of everything met, earned cosmetics (interface
-  themes, hero outfits), a daily login streak.
+  with pity, 109 quests (daily, weekly, story), 109 achievements, an Index of everything met, earned cosmetics (interface
+  themes, hero outfits, projectile effects, tower base plates), a daily login streak.
 - Procedural music and sound, data-driven effects, searchable Help, save export / import, keyboard,
   mouse and touch controls, reduced motion, high contrast, text and interface scale.
 

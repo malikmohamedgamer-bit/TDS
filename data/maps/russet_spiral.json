@@ -1,0 +1,345 @@
+{
+ "id": "russet_spiral",
+ "name": "Russet Spiral",
+ "description": "One road spirals in through the autumn woods and cuts across its own path twice on the way to the keep. Towers at the crossings fire on every lap.",
+ "seed": "russet-spiral-1",
+ "scatterGap": 1.3,
+ "waves": "russet_spiral_waves",
+ "unlockLevel": 12,
+ "theme": "autumn",
+ "generated": {
+  "template": "hand",
+  "seed": "russet-spiral-1",
+  "theme": "autumn",
+  "crossings": 2
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#8AA6C8",
+  "horizon": "#FFE2B8",
+  "fog": "#F0D2A8",
+  "fogNear": 65,
+  "fogFar": 185
+ },
+ "sun": {
+  "azimuth": 235,
+  "elevation": 34,
+  "color": "#FFD9A0",
+  "intensity": 2.5
+ },
+ "ground": {
+  "grass": [
+   "#C2853A",
+   "#A96F2E",
+   "#D49A48",
+   "#8E5A26"
+  ],
+  "path": [
+   "#8A6A4E",
+   "#75583F",
+   "#9E7C5E",
+   "#5E4632"
+  ],
+  "rim": [
+   "#8A6A3E",
+   "#6E5E56"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 7,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 0,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": -28,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": []
+ },
+ "paths": [
+  {
+   "id": "main",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     -28
+    ],
+    [
+     34,
+     -28
+    ],
+    [
+     34,
+     28
+    ],
+    [
+     -44,
+     28
+    ],
+    [
+     -44,
+     -14
+    ],
+    [
+     20,
+     -14
+    ],
+    [
+     20,
+     14
+    ],
+    [
+     -30,
+     14
+    ],
+    [
+     -30,
+     0
+    ],
+    [
+     45,
+     0
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 0
+ },
+ "playerSpawn": {
+  "x": 28.5,
+  "z": -13.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": -28,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 0,
+   "rot": 0
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 22.5,
+   "z": 21,
+   "rot": 4.59
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 27.5,
+   "z": 9,
+   "rot": 5.66
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": -31,
+   "z": 21.5,
+   "rot": 5.45
+  },
+  {
+   "kind": "runestone",
+   "x": -37,
+   "z": -7.5,
+   "rot": 4.44
+  },
+  {
+   "kind": "runestone",
+   "x": 40.5,
+   "z": 31.5,
+   "rot": 3.98
+  },
+  {
+   "kind": "runestone",
+   "x": -8,
+   "z": -20.5,
+   "rot": 2.25
+  },
+  {
+   "kind": "fence_wood",
+   "x": 40,
+   "z": -20,
+   "rot": 6.27
+  },
+  {
+   "kind": "fence_wood",
+   "x": -27.5,
+   "z": -21,
+   "rot": 5.88
+  },
+  {
+   "kind": "fence_wood",
+   "x": 1.5,
+   "z": 6,
+   "rot": 6.28
+  },
+  {
+   "kind": "tent",
+   "x": -16.5,
+   "z": -7,
+   "rot": 2.38
+  },
+  {
+   "kind": "tent",
+   "x": 24.5,
+   "z": -21,
+   "rot": 0.51
+  },
+  {
+   "kind": "crate_stack",
+   "x": 40.5,
+   "z": 17,
+   "rot": 5.31
+  },
+  {
+   "kind": "barrel",
+   "x": -21,
+   "z": 8,
+   "rot": 6.28
+  },
+  {
+   "kind": "barrel",
+   "x": -27.5,
+   "z": -8.5,
+   "rot": 5.88
+  },
+  {
+   "kind": "barrel",
+   "x": 10,
+   "z": 21.5,
+   "rot": 3.93
+  },
+  {
+   "kind": "lamp_post",
+   "x": 0.5,
+   "z": -3.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -34,
+   "z": 13,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 7.5,
+   "z": -10,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -4,
+   "z": 23.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 1,
+   "z": 24,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 24,
+   "z": -5,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "tree_round",
+   "count": 44,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 11,
+   "minPathDist": 5,
+   "spacing": 3,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "tree_pine",
+   "count": 26,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 2.8,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "bush",
+   "count": 34,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2
+  },
+  {
+   "kind": "rock",
+   "count": 14,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 4
+  },
+  {
+   "kind": "rock_small",
+   "count": 24,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  }
+ ]
+}

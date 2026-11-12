@@ -266,6 +266,22 @@
     "gen_starfall_8": {
       "root": 49,
       "scale": "lydian"
+    },
+    "russet_spiral": {
+      "root": 50,
+      "scale": "dorian"
+    },
+    "crimson_crossing": {
+      "root": 46,
+      "scale": "phrygian"
+    },
+    "redrock_switchbacks": {
+      "root": 52,
+      "scale": "phrygian"
+    },
+    "void_convergence": {
+      "root": 49,
+      "scale": "lydian"
     }
   },
   "moods": {

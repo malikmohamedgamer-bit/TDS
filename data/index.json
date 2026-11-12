@@ -97,7 +97,11 @@
     "waves/gen_frost_9_waves.json",
     "waves/gen_toxic_8_waves.json",
     "waves/gen_dunes_8_waves.json",
-    "waves/gen_starfall_8_waves.json"
+    "waves/gen_starfall_8_waves.json",
+    "waves/russet_spiral_waves.json",
+    "waves/crimson_crossing_waves.json",
+    "waves/redrock_switchbacks_waves.json",
+    "waves/void_convergence_waves.json"
   ],
   "maps": [
     "maps/riftline.json",
@@ -155,6 +159,10 @@
     "maps/gen_frost_9.json",
     "maps/gen_toxic_8.json",
     "maps/gen_dunes_8.json",
-    "maps/gen_starfall_8.json"
+    "maps/gen_starfall_8.json",
+    "maps/russet_spiral.json",
+    "maps/crimson_crossing.json",
+    "maps/redrock_switchbacks.json",
+    "maps/void_convergence.json"
   ]
 }

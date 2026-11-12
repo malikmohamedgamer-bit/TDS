@@ -242,7 +242,7 @@ export function generateMap(opts) {
   // re-roll (deterministically) until the layout validates; the seed fixes the whole sequence
   // opts.roads: hand-authored roads {paths, zKeep} (flagship maps); otherwise generated
   for (let attempt = 0; attempt < 40; attempt++) {
-    roads = opts.roads ? { ...opts.roads, starts: opts.roads.paths.map((pa) => pa.points[0][1]) } : generateRoads(rng.fork(`roads${attempt}`), template);
+    roads = opts.roads ? { ...opts.roads, starts: [...new Set(opts.roads.paths.map((pa) => pa.points[0][1]))] } : generateRoads(rng.fork(`roads${attempt}`), template);
     problems = validateRoads(roads.paths, roads.zKeep, { crossings: roads.crossings || 0 });
     if (!problems.length) break;
   }

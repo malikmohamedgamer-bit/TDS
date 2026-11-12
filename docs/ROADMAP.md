@@ -42,8 +42,9 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Bosses 100+ (100 bosses: 19 earlier + 81 generated kit bosses in mechanics_b1 / b2; 83 mechanically distinct, 94 models) (2026-11-06)
 - [x] Towers 100+ (100: 63 kit towers with 7 new sim mechanics: execute, crit, ramp, shred, pushback, bounty, multishot; 85 mechanically distinct, 91 models) (2026-11-06). Still thin: air, aura, summoner, trap, hero-linked classes (all kit towers are direct-fire) - add in a later batch
 - [x] Enemies 200+ (200: 158 kit enemies from tools/gen-enemies.mjs; new sim mechanics blink + burst; 12 traits, every trait set used once; 168 distinct, 191 models) (2026-11-06). They appear in Endless / Daily pools only; campaign tables unchanged (maps batch will feature them)
-- [x] Maps 56 on 14 themes (6 new looks), picker groups all of them. Path templates: diamond (split lanes) and
-      crossover added 2026-11-12 (5 templates). Still open: air routes, 8 more hand-made flagships (5 of 13)
+- [x] Maps 60 on 14 themes (6 new looks), picker groups all of them. Path templates: diamond (split lanes) and
+      crossover added 2026-11-12 (5 templates). Flagships 9 of 13 (Russet Spiral, Crimson Crossing, Redrock
+      Switchbacks, Void Convergence added). Still open: air routes, 4 more flagships
 - [x] Heroes 10+, skills 30+ (10 heroes, 39 skills: Tidecaller Maren, Blastmaster Brik, Shadowblade Vex + 12 abilities) (2026-11-06). Balance of the new three not yet measured (Chunk 3, with BUGS #44)
 - [x] 4 new modes, 11 total: Skirmish, Mutation, War Chest, Last Stand (2026-11-11)
 - [ ] More CC0 packs (Kenney, Quaternius first), credits recorded
@@ -121,3 +122,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-12 | Chunk 2 templates | Diamond + crossover templates, 6 maps (cohort 2), 4-agent review found 6 bugs (BUGS 56-59), cloud glare in the overview fixed (BUGS 60). Unit 134 |
 | 2026-11-12 | Chunk 3 + 10 | Re-sweep after the ally fix: 56 maps, mean 66%, all in 50-80%. Launch prep (version, meta tags, 404, itch.io zip packager), weekly quests, contrast fix. Unit 136 |
 | 2026-11-12 | Chunk 7 + 8 | Perf budgets (docs/PERF.md), memory leak fixed (2,000 geometries per match), auto quality step-down, weak-device default. Unit 138 |
+| 2026-11-12 | Chunk 2 flagships + 6 UI | 4 hand-made flagships (crossings allowed on hand roads, cohort 3), calibrated 60-70%. Screenshot review at 3 sizes: phone status bar, boss bar, slot labels, Help tab, collapsed cosmetics fixed. Tutorial skip asks twice. Cosmetics 4 kinds |

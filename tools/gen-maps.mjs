@@ -46,7 +46,8 @@ function nameFor(theme, seed, used) {
 // so each cohort covers the whole pool and adding a new cohort never changes an existing map's waves
 // (their balance was measured on those waves). Bosses use the index over all featured maps, which
 // only grows at the end.
-const FEATURED = spec.batch.filter((e) => e.feature);
+// flagships come after the batch here, so featuring a flagship never shifts a batch map's bosses
+const FEATURED = [...spec.batch, ...spec.flagships].filter((e) => e.feature);
 const cohortOf = (e) => (e.feature === true ? 1 : e.feature);
 const byHp = (a, b) => a.hp - b.hp || (a.id < b.id ? -1 : 1);
 const KIT_ENEMIES = [...content.enemies.values()].filter((e) => !e.boss && !e.summonOnly && e.generated?.batch?.startsWith('mechanics_')).sort(byHp);
@@ -70,7 +71,7 @@ function featureFor(entry) {
 
 function build(entry, usedNames) {
   const theme = { id: entry.theme, ...themes[entry.theme] };
-  const roads = entry.paths ? { paths: entry.paths, zKeep: entry.zKeep } : null;
+  const roads = entry.paths ? { paths: entry.paths, zKeep: entry.zKeep, crossings: entry.crossings } : null;
   const nRoads = roads ? roads.paths.length : TEMPLATE_ROADS[entry.template];
   const base = content.waves.get(nRoads === 1 ? 'riftline_campaign' : 'frostmere_campaign');
   return generateMap({
