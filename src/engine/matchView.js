@@ -697,8 +697,30 @@ export class MatchView {
     for (const rig of this.enemyRigs.values()) rig.setShadows(q.propShadows);
   }
 
+  /** Match end: free everything this view created (rigs are rebuilt per match, so their baked
+   *  geometry would otherwise stay on the GPU and in the renderer's caches: about 2,000 geometries
+   *  and 30 MB per match before this). Materials shared between matches are kept. */
   dispose() {
+    const keep = new Set([sharedMaterials().body, sharedMaterials().glow, ...Object.values(decals)]);
+    const geos = new Set();
+    const mats = new Set();
+    const take = (o) => {
+      if (o.geometry) geos.add(o.geometry);
+      for (const m of [].concat(o.material || [])) if (!keep.has(m)) mats.add(m);
+    };
+    for (const rig of [...this.enemyRigs.values(), ...this.allyRigs.values()]) {
+      for (const m of rig.meshes) take(m);
+      rig.dispose();
+    }
+    this.enemyRigs.clear();
+    this.allyRigs.clear();
+    this.fx.dispose();
     this.scene.remove(this.group);
-    for (const n of this.fx.nums) n.el.remove();
+    this.group.traverse((o) => {
+      take(o);
+      if (o.isInstancedMesh) o.dispose();
+    });
+    for (const g of geos) g.dispose();
+    for (const m of mats) m.dispose();
   }
 }

@@ -1,0 +1,34 @@
+{
+ "date": "2026-11-12T19:57:05.983Z",
+ "note": "software WebGL (SwiftShader), 1280x720; frame times are relative only",
+ "loads": [
+  {
+   "map": "riftline",
+   "ms": 1762,
+   "bytes": 4335412,
+   "byType": {
+    "css": 71102,
+    "js": 2909113,
+    "json": 1351853
+   },
+   "requests": 226
+  }
+ ],
+ "runs": [
+  {
+   "map": "riftline",
+   "quality": "low",
+   "loadMs": 1762,
+   "calls": 384,
+   "triangles": 105126,
+   "geometries": 2320,
+   "textures": 79,
+   "heapMB": 189.5,
+   "frameMsP50": 100,
+   "frameMsP95": 100,
+   "enemies": 4,
+   "towers": 12
+  }
+ ],
+ "errors": []
+}

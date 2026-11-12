@@ -16,6 +16,24 @@ export const DAMAGE_COLORS = {
 const GLYPHS = { physical: '•', fire: '🔥', ice: '❄', lightning: '⚡', arcane: '✦', poison: '💧', explosive: '✸', holy: '☀', dark: '☾' };
 
 export class Effects {
+  /** Remove every mesh this effects system added to the scene and free its GPU buffers (match end). */
+  dispose() {
+    const geos = new Set();
+    const mats = new Set();
+    for (const m of [this.pMesh, this.boltMesh, ...this.rings.map((r) => r.mesh)]) {
+      this.scene.remove(m);
+      geos.add(m.geometry);
+      mats.add(m.material);
+      if (m.isInstancedMesh) m.dispose();
+    }
+    for (const g of geos) g.dispose();
+    for (const x of mats) x.dispose();
+    for (const n of this.nums) n.el.remove();
+    this.p = [];
+    this.rings = [];
+    this.bolts = [];
+  }
+
   constructor(scene, camera, overlay, settings) {
     this.scene = scene;
     this.camera = camera;
