@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { rigFromGLB, rigFromProcedural, InstancedRig } from './instancedRig.js';
 import { loadGLB, ModelInstance, modelSrc } from './models.js';
+import { matchEnemyIds } from '../sim/matchUnits.js';
 import { enemyRigDef, ALLY_RIGS, TOWER_MODELS, towerBuilder, mineModel } from './unitModels.js';
 import { Effects } from './effects.js';
 import { ModelBuilder } from './geo.js';
@@ -96,6 +97,7 @@ export class MatchView {
     this.slowmo = null;
     this.auraT = 0;
     this.enemyRigs = new Map(); // defId -> InstancedRig
+    this.pendingRigs = new Map(); // defId -> Promise while a rig is being baked
     this.allyRigs = new Map();
     this.enemyVis = new Map(); // id -> visual state
     this.dying = [];
@@ -110,30 +112,49 @@ export class MatchView {
     this.telegraphs = new Map();
   }
 
-  /** Load / bake every model the match can need (call before the first frame). */
+  /** Load / bake the models this match can field (call before the first frame). Enemies outside
+   *  the match's waves and their spawn graph are loaded on demand (_drawEnemy). A model that fails
+   *  to load never stops the match: it gets a code-built stand-in and a console warning. */
   async preload() {
     const tasks = [];
-    for (const def of this.content.enemies.values()) tasks.push(this._enemyAsset(def));
+    for (const id of matchEnemyIds(this.match)) tasks.push(this._enemyAsset(this.content.enemies.get(id)));
     for (const id of Object.keys(ALLY_RIGS)) this._allyAsset(id);
-    for (const def of this.content.towers.values()) {
-      const glb = modelSrc(this.content, def);
-      if (glb) tasks.push(loadGLB(glb));
+    for (const id of new Set(this.match.loadout)) {
+      const def = this.content.towers.get(id);
+      const glb = def && modelSrc(this.content, def);
+      if (glb) tasks.push(loadGLB(glb).catch((err) => console.warn(`tower model ${id} failed to load; using a stand-in`, err)));
     }
     await Promise.all(tasks);
   }
 
-  async _enemyAsset(def) {
-    if (this.enemyRigs.has(def.id)) return this.enemyRigs.get(def.id);
-    const glb = modelSrc(this.content, def);
-    let asset;
-    if (glb) asset = await rigFromGLB(glb, glb.clips, { transparent: def.stealth ? 0.45 : 0 });
-    else {
-      const rd = enemyRigDef(def);
-      asset = rigFromProcedural(rd, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: rd.height, transparent: rd.transparent || 0 });
+  _enemyAsset(def) {
+    if (this.enemyRigs.has(def.id)) return Promise.resolve(this.enemyRigs.get(def.id));
+    if (!this.pendingRigs.has(def.id)) {
+      const job = this._bakeEnemy(def).then((asset) => {
+        if (this.disposed) return null;
+        const rig = new InstancedRig(asset, this.group, def.boss ? 2 : 24);
+        rig.setShadows(this.r.q?.propShadows ?? true);
+        this.enemyRigs.set(def.id, rig);
+        return rig;
+      }).finally(() => this.pendingRigs.delete(def.id));
+      this.pendingRigs.set(def.id, job);
     }
-    const rig = new InstancedRig(asset, this.group, def.boss ? 2 : 24);
-    this.enemyRigs.set(def.id, rig);
-    return rig;
+    return this.pendingRigs.get(def.id);
+  }
+
+  async _bakeEnemy(def) {
+    const procedural = () => {
+      const rd = enemyRigDef(def);
+      return rigFromProcedural(rd, { idle: 'idle', move: 'move', attack: 'attack', death: 'death' }, { height: rd.height, transparent: rd.transparent || 0 });
+    };
+    const glb = modelSrc(this.content, def);
+    if (!glb) return procedural();
+    try {
+      return await rigFromGLB(glb, glb.clips, { transparent: def.stealth ? 0.45 : 0 });
+    } catch (err) {
+      console.warn(`enemy model ${def.id} failed to load; using a code-built stand-in`, err);
+      return procedural();
+    }
   }
 
   _allyAsset(id) {
@@ -236,6 +257,13 @@ export class MatchView {
         if (glb.clips?.idle) vis.inst.play(glb.clips.idle);
         vis.clips = glb.clips;
         vis.root.add(vis.inst.root);
+      }).catch((err) => {
+        // a missing or broken model file: a code-built stand-in keeps the tower visible and usable
+        console.warn(`tower model ${def.id} failed to load; using a stand-in`, err);
+        if (!this.towerVis.has(t.uid)) return;
+        const built = TOWER_MODELS.rune_totem();
+        vis.root.add(built.group);
+        vis.parts = built.parts;
       });
       vis.muzzle.set(0, 1.25, 0.9);
     } else {
@@ -481,7 +509,7 @@ export class MatchView {
         const inst = new ModelInstance(gltf);
         inst.root.traverse((o) => { if (o.isMesh) o.material = mat; });
         g.add(inst.root);
-      });
+      }).catch((err) => console.warn(`ghost model ${def.id} failed to load`, err));
     }
     return g;
   }
@@ -677,7 +705,12 @@ export class MatchView {
 
   _drawEnemy(v) {
     const rig = this.enemyRigs.get(v.defId);
-    if (!rig) return;
+    if (!rig) {
+      // not preloaded (endless pools, rare spawns): bake it now, draw it from the next frames
+      const def = this.content.enemies.get(v.defId);
+      if (def && !this.pendingRigs.has(v.defId)) this._enemyAsset(def);
+      return;
+    }
     v.height = rig.asset.height;
     let s = v.spawnT !== undefined ? Math.min(1, 0.3 + (v.spawnT || 0) * 3) : 1;
     let state = v.state;
@@ -701,6 +734,7 @@ export class MatchView {
    *  geometry would otherwise stay on the GPU and in the renderer's caches: about 2,000 geometries
    *  and 30 MB per match before this). Materials shared between matches are kept. */
   dispose() {
+    this.disposed = true; // rigs still baking are dropped when they finish
     const keep = new Set([sharedMaterials().body, sharedMaterials().glow, ...Object.values(decals)]);
     const geos = new Set();
     const mats = new Set();
