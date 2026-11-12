@@ -165,6 +165,29 @@ export function dailyQuestIds(quests, date) {
   return rng.shuffle(ids).slice(0, 3);
 }
 
+/** ISO week of a local date 'YYYY-MM-DD' as 'YYYY-Www' (weeks start on Monday). */
+export function weekKey(date) {
+  const [y, m, d] = String(date).split('-').map(Number);
+  const t = new Date(Date.UTC(y, m - 1, d));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day); // the Thursday of this week decides the year
+  const y0 = Date.UTC(t.getUTCFullYear(), 0, 1);
+  const wk = Math.ceil(((t - y0) / 86400000 + 1) / 7);
+  return `${t.getUTCFullYear()}-W${String(wk).padStart(2, '0')}`;
+}
+
+export function weeklyQuestIds(quests, week) {
+  const ids = (quests.weekly || []).map((q) => q.id).sort();
+  return new Rng(`weekly:${week}`).shuffle(ids).slice(0, 3);
+}
+
+/** This week's board (resets on Monday). */
+export function weeklyBoard(save, quests, date) {
+  const week = weekKey(date);
+  if (!save.quests.weekly || save.quests.weekly.week !== week) save.quests.weekly = { week, ids: weeklyQuestIds(quests, week), progress: {} };
+  return save.quests.weekly;
+}
+
 /** Ensure today's quest board exists (resets daily progress at the date change). */
 export function questBoard(save, quests, date) {
   if (!save.quests.daily || save.quests.daily.date !== date) save.quests.daily = { date, ids: dailyQuestIds(quests, date), progress: {} };
@@ -226,6 +249,15 @@ export function questStatus(save, quests, content, date) {
     if (!q) continue;
     const p = board.progress[id] || 0;
     out.push({ kind: 'daily', ...q, progress: Math.min(p, q.target), done: p >= q.target, claimed: save.claimed.includes(`quest:${date}:${id}`), claimId: `quest:${date}:${id}` });
+  }
+  if (quests.weekly?.length) {
+    const wb = weeklyBoard(save, quests, date);
+    for (const id of wb.ids) {
+      const q = quests.weekly.find((x) => x.id === id);
+      if (!q) continue;
+      const p = wb.progress[id] || 0;
+      out.push({ kind: 'weekly', ...q, progress: Math.min(p, q.target), done: p >= q.target, claimed: save.claimed.includes(`weekly:${wb.week}:${id}`), claimId: `weekly:${wb.week}:${id}` });
+    }
   }
   for (const q of quests.story) {
     out.push({ kind: 'story', ...q, ...condProgress(q, save, content), done: condDone(q, save, content), claimed: save.claimed.includes(`story:${q.id}`), claimId: `story:${q.id}` });
@@ -334,6 +366,13 @@ export function applyMatchResult(save, result, content, meta, date) {
   for (const id of board.ids) {
     const q = content.quests.daily.find((x) => x.id === id);
     if (q?.stat) board.progress[id] = (board.progress[id] || 0) + (q.stat === 'matches' ? 1 : add[q.stat] || 0);
+  }
+  if (content.quests.weekly?.length) {
+    const wb = weeklyBoard(save, content.quests, date);
+    for (const id of wb.ids) {
+      const q = content.quests.weekly.find((x) => x.id === id);
+      if (q?.stat) wb.progress[id] = (wb.progress[id] || 0) + (q.stat === 'matches' ? 1 : add[q.stat] || 0);
+    }
   }
   return out;
 }

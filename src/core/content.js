@@ -45,7 +45,7 @@ export async function loadContent(readJson) {
     // quests: one file or a list (hand-written quests.json + generated tiers); lists are concatenated
     quests: index.quests ? await (async () => {
       const files = Array.isArray(index.quests) ? index.quests : [index.quests];
-      const out = { daily: [], story: [], achievements: [] };
+      const out = { daily: [], weekly: [], story: [], achievements: [] };
       for (const f of files) { const q = await readJson(f); for (const k of Object.keys(out)) out[k].push(...(q[k] || [])); }
       return out;
     })() : null,

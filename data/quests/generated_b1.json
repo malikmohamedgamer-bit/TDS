@@ -167,6 +167,140 @@
    }
   }
  ],
+ "weekly": [
+  {
+   "id": "w_kills_2500",
+   "name": "Week of the hunt",
+   "desc": "Defeat 2,500 enemies",
+   "stat": "kills",
+   "target": 2500,
+   "reward": {
+    "sigils": 250,
+    "crowns": 1200
+   }
+  },
+  {
+   "id": "w_wavesCleared_150",
+   "name": "Long campaign",
+   "desc": "Clear 150 waves",
+   "stat": "wavesCleared",
+   "target": 150,
+   "reward": {
+    "sigils": 150,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "w_wins_8",
+   "name": "Victory march",
+   "desc": "Win 8 matches",
+   "stat": "wins",
+   "target": 8,
+   "reward": {
+    "sigils": 150,
+    "crowns": 600
+   }
+  },
+  {
+   "id": "w_bossKills_10",
+   "name": "Titan week",
+   "desc": "Defeat 10 bosses",
+   "stat": "bossKills",
+   "target": 10,
+   "reward": {
+    "sigils": 150,
+    "crowns": 600
+   }
+  },
+  {
+   "id": "w_placed_150",
+   "name": "Builder week",
+   "desc": "Place 150 towers",
+   "stat": "placed",
+   "target": 150,
+   "reward": {
+    "sigils": 150,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "w_upgrades_100",
+   "name": "Workshop week",
+   "desc": "Buy 100 tower upgrades",
+   "stat": "upgrades",
+   "target": 100,
+   "reward": {
+    "sigils": 150,
+    "crowns": 800
+   }
+  },
+  {
+   "id": "w_abilities_50",
+   "name": "Command week",
+   "desc": "Use abilities 50 times",
+   "stat": "abilities",
+   "target": 50,
+   "reward": {
+    "sigils": 150,
+    "crowns": 700
+   }
+  },
+  {
+   "id": "w_evolutions_12",
+   "name": "Evolution week",
+   "desc": "Evolve 12 towers in matches",
+   "stat": "evolutions",
+   "target": 12,
+   "reward": {
+    "sigils": 150,
+    "crowns": 600
+   }
+  },
+  {
+   "id": "w_matches_15",
+   "name": "Regular duty",
+   "desc": "Play 15 matches",
+   "stat": "matches",
+   "target": 15,
+   "reward": {
+    "sigils": 150,
+    "crowns": 600
+   }
+  },
+  {
+   "id": "w_kills_5000",
+   "name": "Great purge",
+   "desc": "Defeat 5,000 enemies",
+   "stat": "kills",
+   "target": 5000,
+   "reward": {
+    "sigils": 300,
+    "crowns": 1200
+   }
+  },
+  {
+   "id": "w_wins_15",
+   "name": "Winning streak",
+   "desc": "Win 15 matches",
+   "stat": "wins",
+   "target": 15,
+   "reward": {
+    "sigils": 150,
+    "crowns": 600
+   }
+  },
+  {
+   "id": "w_wavesCleared_300",
+   "name": "Endless watch",
+   "desc": "Clear 300 waves",
+   "stat": "wavesCleared",
+   "target": 300,
+   "reward": {
+    "sigils": 150,
+    "crowns": 1200
+   }
+  }
+ ],
  "story": [
   {
    "id": "s_map_riftline",

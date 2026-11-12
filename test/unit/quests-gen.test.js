@@ -67,3 +67,27 @@ test('map and mode quests: a Campaign win liberates the map, another mode win co
   assert.equal(st('s_mode_mutation').done, false);
   assert.deepEqual(condProgress(Q.achievements.find((q) => q.id === 'a_maps_5'), save, C), { progress: 1, target: 5 });
 });
+
+test('weekly quests: 3 per ISO week (Monday reset), progress from matches, each claimed once per week', async () => {
+  const { weekKey, weeklyBoard, claimQuest } = await import('../../src/meta/meta.js');
+  assert.ok(Q.weekly.length >= 9);
+  assert.equal(weekKey('2026-11-09'), '2026-W46'); // Monday
+  assert.equal(weekKey('2026-11-15'), '2026-W46'); // Sunday, same week
+  assert.equal(weekKey('2026-11-16'), '2026-W47');
+  assert.equal(weekKey('2027-01-01'), '2026-W53'); // a Friday that belongs to the last week of 2026
+  const save = newSave();
+  const b = weeklyBoard(save, Q, '2026-11-11');
+  assert.equal(b.ids.length, 3);
+  const q = Q.weekly.find((x) => x.id === b.ids[0]);
+  const stats = { kills: 0, placed: 0, upgrades: 0, evolutions: 0, abilities: 0, bossesKilled: 0 };
+  const key = { kills: 'kills', placed: 'placed', upgrades: 'upgrades', evolutions: 'evolutions', abilities: 'abilities', bossKills: 'bossesKilled' }[q.stat];
+  if (key) stats[key] = q.target;
+  applyMatchResult(save, { seed: 'wk1', map: 'riftline', difficulty: 'easy', mode: 'campaign', won: true, wave: q.stat === 'wavesCleared' ? q.target : 20, waves: 20, stats, seen: [], loadout: [] }, C, C.meta, '2026-11-11');
+  const st = questStatus(save, Q, C, '2026-11-12').find((x) => x.id === q.id && x.kind === 'weekly');
+  assert.ok(st.progress > 0, 'progress counts');
+  if (st.done) {
+    assert.equal(claimQuest(save, Q, C, '2026-11-12', st.claimId).ok, true);
+    assert.equal(claimQuest(save, Q, C, '2026-11-13', st.claimId).ok, false, 'once per week');
+  }
+  assert.notDeepEqual(weeklyBoard(save, Q, '2026-11-16').week, '2026-W46');
+});

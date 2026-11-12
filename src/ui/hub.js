@@ -351,7 +351,7 @@ export class Hub {
 
   _quests() {
     const qs = questStatus(this.save, this.c.quests, this.c, this.date());
-    const QI = { daily: 'scroll', story: 'book', achievement: 'trophy' };
+    const QI = { daily: 'scroll', weekly: 'gift', story: 'book', achievement: 'trophy' };
     // ready to claim first, then closest to done, claimed last (95 achievements stay scannable)
     const rank = (q) => (q.done && !q.claimed ? 0 : q.claimed ? 2 : 1);
     const sorted = (kind) => qs.filter((q) => q.kind === kind).sort((a, b) => rank(a) - rank(b) || (b.progress / b.target) - (a.progress / a.target));
@@ -361,7 +361,7 @@ export class Hub {
       <div><b>${esc(q.name)}</b><small>${esc(q.desc)}</small>
       <div class="qbar" role="progressbar" aria-label="${q.progress} of ${q.target}" aria-valuemin="0" aria-valuemax="${q.target}" aria-valuenow="${q.progress}"><span style="width:${(q.progress / q.target) * 100}%"></span></div><small>${fmt(q.progress)}/${fmt(q.target)} · ${rewardHtml(q.reward)}</small></div>
       ${q.claimed ? '<span class="maxed">Claimed</span>' : `<button class="btn ${q.done ? 'primary' : ''}" data-claim="${q.claimId}" ${q.done ? '' : 'disabled'}>Claim</button>`}</div>`).join('')}</div>`;
-    return `${sec('daily', 'Daily quests (new set every day)')}${sec('story', 'Story')}${sec('achievement', 'Achievements')}<p class="note">Assisted runs do not count towards quests or achievements.</p>`;
+    return `${sec('daily', 'Daily quests (new set every day)')}${qs.some((q) => q.kind === 'weekly') ? sec('weekly', 'Weekly quests (new set every Monday)') : ''}${sec('story', 'Story')}${sec('achievement', 'Achievements')}<p class="note">Assisted runs do not count towards quests or achievements.</p>`;
   }
 
   _daily() {

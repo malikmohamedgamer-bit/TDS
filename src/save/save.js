@@ -97,6 +97,9 @@ export function sanitize(s, content) {
   if (!isObj(dq) || typeof dq.date !== 'string' || !Array.isArray(dq.ids) || !isObj(dq.progress)) delete out.quests.daily;
   else out.quests.daily = { date: dq.date, ids: dq.ids.map(String), progress: numMap(dq.progress) };
   if (out.quests.story !== undefined && !isObj(out.quests.story)) delete out.quests.story;
+  const wq = out.quests.weekly;
+  if (!isObj(wq) || typeof wq.week !== 'string' || !Array.isArray(wq.ids) || !isObj(wq.progress)) delete out.quests.weekly;
+  else out.quests.weekly = { week: wq.week, ids: wq.ids.map(String), progress: numMap(wq.progress) };
   out.achievements = isObj(s.achievements) ? s.achievements : {};
   out.cosmetics = Object.fromEntries(Object.entries(isObj(s.cosmetics) ? s.cosmetics : {}).filter(([, v]) => typeof v === 'string'));
   const strList = (v) => [...new Set((Array.isArray(v) ? v : []).filter((x) => typeof x === 'string'))];
