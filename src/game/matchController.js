@@ -13,6 +13,7 @@ import { writeSave } from '../save/save.js';
 import { applyMatchResult, localDate, unlockedSpeeds, dailyChallenge } from '../meta/meta.js';
 import { Hub } from '../ui/hub.js';
 import { mapTheme } from '../ui/mapThumb.js';
+import { equippedCosmetic } from '../meta/cosmetics.js';
 import { towerThumbnail as tThumb, enemyThumbnail } from '../engine/thumbnails.js';
 import { buildMapWorld } from '../core/mapLayout.js';
 
@@ -154,7 +155,8 @@ export class MatchController {
       hero: this.content.heroes.has(this.settings.hero) ? this.settings.hero : undefined,
       options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero, preset: this.presetId(), assist: this.assist(), mode: cfg.mode || 'campaign', modifiers: cfg.modifiers || [], dailyDate: cfg.dailyDate },
     });
-    const view = new MatchView(this.renderer, match, this.content, this.settings, this.ui.querySelector('.dmg-layer'));
+    const looks = { projectile: equippedCosmetic(this.save, this.content, 'projectileFx'), plinth: equippedCosmetic(this.save, this.content, 'towerPlinth') };
+    const view = new MatchView(this.renderer, match, this.content, this.settings, this.ui.querySelector('.dmg-layer'), looks);
     await view.preload();
     // only expose the match once everything it needs exists (the frame loop reads it)
     this.match = match;

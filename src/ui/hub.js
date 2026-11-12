@@ -340,7 +340,12 @@ export class Hub {
     const all = cosmeticStatus(this.save, this.c);
     if (!all.length) return '';
     const kinds = this.c.cosmetics.kinds || {};
-    const sw = (it) => (it.kind === 'uiTheme' ? [it.vars?.['--brass'] || '#ffd166', it.vars?.['--brass-2'] || '#b8903c'] : [it.colors?.coat || '#2A2766', it.colors?.coatTrim || '#FFD166', it.colors?.cape || '#7B4DFF']);
+    const sw = (it) => {
+      if (it.kind === 'uiTheme') return [it.vars?.['--brass'] || '#ffd166', it.vars?.['--brass-2'] || '#b8903c'];
+      if (it.kind === 'projectileFx') return it.tint ? [it.tint, it.tint, '#1b1f2c'] : ['#FFD27A', '#FF6B35', '#7FDBFF', '#C9A7FF'];
+      if (it.kind === 'towerPlinth') return it.color ? [it.color] : ['#5b6b3a', '#7b4dff'];
+      return [it.colors?.coat || '#2A2766', it.colors?.coatTrim || '#FFD166', it.colors?.cape || '#7B4DFF'];
+    };
     return Object.entries(kinds).map(([kind, title]) => {
       const list = all.filter((x) => x.kind === kind);
       return `<h3>${icon('star')} ${esc(title)} <span class="count">${list.filter((x) => x.unlocked).length}/${list.length}</span></h3><div class="cos-grid">${list.map((it) => `<button class="cos ${it.equipped ? 'on' : ''} ${it.unlocked ? '' : 'locked'}" data-cosmetic="${it.id}" data-testid="cos-${it.id}" aria-pressed="${it.equipped}" ${it.unlocked ? '' : 'aria-disabled="true"'}>

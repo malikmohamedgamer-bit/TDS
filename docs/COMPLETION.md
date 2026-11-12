@@ -40,7 +40,7 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 | Enemy mechanics | 5 | 12 of 13 (blink and speed burst added; no damage-type immunity on normal enemies) | 4.6 |
 | Boss phase mechanics | 5 | 16 / 12 | 5.0 |
 | Modes | 5 | 11 / 10 | 5.0 |
-| Meta | 10 | tiers, branches, shop; 3 banners with pity; Index; quests 105/80 (daily, weekly, story); achievements 109/80 (tiers of 18 conditions); cosmetics 2 of 5 kinds (UI themes, hero outfits); daily login streak and weekly quests | 8.8 |
+| Meta | 10 | tiers, branches, shop; 3 banners with pity; Index; quests 105/80 (daily, weekly, story); achievements 109/80 (tiers of 18 conditions); cosmetics 4 of 5 kinds, 26 items (UI themes, hero outfits, projectile effects, tower base plates); daily login streak and weekly quests | 9.2 |
 | Music and SFX | 4 | 7 moods (final boss, victory, defeat added), 12 theme styles; SFX per class partial; nothing checked by ear | 2.8 |
 | Quality and accessibility | 5 | as before, plus searchable Help, save export / import, offline PWA, contrast audit (all text 4.5:1 or more), weak-device Low default and automatic quality step-down, memory leak fixed, perf budgets; colourblind only glyphs; no LOD | 4.9 |
 | Map features | 5 | themes 14/14, flagships 5/13, new path templates 2/4 (split lanes, crossover; no air routes or loops) | 3.1 |

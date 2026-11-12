@@ -9,7 +9,8 @@ const C = await content();
 
 test('cosmetics data: kinds have a free default first, unique ids, valid colours and conditions', () => {
   const items = C.cosmetics.items;
-  assert.ok(items.length >= 12);
+  assert.ok(items.length >= 24);
+  assert.ok(Object.keys(C.cosmetics.kinds).length >= 4);
   assert.equal(new Set(items.map((x) => x.id)).size, items.length);
   for (const kind of Object.keys(C.cosmetics.kinds)) {
     const list = items.filter((x) => x.kind === kind);
@@ -21,6 +22,8 @@ test('cosmetics data: kinds have a free default first, unique ids, valid colours
   for (const it of items) {
     for (const [k, v] of Object.entries(it.vars || {})) assert.ok(k.startsWith('--') && /^(#[0-9a-f]{6}|rgba\([\d., ]+\))$/i.test(v), `${it.id} ${k}`);
     for (const v of Object.values(it.colors || {})) assert.match(v, hex, it.id);
+    for (const v of [it.tint, it.color].filter(Boolean)) assert.match(v, hex, it.id);
+    if (it.mix !== undefined) assert.ok(it.mix > 0 && it.mix <= 1, it.id);
     assert.ok(C.cosmetics.kinds[it.kind], it.id);
   }
 });
@@ -28,7 +31,7 @@ test('cosmetics data: kinds have a free default first, unique ids, valid colours
 test('a new save owns only the defaults; play unlocks; a locked or unknown choice falls back', () => {
   const save = newSave(1);
   const st = cosmeticStatus(save, C);
-  assert.deepEqual(st.filter((x) => x.unlocked).map((x) => x.id), ['ui_brass', 'outfit_default']);
+  assert.deepEqual(st.filter((x) => x.unlocked).map((x) => x.id), ['ui_brass', 'outfit_default', 'proj_standard', 'plinth_standard']);
   assert.equal(equipCosmetic(save, C, 'ui_emerald').ok, false);
   assert.equal(equipCosmetic(save, C, 'nope').ok, false);
   save.cosmetics = { uiTheme: 'ui_emerald', heroOutfit: 'junk' }; // hand-edited save
@@ -41,4 +44,14 @@ test('a new save owns only the defaults; play unlocks; a locked or unknown choic
   assert.equal(equippedCosmetic(back, C, 'uiTheme').id, 'ui_emerald');
   const partial = cosmeticStatus(save, C).find((x) => x.id === 'outfit_nightops');
   assert.deepEqual([partial.progress, partial.target, partial.unlocked], [10, 25, false]);
+});
+
+test('mode and boss conditions unlock projectile effects and plinths', () => {
+  const save = newSave(2);
+  save.claimed.push('firstclear:riftline:easy:mutation');
+  assert.equal(equipCosmetic(save, C, 'proj_frost').ok, true);
+  assert.equal(equippedCosmetic(save, C, 'projectileFx').id, 'proj_frost');
+  assert.equal(equipCosmetic(save, C, 'plinth_void').ok, false, 'needs a Last Stand win');
+  save.claimed.push('firstclear:riftline:easy:last_stand');
+  assert.equal(equipCosmetic(save, C, 'plinth_void').ok, true);
 });

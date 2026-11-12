@@ -82,7 +82,8 @@ const PROJECTILES = {
 /** Hero skill VFX now live in data/vfx.json as ability.<id> presets (cast ring colour = first ring step). */
 
 export class MatchView {
-  constructor(renderer, match, content, settings, overlay) {
+  constructor(renderer, match, content, settings, overlay, looks = {}) {
+    this.looks = looks; // equipped cosmetics: {projectile, plinth} (data/cosmetics.json items)
     this.r = renderer;
     this.match = match;
     this.content = content;
@@ -170,6 +171,8 @@ export class MatchView {
     this.proj = new Map();
     for (const [kind, p] of Object.entries(PROJECTILES)) {
       const color = new THREE.Color(p.color);
+      const fx = this.looks.projectile;
+      if (fx?.tint) color.lerp(new THREE.Color(fx.tint), fx.mix ?? 0.6);
       if (p.glow) color.multiplyScalar(p.glow);
       const mat = p.glow ? new THREE.MeshBasicMaterial({ color }) : new THREE.MeshStandardMaterial({ color, flatShading: true });
       const geo = kind === 'fireball' || kind === 'sunbolt' || kind === 'grenade' || kind === 'starshard' ? new THREE.IcosahedronGeometry(0.5, 0) : new THREE.BoxGeometry(1, 1, 1);
@@ -246,6 +249,20 @@ export class MatchView {
   }
 
   // ------------------------------------------------------------------------- towers ---------
+  /** Base plate material: the faction decal, recoloured when a plinth cosmetic is equipped (one
+   *  material per faction per match, freed with the view). */
+  _plinthMaterial(faction) {
+    const base = factionDecal(faction);
+    const col = this.looks.plinth?.color;
+    if (!col) return base;
+    this.plinths ||= {};
+    if (!this.plinths[faction]) {
+      this.plinths[faction] = base.clone();
+      this.plinths[faction].color = new THREE.Color(col).multiplyScalar(1.3);
+    }
+    return this.plinths[faction];
+  }
+
   _makeTower(t) {
     const def = t.def;
     const vis = { uid: t.uid, defId: def.id, root: new THREE.Group(), inst: null, parts: {}, unit: null, yaw: t.rot || 0, recoil: 0, attackT: 9, scale: 1, evolved: false, muzzle: new THREE.Vector3(0, 1.4, 0.8) };
@@ -274,7 +291,7 @@ export class MatchView {
       if (built.unit) { vis.unit = built.unit; this.group.add(built.unit); }
     }
     // faction base decal + rarity ring (rare and up; legendary / mythic pulse)
-    vis.decal = new THREE.Mesh(new THREE.PlaneGeometry(3, 3).rotateX(-Math.PI / 2), factionDecal(def.faction === 'magic' ? 'magic' : 'war'));
+    vis.decal = new THREE.Mesh(new THREE.PlaneGeometry(3, 3).rotateX(-Math.PI / 2), this._plinthMaterial(def.faction === 'magic' ? 'magic' : 'war'));
     vis.decal.position.y = 0.05;
     vis.decal.renderOrder = 1;
     vis.root.add(vis.decal);
