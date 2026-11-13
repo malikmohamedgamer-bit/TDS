@@ -331,3 +331,25 @@ test('lobby: a member that briefly took over while the creator vanished rejoins 
   assert.deepEqual(host.players.map((p) => p.name), ['HOST', 'M1']);
   assert.deepEqual(m.players.map((p) => p.name), ['HOST', 'M1']);
 });
+
+test('lobby: joinRoom rejects cleanly when the transport join fails (no unhandled rejection)', async () => {
+  // regression: the relay refusing the join (room full) also rejected joinRoom's inner wait promise
+  // with nobody listening: an unhandled rejection, which crashes Node (found by server/test/integration)
+  const unhandled = [];
+  const onUnhandled = (err) => unhandled.push(err);
+  process.on('unhandledRejection', onUnhandled);
+  try {
+    const transport = {
+      id: 'x1', peers: [],
+      join: () => Promise.reject(Object.assign(new Error('room ABCDEF is full (4 players)'), { code: 'full' })),
+      send() {}, onMessage: () => () => {}, onPeers: () => () => {}, close() {},
+    };
+    const lobby = new Lobby({ transport, name: 'X', hero: 'h', version: VERSION, gameVersion: GAME });
+    await assert.rejects(lobby.joinRoom('ABCDEF'), (err) => err.code === 'full');
+    await new Promise((r) => setTimeout(r, 20));
+    assert.deepEqual(unhandled, []);
+    assert.equal(lobby.phase, 'idle');
+  } finally {
+    process.off('unhandledRejection', onUnhandled);
+  }
+});
