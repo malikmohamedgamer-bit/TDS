@@ -113,6 +113,38 @@ host to all; `{t:'hash', tick, hash}` client to host; `{t:'snap', id, part, of, 
 - Deploy files: `server/Dockerfile`, `render.yaml`, `fly.toml`; docs/DEPLOY-ONLINE.md covers Supabase
   (no server code: create a project, copy URL and anon key into data/online.json) and the relay.
 
+## Contract 5: game integration (phase 2)
+
+**Entry.** Hub tab **Online** (`src/ui/onlineLobby.js`): display name (settings `playerName`, 1-16
+chars, trimmed, shown with `textContent` only), **Create room** / **Join room** (code input), then the
+lobby: players with hero and ready state, the host's map and difficulty pickers (maps the host has
+unlocked), ready toggle, **Start** (host, when everyone is ready and on the map). The lobby uses the
+hero each player currently has selected; changing hero still reloads the page (as in single-player).
+
+**Map changes reload.** The world is built at page load. When the host picks a map, every player's
+page navigates to `?map=<id>&room=<CODE>` and the lobby rejoins automatically with the same peer id
+(kept in `sessionStorage`), so a reload never drops a player from the room. Every peer reports the map
+its world is on in its presence meta; Start is enabled only when all peers report the lobby's map.
+
+**Starting.** `ctrl.startOnline({ lobby, transport, start, localPid })` (src/game/matchController.js)
+builds the Match from the host's start message (`seed`, `map`, `difficulty`, `players`, mode `coop`),
+creates the LockstepSession and runs the match through it:
+- `step()` calls `session.advance(k)` instead of `match.step()`; `k` from the host's speed.
+- Every local command goes through `session.issue({ ...cmd, pid: localPid })`; hero position is sent
+  every 6 ticks only when it moved (> 0.2 m).
+- Speed and pause are host-only; clients see "Paused by the host" and keep their menu usable.
+- Remote heroes are drawn with `HeroView` (own colours and gear), interpolated between sim updates;
+  towers show a small ring in the owner's colour; player colours: gold, cyan, magenta, lime.
+- HUD: team list (name, colour, hero, connection, own cash), quick pings (preset messages,
+  `session` side channel `{t:'chat', k}`, shown as captions), banners for desync resync, stalls
+  ("Waiting for <host>...") and players leaving; host leaving ends the match with a message.
+- End: every client applies its own rewards from `match.result()` (mode `coop`) and returns to the
+  lobby (the room stays open).
+
+**Balance.** `node tools/balance.mjs --coop <2|3|4>` plays one bot per player (each with its own
+wallet and the core 12 loadout split between them) and tunes `coop.cashShare` / `coop.enemyHp` to
+60-70% on Normal.
+
 ## Known limits
 
 - Supabase free tier counts every message; turns are batched (default 10 per second per room) and
