@@ -1,0 +1,21 @@
+# Daily check that the live game is reachable and serves its data (no secrets, read-only).
+name: Live smoke test
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Page, data index, a map, service worker
+        run: |
+          set -e
+          base='https://malikmohamedgamer-bit.github.io/TDS/'
+          curl -fsS "$base" | grep -q '<title>'
+          curl -fsS "${base}data/index.json" | grep -q '"maps"'
+          curl -fsS "${base}data/maps/riftline.json" | grep -q '"paths"'
+          curl -fsS "${base}sw.js" | grep -q 'PRECACHE'
+          echo "live site OK"

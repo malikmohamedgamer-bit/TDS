@@ -96,8 +96,8 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Cloud saves / server-verified rewards (docs/online-plan.md phases 1-2); trading stays out (see plan)
 
 ## Chunk 10: launch preparation (SHOULD)
-- [ ] Credits, privacy and terms (Help tab), icons, meta tags, 404 page done. Open: credits.md audit, naming / branding doc
-- [ ] README, store text, feature list, 10 screenshots + frame sequence, itch.io zip script, CHANGELOG,
+- [x] Credits, privacy and terms (Help tab), icons, meta tags, 404 page; credits audit (every pack folder and vendored library listed with its licence, 2026-11-14); docs/LEGAL-CHECKLIST.md. Open (owner): final name / trademark
+- [ ] README, store text (docs/STORE.md draft), feature list, itch.io zip script, CHANGELOG, daily live-URL smoke test (.github/workflows/smoke.yml) done. Open: the 10 store screenshots,
       version string, daily live-URL smoke test in CI, docs/LEGAL-CHECKLIST.md; no monetization by default
 
 ## Chunk 11: final verification and handover (MUST)
