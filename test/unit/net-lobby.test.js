@@ -353,3 +353,29 @@ test('lobby: joinRoom rejects cleanly when the transport join fails (no unhandle
     process.off('unhandledRejection', onUnhandled);
   }
 });
+
+test('lobby: after a match the host ends it and the same room can start again (rematch)', async () => {
+  const hub = new MemoryHub({ latency: [20, 80], jitter: 10, seed: 'lobby-rematch' });
+  const { host, members, all } = await room(hub, 3);
+  for (const m of members) m.setReady(true);
+  hub.advance(3000);
+  const first = host.start();
+  assert.equal(first.ok, true);
+  hub.advance(3000);
+  for (const l of all) assert.equal(l.phase, 'started');
+  // a member's presence drops during the match: the host forgets it
+  host._onPeers(host.peersNow.filter((p) => p.id !== members[1].id));
+  host._onPeers(members[1].peersNow);
+  assert.equal(host.endMatch(), true);
+  hub.advance(5000);
+  for (const l of all) assert.equal(l.phase, 'lobby');
+  assert.equal(host.players.length, 3, 'the dropped member is seated again');
+  assert.equal(host.start().ok, false, 'ready flags were cleared');
+  for (const m of members) m.setReady(true);
+  hub.advance(3000);
+  const second = host.start();
+  assert.equal(second.ok, true);
+  assert.notEqual(second.start.id, first.start.id);
+  hub.advance(3000);
+  for (const l of all) assert.equal(l.phase, 'started');
+});

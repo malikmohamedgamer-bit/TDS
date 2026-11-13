@@ -1,7 +1,7 @@
 import globals from 'globals';
 
 export default [
-  { ignores: ['_site/**', 'dist/**', 'vendor/**', 'node_modules/**', 'test-results/**', 'playwright-report/**', 'assets/**'] },
+  { ignores: ['_site/**', 'dist/**', '.claude/**', 'vendor/**', 'node_modules/**', 'test-results/**', 'playwright-report/**', 'assets/**'] },
   {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {

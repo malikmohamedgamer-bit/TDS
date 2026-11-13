@@ -234,7 +234,7 @@ export class Match {
       case 'abilityMode': return this.abilitySets[pi].some((x) => x.id === cmd.id) && ['manual', 'auto'].includes(cmd.mode) ? { ok: true } : { ok: false, reason: 'Bad ability mode', code: 'mode' };
       case 'skip': return this.phase === 'prep' || this.canSkip() ? { ok: true } : { ok: false, reason: 'Cannot skip yet', code: 'skip' };
       case 'assistSkip': return this.tune.skipWave && this.phase === 'wave' ? { ok: true } : { ok: false, reason: 'Turn on the Skip wave assist first', code: 'assist' };
-      case 'hero': return Number.isFinite(cmd.x) && Number.isFinite(cmd.z) ? { ok: true } : { ok: false, reason: 'Bad position', code: 'pos' };
+      case 'hero': return Number.isFinite(cmd.x) && Number.isFinite(cmd.z) && (cmd.y === undefined || Number.isFinite(cmd.y)) ? { ok: true } : { ok: false, reason: 'Bad position', code: 'pos' };
       default: return { ok: false, reason: `Unknown command ${cmd.type}`, code: 'unknown' };
     }
   }
@@ -304,7 +304,9 @@ export class Match {
   _apply(cmd) {
     const v = this.validate(cmd);
     if (!v.ok) { this.events.push({ type: 'rejected', cmd, reason: v.reason }); return; }
-    this.log.push({ tick: this.tick, ...cmd });
+    // co-op: hero positions arrive ten times a second from every player; the log (replays,
+    // snapshots) would grow by hundreds of KB a minute, and co-op results are not replay-verified
+    if (!(cmd.type === 'hero' && this.players.length > 1)) this.log.push({ tick: this.tick, ...cmd });
     const pi = this.playerIndex(cmd.pid);
     switch (cmd.type) {
       case 'place': this._place(cmd, pi); break;

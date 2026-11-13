@@ -258,6 +258,20 @@ export class Lobby {
     return { ok: true, start };
   }
 
+  /**
+   * Host only: the co-op match is over; the room goes back to the lobby so the same players can
+   * start another match (ready flags are cleared). Members return to the lobby when they see it.
+   */
+  endMatch() {
+    if (!this.isHost || !this.state?.start) return false;
+    this.state.start = null;
+    this.acks = new Set();
+    this.phase = 'lobby';
+    for (const m of this.members.values()) if (m.id !== this.id) m.ready = false;
+    this._hostPublish();
+    return true;
+  }
+
   /** Host only: remove a member (it gets 'kicked' and cannot rejoin this room). */
   kick(peerId) {
     if (!this.isHost || peerId === this.id) return false;
@@ -512,6 +526,8 @@ export class Lobby {
         const seated = s.players.some((p) => p.id === this.id);
         if (seated && wasJoining) this.phase = 'lobby';
         this._applyState(s, prev);
+        // the host ended the match: back to the lobby (ready again, rematch)
+        if (!s.start && this.phase === 'started') { this.phase = 'lobby'; this.profile.ready = false; }
         if (s.start) {
           if (s.start.peers?.[this.id]) {
             this._send({ op: 'ack', startId: s.start.id }, from);

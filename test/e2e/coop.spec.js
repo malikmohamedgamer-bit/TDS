@@ -49,7 +49,7 @@ test('co-op: create and join a room, start, build from both tabs, stay in lockst
     const m = c.match;
     const pid = c.online.localPid;
     const path = m.paths[0];
-    for (let d = pid === 'p1' ? 10 : 16; d < path.length; d += 7) {
+    for (let d = pid === 'p1' ? 10 : 45; d < path.length; d += 7) {
       const pt = path.pointAt(d, {});
       for (const off of [5, -5, 7, -7]) {
         const x = pt.x + off * pt.dz;
@@ -59,23 +59,50 @@ test('co-op: create and join a room, start, build from both tabs, stay in lockst
     }
     return false;
   }, tower);
+  // both tabs record their state hash and tower list as they pass fixed ticks (a member may run a
+  // few ticks ahead of the host inside the confirmed window, so "same tick now" is not a test)
+  for (const p of [A, B]) {
+    await p.evaluate(() => {
+      const sim = window.TDS.ctrl.online.sim;
+      window.__rec = {};
+      const step = sim.step.bind(sim);
+      sim.step = () => {
+        const r = step();
+        const m = sim.match;
+        if (m.tick % 300 === 0) window.__rec[m.tick] = { hash: m.hash(), towers: m.towers.map((t) => `${t.uid}:${t.owner}:${t.defId}`).sort() };
+        return r;
+      };
+    });
+  }
   expect(await build(A, 'rifleman')).toBe(true);
   expect(await build(B, 'ember_adept')).toBe(true);
   await A.evaluate(() => window.TDS.ctrl.command({ type: 'skip' }));
-  for (const p of [A, B]) await p.waitForFunction(() => window.TDS.ctrl.match.tick > 900, null, { timeout: 300_000 });
+  for (const p of [A, B]) await p.waitForFunction(() => window.TDS.ctrl.match.tick > 1600, null, { timeout: 400_000 });
 
-  // pause on the host, then both tabs settle on the same tick
-  await A.evaluate(() => window.TDS.ctrl.online.session.setPaused(true));
-  const state = (p) => p.evaluate(() => {
-    const m = window.TDS.ctrl.match;
-    return { tick: m.tick, hash: m.hash(), towers: m.towers.map((t) => `${t.uid}:${t.owner}:${t.defId}`).sort() };
-  });
-  let a;
-  let b;
-  await expect.poll(async () => { a = await state(A); b = await state(B); return a.tick === b.tick; }, { timeout: 60_000 }).toBe(true);
-  expect(b.hash).toBe(a.hash);
-  expect(b.towers).toEqual(a.towers);
-  expect(a.towers.some((t) => t.includes(':p1:'))).toBe(true);
-  expect(a.towers.some((t) => t.includes(':p2:'))).toBe(true);
+  const recA = await A.evaluate(() => window.__rec);
+  const recB = await B.evaluate(() => window.__rec);
+  const common = Object.keys(recA).filter((t) => recB[t]).map(Number).sort((x, y) => x - y);
+  expect(common.length).toBeGreaterThanOrEqual(2);
+  for (const t of common) expect(recB[t], `tick ${t}`).toEqual(recA[t]);
+  const last = recA[common.at(-1)];
+  const a = { hash: last.hash };
+  expect(last.towers.some((t) => t.includes(':p1:'))).toBe(true);
+  expect(last.towers.some((t) => t.includes(':p2:'))).toBe(true);
+  expect(await B.evaluate(() => window.TDS.ctrl.online.session.stats.resyncs)).toBe(0);
+
+  // rematch: the host quits (pause menu), both tabs return to the same room, ready, start again
+  await A.evaluate(() => window.TDS.ctrl.backToOnlineLobby('You left the match'));
+  for (const p of [A, B]) {
+    await p.waitForFunction(() => !window.TDS.ctrl.online && document.querySelector('[data-testid="online-lobby"]'), null, { timeout: 60_000 });
+  }
+  expect((await B.getByTestId('room-code').textContent()).trim()).toBe(code);
+  await B.waitForSelector('[data-testid="online-ready"]', { timeout: 30_000 });
+  await tap(B, 'online-ready');
+  await A.waitForFunction(() => { const b = document.querySelector('[data-testid="online-start"]'); return b && !b.disabled; }, null, { timeout: 60_000 });
+  await tap(A, 'online-start');
+  for (const p of [A, B]) await p.waitForFunction(() => window.TDS.ctrl.online && window.TDS.ctrl.ready && window.TDS.ctrl.match.tick > 60, null, { timeout: 180_000 });
+  const firstSeed = a.hash;
+  expect(await A.evaluate(() => window.TDS.ctrl.match.towers.length)).toBe(0); // a fresh match
+  expect(firstSeed).toBeTruthy();
   expect(errors).toEqual([]);
 });

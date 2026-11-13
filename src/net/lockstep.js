@@ -30,6 +30,8 @@ import { CHUNK_BYTES, Reassembler, splitUtf8 } from './chunk.js';
 
 /** Turns the host keeps for resends (contract: last 600 turns). */
 export const TURNS_KEPT = 600;
+/** A client missing more turns than this gets a snapshot instead of a resend burst. */
+export const RESEND_MAX = 40;
 /** Host hashes kept for comparison with late client reports. */
 export const HASHES_KEPT = 64;
 /** Allowed game speeds (host only). */
@@ -581,6 +583,9 @@ export class LockstepSession {
     if (!this.started || from > this.seq) return;
     const oldest = this.turns.length ? this.turns[0].seq : this.seq + 1;
     if (from < oldest) { this._wantSnapshot(peer, 'gap'); return; }
+    // more than RESEND_MAX turns would be a burst that relay rate limits drop: a snapshot is one
+    // (chunked) message and catches the peer up just as well
+    if (this.seq - from + 1 > RESEND_MAX) { this._wantSnapshot(peer, 'gap'); return; }
     for (const turn of this.turns) if (turn.seq >= from) this._send(turn, peer);
   }
 

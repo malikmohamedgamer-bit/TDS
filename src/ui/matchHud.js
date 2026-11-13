@@ -317,7 +317,7 @@ export class MatchHud {
       <button class="icon-btn" data-act="close" aria-label="Close">${icon('cross')}</button></header>
       ${t.stunUntil > m.time ? `<p class="stunned">${icon('warn')} Stunned</p>` : ''}
       <dl>${stats.map(([k, v]) => `<dt${STAT_TIPS[k] ? ` data-tip="${esc(STAT_TIPS[k])}" tabindex="0"` : ''}>${k}</dt><dd>${v}</dd>`).join('')}</dl>
-      ${b.damage || b.trap ? `<div class="targeting" role="radiogroup" aria-label="Targeting">${TARGET_MODES.map((mode) => `<button role="radio" aria-checked="${t.targeting === mode}" data-target="${mode}">${TARGET_LABEL[mode]}</button>`).join('')}</div>` : ''}
+      ${mine && (b.damage || b.trap) ? `<div class="targeting" role="radiogroup" aria-label="Targeting">${TARGET_MODES.map((mode) => `<button role="radio" aria-checked="${t.targeting === mode}" data-target="${mode}">${TARGET_LABEL[mode]}</button>`).join('')}</div>` : ''}
       ${mine ? `${upgrade}
       <div class="row2"><button class="btn" data-act="move" data-testid="move">Move <kbd>M</kbd></button><button class="btn danger" data-act="sell" data-testid="sell">Sell $${refund}</button></div>` : `<p class="note owner-note" data-testid="owner-note">Built by ${esc(ownerName)}: only they can upgrade, move or sell it.</p>`}`;
     p.onclick = (e) => {

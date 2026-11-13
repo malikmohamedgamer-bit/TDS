@@ -168,7 +168,9 @@ try {
   let b = await state(B);
   for (let i = 0; i < 10 && a.tick !== b.tick; i++) { await A.waitForTimeout(1000); a = await state(A); b = await state(B); }
   console.log(JSON.stringify({ alice: a, bob: b }, null, 1));
-  if (a.tick !== b.tick) fail(`ticks differ after pause: ${a.tick} vs ${b.tick}`);
+  // a member may run a few ticks ahead of the host inside the confirmed window: the recorded
+  // per-tick states below are the real comparison
+  if (a.tick !== b.tick) console.log(`note: live ticks after pause ${a.tick} vs ${b.tick} (member inside the confirmed window)`);
   else if (a.hash !== b.hash) fail(`hash differs at tick ${a.tick}`);
   else ok(`same tick ${a.tick} and same hash on both pages`);
   if (JSON.stringify(a.towers) !== JSON.stringify(b.towers)) fail('tower lists differ'); else ok(`same ${a.towers.length} towers with owners on both pages`);
@@ -188,6 +190,7 @@ try {
     if (recA[t] === recB[t]) { console.log(`tick ${t}: identical`); continue; }
     const out = [];
     walk(JSON.parse(recA[t]), JSON.parse(recB[t]), 'snap', out);
+    fail(`recorded states differ at tick ${t}`);
     console.log(`tick ${t}: FIRST DIFFERENCE (host | member)`);
     for (const l of out) console.log(`  ${l}`);
     break;

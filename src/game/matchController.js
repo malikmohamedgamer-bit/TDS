@@ -213,6 +213,7 @@ export class MatchController {
   setPaused(on) {
     if (this.online) {
       // the host pauses everyone; a client only opens the menu (the match keeps running)
+      this.paused = on;
       if (this.online.isHost) this.online.session.setPaused(on);
       else if (on) this.mhud.banner('The match keeps running: only the host can pause', 'info');
       if (on && this.match) this.mhud.setReport(battleReport(this.match));
@@ -474,6 +475,7 @@ export class MatchController {
         case 'sell': sfx.play('sell'); break;
         case 'waveStart': this.music?.setMood(e.boss ? (e.wave >= e.total ? 'boss_final' : 'boss') : 'wave', this.map.id); sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;
         case 'bossSpawn': sfx.play('boss'); break;
+        case 'rejected': if (this.online && e.cmd?.pid === this.online.localPid && e.cmd.type !== 'hero') { this.mhud.banner(e.reason || 'Not allowed', 'warn'); sfx.play('error'); } break;
         case 'mutation': this.mhud.banner(`Mutation: ${e.name}. ${e.desc}`, 'warn'); break;
         case 'bossPhase': sfx.play('boss'); this.mhud.banner(`${e.name}!`, 'boss'); break;
         case 'telegraph': sfx.play('telegraph'); break;
@@ -508,7 +510,18 @@ export class MatchController {
     return this.online && this.match ? playerView(this.match, this.online.localPid) : this.match;
   }
 
-  async startOnline({ lobby, transport, start, localPid, config = {} }) {
+  async startOnline(o) {
+    try {
+      await this._startOnline(o);
+    } catch (err) {
+      // never leave the player on a half-built match: back to the room with the reason
+      console.error(err);
+      if (this.online) this.backToOnlineLobby(`Could not start the match: ${err.message}`);
+      else this.hub.showOnline({ lobby: o.lobby, transport: o.transport, message: `Could not start the match: ${err.message}` }).then((cfg) => cfg && this.start(cfg));
+    }
+  }
+
+  async _startOnline({ lobby, transport, start, localPid, config = {} }) {
     if (start.map !== this.map.id) throw new Error(`co-op start for map ${start.map} but ${this.map.id} is loaded`);
     // the host repeats a start until everyone acknowledged it: the same start never runs twice
     if (this.online?.start?.id === start.id) return;
@@ -541,13 +554,18 @@ export class MatchController {
       peers: Object.keys(start.peers), peerPids: start.peers, awaitSnapshot: !!start.rejoin,
     });
     this.online = online;
+    // listen before loading: a host 'bye' or a snapshot can arrive while the models load
+    online.loading = true;
+    this.listenOnline();
     const view = new MatchView(this.renderer, match, content, this.settings, this.ui.querySelector('.dmg-layer'), looks);
     view.coop = { localPid, players: start.players, color: seatColor };
     await view.preload();
     if (this.online !== online) { view.dispose(); return; } // superseded while loading
+    online.loading = false;
     this.match = match;
     this.view = view;
-    this.listenOnline();
+    // a snapshot arrived while loading (rejoin): draw the restored match instead
+    if (online.sim.match !== match) this.rebindOnline(online.sim.match);
     this.tutorialStats = { heroMoved: 0, cameraTurned: 0, tutorialTimer: 0, lastHero: { x: this.hero.x, z: this.hero.z }, lastYaw: this.rig.yaw };
     const own = (this.save.towers.loadout?.length ? this.save.towers.loadout : DEFAULT_LOADOUT).filter((id) => content.towers.has(id)).slice(0, 6);
     this.mhud.setLoadout(own, this.thumb, (d) => match.costOf(d));
@@ -567,7 +585,7 @@ export class MatchController {
   /** A resync replaced the Match: draw the new one (the view builds missing visuals itself). */
   rebindOnline(next) {
     const o = this.online;
-    if (!o) return;
+    if (!o || o.loading) return; // startOnline picks up sim.match when its view is ready
     const old = this.view;
     this.swapWorld(next.mw);
     const view = new MatchView(this.renderer, next, this.content, this.settings, this.ui.querySelector('.dmg-layer'), old?.looks || {});
@@ -604,7 +622,13 @@ export class MatchController {
     const offMsg = o.transport.onMessage((d, from) => {
       if (d?.t !== 'chat' || !Number.isInteger(d.k) || !PING_TEXTS[d.k]) return;
       const pid = o.start.peers[from];
-      if (pid) this.showPing(pid, d.k);
+      if (!pid) return;
+      // at most one ping per player every 1.2 s, whatever a peer sends
+      const now = performance.now();
+      o.pingAt ||= {};
+      if (now - (o.pingAt[pid] || 0) < 1200) return;
+      o.pingAt[pid] = now;
+      this.showPing(pid, d.k);
     });
     if (typeof offMsg === 'function') o.offs.push(offMsg);
   }
@@ -684,6 +708,8 @@ export class MatchController {
     const o = this.online;
     if (!o) { this.toLobby(); return; }
     const { lobby, transport } = o;
+    // the host returns the room to the lobby for everyone: same players can start again
+    if (o.isHost) { try { lobby.endMatch(); } catch (err) { console.warn('co-op: endMatch', err); } }
     this.end();
     this.music?.setMood('hub', this.map.id, mapTheme(this.map));
     this.mhud.setVisible(true);

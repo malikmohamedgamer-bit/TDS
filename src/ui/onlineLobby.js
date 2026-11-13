@@ -65,6 +65,7 @@ export class OnlineLobbyPanel {
 
   /** Back from a match (or the host left): show the same room again, or the start screen. */
   resume({ lobby, transport, message = '' } = {}) {
+    this.startedId = null; // the next start (rematch) must run
     if (lobby && transport && lobby.phase !== 'closed') {
       this.attach(lobby, transport);
       lobby.setReady(false);
@@ -161,8 +162,8 @@ export class OnlineLobbyPanel {
     this.startedId = start.id;
     if (start.map !== this.ctx.mapId) { this.followMap(); return; }
     this.hub.close();
-    this.ctx.startOnline({ lobby: this.lobby, transport: this.transport, start, localPid, config: this.config })
-      .catch((err) => { console.error(err); this.hub.showOnline({ lobby: this.lobby, transport: this.transport, message: `Could not start: ${err.message}` }); });
+    // startOnline handles its own failures (back to this room with the reason)
+    this.ctx.startOnline({ lobby: this.lobby, transport: this.transport, start, localPid, config: this.config });
   }
 
   leave(message = '') {
@@ -221,6 +222,8 @@ export class OnlineLobbyPanel {
     const map = this.content.maps.get(l.settings.map);
     const diffs = [...this.content.difficulties.values()].sort((a, b) => a.order - b.order);
     const blocker = l.isHost ? startBlocker(players, l.settings.map) : '';
+    // we left a match that is still going (the host has not ended it): offer to go back in
+    const running = l.state?.start?.peers?.[this.transport.id] ? l.state.start : null;
     const me = players.find((p) => p.me);
     const invite = (() => { const u = new URL(location.href); u.searchParams.set('room', l.code); u.searchParams.delete('net'); return u.toString(); })();
     const rows = players.map((p, i) => `<li class="op ${p.me ? 'me' : ''}" data-testid="online-player"><i class="dot" style="background:${seatColor(i)}"></i>
@@ -240,6 +243,7 @@ export class OnlineLobbyPanel {
         </section>
       </div>
       ${this.error ? `<p class="online-error" role="alert">${esc(this.error)}</p>` : ''}
+      ${running ? `<p class="note running" data-testid="online-running">${icon('play')} The match is still running. <button class="btn primary" data-act="on-rejoin" data-testid="online-rejoin">Rejoin match</button></p>` : ''}
       <div class="lobby-actions">
         ${l.isHost
     ? `<button class="btn primary big" data-act="on-start" data-testid="online-start" ${blocker ? 'disabled' : ''}>${icon('play')} Start match</button>${blocker ? `<small class="why" data-testid="online-why">${esc(blocker)}</small>` : ''}`
@@ -260,6 +264,7 @@ export class OnlineLobbyPanel {
       if (a === 'on-join') this.join(root.querySelector('[name=code]')?.value || '');
       if (a === 'on-ready') this.lobby.setReady(!this.lobby.players.find((p) => p.me)?.ready);
       if (a === 'on-leave') this.leave();
+      if (a === 'on-rejoin') { const st = this.lobby.state?.start; if (st) { this.startedId = null; this.onStart({ ...st, rejoin: true }); } }
       if (a === 'on-start') {
         const r = this.lobby.start({ force: true });
         if (!r.ok) { this.error = r.reason; this.draw(); }
