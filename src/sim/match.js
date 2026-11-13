@@ -229,6 +229,8 @@ export class Match {
         if (a.ready > this.time) return { ok: false, reason: `Ready in ${Math.ceil(a.ready - this.time)} s`, code: 'cooldown' };
         const h = this.heroOf(pid);
         if (h && h.downUntil > this.time) return { ok: false, reason: 'Commander is down', code: 'down' };
+        // a targeted cast needs a real spot (NaN or Infinity would poison the area damage later)
+        if (!(a.def.target === 'self' && h) && !(Number.isFinite(cmd.x) && Number.isFinite(cmd.z))) return { ok: false, reason: 'Pick a spot', code: 'pos' };
         return { ok: true };
       }
       case 'abilityMode': return this.abilitySets[pi].some((x) => x.id === cmd.id) && ['manual', 'auto'].includes(cmd.mode) ? { ok: true } : { ok: false, reason: 'Bad ability mode', code: 'mode' };
@@ -263,6 +265,8 @@ export class Match {
     const owner = this.players[pi].pid;
     const def = this.content.towers.get(towerId);
     if (!def) return { ok: false, reason: 'Unknown tower', code: 'unknown' };
+    // NaN / Infinity pass every distance test (comparisons with NaN are false): refuse them first
+    if (!Number.isFinite(x) || !Number.isFinite(z)) return { ok: false, reason: 'Bad position', code: 'pos' };
     if (!isMove && !this._loadoutOf(pi).includes(towerId)) return { ok: false, reason: 'Not in your loadout', code: 'locked' };
     const cost = this.costOf(def);
     const cash = this.wallets[pi];
