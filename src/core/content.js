@@ -139,10 +139,12 @@ export function validateContent(c) {
   return errs;
 }
 
-// The built site ships every data file in one data/bundle.json (tools/build-site.mjs): one
-// request instead of about 170. Without it (dev server) each file is fetched on its own.
+// The built site ships every data file in one data/bundle.json (tools/build-site.mjs) and marks
+// the page with <meta name="tds-data-bundle">: one request instead of about 170. Without the mark
+// (dev server, tests) each file is fetched on its own and the bundle is never asked for (no 404).
 const bundles = new Map();
 function dataBundle(base) {
+  if (typeof document === 'undefined' || !document.querySelector?.('meta[name="tds-data-bundle"]')) return null;
   if (!bundles.has(base)) {
     bundles.set(base, fetch(`${base}bundle.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null));
   }

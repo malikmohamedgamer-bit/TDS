@@ -27,6 +27,10 @@ for (const d of readdirSync(dataDir, { recursive: true, withFileTypes: true })) 
   bundle[rel] = JSON.parse(readFileSync(join(dataDir, rel), 'utf8'));
 }
 writeFileSync(join(dataDir, 'bundle.json'), JSON.stringify(bundle));
+// mark the page so the loader asks for the bundle (the dev server has none: no 404 there)
+const indexHtml = readFileSync(join(out, 'index.html'), 'utf8');
+if (!indexHtml.includes('</head>')) throw new Error('index.html: no </head>');
+writeFileSync(join(out, 'index.html'), indexHtml.replace('</head>', '  <meta name="tds-data-bundle" content="1">\n</head>'));
 console.log(`data bundle: ${Object.keys(bundle).length} files`);
 
 // Service worker: list every file (offline play) and stamp a build id made from their contents,
