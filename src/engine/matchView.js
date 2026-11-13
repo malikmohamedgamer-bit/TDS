@@ -84,7 +84,7 @@ const PROJECTILES = {
 
 export class MatchView {
   constructor(renderer, match, content, settings, overlay, looks = {}) {
-    this.looks = looks; // equipped cosmetics: {projectile, plinth} (data/cosmetics.json items)
+    this.looks = looks; // equipped cosmetics: {projectile, plinth, skin} (data/cosmetics.json items)
     this.r = renderer;
     this.match = match;
     this.content = content;
@@ -264,6 +264,29 @@ export class MatchView {
     return this.plinths[faction];
   }
 
+  /** Tower skin cosmetic: lit materials take the skin's tint (glowing parts keep their colour).
+   *  One clone per original material, shared by every tower that uses it, freed in dispose(). */
+  _skin(root, def) {
+    const s = this.looks?.skin;
+    if (!s?.tint || (s.faction && s.faction !== (def.faction === 'magic' ? 'magic' : 'war'))) return;
+    this.skinMats ||= new Map();
+    const tint = new THREE.Color(1, 1, 1).lerp(new THREE.Color(s.tint), s.strength ?? 0.6);
+    const swap = (m) => {
+      if (!m?.color || m.isMeshBasicMaterial) return m;
+      let c = this.skinMats.get(m);
+      if (!c) {
+        c = m.clone();
+        c.color = m.color.clone().multiply(tint);
+        this.skinMats.set(m, c);
+      }
+      return c;
+    };
+    root.traverse((o) => {
+      if (!o.isMesh) return;
+      o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);
+    });
+  }
+
   _makeTower(t) {
     const def = t.def;
     const vis = { uid: t.uid, defId: def.id, root: new THREE.Group(), inst: null, parts: {}, unit: null, yaw: t.rot || 0, recoil: 0, attackT: 9, scale: 1, evolved: false, muzzle: new THREE.Vector3(0, 1.4, 0.8) };
@@ -272,6 +295,7 @@ export class MatchView {
       loadGLB(glb).then((gltf) => {
         if (!this.towerVis.has(t.uid)) return;
         vis.inst = new ModelInstance(gltf);
+        this._skin(vis.inst.root, def);
         if (glb.clips?.idle) vis.inst.play(glb.clips.idle);
         vis.clips = glb.clips;
         vis.root.add(vis.inst.root);
@@ -286,6 +310,8 @@ export class MatchView {
       vis.muzzle.set(0, 1.25, 0.9);
     } else {
       const built = (towerBuilder(def) || TOWER_MODELS.rune_totem)();
+      this._skin(built.group, def);
+      if (built.unit) this._skin(built.unit, def);
       vis.root.add(built.group);
       vis.parts = built.parts;
       vis.muzzle.copy(built.muzzle);
@@ -838,6 +864,8 @@ export class MatchView {
       if (o.isInstancedMesh) o.dispose();
     });
     for (const g of geos) g.dispose();
+    for (const m of this.skinMats?.values() || []) m.dispose();
+    this.skinMats?.clear();
     for (const m of mats) m.dispose();
   }
 }

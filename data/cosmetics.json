@@ -1,10 +1,11 @@
 {
- "$doc": "Cosmetics: looks earned by playing (never bought). kind uiTheme: `vars` are CSS custom properties set on the page (accent colours from styles/tokens.css). kind heroOutfit: `colors` override the hero model palette (src/engine/heroView.js keys: coat, coatTrim, vest, pants, cape, capeIn, blade, hilt, glove, boot). `unlock` is one quest-style condition (stat + target, mapsWon, winDifficulty, towerLevel, owned, ownFaction, discovered, summons); no `unlock` means owned from the start. One item per kind is equipped (save.cosmetics). kind projectileFx: every projectile is tinted towards `tint` by `mix` (0-1), so damage types keep a hint of their own colour. kind towerPlinth: the base plate under every tower takes `color`.",
+ "$doc": "Cosmetics: looks earned by playing (never bought). kind uiTheme: `vars` are CSS custom properties set on the page (accent colours from styles/tokens.css). kind heroOutfit: `colors` override the hero model palette (src/engine/heroView.js keys: coat, coatTrim, vest, pants, cape, capeIn, blade, hilt, glove, boot). `unlock` is one quest-style condition (stat + target, mapsWon, winDifficulty, towerLevel, owned, ownFaction, discovered, summons); no `unlock` means owned from the start. One item per kind is equipped (save.cosmetics). kind projectileFx: every projectile is tinted towards `tint` by `mix` (0-1), so damage types keep a hint of their own colour. kind towerPlinth: the base plate under every tower takes `color`. kind towerSkin: `tint` recolours the whole tower model (mixed in by `strength`, default 0.6); `faction` limits it to Modern War or Magic towers.",
  "kinds": {
   "uiTheme": "Interface themes",
   "heroOutfit": "Hero outfits",
   "projectileFx": "Projectile effects",
-  "towerPlinth": "Tower base plates"
+  "towerPlinth": "Tower base plates",
+  "towerSkin": "Tower skins"
  },
  "items": [
   {
@@ -371,6 +372,89 @@
     "target": 50
    },
    "how": "Win 50 matches"
+  },
+  {
+   "id": "skin_standard",
+   "kind": "towerSkin",
+   "name": "Field Issue",
+   "desc": "Every tower in its own colours."
+  },
+  {
+   "id": "skin_desert",
+   "kind": "towerSkin",
+   "name": "Desert Camo",
+   "desc": "Sand-washed paint for the Modern War arsenal.",
+   "tint": "#E9D3A0",
+   "faction": "war",
+   "unlock": {
+    "stat": "wins",
+    "target": 15
+   },
+   "how": "Win 15 matches"
+  },
+  {
+   "id": "skin_arctic",
+   "kind": "towerSkin",
+   "name": "Arctic Whiteout",
+   "desc": "Snow camo for Modern War towers.",
+   "tint": "#DCEBFF",
+   "strength": 0.7,
+   "faction": "war",
+   "unlock": {
+    "mapsWon": 15
+   },
+   "how": "Liberate 15 maps"
+  },
+  {
+   "id": "skin_obsidian",
+   "kind": "towerSkin",
+   "name": "Obsidian Rite",
+   "desc": "Magic towers carved from volcanic glass.",
+   "tint": "#7E7398",
+   "faction": "magic",
+   "unlock": {
+    "stat": "bossKills",
+    "target": 40
+   },
+   "how": "Defeat 40 bosses"
+  },
+  {
+   "id": "skin_verdant",
+   "kind": "towerSkin",
+   "name": "Verdant Oath",
+   "desc": "Moss and living wood on every Magic tower.",
+   "tint": "#B9E3A4",
+   "faction": "magic",
+   "unlock": {
+    "ownFaction": {
+     "faction": "magic",
+     "count": 25
+    }
+   },
+   "how": "Own 25 Magic towers"
+  },
+  {
+   "id": "skin_gilded",
+   "kind": "towerSkin",
+   "name": "Gilded Command",
+   "desc": "Gold leaf for every tower: a commander who has seen Hard.",
+   "tint": "#FFDF8E",
+   "strength": 0.55,
+   "unlock": {
+    "winDifficulty": "hard"
+   },
+   "how": "Win on Hard"
+  },
+  {
+   "id": "skin_crimson",
+   "kind": "towerSkin",
+   "name": "Crimson Banner",
+   "desc": "Battle red, worn by veterans of the mutated waves.",
+   "tint": "#F2A098",
+   "unlock": {
+    "modeWon": "mutation"
+   },
+   "how": "Win a Mutation match"
   }
  ]
 }
