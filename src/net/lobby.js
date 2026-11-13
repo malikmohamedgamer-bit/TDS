@@ -191,6 +191,9 @@ export class Lobby {
       }, this.cfg.joinTimeoutMs);
       this.joinWait = { resolve, reject, timer };
     });
+    // when the transport join itself fails (relay: room full, unreachable) _enter rejects `wait`
+    // too and throws; the caller gets that error from _enter, so `wait` must not go unhandled
+    wait.catch(() => {});
     await this._enter(code);
     this._hello(true);
     return wait;

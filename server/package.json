@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node relay.mjs",
-    "test": "node --test test/relay.test.mjs"
+    "test": "node --test test/relay.test.mjs test/integration.test.mjs"
   },
   "dependencies": {
     "ws": "^8.22.0"
