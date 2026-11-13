@@ -18,6 +18,10 @@ Status: late development (version in `package.json`). `docs/PROGRESS.md` has the
   with a bot to a 50-80% win rate on Normal.
 - **100 towers** (Magic and Modern War) with branching upgrades and evolutions, **200 enemies**,
   **100 bosses** with phase mechanics, **10 heroes** with 4 abilities each.
+- **Online co-op for 2-4 players** (Online tab): room codes and invite links, each player with their
+  own hero, towers and cash against shared waves, kept in exact sync by lockstep networking with
+  automatic resync. Runs on a free Supabase project or the included relay server
+  (docs/DEPLOY-ONLINE.md); without either it connects tabs of one browser for testing.
 - **11 modes:** Campaign, Endless, Boss Rush, Daily Challenge, Time Attack, Challenge, Skirmish,
   Mutation, War Chest, Last Stand, Sandbox. 9 challenge modifiers, 8 difficulties, 3 tuning presets
   and Assist options.

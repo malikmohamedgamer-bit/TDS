@@ -145,6 +145,33 @@ creates the LockstepSession and runs the match through it:
 wallet and the core 12 loadout split between them) and tunes `coop.cashShare` / `coop.enemyHp` to
 60-70% on Normal.
 
+## As built (2026-11-13): differences from the contract above
+
+- `players` is a TOP-LEVEL Match constructor field, not inside `options`.
+- Co-op matches use every tower in the game at level 1 for everyone (permanent levels differ per
+  save and would break lockstep); each player's hotbar shows their own six. Tower limits count per
+  player. Ability / hero commands always act on the issuer (refusal code `missing`, not `owner`).
+- The room's map is the map the host had loaded when creating the room (the world is built at page
+  load). A joiner on another map reloads onto it with `?map=&room=` and rejoins with the same peer
+  id (sessionStorage). The host changes difficulty in the lobby; to change map, make a new room.
+- Wire format additions by the net layer: command ids and retries (`cid`, `prev`), turn sequence
+  numbers (`seq`, `hostTick`), `hi` / `resend` / `need` / `ack` / `reject` / `bye` messages,
+  snapshot `epoch`; the host waits for every expected peer's hello (15 s) before tick 0;
+  `hostLeft` fires after a 3 s grace on presence loss (at once on `bye`).
+- Lobby profiles also carry `map` (the map each page has loaded).
+- Browser specifics in the game: a Web Worker timer keeps a hidden tab's co-op match stepping
+  (browsers stop animation frames in hidden tabs); local menus never pause co-op (only the host's
+  pause does); the waiting banner shows only after 1.5 s of real stall.
+- Balance (bot, 20 seeds x 3 maps, core 12 split between players): see `data/modes.json`
+  `coop.cashShare` / `coop.enemyHp` and docs/PROGRESS.md.
+
+Verification: unit tests (co-op sim, snapshot round trips, lockstep over a lossy in-memory
+network, lobby incl. split-brain recovery), `test/e2e/coop.spec.js` (two tabs, real lobby UI,
+identical hash and towers), `tools/dev/coop-check.mjs` (longer: state identical every 120 ticks,
+pings, remote heroes, hidden tab keeps simulating), `server/test` (relay). Not verified: a live
+Supabase project, and two different browser engines (Chrome vs Safari / Firefox) in one match;
+the snapshot resync covers engine maths differences but has not been tried across engines.
+
 ## Known limits
 
 - Supabase free tier counts every message; turns are batched (default 10 per second per room) and

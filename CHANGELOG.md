@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.12.0 - Online co-op (2026-11-13)
+- **Co-op for 2-4 players** (Online tab): create a room (6-character code, invite link), join by code,
+  ready up, the host picks the difficulty and starts. Each player has their own hero, abilities,
+  towers and cash; shared keep and waves; kill cash to whoever made the kill, wave bonus split.
+  Teammates' heroes walk the map, towers show their owner's colour, team list, quick pings.
+- **Lockstep networking**: every player runs the same deterministic simulation; the host stamps
+  commands with the tick they apply on; state hashes are compared every 2 seconds and a snapshot
+  resyncs a client that drifts; late joiners and reconnects get a snapshot.
+- **Transports**: Supabase Realtime (no server code: paste the project URL and public key into
+  data/online.json), the included WebSocket relay (server/: Docker, Render, Fly.io files), and a
+  same-browser transport for testing. docs/DEPLOY-ONLINE.md walks through each.
+- Co-op balance from the bot (one bot per player): enemy health and starting cash scale with the
+  number of players.
+- Hidden tabs keep a co-op match running (worker timer); local menus never pause co-op.
+- Tests: co-op sim and snapshots, lockstep over a lossy test network, lobby, relay server, a
+  two-tab browser test.
+
 ## 0.11.0 - Content to target, modes, meta, PWA (2026-11-11)
 - Maps: 50 (33 new generated maps, each calibrated with the balance bot). 14 themes: Autumn, Polar Night,
   Ashfall, Crimson Mire, Red Canyon and Void Rift are new looks (ground, sky, light, particles, colour

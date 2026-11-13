@@ -88,9 +88,12 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Memory leak check done (tools/leak-check.mjs; leak fixed, BUGS 62). Open: error boundaries per unit, client security review
 - [ ] Milestone: full e2e + 30 min soak
 
-## Chunk 9: online (COULD, only after 1-8 pass)
-- [ ] Supabase Free + Cloudflare Workers / Durable Objects per docs/online-plan.md; single player stays offline
-- [ ] Safety features, trading behind a flag, docs/online-limits.md
+## Chunk 9: online (owner priority since 2026-11-12: "make sure multiplayer works")
+- [x] Co-op 2-4 players (docs/multiplayer.md): lockstep sim, lobby, Online tab, Supabase Realtime + own relay
+      server (server/) + same-browser transport, deploy guide docs/DEPLOY-ONLINE.md; single player stays offline
+- [x] Tests: co-op sim, snapshots, lockstep on a lossy network, lobby, relay server, two-tab e2e
+- [ ] Live Supabase project and a cross-engine (Chrome + Safari / Firefox) match: needs the owner's project
+- [ ] Cloud saves / server-verified rewards (docs/online-plan.md phases 1-2); trading stays out (see plan)
 
 ## Chunk 10: launch preparation (SHOULD)
 - [ ] Credits, privacy and terms (Help tab), icons, meta tags, 404 page done. Open: credits.md audit, naming / branding doc
@@ -123,3 +126,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-12 | Chunk 3 + 10 | Re-sweep after the ally fix: 56 maps, mean 66%, all in 50-80%. Launch prep (version, meta tags, 404, itch.io zip packager), weekly quests, contrast fix. Unit 136 |
 | 2026-11-12 | Chunk 7 + 8 | Perf budgets (docs/PERF.md), memory leak fixed (2,000 geometries per match), auto quality step-down, weak-device default. Unit 138 |
 | 2026-11-12 | Chunk 2 flagships + 6 UI | 4 hand-made flagships (crossings allowed on hand roads, cohort 3), calibrated 60-70%. Screenshot review at 3 sizes: phone status bar, boss bar, slot labels, Help tab, collapsed cosmetics fixed. Tutorial skip asks twice. Cosmetics 4 kinds |
+| 2026-11-12/13 | Chunk 9 co-op | Phase 1 by 3 parallel agents (sim co-op + snapshots, lockstep net layer, relay + Supabase), integration by hand after the weekly agent limit: lobby UI, controller, HUD, remote heroes; two-tab check found and fixed 7 integration bugs; co-op balance by bot. Unit 230, co-op e2e passes |

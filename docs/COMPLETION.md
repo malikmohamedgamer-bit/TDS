@@ -45,6 +45,7 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 | Quality and accessibility | 5 | as before, plus searchable Help, save export / import, offline PWA, contrast audit (all text 4.5:1 or more), weak-device Low default and automatic quality step-down, memory leak fixed, perf budgets; colourblind only glyphs; no LOD | 4.9 |
 | Map features | 5 | themes 14/14, flagships 9/13, new path templates 2/4 (split lanes, crossover; no air routes) plus self-crossing and crossing hand roads | 3.6 |
 | Visual polish | 5 | as before, plus 6 theme looks and the battle report; code-built units still flat-shaded | 4.2 |
+| Online co-op (added 2026-11-13, owner request) | +0 (outside the original 100) | 2-4 players, lobby, Supabase / relay, tested; live Supabase not verified | done |
 | **Total** | 100 | | **93** |
 
 ## Log

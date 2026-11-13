@@ -107,6 +107,8 @@ method that got the project from 59% to 91% of the scoreboard in one session. Fo
 | Performance per quality preset | `node tools/perf-report.mjs` -> docs/perf.json (software WebGL: compare presets, not fps) |
 | Memory leaks | `node tools/leak-check.mjs --cycles 5`: geometries must stay flat after the first match |
 | itch.io upload | `node tools/package-itch.mjs` -> dist/tds-<version>-web.zip |
+| Co-op multiplayer | docs/multiplayer.md (design + as built), src/net/, `MatchController.startOnline`, src/ui/onlineLobby.js; check with `npx playwright test coop.spec.js` and `node tools/dev/coop-check.mjs` (two tabs, ~10 min) |
+| Co-op balance | `node tools/balance.mjs --coop 2|3|4 --map <ids> --seeds 20` (`--coophp`, `--coopcash` to try numbers) |
 
 ## Adding common things
 
@@ -120,6 +122,9 @@ method that got the project from 59% to 91% of the scoreboard in one session. Fo
   3), otherwise the enemies of already balanced maps change. After `gen-maps.mjs`, check with
   `git status --short data/maps data/waves` that no existing map changed unless you meant it to.
 - **A save field:** default in `newSave`, repair in `sanitize`, and the fuzz test must still pass.
+- **Anything that changes the simulation** must keep co-op deterministic: no Math.random / Date.now
+  in src/sim, no sim writes from the view / HUD / controller (only commands through the session),
+  and `Match.snapshot()` must capture any new state (the snapshot tests compare hashes every tick).
 - **Anything a match creates on the GPU** (meshes, geometry, materials) must be freed in
   `MatchView.dispose` / `Effects.dispose`; run `tools/leak-check.mjs` after touching src/engine.
 - **A hub screen or section:** a `_name()` method returning markup, a `data-*` attribute handled in

@@ -18,6 +18,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | 8. Polish | **Done (2026-11-05)**: procedural music, animated portal, collision gap fix, screenshot tool fix |
 | 9. Final balance pass + docs + online plan | **Done (2026-11-05)**: difficulty ladder fixed (boss HP per difficulty), docs/online-plan.md, docs updated |
 | 11. UI / GFX / content update | **In progress** (2026-11-06): see Next exact action |
+| 13. Online co-op (2026-11-12/13) | **Done**: 2-4 players, Online tab, lockstep with snapshot resync, Supabase + relay + local transports, deploy guide, tests incl. two-tab e2e. See docs/multiplayer.md (as built) and docs/DEPLOY-ONLINE.md |
 | 12. Finish-the-game run, session 2026-11-11 | **Done to 91% of the scoreboard**: 50 maps / 14 themes, campaign features the whole roster, 11 modes, 87 quests, banners, cosmetics, Help, battle report, music styles, PWA, save fuzz. Open work: see Next exact action |
 | 10. Asset packs + content growth | **Done** (2026-11-06): 10 Kenney + 10 Quaternius CC0 packs, 48 imported pack models (23 Kenney, 25 Quaternius), seeded map generator + 15 new maps (3 hand-made flagships, 12 generated), content batches kenney_b1, quaternius_b1, quaternius_b2, 2 new heroes, 5 new hero skills, Lancer Mech boss killer. Full e2e + 30 min soak for this batch: see VERIFICATION.md |
 
@@ -29,7 +30,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Towers | 100 (57 War, 43 Magic), 85 mechanically distinct, 91 models |
 | Enemies / bosses | 200 (168 distinct, 191 models) / 100 (83 distinct, 94 models). 252 of the 300 appear in Campaign wave tables; all in Endless / Boss Rush |
 | Heroes / abilities | 10 heroes, 4 skills each / 39 skills |
-| Modes / modifiers | 11 (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) / 9 |
+| Modes / modifiers | 11 single-player (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) + online Co-op / 9 |
 | Quests / achievements | 109: 23 daily pool (3 a day), 12 weekly pool (3 a week), 74 story (6 hand-written, 60 map liberations, 8 mode wins) / 109 |
 | Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
 | Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
@@ -42,6 +43,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 |---|---|
 | **All 56 maps, 12 core towers, Normal, Standard, 20 seeds each (2026-11-12, after the shared-stretch ally fix; `node tools/sweep.mjs`, docs/balance-sweep.json)** | mean 66%; 33 of 56 maps in 60-70%, 56 of 56 in 50-80%, none below 50% or above 80% |
 | 4 new flagships, 12 core towers, Normal, 20 seeds (2026-11-12, hand-set after the calibrator) | Russet Spiral 65% (enemy health x2.4: the spiral passes the same towers on several laps), Crimson Crossing 70%, Redrock Switchbacks 70%, Void Convergence 60% (x0.77: the shortest roads) |
+| **Co-op**, one bot per player, core 12 split between them, Normal, Riftline + Frostmere + Willow Crossing, 20 seeds each (2026-11-13) | 2 players 60%, 3 players 75%, 4 players 62% (each player full / full / 0.9 / 0.7 start cash, enemy health x1.08 / x1.22 / x1.40) |
 | 10 heroes, 12 core towers, Riftline Normal, 30 seeds (2026-11-12) | Vale 63%, Ryn 70%, Ignis 70%, Vex 70%, Holt 67%, Maren 63%, Nyra 57%, Seren 57%, Kade 77%, Brik 83% |
 | New modes, 12 core towers, Riftline Normal, 12 seeds | Skirmish 100% (all towers), Mutation 58%, War Chest 83%, Last Stand 0% at tower level 1 and 83% at level 5 |
 | All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
