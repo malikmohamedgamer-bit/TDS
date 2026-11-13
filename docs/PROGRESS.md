@@ -44,7 +44,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | **All 56 maps, 12 core towers, Normal, Standard, 20 seeds each (2026-11-12, after the shared-stretch ally fix; `node tools/sweep.mjs`, docs/balance-sweep.json)** | mean 66%; 33 of 56 maps in 60-70%, 56 of 56 in 50-80%, none below 50% or above 80% |
 | 4 new flagships, 12 core towers, Normal, 20 seeds (2026-11-12, hand-set after the calibrator) | Russet Spiral 65% (enemy health x2.4: the spiral passes the same towers on several laps), Crimson Crossing 70%, Redrock Switchbacks 70%, Void Convergence 60% (x0.77: the shortest roads) |
 | **Co-op**, one bot per player, core 12 split between them, Normal, Riftline + Frostmere + Willow Crossing, 20 seeds each (2026-11-13) | 2 players 60%, 3 players 75%, 4 players 62% (each player full / full / 0.9 / 0.7 start cash, enemy health x1.08 / x1.22 / x1.40) |
-| 10 heroes, 12 core towers, Riftline Normal, 30 seeds (2026-11-12) | Vale 63%, Ryn 70%, Ignis 70%, Vex 70%, Holt 67%, Maren 63%, Nyra 57%, Seren 57%, Kade 77%, Brik 83% |
+| 10 heroes, 12 core towers, Riftline Normal, 30 seeds (2026-11-12) | Vale 63%, Ryn 70%, Ignis 70%, Vex 70%, Holt 67%, Maren 63%, Nyra 57%, Seren 57%, Kade 77%, Brik 70% (83% before Carpet Bomb 140 -> 110 damage, 2026-11-14) |
 | New modes, 12 core towers, Riftline Normal, 12 seeds | Skirmish 100% (all towers), Mutation 58%, War Chest 83%, Last Stand 0% at tower level 1 and 83% at level 5 |
 | All 12 regular towers, Normal, Standard | 27/40 (68%); re-run this milestone 7/12 (58%) |
 | Frostmere, 12 regular towers, Normal, Standard | 13/20 (65%); starters Easy 11/12; lazy 0/8 |
@@ -156,7 +156,7 @@ store draft, daily live smoke test. Full e2e 27/28 then co-op 2/2 (VERIFICATION.
 
 **FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in
 `docs/COMPLETION.md`). Session 2026-11-11 finished Chunk 2 and parts of 4, 5, 6, 7, 8. In order:
-1. Chunk 3 balance sweep: heroes done (BUGS #44; Kade 77% and Brik 83% are the leftovers, measure heroes with 30 seeds). Maps done: 20-seed sweep in docs/balance-sweep.json (re-run with `node tools/sweep.mjs`). Still open: difficulty
+1. Chunk 3 balance sweep: heroes done (BUGS #44; Brik tuned to 70% on 2026-11-14, Kade 77% is in the 50-80% band; measure heroes with 30 seeds). Maps done: 20-seed sweep in docs/balance-sweep.json (re-run with `node tools/sweep.mjs`). Still open: difficulty
    ladder at gate levels with the new content, Endless with the 200-enemy pool, economy / exploit check, 30 min soak.
 2. Chunk 2 leftovers: new path templates in src/core/mapGen.js (loop, crossover, air route), more flagships,
    kit towers for the thin classes (air, aura, summoner, trap).

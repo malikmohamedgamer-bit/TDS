@@ -560,7 +560,7 @@
       "delay": 2.5,
       "radius": 12,
       "effects": {
-        "damage": 140,
+        "damage": 110,
         "damageType": "explosive",
         "stun": 0.4
       },
