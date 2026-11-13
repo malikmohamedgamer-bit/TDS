@@ -344,9 +344,23 @@ export class Hub {
     const card = (kind, x, known) => `<div class="ix ${known ? '' : 'unknown'} ${kind === 't' ? `r-${x.rarity}` : ''}" data-testid="ix-${x.id}"><img alt="" data-thumb="${kind}:${x.id}:${known ? 0 : 1}"><b>${known ? esc(x.name) : '???'}</b><small class="ix-k">${known ? (kind === 't' ? `${rarityBadge(x.rarity)} ${icon(towerIcon(x))} ${esc(x.class)}` : `${icon(enemyIcon(x))} ${esc(x.archetype)}${x.boss ? ' · boss' : ''}`) : `${icon('lock')} Not discovered`}</small>${known ? `<p>${esc(x.description || '')}</p>` : ''}</div>`;
     const prog = (n, of) => `<div class="ix-progress"><div class="seg-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${of}" aria-valuenow="${n}"><span style="width:${(n / of) * 100}%"></span></div>${Math.round((n / of) * 100)}% discovered</div>`;
     const nt = towers.filter((t) => seenT.has(t.id)).length;
-    const ne = enemies.filter((e) => seenE.has(e.id)).length;
-    return `${this._cosmetics()}<h3>${icon('tower')} Towers <span class="count">${nt}/${towers.length}</span></h3>${prog(nt, towers.length)}<div class="ix-grid">${towers.map((t) => card('t', t, seenT.has(t.id))).join('')}</div>
-      <h3>${icon('skull')} Enemies <span class="count" data-testid="ix-enemy-count">${ne}/${enemies.length}</span></h3>${prog(ne, enemies.length)}<div class="ix-grid">${enemies.map((e) => card('e', e, seenE.has(e.id))).join('')}</div>`;
+    const minions = enemies.filter((e) => !e.boss);
+    const bosses = enemies.filter((e) => e.boss);
+    const ne = minions.filter((e) => seenE.has(e.id)).length;
+    const nb = bosses.filter((e) => seenE.has(e.id)).length;
+    // the next collection achievement for a section (data: achievements with owned / discovered /
+    // discoveredBosses), so the Index shows what completing it pays
+    const ach = this.c.quests?.achievements || [];
+    const next = (key, have) => {
+      const a = ach.filter((x) => x[key]).sort((x, y) => x[key] - y[key]).find((x) => x[key] > have);
+      if (!a) return ach.some((x) => x[key]) ? `<p class="ix-next done">${icon('check')} Every collection reward here is earned</p>` : '';
+      const pay = [a.reward?.sigils ? `${a.reward.sigils} sigils` : '', a.reward?.crowns ? `${a.reward.crowns} crowns` : ''].filter(Boolean).join(' + ');
+      return `<p class="ix-next" data-testid="ix-next-${key}">${icon('star')} Next: <b>${esc(a.name)}</b> (${esc(a.desc)}), ${have}/${a[key]}${pay ? ` · ${pay}` : ''}</p>`;
+    };
+    const owned = Object.keys(this.save.towers.owned).length;
+    return `${this._cosmetics()}<h3>${icon('tower')} Towers <span class="count">${nt}/${towers.length}</span></h3>${prog(nt, towers.length)}${next('owned', owned)}<div class="ix-grid">${towers.map((t) => card('t', t, seenT.has(t.id))).join('')}</div>
+      <h3>${icon('skull')} Enemies <span class="count" data-testid="ix-enemy-count">${ne}/${minions.length}</span></h3>${prog(ne, minions.length)}${next('discovered', ne)}<div class="ix-grid">${minions.map((e) => card('e', e, seenE.has(e.id))).join('')}</div>
+      <h3>${icon('crown')} Bosses <span class="count" data-testid="ix-boss-count">${nb}/${bosses.length}</span></h3>${prog(nb, bosses.length)}${next('discoveredBosses', nb)}<div class="ix-grid">${bosses.map((e) => card('e', e, seenE.has(e.id))).join('')}</div>`;
   }
 
   /** Cosmetics (top of the Index): earned looks, one equipped per kind. */

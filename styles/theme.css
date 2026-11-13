@@ -182,6 +182,10 @@ legend { font-family: var(--font-display); color: var(--brass); }
 .ix-progress { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; color: var(--text-2); font-size: var(--fs-1); }
 .ix-progress .seg-bar { flex: 1; max-width: 320px; }
 .ix-progress .seg-bar span { display: block; height: 100%; }
+.ix-next { display: flex; align-items: center; gap: 6px; margin: -4px 0 10px; color: var(--text-2); font-size: var(--fs-1); }
+.ix-next b { color: var(--brass, #ffd166); }
+.ix-next.done { color: var(--good, #7bd389); }
+.ix-next svg { width: 14px; height: 14px; flex: none; }
 .ix .ix-k { display: inline-flex; align-items: center; gap: 4px; }
 .ix .ix-k .ic { width: 13px; height: 13px; }
 .ix.unknown img { opacity: 0.6; }
