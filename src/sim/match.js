@@ -10,11 +10,16 @@ import { towerStats, nextStep, DEFAULT_PROGRESSION } from './stats.js';
 import { resolveDamage, pickTarget, canTarget, TARGET_MODES } from './combat.js';
 import { resolveTuning, roundCost } from './tuning.js';
 import { generateWave, bossPool } from './waveGen.js';
+import { snapshotMatch, restoreMatch } from './snapshot.js';
 
 export const SIM_DT = 1 / 60;
 export const SELL_REFUND = 0.7;
 export const PLACE_MAX_SLOPE = 24;
 const MELEE_DEFAULT = 6;
+export const MAX_PLAYERS = 4;
+// where each player's hero starts, relative to the map's player spawn (the first stays exact)
+const HERO_OFFSETS = [[0, 0], [1.6, 0], [-1.6, 0], [0, 1.6]];
+const notOwner = () => ({ ok: false, reason: 'Not your tower', code: 'owner' });
 
 const r2 = (ax, az, bx, bz) => (ax - bx) ** 2 + (az - bz) ** 2;
 
@@ -29,8 +34,16 @@ export class Match {
    * @param {object} [o.levels]     lobby levels per tower id
    * @param {string} [o.hero]       hero id
    * @param {object} [o.options]    {enemiesHurtHero, startCash, cashMul, infiniteCash, waveSet, progression}
+   * @param {object[]} [o.players]  co-op: [{pid, hero, name, loadout?, levels?}], 1-4 entries, the same
+   *                                order on every client. Default: one player 'p1' with o.hero. The
+   *                                first player is the one single-player code reads (cash, hero, abilities).
    */
   constructor(o) {
+    // everything restore() needs to rebuild this match from content + mapWorld (plain JSON)
+    this.config = JSON.parse(JSON.stringify({
+      difficulty: o.difficulty ?? null, seed: o.seed ?? null, loadout: o.loadout ?? null, levels: o.levels ?? null,
+      hero: o.hero ?? null, options: o.options ?? null, players: o.players ?? null,
+    }));
     this.content = o.content;
     this.mw = o.mapWorld;
     this.map = o.mapWorld.map;
@@ -62,6 +75,21 @@ export class Match {
     this.paths = this.map.paths.map((p) => new Path(p.id, p.points));
     this.pathWidth = Math.max(...this.map.paths.map((p) => p.width ?? 5));
 
+    // players: static config here; per-player state (wallets, heroes, abilities, stats) below
+    const plist = o.players?.length ? o.players : [{ pid: 'p1', hero: o.hero }];
+    if (plist.length > MAX_PLAYERS) throw new Error(`At most ${MAX_PLAYERS} players (got ${plist.length})`);
+    this.players = plist.map((p, i) => ({
+      pid: String(p.pid ?? `p${i + 1}`), name: p.name || `Player ${i + 1}`, hero: p.hero ?? o.hero ?? null,
+      loadout: p.loadout ? [...p.loadout] : null, levels: p.levels ? { ...p.levels } : null,
+    }));
+    this._pidIdx = new Map(this.players.map((p, i) => [p.pid, i]));
+    if (this._pidIdx.size !== this.players.length) throw new Error('Player ids must be unique');
+    // co-op scaling (mode.coop, only with 2+ players): start cash share and extra enemy health
+    const n = this.players.length;
+    const co = n > 1 ? this.mode.coop : null;
+    const byCount = (arr) => (arr?.length ? arr[Math.min(n, arr.length) - 1] : 1);
+    this.coopScale = { cash: co ? byCount(co.cashShare) : 1, hp: co ? byCount(co.enemyHp) : 1 };
+
     this.tick = 0;
     this.time = 0;
     this.phase = 'prep'; // prep | wave | won | lost
@@ -70,7 +98,9 @@ export class Match {
     // manualStart: the first wave waits for the player's "start" (skip) command
     this.nextWaveAt = this.options.manualStart ? Infinity : this.waveSet.firstWaveDelay ?? 10;
     this.paidWaves = 0;
-    this.cash = Math.round((this.options.startCash ?? this.mode.startCash ?? this.waveSet.startCash) * this.tune.startCash * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1)) + this.tune.startCashAdd;
+    // one wallet per player (same order as this.players); match.cash is the first one
+    const startCash = Math.round((this.options.startCash ?? this.mode.startCash ?? this.waveSet.startCash) * this.tune.startCash * (this.difficulty.id === 'relaxed' ? this.difficulty.cashMul : 1)) + this.tune.startCashAdd;
+    this.wallets = this.players.map(() => (co ? Math.round(startCash * this.coopScale.cash) : startCash));
     this.baseMax = this.mode.keepHpFixed ?? Math.round(this.waveSet.baseHp * (this.difficulty.baseHpMul ?? 1) * this.tune.keepHp);
     this.baseHp = this.baseMax;
     this.enemies = [];
@@ -88,14 +118,63 @@ export class Match {
     this.stats = { kills: 0, leaks: 0, cashEarned: 0, damage: 0, spawned: 0, bossesKilled: 0, placed: 0, upgrades: 0, evolutions: 0, abilities: 0 };
     this.seen = new Set();
     this.auraDirty = true;
+    this.colliderSeq = 0; // order tower colliders were added in (restore re-adds them in that order)
+    this.playerStats = this.players.map(() => ({ kills: 0, damage: 0, cashEarned: 0, placed: 0 }));
 
-    const heroDef = this.content.heroes.get(o.hero || [...this.content.heroes.keys()][0]);
-    this.hero = heroDef ? {
-      def: heroDef, x: this.map.playerSpawn.x, y: 0, z: this.map.playerSpawn.z,
-      hp: heroDef.hp, maxHp: heroDef.hp, cooldown: 0, downUntil: 0, kills: 0,
-    } : null;
-    this.abilities = (this.rules.noAbilities ? [] : heroDef?.abilities || []).map((id) => ({ id, def: this.content.abilities.get(id), ready: 0, mode: 'manual' }));
+    // one hero and one ability bar per player; heroes after the first stand a little apart
+    this.heroes = [];
+    this.abilitySets = [];
+    this.players.forEach((p, i) => {
+      const heroDef = this.content.heroes.get(p.hero || [...this.content.heroes.keys()][0]);
+      const [ox, oz] = HERO_OFFSETS[i];
+      if (heroDef) {
+        this.heroes.push({
+          pid: p.pid, def: heroDef, x: this.map.playerSpawn.x + ox, y: 0, z: this.map.playerSpawn.z + oz,
+          hp: heroDef.hp, maxHp: heroDef.hp, cooldown: 0, downUntil: 0, kills: 0,
+        });
+      }
+      this.abilitySets.push((this.rules.noAbilities ? [] : heroDef?.abilities || []).map((id) => ({ id, def: this.content.abilities.get(id), ready: 0, mode: 'manual' })));
+    });
   }
+
+  // ---------------------------------------------------------------- players ----------------
+  /** The first player's wallet (single-player code, HUD, debug tools). */
+  get cash() { return this.wallets[0]; }
+
+  set cash(v) { this.wallets[0] = v; }
+
+  /** The first player's hero (null when the content has no heroes). */
+  get hero() { return this.heroes[0] || null; }
+
+  /** The first player's abilities. */
+  get abilities() { return this.abilitySets[0]; }
+
+  /** Index of a player in this.players: no pid = the first player, unknown pid = -1. */
+  playerIndex(pid) {
+    if (pid === undefined || pid === null) return 0;
+    return this._pidIdx.get(pid) ?? -1;
+  }
+
+  /** Cash of one player (0 for an unknown pid). */
+  wallet(pid) {
+    const i = this.playerIndex(pid);
+    return i < 0 ? 0 : this.wallets[i];
+  }
+
+  /** The hero of one player, or null. */
+  heroOf(pid) {
+    const id = this.players[this.playerIndex(pid)]?.pid;
+    return this.heroes.find((h) => h.pid === id) || null;
+  }
+
+  /** The ability list of one player ([] for an unknown pid). */
+  abilitiesOf(pid) {
+    return this.abilitySets[this.playerIndex(pid)] || [];
+  }
+
+  _loadoutOf(pi) { return this.players[pi].loadout || this.loadout; }
+
+  _levelsOf(pid) { return this.players[this.playerIndex(pid)]?.levels || this.levels; }
 
   // ---------------------------------------------------------------- commands ---------------
   /** Validate and queue a player command. Returns {ok, reason}. */
@@ -106,38 +185,53 @@ export class Match {
     return v;
   }
 
+  /** Command check without side effects. Commands may carry `pid` (default: the first player);
+   *  tower commands only act on that player's own towers (code 'owner'). */
   validate(cmd) {
     if (this.phase === 'won' || this.phase === 'lost') return { ok: false, reason: 'Match is over', code: 'over' };
+    const pi = this.playerIndex(cmd.pid);
+    if (pi < 0) return { ok: false, reason: 'Unknown player', code: 'player' };
+    const pid = this.players[pi].pid;
     switch (cmd.type) {
-      case 'place': return this.canPlace(cmd.tower, cmd.x, cmd.z);
+      case 'place': return this.canPlace(cmd.tower, cmd.x, cmd.z, null, false, pid);
       case 'move': {
         const t = this.towerById(cmd.uid);
         if (!t) return { ok: false, reason: 'No such tower', code: 'missing' };
-        return this.canPlace(t.defId, cmd.x, cmd.z, t.uid, true);
+        if (t.owner !== pid) return notOwner();
+        return this.canPlace(t.defId, cmd.x, cmd.z, t.uid, true, pid);
       }
       case 'upgrade': {
         const t = this.towerById(cmd.uid);
         if (!t) return { ok: false, reason: 'No such tower', code: 'missing' };
+        if (t.owner !== pid) return notOwner();
         const n = nextStep(t.def, t.up, cmd.branch);
         if (!n) return { ok: false, reason: 'Fully upgraded', code: 'max' };
         if (n.needsBranch) return { ok: false, reason: 'Choose a path', code: 'branch', options: n.options };
         const sc = this.stepCost(n.step);
-        if (this.cash < sc && !this.options.infiniteCash) return { ok: false, reason: `Need ${sc - this.cash} more cash`, code: 'cash' };
+        const cash = this.wallets[pi];
+        if (cash < sc && !this.options.infiniteCash) return { ok: false, reason: `Need ${sc - cash} more cash`, code: 'cash' };
         return { ok: true, cost: sc, step: n.step };
       }
-      case 'sell': return this.towerById(cmd.uid) ? { ok: true } : { ok: false, reason: 'No such tower', code: 'missing' };
+      case 'sell': {
+        const t = this.towerById(cmd.uid);
+        if (!t) return { ok: false, reason: 'No such tower', code: 'missing' };
+        return t.owner === pid ? { ok: true } : notOwner();
+      }
       case 'target': {
-        if (!this.towerById(cmd.uid)) return { ok: false, reason: 'No such tower', code: 'missing' };
+        const t = this.towerById(cmd.uid);
+        if (!t) return { ok: false, reason: 'No such tower', code: 'missing' };
+        if (t.owner !== pid) return notOwner();
         return TARGET_MODES.includes(cmd.mode) ? { ok: true } : { ok: false, reason: 'Bad mode', code: 'mode' };
       }
       case 'ability': {
-        const a = this.abilities.find((x) => x.id === cmd.id);
+        const a = this.abilitySets[pi].find((x) => x.id === cmd.id);
         if (!a) return { ok: false, reason: 'Ability not equipped', code: 'missing' };
         if (a.ready > this.time) return { ok: false, reason: `Ready in ${Math.ceil(a.ready - this.time)} s`, code: 'cooldown' };
-        if (this.hero && this.hero.downUntil > this.time) return { ok: false, reason: 'Commander is down', code: 'down' };
+        const h = this.heroOf(pid);
+        if (h && h.downUntil > this.time) return { ok: false, reason: 'Commander is down', code: 'down' };
         return { ok: true };
       }
-      case 'abilityMode': return this.abilities.some((x) => x.id === cmd.id) && ['manual', 'auto'].includes(cmd.mode) ? { ok: true } : { ok: false, reason: 'Bad ability mode', code: 'mode' };
+      case 'abilityMode': return this.abilitySets[pi].some((x) => x.id === cmd.id) && ['manual', 'auto'].includes(cmd.mode) ? { ok: true } : { ok: false, reason: 'Bad ability mode', code: 'mode' };
       case 'skip': return this.phase === 'prep' || this.canSkip() ? { ok: true } : { ok: false, reason: 'Cannot skip yet', code: 'skip' };
       case 'assistSkip': return this.tune.skipWave && this.phase === 'wave' ? { ok: true } : { ok: false, reason: 'Turn on the Skip wave assist first', code: 'assist' };
       case 'hero': return Number.isFinite(cmd.x) && Number.isFinite(cmd.z) ? { ok: true } : { ok: false, reason: 'Bad position', code: 'pos' };
@@ -161,19 +255,24 @@ export class Match {
     return this.phase === 'wave' && this.spawnQueue.length === 0 && this.wave < this.waveCount() && this.nextWaveAt > this.time;
   }
 
-  /** Placement check used by the preview and by the command itself. */
-  canPlace(towerId, x, z, ignoreUid = null, isMove = false) {
+  /** Placement check used by the preview and by the command itself (pid: whose wallet, loadout
+   *  and tower limit count; default the first player). */
+  canPlace(towerId, x, z, ignoreUid = null, isMove = false, pid = null) {
+    const pi = this.playerIndex(pid);
+    if (pi < 0) return { ok: false, reason: 'Unknown player', code: 'player' };
+    const owner = this.players[pi].pid;
     const def = this.content.towers.get(towerId);
     if (!def) return { ok: false, reason: 'Unknown tower', code: 'unknown' };
-    if (!isMove && !this.loadout.includes(towerId)) return { ok: false, reason: 'Not in your loadout', code: 'locked' };
+    if (!isMove && !this._loadoutOf(pi).includes(towerId)) return { ok: false, reason: 'Not in your loadout', code: 'locked' };
     const cost = this.costOf(def);
-    if (!isMove && !this.options.infiniteCash && this.cash < cost) return { ok: false, reason: `Need ${cost - this.cash} more cash`, code: 'cash' };
-    if (!isMove && def.limit && this.towers.filter((t) => t.defId === towerId).length >= def.limit) return { ok: false, reason: `Limit ${def.limit} reached`, code: 'limit' };
+    const cash = this.wallets[pi];
+    if (!isMove && !this.options.infiniteCash && cash < cost) return { ok: false, reason: `Need ${cost - cash} more cash`, code: 'cash' };
+    if (!isMove && def.limit && this.towers.filter((t) => t.defId === towerId && t.owner === owner).length >= def.limit) return { ok: false, reason: `Limit ${def.limit} reached`, code: 'limit' };
     const b = this.mw.world.bounds;
     const fp = def.footprint ?? 1;
     if (x < b.minX + fp || x > b.maxX - fp || z < b.minZ + fp || z > b.maxZ - fp) return { ok: false, reason: 'Outside the map', code: 'bounds' };
-    const pi = this.mw.terrain.pathInfo(x, z);
-    if (pi.d < pi.path.half + fp + 0.3) return { ok: false, reason: 'Cannot build on the road', code: 'path' };
+    const road = this.mw.terrain.pathInfo(x, z);
+    if (road.d < road.path.half + fp + 0.3) return { ok: false, reason: 'Cannot build on the road', code: 'path' };
     if (this.mw.terrain.slope(x, z) > PLACE_MAX_SLOPE) return { ok: false, reason: 'Ground too steep', code: 'slope' };
     for (const c of this.mw.world.query(x, z, fp)) {
       if (!c.blocksPlacement) continue;
@@ -206,46 +305,60 @@ export class Match {
     const v = this.validate(cmd);
     if (!v.ok) { this.events.push({ type: 'rejected', cmd, reason: v.reason }); return; }
     this.log.push({ tick: this.tick, ...cmd });
+    const pi = this.playerIndex(cmd.pid);
     switch (cmd.type) {
-      case 'place': this._place(cmd); break;
+      case 'place': this._place(cmd, pi); break;
       case 'move': this._move(cmd); break;
-      case 'upgrade': this._upgrade(cmd, v); break;
-      case 'sell': this._sell(cmd); break;
+      case 'upgrade': this._upgrade(cmd, v, pi); break;
+      case 'sell': this._sell(cmd, pi); break;
       case 'target': this.towerById(cmd.uid).targeting = cmd.mode; break;
-      case 'ability': this._castAbility(cmd.id, cmd.x, cmd.z); break;
-      case 'abilityMode': this.abilities.find((a) => a.id === cmd.id).mode = cmd.mode; break;
+      case 'ability': this._castAbility(cmd.id, cmd.x, cmd.z, pi); break;
+      case 'abilityMode': this.abilitySets[pi].find((a) => a.id === cmd.id).mode = cmd.mode; break;
       case 'skip': this._startWave(this.wave + 1); break;
       case 'assistSkip': this._assistSkip(); break;
-      case 'hero': if (this.hero) { this.hero.x = cmd.x; this.hero.y = cmd.y ?? 0; this.hero.z = cmd.z; } break;
+      case 'hero': {
+        const h = this.heroOf(this.players[pi].pid);
+        if (h) { h.x = cmd.x; h.y = cmd.y ?? 0; h.z = cmd.z; }
+        break;
+      }
       default: break;
     }
   }
 
-  _place({ tower, x, z, rot = 0 }) {
+  /** Adds tower t's collider to the map world (towers are found by uid through c.ref). */
+  _addCollider(t) {
+    t.collider = this.mw.world.add({ shape: 'circle', x: t.x, z: t.z, r: t.def.footprint ?? 1, h: 2.6, tag: 'tower', ref: t });
+  }
+
+  _place({ tower, x, z, rot = 0 }, pi = 0) {
     const def = this.content.towers.get(tower);
     const paid = this.costOf(def);
-    if (!this.options.infiniteCash) this.cash -= paid;
+    if (!this.options.infiniteCash) this.wallets[pi] -= paid;
+    const owner = this.players[pi].pid;
     const t = {
       spent: paid,
-      uid: this.nextId++, defId: tower, def, x, z, y: this.mw.terrain.height(x, z), rot,
+      uid: this.nextId++, owner, defId: tower, def, x, z, y: this.mw.terrain.height(x, z), rot,
       up: { linear: 0, branch: null, branchLevel: 0 }, targeting: def.stats.targeting || 'first',
       cooldown: 0.2, stunUntil: 0, kills: 0, damage: 0, placedAt: this.time, hits: 0,
       summonTimer: 1, trapTimer: 0.5, aura: null, buffs: [], unit: null,
     };
     this._refreshTower(t);
     if (def.air) t.unit = { x, y: t.y + def.air.altitude, z, angle: this.rng.range(0, Math.PI * 2) };
-    t.collider = this.mw.world.add({ shape: 'circle', x, z, r: def.footprint ?? 1, h: 2.6, tag: 'tower', ref: t });
+    t.cseq = this.colliderSeq++;
+    this._addCollider(t);
     this.towers.push(t);
     this.stats.placed++;
+    this.playerStats[pi].placed++;
     this.auraDirty = true;
-    this.events.push({ type: 'place', uid: t.uid, tower, x, z });
+    this.events.push({ type: 'place', uid: t.uid, tower, x, z, pid: owner });
   }
 
   _move({ uid, x, z }) {
     const t = this.towerById(uid);
     this.mw.world.remove(t.collider.id);
     t.x = x; t.z = z; t.y = this.mw.terrain.height(x, z);
-    t.collider = this.mw.world.add({ shape: 'circle', x, z, r: t.def.footprint ?? 1, h: 2.6, tag: 'tower', ref: t });
+    t.cseq = this.colliderSeq++;
+    this._addCollider(t);
     t.stunUntil = Math.max(t.stunUntil, this.time + 2); // relocating
     for (const m of this.mines) if (m.owner === t.uid) m.dead = true;
     this._refreshTower(t);
@@ -253,10 +366,10 @@ export class Match {
     this.events.push({ type: 'move', uid, x, z });
   }
 
-  _upgrade({ uid, branch }, v) {
+  _upgrade({ uid, branch }, v, pi = 0) {
     const t = this.towerById(uid);
     const n = nextStep(t.def, t.up, branch);
-    if (!this.options.infiniteCash) this.cash -= v.cost;
+    if (!this.options.infiniteCash) this.wallets[pi] -= v.cost;
     t.spent += v.cost;
     if (n.kind === 'linear') t.up.linear++;
     else { t.up.branch = n.branch; t.up.branchLevel++; }
@@ -268,10 +381,10 @@ export class Match {
     this.events.push({ type: 'upgrade', uid, step: n.step.name, evolved: n.step.evolve ? { from: before, to: t.name } : null });
   }
 
-  _sell({ uid }) {
+  _sell({ uid }, pi = 0) {
     const t = this.towerById(uid);
     const refund = this.refundOf(t);
-    if (!this.options.infiniteCash) this.cash += refund;
+    if (!this.options.infiniteCash) this.wallets[pi] += refund;
     this.mw.world.remove(t.collider.id);
     this.towers = this.towers.filter((x) => x !== t);
     for (const m of this.mines) if (m.owner === uid) m.dead = true;
@@ -281,7 +394,7 @@ export class Match {
   }
 
   _refreshTower(t) {
-    const s = towerStats(t.def, t.up, this.levels[t.defId] || 1, this.progression);
+    const s = towerStats(t.def, t.up, this._levelsOf(t.owner)[t.defId] || 1, this.progression);
     t.base = s.stats;
     t.name = s.name;
     t.tier = s.tier;
@@ -373,7 +486,8 @@ export class Match {
   }
 
   enemyHpScale(waveNo) {
-    return this.difficulty.hpMul * this.tune.enemyHp * (1 + (this.waveSet.hpScalePerWave ?? 0) * (waveNo - 1));
+    const s = this.difficulty.hpMul * this.tune.enemyHp * (1 + (this.waveSet.hpScalePerWave ?? 0) * (waveNo - 1));
+    return this.coopScale.hp === 1 ? s : s * this.coopScale.hp;
   }
 
   _startWave(n) {
@@ -397,23 +511,48 @@ export class Match {
     if (mut) this.events.push({ type: 'mutation', wave: n, id: mut.id, name: mut.name, desc: mut.desc });
   }
 
-  /** Wave clear bonus + income for every finished wave, paid once each. */
+  /** Wave clear bonus + income for every finished wave, paid once each. Co-op: the bonus is split
+   *  evenly, each tower's income goes to its owner. */
   _payWaveRewards() {
     while (this.paidWaves < this.wave) {
       this.paidWaves++;
       const bonus = (this.waveSet.bonusBase ?? 100) + (this.waveSet.bonusPerWave ?? 0) * this.paidWaves;
       let income = 0;
       for (const t of this.towers) income += t.base.income || 0;
-      this._gainCash(bonus * this.tune.waveBonus + income, 'wave');
+      if (this.players.length === 1) this._gainCash(bonus * this.tune.waveBonus + income, 'wave', 0);
+      else {
+        this._gainCash(bonus * this.tune.waveBonus, 'wave', -1);
+        const own = this.players.map(() => 0);
+        for (const t of this.towers) own[this.playerIndex(t.owner)] += t.base.income || 0;
+        own.forEach((v, i) => { if (v) this._gainCash(v, 'wave', i); });
+      }
       this.events.push({ type: 'waveReward', wave: this.paidWaves, bonus, income });
     }
   }
 
-  _gainCash(n, why) {
+  /** Pays n (tuned, rounded) to player index `to`; -1 splits it evenly (see _split). */
+  _gainCash(n, why, to = 0) {
     const v = Math.round(n * (this.options.cashMul ?? 1) * (this.difficulty.cashMul ?? 1) * (why === 'kill' ? this.tune.killIncome : 1));
-    this.cash += v;
+    if (to < 0 && this.players.length > 1) this._split(v);
+    else {
+      const i = Math.max(0, to);
+      this.wallets[i] += v;
+      this.playerStats[i].cashEarned += v;
+    }
     this.stats.cashEarned += v;
     return v;
+  }
+
+  /** Splits an integer amount evenly; the remainder goes one each to the first players in order. */
+  _split(v) {
+    const n = this.players.length;
+    const base = Math.floor(v / n);
+    const rem = v - base * n;
+    for (let i = 0; i < n; i++) {
+      const share = base + (i < rem ? 1 : 0);
+      this.wallets[i] += share;
+      this.playerStats[i].cashEarned += share;
+    }
   }
 
   spawnEnemy(id, { pathIdx = 0, d = 0, hpMul = 1, wave = this.wave, parent = null, leak } = {}) {
@@ -430,7 +569,7 @@ export class Match {
       shield: (def.shield || 0) * scale, maxShield: (def.shield || 0) * scale,
       armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd + (mut?.armor ?? 0)), flying: !!def.flying, stealth: !!def.stealth, alive: true,
       baseSpeed: def.speed * (this.difficulty.speedMul ?? 1) * this.tune.enemySpeed * (mut?.speed ?? 1), speedMul: 1, curSpeed: def.speed,
-      shred: 0, shredUntil: 0, slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, mark: 0, markUntil: 0,
+      shred: 0, shredUntil: 0, slow: 0, slowUntil: 0, stunUntil: 0, burnDps: 0, burnUntil: 0, burnSrc: null, burnBy: null, mark: 0, markUntil: 0,
       phase: 0, regenUntil: 0, regenRate: 0, cloakUntil: 0, immune: null, armorUntil: 0, armorAdd: 0, dashUntil: 0, dashMul: 1, revive: 0, revived: false, deathSpawn: null,
       blinkT: def.blink?.every ?? 0, burstT: def.burst?.every ?? 0, burstUntil: 0, healT: def.heal?.interval ?? 0, summonT: def.summon?.interval ?? 0, attackT: def.attack?.interval ?? 0,
       blocked: false, wave, boss: !!def.boss, heading: 0, spawnedAt: this.time, parent, leak: leak ?? def.leak,
@@ -517,7 +656,7 @@ export class Match {
       if (!e.alive) continue;
       const def = e.def;
       // damage over time
-      if (e.burnUntil > now) this._damage(e, { amount: e.burnDps * dt, type: 'fire', dot: true }, e.burnSrc);
+      if (e.burnUntil > now) this._damage(e, { amount: e.burnDps * dt, type: 'fire', dot: true, by: e.burnBy }, e.burnSrc);
       if (!e.alive) continue;
       if (def.regen && e.burnUntil <= now) e.hp = Math.min(e.maxHp, e.hp + def.regen * e.maxHp * dt);
       if (e.boss) this._bossTimers(e, dt);
@@ -607,18 +746,19 @@ export class Match {
       best.stunUntil = Math.max(best.stunUntil, this.time + (a.stun || 0));
       this.events.push({ type: 'hex', id: e.id, uid: best.uid, x: best.x, z: best.z, duration: a.stun || 0 });
     }
-    const h = this.hero;
-    if (h && this.options.enemiesHurtHero && a.damage > 0 && h.downUntil <= this.time && r2(h.x, h.z, e.x, e.z) <= a.range * a.range) {
-      h.hp -= a.damage;
-      if (h.hp <= 0) this._heroDown();
+    if (!this.options.enemiesHurtHero || !(a.damage > 0)) return;
+    for (const h of this.heroes) {
+      if (h.downUntil <= this.time && r2(h.x, h.z, e.x, e.z) <= a.range * a.range) {
+        h.hp -= a.damage;
+        if (h.hp <= 0) this._heroDown(h);
+      }
     }
   }
 
-  _heroDown() {
-    const h = this.hero;
+  _heroDown(h = this.hero) {
     h.hp = 0;
     h.downUntil = this.time + 6;
-    this.events.push({ type: 'heroDown', until: h.downUntil });
+    this.events.push({ type: 'heroDown', until: h.downUntil, pid: h.pid });
   }
 
   _updateTowers(dt) {
@@ -656,7 +796,7 @@ export class Match {
         execute: b.execute, shred: b.shred, pushback: b.pushback, type: b.damageType || 'physical', splash: b.splash || 0, armorPierce: b.armorPierce || 0,
         burn: b.burn, slow: b.slow, stun: b.stun, mark: b.mark, airBonus: b.airBonus, bossDamage: b.bossDamage,
         freeze: b.freeze && t.hits % b.freeze.every === 0 ? b.freeze.duration : 0,
-        chain: b.chain, targets: b.targets, detection: eff.detection,
+        chain: b.chain, targets: b.targets, detection: eff.detection, by: t.owner,
       };
       const oy = t.unit ? t.unit.y : t.y + 2;
       const speed = b.projectile?.speed ?? 0;
@@ -686,7 +826,7 @@ export class Match {
     const u = s.unit;
     const path = this.paths[t.uid % this.paths.length];
     const a = {
-      id: this.nextId++, owner: t.uid, kind: u.id, path, d: path.length - 1, x: 0, z: 0, y: 0,
+      id: this.nextId++, owner: t.uid, pid: t.owner, kind: u.id, path, d: path.length - 1, x: 0, z: 0, y: 0,
       hp: u.hp, maxHp: u.hp, damage: u.damage * (1 + (t.aura?.damage || 0)), rate: u.rate, cd: 0, speed: u.speed, range: u.range,
       splash: u.splash || 0, damageType: u.damageType || 'physical', dead: false, fighting: false, heading: 0,
     };
@@ -730,7 +870,7 @@ export class Match {
         a.cd -= dt;
         if (a.cd <= 0) {
           a.cd += 1 / a.rate;
-          this._hit(target, { amount: a.damage, type: a.damageType, splash: a.splash, targets: { ground: true, air: false }, detection: true }, null, target.x, target.z);
+          this._hit(target, { amount: a.damage, type: a.damageType, splash: a.splash, targets: { ground: true, air: false }, detection: true, by: a.pid }, null, target.x, target.z);
           this.events.push({ type: 'allyHit', id: a.id, target: target.id });
         }
       } else {
@@ -847,10 +987,13 @@ export class Match {
     const dealt = toShield + toHp;
     this.stats.damage += dealt;
     if (src) src.damage += dealt;
+    const by = src ? src.owner : packet.by;
+    const pi = by === undefined || by === null ? -1 : this.playerIndex(by);
+    if (pi >= 0) this.playerStats[pi].damage += dealt;
     if (!packet.dot && dealt > 0) this.events.push({ type: 'damage', id: e.id, amount: dealt, damageType: packet.type, x: e.x, y: e.y, z: e.z, shield: toShield > 0 });
     if (!packet.dot) {
       if (packet.slow) { e.slow = Math.max(e.slowUntil > now ? e.slow : 0, packet.slow.amount); e.slowUntil = Math.max(e.slowUntil, now + packet.slow.duration); }
-      if (packet.burn) { if (e.burnUntil <= now || packet.burn.dps >= e.burnDps) { e.burnDps = packet.burn.dps; e.burnSrc = src; } e.burnUntil = now + packet.burn.duration; }
+      if (packet.burn) { if (e.burnUntil <= now || packet.burn.dps >= e.burnDps) { e.burnDps = packet.burn.dps; e.burnSrc = src; e.burnBy = by ?? null; } e.burnUntil = now + packet.burn.duration; }
       const stun = Math.max(packet.stun || 0, packet.freeze || 0) * (e.boss ? 0.25 : 1);
       if (stun) { e.stunUntil = Math.max(e.stunUntil, now + stun); if (packet.freeze) this.events.push({ type: 'freeze', id: e.id, duration: stun }); }
       if (packet.shred) { e.shred = Math.max(e.shredUntil > now ? e.shred : 0, packet.shred.amount); e.shredUntil = Math.max(e.shredUntil, now + packet.shred.duration); }
@@ -858,7 +1001,7 @@ export class Match {
       if (packet.mark) { e.mark = Math.max(e.markUntil > now ? e.mark : 0, packet.mark.amount); e.markUntil = now + packet.mark.duration; }
     }
     if (e.boss) this._bossPhases(e);
-    if (e.hp <= 0) this._kill(e, src);
+    if (e.hp <= 0) this._kill(e, src, pi);
   }
 
   /** Knock an enemy back along its path (pushback towers). */
@@ -867,7 +1010,8 @@ export class Match {
     e.d = Math.max(0, e.d - d);
   }
 
-  _kill(e, src) {
+  /** pi: index of the player credited with the kill (-1: nobody, the cash is split). */
+  _kill(e, src, pi = -1) {
     if (e.revive > 0 && !e.revived) {
       // "undying" phase: the boss gets back up once, at a share of its health, and keeps its phase
       e.revived = true;
@@ -877,8 +1021,9 @@ export class Match {
     }
     e.alive = false;
     e.hp = 0;
-    const reward = this._gainCash(e.def.reward * (1 + (src?.base?.bounty || 0)), 'kill');
+    const reward = this._gainCash(e.def.reward * (1 + (src?.base?.bounty || 0)), 'kill', pi);
     this.stats.kills++;
+    if (pi >= 0) this.playerStats[pi].kills++;
     if (src) src.kills++;
     if (e.boss) this.stats.bossesKilled++;
     this.events.push({ type: 'death', id: e.id, enemy: e.defId, x: e.x, y: e.y, z: e.z, reward, boss: e.boss });
@@ -960,10 +1105,14 @@ export class Match {
         this.events.push({ type: 'bossDash', id: e.id, x: e.x, z: e.z, duration: a.duration });
         break;
       }
-      case 'drainCash': { // steals a share of the player's cash (never below 0)
+      case 'drainCash': { // steals a share of every player's cash (never below 0)
         if (this.options.infiniteCash) break;
-        const amount = Math.floor(this.cash * a.pct);
-        this.cash -= amount;
+        let amount = 0;
+        for (let i = 0; i < this.wallets.length; i++) {
+          const take = Math.floor(this.wallets[i] * a.pct);
+          this.wallets[i] -= take;
+          amount += take;
+        }
         this.events.push({ type: 'cashDrain', id: e.id, x: e.x, z: e.z, amount });
         break;
       }
@@ -1037,43 +1186,52 @@ export class Match {
   }
 
   _updateHero(dt) {
-    const h = this.hero;
-    if (!h) return;
+    for (const h of this.heroes) this._updateOneHero(h, dt);
+  }
+
+  _updateOneHero(h, dt) {
     if (h.downUntil > this.time) return;
-    if (h.hp <= 0) { h.hp = h.maxHp; this.events.push({ type: 'heroUp' }); }
+    if (h.hp <= 0) { h.hp = h.maxHp; this.events.push({ type: 'heroUp', pid: h.pid }); }
     const at = h.def.attack;
     h.cooldown -= dt;
     if (h.cooldown > 0) return;
     const target = pickTarget(this.enemies, { x: h.x, z: h.z, range: at.range, targets: { ground: true, air: true }, detection: true, mode: 'closest' });
     if (!target) { h.cooldown = 0; return; }
     h.cooldown = 1 / at.rate;
-    this.events.push({ type: 'heroAttack', target: target.id, x: h.x, z: h.z, tx: target.x, tz: target.z });
+    this.events.push({ type: 'heroAttack', pid: h.pid, target: target.id, x: h.x, z: h.z, tx: target.x, tz: target.z });
     const before = this.stats.kills;
-    this._hit(target, { amount: at.damage * this.tune.heroDamage, type: at.damageType, splash: at.splash || 0, burn: at.burn, slow: at.slow, mark: at.mark, chain: at.chain, targets: { ground: true, air: true }, detection: true }, null, target.x, target.z);
+    this._hit(target, { amount: at.damage * this.tune.heroDamage, type: at.damageType, splash: at.splash || 0, burn: at.burn, slow: at.slow, mark: at.mark, chain: at.chain, targets: { ground: true, air: true }, detection: true, by: h.pid }, null, target.x, target.z);
     h.kills += this.stats.kills - before;
   }
 
   // ---------------------------------------------------------------- abilities --------------
-  _castAbility(id, x, z) {
-    const a = this.abilities.find((ab) => ab.id === id);
+  /** Casts ability `id` of player index pi (its effects are credited to that player). */
+  _castAbility(id, x, z, pi = 0) {
+    const a = this.abilitySets[pi].find((ab) => ab.id === id);
     const def = a.def;
+    const pid = this.players[pi].pid;
+    const hero = this.heroOf(pid);
     a.ready = this.time + def.cooldown;
     this.stats.abilities++;
-    if (def.target === 'self' && this.hero) { x = this.hero.x; z = this.hero.z; }
-    this.pendingAbilities.push({ id, def, x, z, at: this.time + (def.delay || 0) });
-    this.events.push({ type: 'abilityCast', id, x, z, delay: def.delay || 0, radius: def.radius });
+    if (def.target === 'self' && hero) { x = hero.x; z = hero.z; }
+    this.pendingAbilities.push({ id, def, x, z, at: this.time + (def.delay || 0), pid });
+    this.events.push({ type: 'abilityCast', id, x, z, delay: def.delay || 0, radius: def.radius, pid });
   }
 
   _updateAbilities() {
-    for (const a of this.abilities) {
-      if (a.mode !== 'auto' || a.ready > this.time || this.phase !== 'wave') continue;
-      if (this.hero && this.hero.downUntil > this.time) continue;
-      const spot = this._bestAbilitySpot(a.def);
-      if (spot) {
-        this.log.push({ tick: this.tick, type: 'autoAbility', id: a.id, x: spot.x, z: spot.z });
-        this._castAbility(a.id, spot.x, spot.z);
+    this.players.forEach((pl, pi) => {
+      const hero = this.heroOf(pl.pid);
+      for (const a of this.abilitySets[pi]) {
+        if (a.mode !== 'auto' || a.ready > this.time || this.phase !== 'wave') continue;
+        if (hero && hero.downUntil > this.time) continue;
+        const spot = this._bestAbilitySpot(a.def, hero);
+        if (spot) {
+          // single-player logs keep their old shape (replays, results)
+          this.log.push(this.players.length > 1 ? { tick: this.tick, type: 'autoAbility', id: a.id, x: spot.x, z: spot.z, pid: pl.pid } : { tick: this.tick, type: 'autoAbility', id: a.id, x: spot.x, z: spot.z });
+          this._castAbility(a.id, spot.x, spot.z, pi);
+        }
       }
-    }
+    });
     if (!this.pendingAbilities.length) return;
     const keep = [];
     for (const p of this.pendingAbilities) {
@@ -1084,9 +1242,18 @@ export class Match {
       // strip shields / cloaks first so the damage below lands on health and every tower sees them
       if (fx.shieldBreak) for (const e of inArea()) e.shield *= e.boss ? 1 - fx.shieldBreak * 0.5 : 1 - fx.shieldBreak;
       if (fx.reveal) for (const e of inArea()) if (e.stealth) { e.stealth = false; this.events.push({ type: 'reveal', id: e.id, x: e.x, z: e.z }); }
-      if (fx.execute) for (const e of inArea()) if (!e.boss && e.hp <= e.maxHp * fx.execute) { this.events.push({ type: 'damage', id: e.id, amount: e.hp, damageType: fx.damageType || 'physical', x: e.x, y: e.y, z: e.z, shield: false }); this.stats.damage += e.hp; this._kill(e, null); }
+      const pi = this.playerIndex(p.pid);
+      if (fx.execute) {
+        for (const e of inArea()) {
+          if (e.boss || e.hp > e.maxHp * fx.execute) continue;
+          this.events.push({ type: 'damage', id: e.id, amount: e.hp, damageType: fx.damageType || 'physical', x: e.x, y: e.y, z: e.z, shield: false });
+          this.stats.damage += e.hp;
+          if (pi >= 0) this.playerStats[pi].damage += e.hp;
+          this._kill(e, null, pi);
+        }
+      }
       if (fx.damage || fx.freeze || fx.stun || fx.slow || fx.burn || fx.mark) {
-        const packet = { amount: fx.damage || 0, type: fx.damageType || 'physical', splash: p.def.radius, stun: fx.stun, freeze: fx.freeze, slow: fx.slow, burn: fx.burn, mark: fx.mark, targets: { ground: true, air: true }, detection: true };
+        const packet = { amount: fx.damage || 0, type: fx.damageType || 'physical', splash: p.def.radius, stun: fx.stun, freeze: fx.freeze, slow: fx.slow, burn: fx.burn, mark: fx.mark, targets: { ground: true, air: true }, detection: true, by: p.pid };
         if (fx.chain) {
           // chain lightning: strikes the enemy nearest the point, then jumps
           let first = null;
@@ -1102,10 +1269,15 @@ export class Match {
           this._placeEnemy(e);
         }
       }
-      if (fx.allies) this._abilityAllies(fx.allies, p.x, p.z);
-      // keep repairs and war chests (hero skills)
+      if (fx.allies) this._abilityAllies(fx.allies, p.x, p.z, p.pid);
+      // keep repairs and war chests (hero skills); the cash goes to the caster
       if (fx.healBase) this.baseHp = Math.min(this.baseMax, this.baseHp + fx.healBase);
-      if (fx.cash) { this.cash += fx.cash; this.stats.cashEarned += fx.cash; }
+      if (fx.cash) {
+        const ci = Math.max(0, pi);
+        this.wallets[ci] += fx.cash;
+        this.playerStats[ci].cashEarned += fx.cash;
+        this.stats.cashEarned += fx.cash;
+      }
       if (fx.towerBuff) {
         for (const t of this.towers) {
           if (r2(t.x, t.z, p.x, p.z) <= p.def.radius * p.def.radius) {
@@ -1114,13 +1286,14 @@ export class Match {
           }
         }
       }
-      this.events.push({ type: 'abilityHit', id: p.id, x: p.x, z: p.z, radius: p.def.radius });
+      this.events.push({ type: 'abilityHit', id: p.id, x: p.x, z: p.z, radius: p.def.radius, pid: p.pid });
     }
     this.pendingAbilities = keep;
   }
 
-  /** Hero skill reinforcements: allies appear on the road point nearest (x, z) and fight like summons. */
-  _abilityAllies(al, x, z) {
+  /** Hero skill reinforcements: allies appear on the road point nearest (x, z) and fight like
+   *  summons; their kills are credited to the casting player pid. */
+  _abilityAllies(al, x, z, pid = this.players[0].pid) {
     let best = null;
     let bd = Infinity;
     const pt = {};
@@ -1135,26 +1308,27 @@ export class Match {
     const u = al.unit;
     for (let i = 0; i < al.count; i++) {
       const a = {
-        id: this.nextId++, owner: -1, kind: u.id, path: best.path, d: Math.min(best.path.length - 1, best.d + i * 1.2), x: 0, z: 0, y: 0,
+        id: this.nextId++, owner: -1, pid, kind: u.id, path: best.path, d: Math.min(best.path.length - 1, best.d + i * 1.2), x: 0, z: 0, y: 0,
         hp: u.hp, maxHp: u.hp, damage: u.damage, rate: u.rate, cd: 0, speed: u.speed, range: u.range,
         splash: u.splash || 0, damageType: u.damageType || 'physical', dead: false, fighting: false, heading: 0,
       };
       this._placeAlly(a);
       this.allies.push(a);
-      this.events.push({ type: 'allySpawn', id: a.id, uid: -1, kind: a.kind, x: a.x, z: a.z });
+      this.events.push({ type: 'allySpawn', id: a.id, uid: -1, kind: a.kind, x: a.x, z: a.z, pid });
     }
   }
 
-  /** Automatic abilities aim at the densest group (or the boss); null if not worth it. */
-  _bestAbilitySpot(def) {
+  /** Automatic abilities aim at the densest group (or the boss); null if not worth it.
+   *  Self-targeted skills centre on the caster's hero. */
+  _bestAbilitySpot(def, hero = this.hero) {
     if (def.target === 'self') {
-      if (!this.hero) return null;
+      if (!hero) return null;
       // keep repairs only when the keep has lost at least that much; a war chest whenever ready
-      if (def.effects.cash && !def.effects.towerBuff) return { x: this.hero.x, z: this.hero.z };
-      if (def.effects.healBase && !def.effects.towerBuff) return this.baseHp <= this.baseMax - def.effects.healBase ? { x: this.hero.x, z: this.hero.z } : null;
+      if (def.effects.cash && !def.effects.towerBuff) return { x: hero.x, z: hero.z };
+      if (def.effects.healBase && !def.effects.towerBuff) return this.baseHp <= this.baseMax - def.effects.healBase ? { x: hero.x, z: hero.z } : null;
       if (!this.enemies.length) return null;
-      const near = this.towers.filter((t) => r2(t.x, t.z, this.hero.x, this.hero.z) <= def.radius * def.radius).length;
-      return near >= 2 ? { x: this.hero.x, z: this.hero.z } : null;
+      const near = this.towers.filter((t) => r2(t.x, t.z, hero.x, hero.z) <= def.radius * def.radius).length;
+      return near >= 2 ? { x: hero.x, z: hero.z } : null;
     }
     let best = null;
     let bestN = 0;
@@ -1186,6 +1360,11 @@ export class Match {
     mix(this.tick); mix(this.cash); mix(this.baseHp); mix(this.wave); mix(this.stats.kills);
     for (const e of this.enemies) { mix(e.id); mix(e.hp); mix(e.d); }
     for (const t of this.towers) { mix(t.uid); mix(t.x); mix(t.z); mix(t.up.linear); mix(t.up.branchLevel); }
+    if (this.players.length > 1) {
+      // co-op only (single-player hashes stay as they were): the other wallets and every hero
+      for (let i = 1; i < this.wallets.length; i++) mix(this.wallets[i]);
+      for (const hr of this.heroes) { mix(hr.x); mix(hr.z); mix(hr.hp); mix(hr.downUntil); }
+    }
     return (h >>> 0).toString(16).padStart(8, '0');
   }
 
@@ -1216,7 +1395,19 @@ export class Match {
       score: this.mode.score === 'time' ? Math.round(this.time) : this.mode.score === 'waves' ? Math.max(0, this.wave - 1) : null,
       rewardMul: this.tune.rewardMul * this.rules.rewardMul * (this.mode.noRewards ? 0 : 1),
       hash: this.hash(),
+      // co-op: what each player did (the team result above is shared)
+      ...(this.players.length > 1 ? { players: this.players.map((p, i) => ({ pid: p.pid, name: p.name, hero: this.heroOf(p.pid)?.def.id ?? null, ...this.playerStats[i] })) } : {}),
     };
+  }
+
+  /** Complete mutable state as plain JSON (lockstep resync, late join). See src/sim/snapshot.js. */
+  snapshot() {
+    return snapshotMatch(this);
+  }
+
+  /** Rebuilds a match from snapshot(); mapWorld: a fresh buildMapWorld() of the same map. */
+  static restore(snap, { content, mapWorld }) {
+    return restoreMatch(Match, snap, { content, mapWorld });
   }
 
   dispose() {

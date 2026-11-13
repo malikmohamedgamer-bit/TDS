@@ -234,10 +234,12 @@ export class Hub {
 
   _play() {
     const diffs = [...this.c.difficulties.values()].sort((a, b) => a.order - b.order);
-    const modes = [...(this.c.modes?.values() || [])].map((m) => ({ ...m, locked: m.unlockLevel && this.save.profile.level < m.unlockLevel ? `Reach player level ${m.unlockLevel}` : null }));
+    // online modes (co-op) start from the Online tab, never from the single-player list
+    const modes = [...(this.c.modes?.values() || [])].filter((m) => !m.online).map((m) => ({ ...m, locked: m.unlockLevel && this.save.profile.level < m.unlockLevel ? `Reach player level ${m.unlockLevel}` : null }));
     const mapId = this.ctx.mapId || 'riftline';
     for (const m of modes) if (!m.locked && m.map && m.map !== mapId) m.locked = `Played on ${this.c.maps.get(m.map)?.name || m.map}`;
-    if (modes.find((m) => m.id === this.cfg.mode)?.locked) this.cfg.mode = 'campaign';
+    const picked = modes.find((m) => m.id === this.cfg.mode);
+    if (!picked || picked.locked) this.cfg.mode = 'campaign';
     const mode = this.c.modes?.get(this.cfg.mode) || { id: 'campaign' };
     const daily = mode.daily ? dailyChallenge(this.c, this.date()) : null;
     const anyTower = !!mode.allTowers;
