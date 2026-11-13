@@ -3,6 +3,22 @@
 Results are from real runs on the owner's Windows 11 machine. "Headless" means Playwright
 Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU performance.
 
+## Milestone checks, 0.13.0 (2026-11-14)
+
+| Check | How | Result |
+|---|---|---|
+| Unit tests / lint | `npm test`, `npm run lint` | 251 / 251, clean (one unrelated failure once while a 4-job bot run loaded the CPU, BUGS 68; three reruns clean) |
+| Server tests | `cd server && npm test` | 26 / 26 (relay, real-relay integration) |
+| Co-op e2e | `npx playwright test test/e2e/coop.spec.js` | 2 / 2 (same-browser and real relay): recorded per-tick states identical in both tabs, rematch works, zero resyncs when the machine is not loaded |
+| Full e2e | `npm run test:e2e` | 27 / 28 (10.9 min): the co-op test saw one catch-up snapshot for the starved member tab while other jobs ran (states identical); the check now fails only on a desync snapshot or more than one resync, rerun 2 / 2 |
+| 30 minute soak | `npm run soak -- --minutes 30` | all 60 maps (before the 4 air maps): 0 rescues, 0 failures; the 4 air maps pass the generator's soak (0 rescues) |
+| Fuzz | `test/unit/fuzz.test.js` | 400 junk settings blobs, 3000 random / hostile commands: found and fixed BUGS 66 (NaN tower position) and 67 (ability at NaN crashed the sim) |
+| Error boundary | browser, a tower visual broken on purpose | logged once, hidden, the match kept running (180 ticks, all enemies drawn) |
+| Audio | browser, every new sound played once | 18 new sounds, no errors; ducking fires on boss and victory cues; Reduced sound thins repeats. Not heard by a person |
+| Air routes | browser on Willow Hollow + `test/unit/air.test.js` | a flier takes the 104 m air route while a walker takes the 313 m road; chevrons visible; snapshot round trip identical; existing maps byte-identical after generation |
+| Tower skins | browser, Desert Camo | the rifleman is tinted, the Ember Adept beside it is not (faction-limited skin) |
+| Balance | `tools/ladder.mjs`, `tools/ladder-calibrate.mjs` | see docs/TUNING.md (ladder, modes, economy) and docs/balance-difficulty.json (per-map factors) |
+
 ## Milestone checks after the 2026-11-12 batches
 
 | Check | How | Result |
@@ -230,7 +246,8 @@ Note: the simulation has no visuals yet; towers and enemies appear in milestone 
 | Regression | unit 68/68, lint clean, e2e 24/24 (4.6 min), soak 30 min both maps 0 rescues 0 failures | pass | |
 
 ## Still not verified (honest)
-- Music by ear (only pattern and state tests); Music volume slider has no automated test.
+- Music and the 0.13.0 battle sounds by ear (only that they play without errors); Music volume slider has no automated test.
+- A live Supabase project and a cross-browser (Chrome + Safari / Firefox) co-op match; the PWA on the live URL and a phone.
 - Real-GPU and real-phone frame times (only software rendering measured).
 - Pointer-lock look (headless cannot grant it).
 
