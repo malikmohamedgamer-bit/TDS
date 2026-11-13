@@ -74,7 +74,7 @@ for (const m of maps) {
 const modes = JSON.parse(readFileSync(new URL('../data/modes.json', import.meta.url), 'utf8')).modes;
 const MODE_QUEST = { endless: null, sandbox: null, campaign: null };
 for (const m of modes) {
-  if (m.id in MODE_QUEST || m.noRewards || m.endless) continue;
+  if (m.id in MODE_QUEST || m.noRewards || m.endless || m.online) continue; // story stays playable offline
   story.push({ id: `s_mode_${m.id}`, name: `${m.name} veteran`, desc: `Win a ${m.name} match`, modeWon: m.id, reward: { sigils: 200, crowns: 400 } });
 }
 [[5, 'Five banners'], [10, 'Ten banners'], [20, 'Regional command'], [35, 'Continental command'], [maps.length, 'The whole valley']].forEach(([n, name], i) => add({ id: `a_maps_${n}`, name, desc: `Liberate ${n} maps (Campaign wins)`, mapsWon: n, reward: reward(i, 5, 120) }));

@@ -240,7 +240,8 @@ export function playCoopBot({ content, mapWorld, players = 2, difficulty = 'norm
   const towers = pool || [...content.towers.keys()];
   const loadoutOf = (i) => Array.from({ length: 6 }, (_, k) => towers[(i * 6 + k) % towers.length]);
   const loadout = [...new Set(ids.flatMap((_, i) => loadoutOf(i)))];
-  const m = new Match({ content, mapWorld, difficulty, seed, loadout, levels, options: { ...options, mode: 'coop', players: ids.map((pid, i) => ({ pid, hero: heroList[i % heroList.length], name: pid })) } });
+  const seats = ids.map((pid, i) => ({ pid, hero: heroList[i % heroList.length], name: pid, loadout: loadoutOf(i) }));
+  const m = new Match({ content, mapWorld, difficulty, seed, loadout, levels, players: seats, options: { ...options, mode: 'coop' } });
   const bots = ids.map((pid, i) => createBot(playerView(m, pid), { loadout: loadoutOf(i), skill, seed: `${seed}:${pid}` }));
   while (m.phase !== 'won' && m.phase !== 'lost' && m.tick < maxTicks) {
     for (const b of bots) b.update();
