@@ -93,6 +93,7 @@ export class MatchView {
     this.group = new THREE.Group();
     this.group.name = 'match';
     this.scene.add(this.group);
+    this._buildStandards();
     this.fx = new Effects(this.scene, renderer.camera, overlay, settings);
     this.fx.setLibrary(content.vfx, settings.quality);
     this.timeScale = 1; // < 1 during slow-motion moments (boss death); read by the controller
@@ -262,6 +263,32 @@ export class MatchView {
       this.plinths[faction].color = new THREE.Color(col).multiplyScalar(1.3);
     }
     return this.plinths[faction];
+  }
+
+  /** Keep standard cosmetic: two banner poles flanking the keep gate (decoration only, no collider). */
+  _buildStandards() {
+    const st = this.looks?.standard;
+    const base = this.match.map.base;
+    if (!st?.cloth || !base) return;
+    const b = new ModelBuilder();
+    for (const side of [-1, 1]) {
+      const z = side * 5.6;
+      b.cyl(0.09, 0.11, 6.2, 6, '#3D4451', { pos: [-6.6, 3.1, z] });
+      b.box(0.08, 2.6, 1.5, st.cloth, { pos: [-6.7, 4.4, z + side * 0.78] });
+      b.box(0.1, 0.2, 1.6, st.trim, { pos: [-6.72, 5.75, z + side * 0.78] });
+      b.box(0.1, 0.16, 1.6, st.trim, { pos: [-6.72, 3.15, z + side * 0.78] });
+      b.octa(0.24, st.trim, { glow: true, intensity: 1.6, pos: [-6.6, 6.35, z] });
+    }
+    const geo = b.build();
+    const y = this.match.mw.terrain.height(base.x - 6.6, base.z);
+    for (const [g, mat] of [[geo.body, sharedMaterials().body], [geo.glow, sharedMaterials().glow]]) {
+      if (!g) continue;
+      const mesh = new THREE.Mesh(g, mat);
+      mesh.position.set(base.x, y, base.z);
+      mesh.castShadow = true;
+      mesh.name = 'keep-standards';
+      this.group.add(mesh);
+    }
   }
 
   /** Tower skin cosmetic: lit materials take the skin's tint (glowing parts keep their colour).

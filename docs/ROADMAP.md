@@ -61,7 +61,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [ ] Index covers everything, completion rewards
 - [x] 87 quests, 109 achievements (21 distinct condition kinds; most achievements are tiers)
 - [x] 3 summon banners, pity per banner
-- [ ] Cosmetics: 4 kinds, 26 items earned in play (interface themes, hero outfits, projectile effects, tower base plates). Open: full tower skins (recoloured models), map decorations
+- [x] Cosmetics: 6 kinds, 39 items earned in play (interface themes, hero outfits, projectile effects, tower base plates, tower skins, keep standards), 2026-11-14
 - [x] Daily login streak, daily quests and weekly quests; every reward granted exactly once (tested)
 
 ## Chunk 5: audio (SHOULD)

@@ -373,6 +373,7 @@ export class Hub {
       if (it.kind === 'projectileFx') return it.tint ? [it.tint, it.tint, '#1b1f2c'] : ['#FFD27A', '#FF6B35', '#7FDBFF', '#C9A7FF'];
       if (it.kind === 'towerPlinth') return it.color ? [it.color] : ['#5b6b3a', '#7b4dff'];
       if (it.kind === 'towerSkin') return it.tint ? [it.tint] : ['#8a8f7a', '#9b7bd8'];
+      if (it.kind === 'keepStandard') return it.cloth ? [it.cloth, it.trim || it.cloth] : ['#3a4258'];
       return [it.colors?.coat || '#2A2766', it.colors?.coatTrim || '#FFD166', it.colors?.cape || '#7B4DFF'];
     };
     return Object.entries(kinds).map(([kind, title]) => {

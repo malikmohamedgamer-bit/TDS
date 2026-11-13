@@ -17,7 +17,7 @@
 - **8 new maps (68)**: 4 flagships (Frostbite Hairpin, Ashfall Gauntlet, Dune Ladder, Twin Bridges) and
   4 generated maps. **Air routes** on 6 of them where fliers skip the road and take a glowing shortcut
   across the sky to the keep; the map preview, map details and Help show it.
-- **Tower skins** (6, earned in play) and an Index that shows each collection's next reward; bosses
+- **Tower skins** (6) and **keep standards** (5, banners beside the keep gate), earned in play, and an Index that shows each collection's next reward; bosses
   have their own Index section.
 - **Robustness**: a unit whose visuals fail is hidden instead of freezing the match view; commands
   with impossible positions are refused (one could crash a co-op match); hand-edited settings are

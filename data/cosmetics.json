@@ -1,11 +1,12 @@
 {
- "$doc": "Cosmetics: looks earned by playing (never bought). kind uiTheme: `vars` are CSS custom properties set on the page (accent colours from styles/tokens.css). kind heroOutfit: `colors` override the hero model palette (src/engine/heroView.js keys: coat, coatTrim, vest, pants, cape, capeIn, blade, hilt, glove, boot). `unlock` is one quest-style condition (stat + target, mapsWon, winDifficulty, towerLevel, owned, ownFaction, discovered, summons); no `unlock` means owned from the start. One item per kind is equipped (save.cosmetics). kind projectileFx: every projectile is tinted towards `tint` by `mix` (0-1), so damage types keep a hint of their own colour. kind towerPlinth: the base plate under every tower takes `color`. kind towerSkin: `tint` recolours the whole tower model (mixed in by `strength`, default 0.6); `faction` limits it to Modern War or Magic towers.",
+ "$doc": "Cosmetics: looks earned by playing (never bought). kind uiTheme: `vars` are CSS custom properties set on the page (accent colours from styles/tokens.css). kind heroOutfit: `colors` override the hero model palette (src/engine/heroView.js keys: coat, coatTrim, vest, pants, cape, capeIn, blade, hilt, glove, boot). `unlock` is one quest-style condition (stat + target, mapsWon, winDifficulty, towerLevel, owned, ownFaction, discovered, summons); no `unlock` means owned from the start. One item per kind is equipped (save.cosmetics). kind projectileFx: every projectile is tinted towards `tint` by `mix` (0-1), so damage types keep a hint of their own colour. kind towerPlinth: the base plate under every tower takes `color`. kind towerSkin: `tint` recolours the whole tower model (mixed in by `strength`, default 0.6); `faction` limits it to Modern War or Magic towers. kind keepStandard: two banner poles beside the keep gate in `cloth` with `trim` (the first item has none).",
  "kinds": {
   "uiTheme": "Interface themes",
   "heroOutfit": "Hero outfits",
   "projectileFx": "Projectile effects",
   "towerPlinth": "Tower base plates",
-  "towerSkin": "Tower skins"
+  "towerSkin": "Tower skins",
+  "keepStandard": "Keep standards"
  },
  "items": [
   {
@@ -455,6 +456,75 @@
     "modeWon": "mutation"
    },
    "how": "Win a Mutation match"
+  },
+  {
+   "id": "standard_none",
+   "kind": "keepStandard",
+   "name": "Bare Gate",
+   "desc": "No standards beside the keep."
+  },
+  {
+   "id": "standard_brass",
+   "kind": "keepStandard",
+   "name": "Brass Standards",
+   "desc": "Command colours on both sides of the gate.",
+   "cloth": "#B8903C",
+   "trim": "#FFD166",
+   "unlock": {
+    "stat": "wins",
+    "target": 5
+   },
+   "how": "Win 5 matches"
+  },
+  {
+   "id": "standard_frost",
+   "kind": "keepStandard",
+   "name": "Frost Pennants",
+   "desc": "Ice-blue pennants from the northern passes.",
+   "cloth": "#5FA8D3",
+   "trim": "#DCEBFF",
+   "unlock": {
+    "mapsWon": 8
+   },
+   "how": "Liberate 8 maps"
+  },
+  {
+   "id": "standard_ember",
+   "kind": "keepStandard",
+   "name": "Ember Banners",
+   "desc": "Scorched red banners that never stop smouldering.",
+   "cloth": "#B23A2A",
+   "trim": "#FF9F1C",
+   "unlock": {
+    "stat": "kills",
+    "target": 3000
+   },
+   "how": "Defeat 3000 enemies"
+  },
+  {
+   "id": "standard_void",
+   "kind": "keepStandard",
+   "name": "Void Standards",
+   "desc": "Cloth cut from the rift itself.",
+   "cloth": "#4B2A7A",
+   "trim": "#C9A7FF",
+   "unlock": {
+    "stat": "bossKills",
+    "target": 60
+   },
+   "how": "Defeat 60 bosses"
+  },
+  {
+   "id": "standard_laurel",
+   "kind": "keepStandard",
+   "name": "Laurel of the Ladder",
+   "desc": "Green and gold: flown by commanders who beat Extreme.",
+   "cloth": "#2F6B3A",
+   "trim": "#FFE3A0",
+   "unlock": {
+    "winDifficulty": "extreme"
+   },
+   "how": "Win on Extreme"
   }
  ]
 }

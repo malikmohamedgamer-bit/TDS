@@ -33,7 +33,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Modes / modifiers | 11 single-player (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) + online Co-op / 9 |
 | Quests / achievements | 117: 23 daily pool (3 a day), 12 weekly pool (3 a week), 82 story (6 hand-written, 68 map liberations, 8 mode wins) / 109 |
 | Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
-| Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
+| Cosmetics | 39 in 6 kinds: 7 interface themes, 7 hero outfits, 6 projectile effects, 6 tower base plates, 7 tower skins, 6 keep standards (first of each kind is the free default), earned in play |
 | Music | 7 moods, 12 theme styles, one key per map; procedural |
 | Unit / server / E2E tests | 245 / 26 / 28 incl. two co-op e2e (same-browser and real relay) (see VERIFICATION.md) |
 
@@ -149,7 +149,7 @@ store draft, daily live smoke test. Full e2e 27/28 then co-op 2/2 (VERIFICATION.
 1. Store screenshots: 9 drafts made by `node tools/store-shots.mjs` (software rendering); retake the final set on a real GPU and add a co-op shot.
 2. Full e2e + 30 min soak once more after the 8 new maps (soak covered the 60 older maps; the 8 new
    ones passed the generator's soak).
-3. Map decorations cosmetic; all UI strings in data files (only needed for translation).
+3. All UI strings in data files (only needed for translation). Keep standards (map decoration cosmetic) done.
 4. Owner: live Supabase project + cross-browser co-op match, PWA on a phone, music by ear, final name.
 5. Re-run `node tools/ladder-calibrate.mjs --force` then `--refine` after any tower / enemy / wave
    change (about 2 hours with `--jobs 11`).

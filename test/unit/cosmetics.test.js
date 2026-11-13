@@ -31,7 +31,7 @@ test('cosmetics data: kinds have a free default first, unique ids, valid colours
 test('a new save owns only the defaults; play unlocks; a locked or unknown choice falls back', () => {
   const save = newSave(1);
   const st = cosmeticStatus(save, C);
-  assert.deepEqual(st.filter((x) => x.unlocked).map((x) => x.id), ['ui_brass', 'outfit_default', 'proj_standard', 'plinth_standard', 'skin_standard']);
+  assert.deepEqual(st.filter((x) => x.unlocked).map((x) => x.id), ['ui_brass', 'outfit_default', 'proj_standard', 'plinth_standard', 'skin_standard', 'standard_none']);
   assert.equal(equipCosmetic(save, C, 'ui_emerald').ok, false);
   assert.equal(equipCosmetic(save, C, 'nope').ok, false);
   save.cosmetics = { uiTheme: 'ui_emerald', heroOutfit: 'junk' }; // hand-edited save

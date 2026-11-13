@@ -168,7 +168,7 @@ export class MatchController {
       hero: this.content.heroes.has(this.settings.hero) ? this.settings.hero : undefined,
       options: { manualStart: true, enemiesHurtHero: !!this.settings.enemiesHurtHero, preset: this.presetId(), assist: this.assist(), mode: cfg.mode || 'campaign', modifiers: cfg.modifiers || [], dailyDate: cfg.dailyDate },
     });
-    const looks = { projectile: equippedCosmetic(this.save, this.content, 'projectileFx'), plinth: equippedCosmetic(this.save, this.content, 'towerPlinth'), skin: equippedCosmetic(this.save, this.content, 'towerSkin') };
+    const looks = { projectile: equippedCosmetic(this.save, this.content, 'projectileFx'), plinth: equippedCosmetic(this.save, this.content, 'towerPlinth'), skin: equippedCosmetic(this.save, this.content, 'towerSkin'), standard: equippedCosmetic(this.save, this.content, 'keepStandard') };
     const view = new MatchView(this.renderer, match, this.content, this.settings, this.ui.querySelector('.dmg-layer'), looks);
     await view.preload();
     // only expose the match once everything it needs exists (the frame loop reads it)
@@ -538,7 +538,7 @@ export class MatchController {
       loadout: [...content.towers.keys()], levels: {},
       options: { manualStart: true, mode: 'coop' },
     });
-    const looks = { projectile: equippedCosmetic(this.save, content, 'projectileFx'), plinth: equippedCosmetic(this.save, content, 'towerPlinth'), skin: equippedCosmetic(this.save, content, 'towerSkin') };
+    const looks = { projectile: equippedCosmetic(this.save, content, 'projectileFx'), plinth: equippedCosmetic(this.save, content, 'towerPlinth'), skin: equippedCosmetic(this.save, content, 'towerSkin'), standard: equippedCosmetic(this.save, content, 'keepStandard') };
     this.ready = false;
     const online = {
       lobby, transport, start, localPid, config, isHost: start.hostId === transport.id, finished: false, heroAt: null,
