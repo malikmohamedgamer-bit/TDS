@@ -6,185 +6,476 @@
    "hard": 1,
    "extra_hard": 1,
    "extreme": 1,
-   "impossible": 0.847
+   "impossible": 0.945
   },
   "frostmere": {
+   "medium": 1.254,
    "hard": 1,
    "extra_hard": 1.18,
-   "medium": 1.18,
-   "extreme": 1.18,
-   "impossible": 1.069
+   "extreme": 1.279,
+   "impossible": 1.083
   },
   "glacier_gate": {
    "medium": 0.903,
    "hard": 0.847,
-   "impossible": 1,
    "extra_hard": 1.064,
-   "extreme": 1.18
+   "extreme": 1.254,
+   "impossible": 1
   },
   "mirrormire": {
-   "medium": 1,
+   "medium": 1.283,
    "hard": 1.18,
    "extra_hard": 1.18,
-   "impossible": 1.063,
-   "extreme": 1.18
-  },
-  "gen_verdant_1": {
-   "hard": 1,
-   "medium": 0.702,
-   "extra_hard": 0.911,
-   "extreme": 0.918,
-   "impossible": 0.678
+   "extreme": 1.328,
+   "impossible": 1.063
   },
   "starfall_sanctum": {
+   "medium": 1.279,
    "hard": 1.18,
-   "medium": 1.18,
-   "extra_hard": 1.18,
-   "impossible": 1.18,
-   "extreme": 1.475
+   "extra_hard": 1.328,
+   "extreme": 1.475,
+   "impossible": 1.18
+  },
+  "gen_verdant_1": {
+   "medium": 0.774,
+   "hard": 1,
+   "extra_hard": 0.911,
+   "extreme": 0.959,
+   "impossible": 0.804
   },
   "gen_frost_1": {
+   "medium": 1.283,
    "hard": 1.18,
-   "medium": 1,
    "extra_hard": 1.18,
    "extreme": 1.18,
    "impossible": 1.052
   },
   "gen_ember_1": {
    "medium": 1,
-   "extreme": 1,
    "hard": 1.063,
-   "extra_hard": 0.847,
+   "extra_hard": 0.976,
+   "extreme": 1,
    "impossible": 0.901
   },
   "gen_toxic_1": {
-   "impossible": 1,
-   "medium": 1,
-   "extra_hard": 1.18,
+   "medium": 1.283,
    "hard": 1.082,
-   "extreme": 1.18
+   "extra_hard": 1.18,
+   "extreme": 1.18,
+   "impossible": 1
   },
   "gen_dunes_1": {
    "medium": 0.847,
+   "hard": 0.957,
    "extra_hard": 1,
-   "hard": 0.847,
-   "extreme": 1,
+   "extreme": 1.022,
    "impossible": 0.884
   },
   "gen_starfall_1": {
    "medium": 1.18,
-   "extra_hard": 1.18,
    "hard": 1.084,
-   "extreme": 1.18,
-   "impossible": 1
+   "extra_hard": 1.18,
+   "extreme": 1.279,
+   "impossible": 0.996
   },
   "gen_verdant_2": {
+   "medium": 1.254,
    "hard": 1,
-   "medium": 1.18,
    "extra_hard": 1.18,
-   "extreme": 1.18,
+   "extreme": 1.279,
    "impossible": 1.082
   },
   "gen_frost_2": {
    "medium": 1.18,
-   "impossible": 1,
-   "extra_hard": 1.18,
    "hard": 1.076,
-   "extreme": 1.18
+   "extra_hard": 1.18,
+   "extreme": 1.229,
+   "impossible": 1
   },
   "gen_ember_2": {
+   "medium": 1.328,
    "hard": 1.18,
-   "medium": 1.18,
-   "extra_hard": 1,
-   "extreme": 1.18,
-   "impossible": 1.082
+   "extra_hard": 1.232,
+   "extreme": 1.254,
+   "impossible": 1.131
   },
   "gen_toxic_2": {
    "medium": 1.18,
-   "impossible": 1,
-   "hard": 1.18,
-   "extra_hard": 1.084,
-   "extreme": 1.084
+   "hard": 1.144,
+   "extra_hard": 1.132,
+   "extreme": 1.132,
+   "impossible": 1
   },
   "gen_dunes_2": {
-   "medium": 1,
+   "medium": 1.386,
    "hard": 1.378,
-   "extra_hard": 1,
-   "impossible": 1,
-   "extreme": 1.475
+   "extra_hard": 1.386,
+   "extreme": 1.475,
+   "impossible": 1.283
   },
   "gen_starfall_2": {
    "medium": 0.847,
    "hard": 1.18,
    "extra_hard": 1.063,
    "extreme": 1.108,
-   "impossible": 0.918
+   "impossible": 0.959
   },
   "gen_verdant_3": {
    "medium": 1,
    "hard": 1.18,
-   "impossible": 1,
-   "extreme": 1.18,
-   "extra_hard": 1.18
-  },
-  "gen_frost_3": {
-   "medium": 1,
-   "impossible": 1,
-   "extra_hard": 1.18,
-   "hard": 1.084,
-   "extreme": 1.18
-  },
-  "gen_ember_3": {
-   "medium": 1.084,
-   "hard": 1.076,
-   "extra_hard": 1.095,
+   "extra_hard": 1.117,
    "extreme": 1.18,
    "impossible": 1
   },
+  "gen_frost_3": {
+   "medium": 1.283,
+   "hard": 1.132,
+   "extra_hard": 1.18,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "gen_ember_3": {
+   "medium": 1.144,
+   "hard": 1.128,
+   "extra_hard": 1.095,
+   "extreme": 1.18,
+   "impossible": 1.032
+  },
   "gen_toxic_3": {
+   "medium": 0.762,
    "hard": 0.847,
-   "medium": 0.847,
    "extra_hard": 0.627,
    "extreme": 0.847,
    "impossible": 0.627
   },
   "gen_dunes_3": {
-   "impossible": 1,
-   "medium": 1.18,
-   "hard": 1.18,
-   "extra_hard": 1,
-   "extreme": 1.18
+   "medium": 1.401,
+   "hard": 1.279,
+   "extra_hard": 1.283,
+   "extreme": 1.279,
+   "impossible": 1
   },
   "gen_starfall_3": {
    "medium": 1.475,
    "hard": 1.475,
-   "extra_hard": 1,
-   "extreme": 1,
-   "impossible": 1.18
+   "extra_hard": 1.386,
+   "extreme": 1.386,
+   "impossible": 1.279
   },
   "gen_verdant_4": {
    "medium": 1.475,
    "hard": 1.593,
-   "extra_hard": 1.593,
+   "extra_hard": 1.542,
    "extreme": 1.593,
    "impossible": 1.593
+  },
+  "gen_frost_4": {
+   "medium": 1.254,
+   "hard": 1.283,
+   "extra_hard": 1.18,
+   "extreme": 1.283,
+   "impossible": 1.18
   },
   "gen_ember_4": {
    "medium": 1,
    "hard": 1.18,
-   "extra_hard": 1,
-   "extreme": 1.084
-  },
-  "gen_frost_4": {
-   "medium": 1.18,
-   "hard": 1,
-   "extra_hard": 1.18,
-   "impossible": 1.18,
-   "extreme": 1
+   "extra_hard": 1.026,
+   "extreme": 1.084,
+   "impossible": 0.905
   },
   "gen_toxic_4": {
+   "medium": 1.254,
+   "hard": 1.279,
+   "extra_hard": 1.279,
+   "extreme": 1.279,
+   "impossible": 1.044
+  },
+  "gen_dunes_4": {
+   "medium": 1.283,
+   "hard": 1.18,
+   "extra_hard": 1.124,
+   "extreme": 1.122,
+   "impossible": 0.903
+  },
+  "gen_starfall_4": {
+   "medium": 0.917,
+   "hard": 1.137,
+   "extra_hard": 0.939,
+   "extreme": 1,
+   "impossible": 0.847
+  },
+  "gen_verdant_5": {
    "medium": 1.18,
-   "hard": 1.18
+   "hard": 1.232,
+   "extra_hard": 1.229,
+   "extreme": 1,
+   "impossible": 1.04
+  },
+  "gen_frost_5": {
+   "medium": 0.847,
+   "hard": 0.869,
+   "extra_hard": 0.762,
+   "extreme": 0.815,
+   "impossible": 0.737
+  },
+  "gen_ember_5": {
+   "medium": 1.057,
+   "hard": 1.052,
+   "extra_hard": 1,
+   "extreme": 1,
+   "impossible": 0.762
+  },
+  "gen_toxic_5": {
+   "medium": 1.082,
+   "hard": 1.072,
+   "extra_hard": 1.022,
+   "extreme": 1.229,
+   "impossible": 0.956
+  },
+  "gen_dunes_5": {
+   "medium": 0.847,
+   "hard": 1.063,
+   "extra_hard": 0.896,
+   "extreme": 1.044,
+   "impossible": 0.847
+  },
+  "gen_starfall_5": {
+   "medium": 1.49,
+   "hard": 1.378,
+   "extra_hard": 1.365,
+   "extreme": 1.386,
+   "impossible": 1.279
+  },
+  "gen_verdant_6": {
+   "medium": 0.908,
+   "hard": 0.847,
+   "extra_hard": 0.71,
+   "extreme": 0.762,
+   "impossible": 0.655
+  },
+  "gen_frost_6": {
+   "medium": 1.144,
+   "hard": 1.079,
+   "extra_hard": 1,
+   "extreme": 0.97,
+   "impossible": 0.847
+  },
+  "gen_ember_6": {
+   "medium": 1.064,
+   "hard": 1,
+   "extra_hard": 1,
+   "extreme": 0.939,
+   "impossible": 0.678
+  },
+  "gen_toxic_6": {
+   "medium": 0.914,
+   "hard": 0.97,
+   "extra_hard": 0.889,
+   "extreme": 0.926,
+   "impossible": 0.678
+  },
+  "gen_dunes_6": {
+   "medium": 1.153,
+   "hard": 1.102,
+   "extra_hard": 1.04,
+   "extreme": 1.044,
+   "impossible": 0.804
+  },
+  "gen_starfall_6": {
+   "medium": 1,
+   "hard": 1.013,
+   "extra_hard": 0.964,
+   "extreme": 1,
+   "impossible": 0.794
+  },
+  "gen_verdant_7": {
+   "medium": 1,
+   "hard": 0.973,
+   "extra_hard": 0.847,
+   "extreme": 0.99,
+   "impossible": 0.847
+  },
+  "gen_frost_7": {
+   "medium": 1.052,
+   "hard": 1,
+   "extra_hard": 1,
+   "extreme": 1,
+   "impossible": 0.81
+  },
+  "gen_ember_7": {
+   "medium": 0.627,
+   "hard": 0.847,
+   "extra_hard": 0.847,
+   "extreme": 0.811,
+   "impossible": 0.678
+  },
+  "gen_toxic_7": {
+   "medium": 0.847,
+   "hard": 0.911,
+   "extra_hard": 0.847,
+   "extreme": 0.847,
+   "impossible": 0.682
+  },
+  "gen_dunes_7": {
+   "medium": 1.108,
+   "hard": 1.18,
+   "extra_hard": 1.144,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "gen_starfall_7": {
+   "medium": 1,
+   "hard": 0.918,
+   "extra_hard": 0.881,
+   "extreme": 1.025,
+   "impossible": 0.901
+  },
+  "gen_verdant_8": {
+   "medium": 1.063,
+   "hard": 1.093,
+   "extra_hard": 0.985,
+   "extreme": 1,
+   "impossible": 0.737
+  },
+  "gen_frost_8": {
+   "medium": 0.903,
+   "hard": 0.959,
+   "extra_hard": 1,
+   "extreme": 1.084,
+   "impossible": 0.964
+  },
+  "gen_ember_8": {
+   "medium": 0.903,
+   "hard": 1,
+   "extra_hard": 0.847,
+   "extreme": 1,
+   "impossible": 0.892
+  },
+  "gen_verdant_9": {
+   "medium": 1.283,
+   "hard": 1.283,
+   "extra_hard": 1.283,
+   "extreme": 1.412,
+   "impossible": 1.18
+  },
+  "gen_ember_9": {
+   "medium": 1,
+   "hard": 1,
+   "extra_hard": 1,
+   "extreme": 1.18,
+   "impossible": 1.386
+  },
+  "gen_frost_9": {
+   "medium": 1.18,
+   "hard": 1.076,
+   "extra_hard": 1,
+   "extreme": 1.05,
+   "impossible": 0.901
+  },
+  "gen_toxic_8": {
+   "medium": 1,
+   "hard": 1,
+   "extra_hard": 1,
+   "extreme": 1.386,
+   "impossible": 1.128
+  },
+  "gen_dunes_8": {
+   "medium": 1.058,
+   "hard": 1,
+   "extra_hard": 0.964,
+   "extreme": 1,
+   "impossible": 0.81
+  },
+  "gen_starfall_8": {
+   "medium": 0.847,
+   "hard": 0.895,
+   "extra_hard": 0.847,
+   "extreme": 1,
+   "impossible": 0.847
+  },
+  "russet_spiral": {
+   "medium": 0.847,
+   "hard": 0.741,
+   "extra_hard": 0.847,
+   "extreme": 0.847,
+   "impossible": 0.778
+  },
+  "crimson_crossing": {
+   "medium": 1.328,
+   "hard": 1.516,
+   "extra_hard": 1.419,
+   "extreme": 1.438,
+   "impossible": 1.279
+  },
+  "redrock_switchbacks": {
+   "medium": 0.847,
+   "hard": 0.847,
+   "extra_hard": 0.847,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "void_convergence": {
+   "medium": 1.283,
+   "hard": 1.18,
+   "extra_hard": 1.084,
+   "extreme": 1.18,
+   "impossible": 1.112
+  },
+  "gen_air_1": {
+   "medium": 1,
+   "hard": 1.18,
+   "extra_hard": 1.084,
+   "extreme": 1.072,
+   "impossible": 0.884
+  },
+  "gen_air_2": {
+   "medium": 1.334,
+   "hard": 1.254,
+   "extra_hard": 1.254,
+   "extreme": 1.334,
+   "impossible": 1
+  },
+  "gen_air_3": {
+   "medium": 1.072,
+   "hard": 1.05,
+   "extra_hard": 0.939,
+   "extreme": 1.064,
+   "impossible": 0.847
+  },
+  "gen_air_4": {
+   "medium": 1,
+   "hard": 0.918,
+   "extra_hard": 0.847,
+   "extreme": 0.847,
+   "impossible": 0.72
+  },
+  "frostbite_hairpin": {
+   "medium": 0.847,
+   "hard": 0.762,
+   "extra_hard": 0.952,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "ashfall_gauntlet": {
+   "medium": 1.18,
+   "hard": 1.072,
+   "extra_hard": 1,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "dune_ladder": {
+   "medium": 1,
+   "hard": 0.847,
+   "extra_hard": 1.18,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "twin_bridges": {
+   "medium": 0.959,
+   "hard": 1,
+   "extra_hard": 0.847,
+   "extreme": 0.847,
+   "impossible": 0.762
   }
  }
 }

@@ -5,6 +5,9 @@
   makes the host think 80+ turns were lost. Sessions keep a short event trace for bug reports.
 - **Economy**: the Skip wave assist could skip a whole match to a paid win (crowns and XP up to
   x7.6): skipped waves now pay nothing.
+- **Every map is fair on every difficulty**: each map has its own enemy-health factor for Medium
+  to Impossible, measured with the balance bot (331 of 340 map and difficulty pairs now won 50-75%
+  of the time; before, some were never won and some always).
 - **Balance**: Impossible enemy health 7.6x → 11x (it was won 87% of the time at max level by the
   bot); Skirmish has 1.8x enemy health and 85% starting cash (it could not be lost). Ladder, presets
   and modes measured with 20 seeds (`node tools/ladder.mjs`).

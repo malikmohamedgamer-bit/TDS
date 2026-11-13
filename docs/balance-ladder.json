@@ -69,10 +69,10 @@
    "map": "riftline",
    "difficulty": "impossible",
    "level": 15,
-   "wins": 4,
+   "wins": 13,
    "seeds": 20,
-   "rate": 0.2,
-   "waves": 19
+   "rate": 0.65,
+   "waves": 19.6
   },
   {
    "kind": "ladder",
@@ -99,10 +99,10 @@
    "map": "frostmere",
    "difficulty": "medium",
    "level": 3,
-   "wins": 20,
+   "wins": 13,
    "seeds": 20,
-   "rate": 1,
-   "waves": 20
+   "rate": 0.65,
+   "waves": 19.1
   },
   {
    "kind": "ladder",
@@ -119,30 +119,30 @@
    "map": "frostmere",
    "difficulty": "extra_hard",
    "level": 9,
-   "wins": 20,
+   "wins": 12,
    "seeds": 20,
-   "rate": 1,
-   "waves": 20
+   "rate": 0.6,
+   "waves": 19.1
   },
   {
    "kind": "ladder",
    "map": "frostmere",
    "difficulty": "extreme",
    "level": 12,
-   "wins": 20,
+   "wins": 13,
    "seeds": 20,
-   "rate": 1,
-   "waves": 20
+   "rate": 0.65,
+   "waves": 19.4
   },
   {
    "kind": "ladder",
    "map": "frostmere",
    "difficulty": "impossible",
    "level": 15,
-   "wins": 19,
+   "wins": 13,
    "seeds": 20,
-   "rate": 0.95,
-   "waves": 19.8
+   "rate": 0.65,
+   "waves": 18.3
   },
   {
    "kind": "preset",

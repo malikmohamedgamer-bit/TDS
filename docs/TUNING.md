@@ -71,13 +71,26 @@ difficulty at the permanent tower level a player has when it unlocks). Full rows
 | Extreme (L12) | 75% | 100% | 10% to 100%, mean 72% |
 | Impossible (L15) at 7.6x | 100% | 100% | 30% to 100%, mean 87%: too easy, hence the change |
 | Impossible (L15) at 11x | 20% | 95% | Mirrormire 100%, dunes_2 95%, Glacier Gate 50%, toxic_6 0%: mean of the six 60% |
+| **With per-map factors** (all L as above) | Easy 80, Normal 60, Medium 65, Hard 65, Extra Hard 50, Extreme 75, Impossible 65 | Easy 100, Normal 70, Medium 65, Hard 70, Extra Hard 60, Extreme 65, Impossible 65 | 331 of 340 cells 50-75% (12 seeds); a 20-seed sample of 12 cells 45-85%, mean 64% |
 
-**Known limit:** maps are calibrated at Normal only. Above Normal the same multiplier lands very
-differently per map (layouts that pass the same towers several times scale differently from short
-roads), so one map can be 0% where another is 100%. Fixing that needs a per-map, per-difficulty
-factor measured with the bot: about 60 maps x 5 difficulties x 20 seeds (several hours of bot time).
-Win rate is steep at the top: Impossible went 82% (9.5x) → 71% (10.5x) → 60% (11x) → 30% (12x) on
-the six maps.
+**Per-map difficulty factors (2026-11-14).** Maps are calibrated at Normal, and above Normal the same
+multiplier landed very differently per map (0% on one, 100% on another). `data/difficultyHp.json` now
+holds one enemy-health factor per map and difficulty (Medium to Impossible, 68 maps, 340 cells,
+0.63x to 1.59x), measured by `node tools/ladder-calibrate.mjs` (12 seeds per measurement, up to 3
+steps, then `--refine` bisects cells that bracket the target; every step is in
+docs/balance-difficulty.json). Result: 331 of 340 cells in 50-75%; means 63-67% per difficulty. The
+9 left are cliffs where no in-band factor was found (gen_ember_1 Extra Hard 42%, gen_verdant_3
+Extra Hard 83%, gen_toxic_3 Extreme 8% / Impossible 25%, gen_verdant_5 Extreme 92%, gen_dunes_6
+Medium 83%, gen_ember_9 Extreme 92%, Dune Ladder Medium 33% / Hard 42%).
+Checked with 20 seeds on cells that were walls or giveaways before: Russet Spiral Medium 65% (was 0%),
+Hard 85%, Impossible 65%; gen_toxic_6 Medium 55%, Hard 65%, Impossible 45% (was 0%); Frostmere 60-70%
+on every step (was 100% from Medium up); Glacier Gate 50-75%.
+Win rate is steep at the top: Impossible's global factor went 82% (9.5x) → 71% (10.5x) → 60% (11x) →
+30% (12x) on six maps before the per-map factors.
+
+**Re-run after changing towers, enemies or waves:** `node tools/ladder-calibrate.mjs --force` (about
+2 hours with `--jobs 11` on a 16-thread CPU), then `--refine`. New maps only: run it without
+`--force` (cells already in the file are skipped).
 
 ## Daily Challenge (data/modes.json, mode "daily")
 

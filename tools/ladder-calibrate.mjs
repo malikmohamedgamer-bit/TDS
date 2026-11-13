@@ -5,7 +5,7 @@
 // written after every cell, so a cut-off run resumes where it stopped (cells already in the file are
 // skipped unless --force).
 //   node tools/ladder-calibrate.mjs [--maps all|a,b] [--difficulty medium,hard,...] [--seeds 12]
-//     [--jobs 4] [--tries 3] [--force]
+//     [--jobs 4] [--tries 3] [--force] [--refine: bisect cells left outside the band]
 import { execFile } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -44,7 +44,32 @@ const measure = (map, diff, f) => new Promise((resolve) => {
   });
 });
 
+const refine = args.includes('--refine');
+const parseLog = (txt) => (txt || '').split(', ').map((x) => /x([\d.]+) -> (\d+)%/.exec(x)).filter(Boolean).map((m) => ({ f: +m[1], rate: +m[2] / 100 }));
+
+/** --refine: a cell outside the band whose measurements bracket the aim (one above, one below)
+ *  gets up to `tries` more measurements, each halfway (in factor) between the closest points on
+ *  either side; the win rate is a cliff here, so bisection beats the secant. */
+async function refineCell(map, diff) {
+  const pts = parseLog(log[map]?.[diff]);
+  for (let t = 0; t < tries; t++) {
+    const hi = pts.filter((p) => p.rate > HI).sort((a, b) => b.f - a.f)[0]; // too easy: highest factor
+    const lo = pts.filter((p) => p.rate < LO).sort((a, b) => a.f - b.f)[0]; // too hard: lowest factor
+    if (!hi || !lo || pts.some((p) => p.rate >= LO && p.rate <= HI)) break;
+    const f = +((hi.f + lo.f) / 2).toFixed(3);
+    const rate = await measure(map, diff, f);
+    if (rate === null) break;
+    pts.push({ f, rate });
+  }
+  const best = pts.reduce((b, p) => (Math.abs(p.rate - AIM) < Math.abs(b.rate - AIM) ? p : b));
+  data.maps[map][diff] = best.f;
+  log[map][diff] = pts.map((p) => `x${p.f} -> ${Math.round(p.rate * 100)}%`).join(', ');
+  save();
+  console.log(`${map.padEnd(20)} ${diff.padEnd(11)} ${log[map][diff]} => x${best.f}`);
+}
+
 async function cell(map, diff) {
+  if (refine) return refineCell(map, diff);
   const pts = [];
   let f = 1;
   for (let t = 0; t < tries; t++) {
@@ -75,7 +100,12 @@ async function cell(map, diff) {
 }
 
 const queue = [];
-for (const map of maps) for (const diff of diffs) if (force || data.maps[map]?.[diff] === undefined) queue.push([map, diff]);
+const inBand = (map, diff) => parseLog(log[map]?.[diff]).some((p) => p.rate >= LO && p.rate <= HI);
+for (const map of maps) {
+  for (const diff of diffs) {
+    if (refine ? data.maps[map]?.[diff] !== undefined && !inBand(map, diff) : force || data.maps[map]?.[diff] === undefined) queue.push([map, diff]);
+  }
+}
 console.log(`${queue.length} cells to calibrate (${seeds} seeds, ${jobs} jobs)`);
 await Promise.all(Array.from({ length: jobs }, async () => { while (queue.length) await cell(...queue.shift()); }));
 // keep the file tidy: maps in index order, difficulties in ladder order

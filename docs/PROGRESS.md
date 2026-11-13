@@ -137,12 +137,22 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 ## Next exact action
 
-**2026-11-14 run** (Opus 5.5): co-op start resync fixed (BUGS 64); chunk 3 ladder / modes / economy
-done (`tools/ladder.mjs`, docs/balance-ladder.json, TUNING.md; BUGS 65; Impossible 11x; Skirmish
-tuned); chunk 5 battle audio; chunk 6 tutorial v2 confirmed; chunk 8 fuzz tests (BUGS 66, 67) and
-per-unit error boundaries. Still open, in order: full e2e + 30 min soak (chunk 11), per-map
-difficulty factors above Normal (TUNING.md "Known limit"), (flagships 13 of 13 and air routes done),
-tower skins / map decorations, strings in data files, live Supabase + phone PWA test (owner).
+**2026-11-14 run** (Opus 5.5, version 0.13.0). Done: co-op start resync (BUGS 64); ladder, modes,
+economy and pacing (`tools/ladder.mjs`, `tools/pacing.mjs`, TUNING.md; BUGS 65; Impossible 11x;
+Skirmish tuned; XP per level 45); per-map difficulty factors for Medium to Impossible
+(`tools/ladder-calibrate.mjs`, data/difficultyHp.json: 331 of 340 cells 50-75%); battle audio;
+tutorial v2 confirmed; fuzz tests (BUGS 66, 67) and per-unit error boundaries; air routes and 8 new
+maps (68: 13 flagships); tower skins (33 cosmetics); Index collection rewards; legal checklist,
+store draft, daily live smoke test. Full e2e 27/28 then co-op 2/2 (VERIFICATION.md).
+
+**Still open, in order:**
+1. The 10 store screenshots (docs/STORE.md lists them; `node tools/screenshots.mjs`).
+2. Full e2e + 30 min soak once more after the 8 new maps (soak covered the 60 older maps; the 8 new
+   ones passed the generator's soak).
+3. Map decorations cosmetic; all UI strings in data files (only needed for translation).
+4. Owner: live Supabase project + cross-browser co-op match, PWA on a phone, music by ear, final name.
+5. Re-run `node tools/ladder-calibrate.mjs --force` then `--refine` after any tower / enemy / wave
+   change (about 2 hours with `--jobs 11`).
 
 **FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in
 `docs/COMPLETION.md`). Session 2026-11-11 finished Chunk 2 and parts of 4, 5, 6, 7, 8. In order:
