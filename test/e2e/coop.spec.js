@@ -88,7 +88,11 @@ async function coopRun(context, net) {
   const a = { hash: last.hash };
   expect(last.towers.some((t) => t.includes(':p1:'))).toBe(true);
   expect(last.towers.some((t) => t.includes(':p2:'))).toBe(true);
-  expect(await B.evaluate(() => window.TDS.ctrl.online.session.stats.resyncs)).toBe(0);
+  // no desync ever (a state mismatch would be a lockstep bug). A tab that the machine starves for
+  // more than snapTimeoutMs may get one catch-up snapshot for the gap (BUGS 64): allowed once.
+  const hostTrace = await A.evaluate(() => window.TDS.ctrl.online.session.trace);
+  expect(hostTrace.filter((e) => e.includes('snap?') && e.includes('desync')), hostTrace.join(' | ')).toEqual([]);
+  expect(await B.evaluate(() => window.TDS.ctrl.online.session.stats.resyncs), hostTrace.join(' | ')).toBeLessThanOrEqual(1);
 
   // rematch: the host quits (pause menu), both tabs return to the same room, ready, start again
   await A.evaluate(() => window.TDS.ctrl.backToOnlineLobby('You left the match'));
