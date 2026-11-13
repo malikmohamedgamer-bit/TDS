@@ -18,6 +18,7 @@ Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU perfo
 | Audio | browser, every new sound played once | 18 new sounds, no errors; ducking fires on boss and victory cues; Reduced sound thins repeats. Not heard by a person |
 | Air routes | browser on Willow Hollow + `test/unit/air.test.js` | a flier takes the 104 m air route while a walker takes the 313 m road; chevrons visible; snapshot round trip identical; existing maps byte-identical after generation |
 | Tower skins | browser, Desert Camo | the rifleman is tinted, the Ember Adept beside it is not (faction-limited skin) |
+| Live co-op over Supabase | `TDS_SUPABASE=1 npx playwright test test/e2e/coop.spec.js -g supabase`; `node tools/dev/live-coop-check.mjs` | full two-player match through the owner's project passed (identical state, rematch); on the live site two separate browsers created and joined room MFYW2S. Not yet tried between two real devices or networks |
 | Live cold start | `node tools/dev/coldload.mjs <live URL>` (fresh browser context, empty cache) | after the data bundle: ready in 2.5 s, 91 requests (before: 5.3 s, 265 requests); a match played on the live site with no console errors |
 | New towers (Strike Jet, Storm Drake, Claymore Nest, Frost Glyph Ward, Fireteam Post) | `test/unit/thin-towers.test.js` + browser | each placed in a real match acts and deals damage, air units fly; models checked from above |
 | Final balance sweep | `node tools/sweep.mjs --seeds 20` | 68 maps, all 50-80%, mean 66%, 44 in 60-70% |
