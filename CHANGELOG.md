@@ -11,8 +11,11 @@
 - **Audio**: impact sounds per damage type (fire crackles, ice clinks, shields ring...), deaths per
   enemy kind (armour clanks, fliers fall, ghosts fade, splitters splat), music dips under boss,
   victory and wave horns, a click on every menu button, and a Reduced sound option.
-- **Air routes**: 4 new maps (64 in all) where fliers skip the road and take a glowing shortcut
+- **8 new maps (68)**: 4 flagships (Frostbite Hairpin, Ashfall Gauntlet, Dune Ladder, Twin Bridges) and
+  4 generated maps. **Air routes** on 6 of them where fliers skip the road and take a glowing shortcut
   across the sky to the keep; the map preview, map details and Help show it.
+- **Tower skins** (6, earned in play) and an Index that shows each collection's next reward; bosses
+  have their own Index section.
 - **Robustness**: a unit whose visuals fail is hidden instead of freezing the match view; commands
   with impossible positions are refused (one could crash a co-op match); hand-edited settings are
   clamped to their ranges. New fuzz tests.

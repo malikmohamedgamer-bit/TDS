@@ -654,6 +654,281 @@
         }
       ],
       "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 20%, hpMul 0.68 -> 100%, hand-set hpMul 0.74 -> 85%, hand-set hpMul 0.77 -> 60%"
+    },
+    {
+      "id": "frostbite_hairpin",
+      "name": "Frostbite Hairpin",
+      "theme": "polar",
+      "unlockLevel": 16,
+      "seed": "frostbite-hairpin-1",
+      "feature": 5,
+      "air": true,
+      "description": "One road hairpins across the polar night while the fliers ignore it and cut straight over the ice. Two fronts, one keep.",
+      "zKeep": 26,
+      "paths": [
+        {
+          "id": "main",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -26
+            ],
+            [
+              20,
+              -26
+            ],
+            [
+              20,
+              12
+            ],
+            [
+              -40,
+              12
+            ],
+            [
+              -40,
+              26
+            ],
+            [
+              45,
+              26
+            ]
+          ]
+        }
+      ],
+      "hpMul": 1.25,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 92%, hpMul 1.351 -> 83%, 20 seeds: hand-set hpMul 1.5 -> 15%, 1.44 -> 20%, 1.4 -> 30%, 1.375 -> 30%, 1.351 -> 55%, 1.32 -> 45%, 1.25 -> 65%"
+    },
+    {
+      "id": "ashfall_gauntlet",
+      "name": "Ashfall Gauntlet",
+      "theme": "ashfall",
+      "unlockLevel": 20,
+      "seed": "ashfall-gauntlet-1",
+      "feature": 5,
+      "description": "Two roads run side by side down one long corridor of ash before they join at the keep. Towers in the middle fire on both.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "north",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              27
+            ],
+            [
+              -30,
+              27
+            ],
+            [
+              -30,
+              12
+            ],
+            [
+              24,
+              12
+            ],
+            [
+              24,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "south",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -27
+            ],
+            [
+              -30,
+              -27
+            ],
+            [
+              -30,
+              -12
+            ],
+            [
+              24,
+              -12
+            ],
+            [
+              24,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "hpMul": 0.8,
+      "calibration": "hpMul 1 -> 0%, hpMul 0.8 -> 67%, 20 seeds: hpMul 0.8 -> 65%"
+    },
+    {
+      "id": "dune_ladder",
+      "name": "Dune Ladder",
+      "theme": "dunes",
+      "unlockLevel": 26,
+      "seed": "dune-ladder-1",
+      "feature": 5,
+      "air": true,
+      "description": "Walkers climb five rungs of dunes; fliers skip the ladder and glide straight to the keep. Build for both.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "main",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -27
+            ],
+            [
+              -40,
+              -27
+            ],
+            [
+              -40,
+              27
+            ],
+            [
+              -22,
+              27
+            ],
+            [
+              -22,
+              -27
+            ],
+            [
+              -4,
+              -27
+            ],
+            [
+              -4,
+              27
+            ],
+            [
+              14,
+              27
+            ],
+            [
+              14,
+              -27
+            ],
+            [
+              30,
+              -27
+            ],
+            [
+              30,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "hpMul": 1.061,
+      "calibration": "hpMul 1 -> 92%, hpMul 1.133 -> 33%, hpMul 1.061 -> 67%, 20 seeds: hpMul 1.061 -> 65%"
+    },
+    {
+      "id": "twin_bridges",
+      "name": "Twin Bridges",
+      "theme": "ember",
+      "unlockLevel": 34,
+      "seed": "twin-bridges-1",
+      "feature": 5,
+      "crossings": 2,
+      "description": "Two lava roads cross each other twice before they share the last stretch. Every bridge is a killing ground for whoever holds it.",
+      "zKeep": 0,
+      "paths": [
+        {
+          "id": "north",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              24
+            ],
+            [
+              -24,
+              24
+            ],
+            [
+              -24,
+              -12
+            ],
+            [
+              12,
+              -12
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              32,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "south",
+          "width": 5,
+          "points": [
+            [
+              -57,
+              -24
+            ],
+            [
+              -36,
+              -24
+            ],
+            [
+              -36,
+              10
+            ],
+            [
+              0,
+              10
+            ],
+            [
+              0,
+              -26
+            ],
+            [
+              32,
+              -26
+            ],
+            [
+              32,
+              0
+            ],
+            [
+              45,
+              0
+            ]
+          ]
+        }
+      ],
+      "hpMul": 1.02,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 50%, hpMul 1.02 -> 75%, 20 seeds: hpMul 1.02 -> 75%"
     }
   ],
   "batch": [

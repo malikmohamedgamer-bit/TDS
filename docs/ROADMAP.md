@@ -44,7 +44,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Enemies 200+ (200: 158 kit enemies from tools/gen-enemies.mjs; new sim mechanics blink + burst; 12 traits, every trait set used once; 168 distinct, 191 models) (2026-11-06). They appear in Endless / Daily pools only; campaign tables unchanged (maps batch will feature them)
 - [x] Maps 60 on 14 themes (6 new looks), picker groups all of them. Path templates: diamond (split lanes) and
       crossover added 2026-11-12 (5 templates). Flagships 9 of 13 (Russet Spiral, Crimson Crossing, Redrock
-      Switchbacks, Void Convergence added). Air routes (2026-11-14): `air: true` maps, 4 maps calibrated 60-70%. Still open: 4 more flagships
+      Switchbacks, Void Convergence added). Air routes (2026-11-14): `air: true` maps, 4 maps calibrated 60-70%. Flagships 13 of 13 (2026-11-14: Frostbite Hairpin and Dune Ladder with air routes, Ashfall Gauntlet, Twin Bridges; 20 seeds 65 / 65 / 65 / 75%)
 - [x] Heroes 10+, skills 30+ (10 heroes, 39 skills: Tidecaller Maren, Blastmaster Brik, Shadowblade Vex + 12 abilities) (2026-11-06). Balance of the new three not yet measured (Chunk 3, with BUGS #44)
 - [x] 4 new modes, 11 total: Skirmish, Mutation, War Chest, Last Stand (2026-11-11)
 - [ ] More CC0 packs (Kenney, Quaternius first), credits recorded

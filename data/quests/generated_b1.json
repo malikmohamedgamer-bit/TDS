@@ -553,6 +553,16 @@
    }
   },
   {
+   "id": "s_map_frostbite_hairpin",
+   "name": "Liberate Frostbite Hairpin",
+   "desc": "Win a Campaign match on Frostbite Hairpin",
+   "mapWon": "frostbite_hairpin",
+   "reward": {
+    "sigils": 220,
+    "crowns": 550
+   }
+  },
+  {
    "id": "s_map_gen_verdant_5",
    "name": "Liberate Verdant Crossing",
    "desc": "Win a Campaign match on Verdant Crossing",
@@ -620,6 +630,16 @@
    "reward": {
     "sigils": 250,
     "crowns": 625
+   }
+  },
+  {
+   "id": "s_map_ashfall_gauntlet",
+   "name": "Liberate Ashfall Gauntlet",
+   "desc": "Win a Campaign match on Ashfall Gauntlet",
+   "mapWon": "ashfall_gauntlet",
+   "reward": {
+    "sigils": 260,
+    "crowns": 650
    }
   },
   {
@@ -730,6 +750,16 @@
    "reward": {
     "sigils": 310,
     "crowns": 775
+   }
+  },
+  {
+   "id": "s_map_dune_ladder",
+   "name": "Liberate Dune Ladder",
+   "desc": "Win a Campaign match on Dune Ladder",
+   "mapWon": "dune_ladder",
+   "reward": {
+    "sigils": 320,
+    "crowns": 800
    }
   },
   {
@@ -847,6 +877,16 @@
    "name": "Liberate Harvest Grove",
    "desc": "Win a Campaign match on Harvest Grove",
    "mapWon": "gen_verdant_8",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_twin_bridges",
+   "name": "Liberate Twin Bridges",
+   "desc": "Win a Campaign match on Twin Bridges",
+   "mapWon": "twin_bridges",
    "reward": {
     "sigils": 360,
     "crowns": 900
@@ -2035,10 +2075,10 @@
    }
   },
   {
-   "id": "a_maps_64",
+   "id": "a_maps_68",
    "name": "The whole valley",
-   "desc": "Liberate 64 maps (Campaign wins)",
-   "mapsWon": 64,
+   "desc": "Liberate 68 maps (Campaign wins)",
+   "mapsWon": 68,
    "reward": {
     "sigils": 790,
     "crowns": 2500

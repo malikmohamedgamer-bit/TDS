@@ -105,7 +105,11 @@
     "waves/gen_air_1_waves.json",
     "waves/gen_air_2_waves.json",
     "waves/gen_air_3_waves.json",
-    "waves/gen_air_4_waves.json"
+    "waves/gen_air_4_waves.json",
+    "waves/frostbite_hairpin_waves.json",
+    "waves/ashfall_gauntlet_waves.json",
+    "waves/dune_ladder_waves.json",
+    "waves/twin_bridges_waves.json"
   ],
   "maps": [
     "maps/riftline.json",
@@ -171,7 +175,11 @@
     "maps/gen_air_1.json",
     "maps/gen_air_2.json",
     "maps/gen_air_3.json",
-    "maps/gen_air_4.json"
+    "maps/gen_air_4.json",
+    "maps/frostbite_hairpin.json",
+    "maps/ashfall_gauntlet.json",
+    "maps/dune_ladder.json",
+    "maps/twin_bridges.json"
   ],
   "difficultyHp": "difficultyHp.json"
 }

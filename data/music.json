@@ -298,6 +298,22 @@
     "gen_air_4": {
       "root": 49,
       "scale": "lydian"
+    },
+    "frostbite_hairpin": {
+      "root": 43,
+      "scale": "aeolian"
+    },
+    "ashfall_gauntlet": {
+      "root": 45,
+      "scale": "phrygian"
+    },
+    "dune_ladder": {
+      "root": 50,
+      "scale": "phrygian"
+    },
+    "twin_bridges": {
+      "root": 47,
+      "scale": "phrygian"
     }
   },
   "moods": {
