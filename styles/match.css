@@ -244,6 +244,7 @@ body.in-match .hud-top .brand { visibility: hidden; }
 .team .tm.gone { opacity: 0.5; }
 .pings { position: absolute; left: 12px; bottom: 96px; display: flex; flex-wrap: wrap; gap: 4px; max-width: 300px; pointer-events: auto; }
 .pings .ping { min-height: 36px; padding: 4px 8px; font-size: 0.72rem; }
+.pings .ping-toggle { display: none; }
 .pingfeed { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); display: grid; gap: 4px; pointer-events: none; }
 .pingfeed .pg { background: rgba(7, 8, 12, 0.82); border-left: 3px solid; padding: 4px 10px; border-radius: 4px; font-size: 0.86rem; }
 .owner-note { color: var(--text-2); }
@@ -251,6 +252,9 @@ body.in-match .hud-top .brand { visibility: hidden; }
 #ui .match-ui > .pings { pointer-events: auto; }
 @media (max-width: 760px) {
   .team { left: auto; right: 8px; top: 96px; min-width: 150px; font-size: 0.74rem; }
+  /* phones: one Ping button opens the list */
   .pings { left: 80px; right: 72px; bottom: 8px; max-width: none; }
-  .pings .ping { min-height: 44px; font-size: 0.66rem; }
+  .pings .ping { display: none; min-height: 44px; font-size: 0.7rem; }
+  .pings.open .ping { display: inline-flex; }
+  .pings .ping-toggle { display: inline-flex; min-height: 44px; }
 }

@@ -176,6 +176,7 @@ export class MatchController {
     this.view = view;
     this.tutorialStats = { heroMoved: 0, cameraTurned: 0, tutorialTimer: 0, lastHero: { x: this.hero.x, z: this.hero.z }, lastYaw: this.rig.yaw };
     this.mhud.setLoadout(cfg.loadout, this.thumb, (d) => match.costOf(d));
+    this.mhud.setTeam(null); // single-player: no team list or pings (after a co-op match)
     this.mhud.setAbilities(this.me.abilities);
     this.mhud.select(null, this.me);
     this.speed = 1;
@@ -584,7 +585,14 @@ export class MatchController {
     const s = o.session;
     const on = (ev, fn) => o.offs.push(s.on(ev, fn));
     const name = (peerId) => o.names[o.start.peers[peerId]] || 'A player';
-    on('stall', (e) => { o.stalled = !!e.stalled; if (e.stalled && e.reason !== 'snapshot') this.mhud.banner(`Waiting for ${name(o.start.hostId)}...`, 'info'); });
+    // short stalls (a turn message a few ms late) are normal: only a real wait gets a banner
+    on('stall', (e) => {
+      o.stalled = !!e.stalled;
+      clearTimeout(o.stallTimer);
+      if (e.stalled && e.reason !== 'snapshot') {
+        o.stallTimer = setTimeout(() => { if (this.online === o && o.stalled) this.mhud.banner(`Waiting for ${name(o.start.hostId)}...`, 'info'); }, 1500);
+      }
+    });
     on('resync', () => this.mhud.banner('Resynced with the host', 'info'));
     on('peerLeft', (e) => { o.status[o.start.peers[e.id]] = 'left'; this.mhud.banner(`${name(e.id)} left`, 'warn'); });
     on('peerJoined', (e) => { o.status[o.start.peers[e.id]] = 'ok'; if (e.returning) this.mhud.banner(`${name(e.id)} is back`, 'good'); });
@@ -665,6 +673,7 @@ export class MatchController {
   closeOnline() {
     const o = this.online;
     if (!o) return;
+    clearTimeout(o.stallTimer);
     for (const off of o.offs) { try { off?.(); } catch { /* already gone */ } }
     try { o.session.close(); } catch { /* already closed */ }
     this.online = null;

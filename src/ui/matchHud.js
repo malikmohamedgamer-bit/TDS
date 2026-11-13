@@ -65,7 +65,7 @@ export class MatchHud {
       <div class="place-hint" hidden data-testid="place-hint"></div>
       <div class="captions" aria-live="polite" data-testid="captions"></div>
       <section class="team panel" hidden aria-label="Team" data-testid="team"></section>
-      <div class="pings" hidden role="toolbar" aria-label="Quick pings" data-testid="pings">${PING_TEXTS.map((t, i) => `<button class="btn ping" data-ping="${i}">${esc(t)}</button>`).join('')}</div>
+      <div class="pings" hidden role="toolbar" aria-label="Quick pings" data-testid="pings"><button class="btn ping-toggle" aria-expanded="false" data-act="ping-toggle">Ping</button>${PING_TEXTS.map((t, i) => `<button class="btn ping" data-ping="${i}">${esc(t)}</button>`).join('')}</div>
       <div class="pingfeed" aria-live="polite" data-testid="pingfeed"></div>
       <div class="banner" aria-live="assertive" data-testid="banner"></div>
       <dialog class="modal panel pause-modal" data-testid="pause">
@@ -82,7 +82,18 @@ export class MatchHud {
     root.appendChild(this.el);
     this.$ = (s) => this.el.querySelector(s);
     this.$('.skip').addEventListener('click', () => cb.onSkip());
-    this.$('.pings').addEventListener('click', (e) => { const b = e.target.closest('[data-ping]'); if (b) cb.onPing?.(Number(b.dataset.ping)); });
+    this.$('.pings').addEventListener('click', (e) => {
+      const box = this.$('.pings');
+      if (e.target.closest('[data-act="ping-toggle"]')) {
+        const open = box.classList.toggle('open');
+        e.target.closest('button').setAttribute('aria-expanded', String(open));
+        return;
+      }
+      const b = e.target.closest('[data-ping]');
+      if (!b) return;
+      cb.onPing?.(Number(b.dataset.ping));
+      box.classList.remove('open');
+    });
     this.$('.speed').addEventListener('click', () => cb.onSpeed());
     this.$('.assist-skip').addEventListener('click', () => cb.onAssistSkip());
     this.$('.pause').addEventListener('click', () => cb.onPause());
