@@ -29,6 +29,7 @@ export function defaultSettings(env = {}) {
     sfxVolume: 0.8,
     muted: false,
     captions: true,
+    reducedSound: false,
     enemiesHurtHero: false,
     damageNumbers: true,
     skipSummonAnim: false,

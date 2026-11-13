@@ -66,6 +66,7 @@ export class Hud {
             <label class="row">Music volume <input type="range" name="musicVolume" min="0" max="1" step="0.05"><output name="musicOut"></output></label>
             <label class="row">Effects volume <input type="range" name="sfxVolume" min="0" max="1" step="0.05"><output name="sfxOut"></output></label>
             <label class="row"><input type="checkbox" name="captions"> Sound captions</label>
+            <label class="row"><input type="checkbox" name="reducedSound"> Reduced sound (fewer, softer battle effects)</label>
           </fieldset>
           <fieldset><legend>Gameplay</legend>
             <label class="row"><input type="checkbox" name="damageNumbers"> Damage numbers</label>
@@ -121,7 +122,7 @@ export class Hud {
     const f = this.form.elements;
     for (const r of f.quality) r.checked = r.value === s.quality;
     f.pixelation.value = String(s.pixelation);
-    for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) f[k].checked = !!s[k];
+    for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'reducedSound', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) f[k].checked = !!s[k];
     f.resolutionScale.value = s.resolutionScale ?? 1;
     f.uiScale.value = s.uiScale ?? 1;
     f.masterVolume.value = s.masterVolume;
@@ -156,7 +157,7 @@ export class Hud {
     if (picked !== s.quality) s.qualityAuto = false; // the player chose: never change it for them
     s.quality = picked;
     s.pixelation = Number(f.pixelation.value);
-    for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) s[k] = f[k].checked;
+    for (const k of ['bloom', 'vignette', 'colorGrade', 'ambientFx', 'showFps', 'reducedMotion', 'highContrast', 'invertY', 'muted', 'captions', 'reducedSound', 'damageNumbers', 'enemiesHurtHero', 'assistExtraCash', 'assistSlowEnemies', 'assistHeroBoost', 'assistFullRefund', 'assistSkipWave']) s[k] = f[k].checked;
     s.resolutionScale = Number(f.resolutionScale.value);
     s.uiScale = Number(f.uiScale.value);
     s.masterVolume = Number(f.masterVolume.value);

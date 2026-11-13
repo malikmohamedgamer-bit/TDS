@@ -6,10 +6,16 @@ const CAPTIONS = {
   win: 'Victory fanfare', lose: 'Defeat', evolve: 'Tower evolved', jackpot: 'Jackpot!', nearMiss: 'So close',
 };
 
+// Big cues dip the music for a moment so they read clearly (ducking).
+const DUCK = { boss: 1.6, bossDeath: 1.6, win: 2.5, lose: 2.5, waveStart: 1, evolve: 1, jackpot: 1.5, leak: 0.8, stomp: 0.8 };
+// Sounds that can fire many times a second: the "reduced sound" option thins and softens them.
+const BUSY = /^(bullet|tracer|grenade|rocket|fireball|frostbolt|sunbolt|lightning|railslug|starshard|hit|hit_.*|death|death_.*|explosion|cash)$/;
+
 export class Sfx {
   constructor(settings, onCaption) {
     this.settings = settings;
     this.onCaption = onCaption;
+    this.onDuck = null; // (seconds) => void: Music.duck
     this.ctx = null;
     this.last = new Map();
     this.listener = { x: 0, z: 0 };
@@ -84,12 +90,14 @@ export class Sfx {
     if (CAPTIONS[name] && this.settings.captions && this.onCaption) this.onCaption(CAPTIONS[name]);
     if (!this.ctx || this.settings.muted) return;
     const now = this.ctx.currentTime;
-    if ((this.last.get(name) || 0) + gap > now) return;
+    const reduced = BUSY.test(name) && this.settings.reducedSound;
+    if ((this.last.get(name) || 0) + (reduced ? Math.max(gap * 3, 0.12) : gap) > now) return;
     this.last.set(name, now);
-    let vol = 1;
+    if (DUCK[name] && this.onDuck) this.onDuck(DUCK[name]);
+    let vol = reduced ? 0.6 : 1;
     if (pos) {
       const d = Math.hypot(pos.x - this.listener.x, pos.z - this.listener.z);
-      vol = Math.max(0.12, Math.min(1, 14 / (d + 6)));
+      vol *= Math.max(0.12, Math.min(1, 14 / (d + 6)));
     }
     const out = this.ctx.createGain();
     out.gain.value = vol;
@@ -103,11 +111,29 @@ export class Sfx {
       case 'fireball': this._noiseBurst(t, 0.3, 0.3, out, { type: 'lowpass', f0: 900, f1: 2500 }); this._osc('sine', 180, 260, t, 0.25, 0.08, out); break;
       case 'frostbolt': this._osc('sine', 1400, 2200, t, 0.18, 0.1, out); this._osc('triangle', 2100, 2800, t + 0.04, 0.16, 0.06, out); break;
       case 'sunbolt': this._osc('triangle', 880, 1320, t, 0.2, 0.12, out); break;
+      case 'railslug': this._osc('sawtooth', 2400, 200, t, 0.22, 0.12, out); this._noiseBurst(t, 0.12, 0.3, out, { type: 'highpass', f0: 6000, f1: 2000 }); break;
+      case 'starshard': this._osc('sine', 1760, 2640, t, 0.15, 0.08, out); this._osc('sine', 2637, 3520, t + 0.05, 0.12, 0.05, out); break;
       case 'lightning': this._noiseBurst(t, 0.25, 0.4, out, { type: 'highpass', f0: 5000, f1: 800 }); this._osc('square', 90, 40, t, 0.2, 0.12, out); break;
       case 'explosion': this._noiseBurst(t, 0.6, 0.6, out, { type: 'lowpass', f0: 1800, f1: 120 }); this._osc('sine', 110, 35, t, 0.45, 0.5, out); break;
       case 'mine': this._noiseBurst(t, 0.5, 0.6, out, { type: 'lowpass', f0: 1200, f1: 80 }); this._osc('sine', 90, 30, t, 0.4, 0.5, out); break;
       case 'hit': this._osc('square', 600, 300, t, 0.03, 0.04, out); break;
+      // impacts by damage type (quiet: they overlap the firing sounds)
+      case 'hit_physical': this._noiseBurst(t, 0.04, 0.12, out, { f0: 2500, f1: 800 }); break;
+      case 'hit_fire': this._noiseBurst(t, 0.16, 0.12, out, { type: 'bandpass', f0: 1800, f1: 600, q: 0.6 }); break;
+      case 'hit_ice': this._osc('triangle', 2637, 2093, t, 0.09, 0.05, out); break;
+      case 'hit_lightning': this._noiseBurst(t, 0.07, 0.14, out, { type: 'highpass', f0: 6000, f1: 3000 }); break;
+      case 'hit_arcane': this._osc('sine', 1046, 1568, t, 0.1, 0.05, out); break;
+      case 'hit_poison': this._osc('sine', 300, 520, t, 0.08, 0.06, out); this._osc('sine', 260, 460, t + 0.06, 0.07, 0.04, out); break;
+      case 'hit_explosive': this._osc('sine', 160, 60, t, 0.1, 0.12, out); break;
+      case 'hit_holy': this._osc('sine', 1568, 1568, t, 0.18, 0.04, out); break;
+      case 'hit_dark': this._noiseBurst(t, 0.14, 0.1, out, { type: 'lowpass', f0: 500, f1: 150 }); break;
+      case 'hit_shield': this._osc('triangle', 1400, 1100, t, 0.06, 0.06, out); this._osc('sine', 2800, 2600, t, 0.08, 0.03, out); break;
       case 'death': this._osc('square', 420, 90, t, 0.18, 0.08, out); this._noiseBurst(t, 0.15, 0.12, out, { f0: 1500, f1: 400 }); break;
+      // deaths by enemy class (see deathSound)
+      case 'death_metal': this._osc('square', 330, 110, t, 0.14, 0.07, out); this._osc('triangle', 1760, 1500, t, 0.12, 0.05, out); this._noiseBurst(t, 0.2, 0.15, out, { type: 'bandpass', f0: 3000, f1: 900, q: 2 }); break;
+      case 'death_air': this._noiseBurst(t, 0.35, 0.16, out, { type: 'bandpass', f0: 1600, f1: 250, q: 1 }); this._osc('sine', 700, 180, t, 0.35, 0.05, out); break;
+      case 'death_spirit': this._osc('sine', 880, 330, t, 0.4, 0.06, out); this._osc('sine', 1320, 495, t + 0.03, 0.4, 0.04, out); break;
+      case 'death_goo': this._noiseBurst(t, 0.18, 0.16, out, { type: 'lowpass', f0: 700, f1: 120 }); this._osc('sine', 240, 90, t, 0.16, 0.08, out); break;
       case 'bossDeath': this._noiseBurst(t, 1.6, 0.7, out, { f0: 1200, f1: 60 }); this._osc('sawtooth', 110, 30, t, 1.4, 0.4, out); break;
       case 'place': this._osc('sine', 140, 70, t, 0.15, 0.4, out); this._osc('triangle', 660, 660, t + 0.06, 0.12, 0.12, out); break;
       case 'upgrade': [523, 659, 784].forEach((f, i) => this._osc('triangle', f, f, t + i * 0.06, 0.14, 0.14, out)); break;
@@ -139,4 +165,18 @@ export class Sfx {
 }
 
 /** Sound for a tower's projectile kind. */
-export const FIRE_SOUND = { bullet: 'bullet', tracer: 'tracer', grenade: 'grenade', rocket: 'rocket', fireball: 'fireball', frostbolt: 'frostbolt', sunbolt: 'sunbolt', lightning: 'lightning' };
+export const FIRE_SOUND = { bullet: 'bullet', tracer: 'tracer', grenade: 'grenade', rocket: 'rocket', fireball: 'fireball', frostbolt: 'frostbolt', sunbolt: 'sunbolt', lightning: 'lightning', railslug: 'railslug', starshard: 'starshard' };
+
+/** Death sound for an enemy definition: armour clanks, fliers fall, ghosts fade, splitters splat. */
+export function deathSound(def) {
+  if (!def) return 'death';
+  if (def.boss) return 'bossDeath';
+  if (def.flying) return 'death_air';
+  if (def.stealth || def.blink) return 'death_spirit';
+  if (def.split || def.archetype === 'splitter' || def.regen) return 'death_goo';
+  if ((def.armor || 0) >= 3 || def.shield || def.archetype === 'armored' || def.archetype === 'shielded') return 'death_metal';
+  return 'death';
+}
+
+/** Impact sound for a damage event (shield hits ring). */
+export const hitSound = (e) => (e.shield ? 'hit_shield' : `hit_${e.damageType || 'physical'}`);

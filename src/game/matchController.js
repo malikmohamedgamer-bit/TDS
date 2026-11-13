@@ -8,7 +8,7 @@ import { MatchView } from '../engine/matchView.js';
 import { MatchHud, HOTBAR_KEYS, DEFAULT_LOADOUT } from '../ui/matchHud.js';
 import { Tutorial } from '../ui/tutorial.js';
 import { towerThumbnail } from '../engine/thumbnails.js';
-import { FIRE_SOUND } from '../audio/sfx.js';
+import { FIRE_SOUND, deathSound, hitSound } from '../audio/sfx.js';
 import { writeSave } from '../save/save.js';
 import { applyMatchResult, localDate, unlockedSpeeds, dailyChallenge } from '../meta/meta.js';
 import { Hub } from '../ui/hub.js';
@@ -470,7 +470,8 @@ export class MatchController {
       switch (e.type) {
         case 'fire': sfx.play(FIRE_SOUND[e.kind] || 'bullet', e, { gap: 0.05 }); break;
         case 'explosion': sfx.play(e.kind === 'mine' ? 'mine' : 'explosion', e, { gap: 0.08 }); break;
-        case 'death': sfx.play(e.boss ? 'bossDeath' : 'death', e, { gap: 0.05 }); if (e.boss) this.mhud.banner('The boss falls!', 'good'); break;
+        case 'damage': if (e.amount >= 1) sfx.play(hitSound(e), e, { gap: 0.07 }); break;
+        case 'death': sfx.play(e.boss ? 'bossDeath' : deathSound(this.content?.enemies?.get(e.enemy)), e, { gap: 0.05 }); if (e.boss) this.mhud.banner('The boss falls!', 'good'); break;
         case 'upgrade': sfx.play(e.evolved ? 'evolve' : 'upgrade'); if (e.evolved) this.mhud.banner(`Evolved: ${e.evolved.to}!`, 'good'); break;
         case 'sell': sfx.play('sell'); break;
         case 'waveStart': this.music?.setMood(e.boss ? (e.wave >= e.total ? 'boss_final' : 'boss') : 'wave', this.map.id); sfx.play('waveStart'); this.mhud.banner(e.boss ? `⚠ Wave ${e.wave}: BOSS WAVE` : `Wave ${e.wave}`, e.boss ? 'boss' : 'info'); break;

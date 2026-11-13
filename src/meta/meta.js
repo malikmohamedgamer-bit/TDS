@@ -319,19 +319,24 @@ export function dailyChallenge(content, date) {
 // ------------------------------------------------------------------ match results ----------
 /**
  * Apply a finished match: stats, records, quest progress, index, rewards (once per match id).
- * Assisted runs: crowns and XP only (no records, quest or achievement progress).
+ * Assisted runs: crowns and XP only (no records, quest or achievement progress); waves skipped with
+ * the Skip wave assist pay nothing.
  */
 export function applyMatchResult(save, result, content, meta, date) {
   const mr = meta.matchRewards;
   const diff = content.difficulties.get(result.difficulty);
   const rewardMul = (diff?.metaRewardMul ?? 1) * (result.rewardMul ?? 1);
-  const cleared = result.won ? result.wave : Math.max(0, result.wave - 1);
-  const crowns = Math.round(((result.won ? mr.winCrowns : mr.lossCrowns) + cleared * mr.crownsPerWave) * rewardMul);
+  // waves passed with the Skip wave assist were not played: they pay nothing, and a win reached
+  // through one pays the loss amount (otherwise skipping every wave would farm crowns and XP)
+  const skipped = Math.max(0, result.stats?.assistSkips | 0);
+  const won = result.won && !skipped;
+  const cleared = Math.max(0, (result.won ? result.wave : result.wave - 1) - skipped);
+  const crowns = Math.round(((won ? mr.winCrowns : mr.lossCrowns) + cleared * mr.crownsPerWave) * rewardMul);
   const modeDef = content.modes?.get(result.mode || 'campaign');
   const sandbox = !!modeDef?.noRewards;
   const endlessCrowns = modeDef?.rewardPerWave ? cleared * modeDef.rewardPerWave * rewardMul : 0;
   const finalCrowns = sandbox ? 0 : crowns + Math.round(endlessCrowns);
-  const xp = sandbox ? 0 : cleared * mr.xpPerWave + (result.won ? mr.winXp : 0);
+  const xp = sandbox ? 0 : cleared * mr.xpPerWave + (won ? mr.winXp : 0);
   const granted = grantReward(save, `match:${result.seed}`, { crowns: finalCrowns });
   const out = { granted, crowns: granted ? finalCrowns : 0, xp: 0, levels: [], firstClear: false, sigils: 0, daily: false, sandbox };
   if (!granted) return out;

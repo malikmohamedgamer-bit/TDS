@@ -97,6 +97,9 @@ async function boot() {
   let ctrl;
   const sfx = new Sfx(settings, (text) => ctrl?.mhud.caption(text));
   const music = new Music(sfx, settings, content.music);
+  sfx.onDuck = (s) => music.duck(s);
+  // every hub / menu button gives a soft click (in-match actions play their own sounds)
+  ui.addEventListener('click', (e) => { if (e.target.closest?.('button:not([disabled])')) sfx.play('ui'); });
   const setCamera = (mode) => {
     if (mode === rig.mode) return;
     rig.setMode(mode, hero);

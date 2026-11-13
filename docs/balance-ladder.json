@@ -1,0 +1,258 @@
+{
+ "date": "2026-11-13",
+ "seeds": 20,
+ "loadout": "core 12",
+ "skill": 0.7,
+ "rows": [
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "easy",
+   "level": 1,
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8,
+   "waves": 19.8
+  },
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6,
+   "waves": 19.6
+  },
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "medium",
+   "level": 3,
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65,
+   "waves": 19.6
+  },
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "hard",
+   "level": 6,
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65,
+   "waves": 19.6
+  },
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "extra_hard",
+   "level": 9,
+   "wins": 10,
+   "seeds": 20,
+   "rate": 0.5,
+   "waves": 19.5
+  },
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "extreme",
+   "level": 12,
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75,
+   "waves": 19.8
+  },
+  {
+   "kind": "ladder",
+   "map": "riftline",
+   "difficulty": "impossible",
+   "level": 15,
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "easy",
+   "level": 1,
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "normal",
+   "level": 1,
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7,
+   "waves": 19.7
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "medium",
+   "level": 3,
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "hard",
+   "level": 6,
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7,
+   "waves": 19.7
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "extra_hard",
+   "level": 9,
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "extreme",
+   "level": 12,
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "ladder",
+   "map": "frostmere",
+   "difficulty": "impossible",
+   "level": 15,
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "preset",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "preset": "relaxed",
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 20
+  },
+  {
+   "kind": "preset",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "preset": "original",
+   "wins": 16,
+   "seeds": 20,
+   "rate": 0.8,
+   "waves": 19.8
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "endless",
+   "wins": 0,
+   "seeds": 20,
+   "rate": 0,
+   "waves": 20.3
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "boss_rush",
+   "wins": 9,
+   "seeds": 20,
+   "rate": 0.45,
+   "waves": 5.4
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "time_attack",
+   "wins": 9,
+   "seeds": 20,
+   "rate": 0.45,
+   "waves": 19.4
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "challenge",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6,
+   "waves": 19.6
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "skirmish",
+   "wins": 20,
+   "seeds": 20,
+   "rate": 1,
+   "waves": 10
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "mutation",
+   "wins": 11,
+   "seeds": 20,
+   "rate": 0.55,
+   "waves": 19.6
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 1,
+   "mode": "war_chest",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75,
+   "waves": 19.8
+  },
+  {
+   "kind": "mode",
+   "map": "riftline",
+   "difficulty": "normal",
+   "level": 5,
+   "mode": "last_stand",
+   "wins": 17,
+   "seeds": 20,
+   "rate": 0.85,
+   "waves": 19
+  }
+ ]
+}

@@ -112,6 +112,20 @@ test('match results: rewards once per match, stats, records, quests, index; assi
   assert.deepEqual(a.progress.best, {});
 });
 
+test('match results: waves skipped with the Skip wave assist pay no crowns or XP', () => {
+  const st = { ...result().stats };
+  const played = applyMatchResult(fresh(), result({ seed: 'p', assisted: true }), C, META, '2026-11-05');
+  // skipping every wave to a "win" pays exactly a loss with nothing cleared
+  const farmed = applyMatchResult(fresh(), result({ seed: 'f', assisted: true, stats: { ...st, assistSkips: 20 } }), C, META, '2026-11-05');
+  assert.equal(farmed.crowns, Math.round(META.matchRewards.lossCrowns));
+  assert.equal(farmed.xp, 0);
+  // five skipped waves cost five waves of pay and the win bonus
+  const some = applyMatchResult(fresh(), result({ seed: 's', assisted: true, stats: { ...st, assistSkips: 5 } }), C, META, '2026-11-05');
+  const mr = META.matchRewards;
+  assert.equal(some.crowns, Math.round(mr.lossCrowns + 15 * mr.crownsPerWave));
+  assert.ok(some.crowns < played.crowns && farmed.crowns < some.crowns);
+});
+
 test('daily quests rotate by date; daily login streak, once per day', () => {
   assert.deepEqual(dailyQuestIds(C.quests, '2026-11-05'), dailyQuestIds(C.quests, '2026-11-05'));
   assert.equal(dailyQuestIds(C.quests, '2026-11-05').length, 3);

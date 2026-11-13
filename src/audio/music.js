@@ -54,6 +54,16 @@ export class Music {
     } else this.applyVolume();
   }
 
+  /** Dip the music under a big sound effect for `seconds`, then come back (ducking). */
+  duck(seconds = 1) {
+    if (!this.bus || !this.mood) return;
+    const t = this.ctx.currentTime;
+    const g = this.bus.gain;
+    g.cancelScheduledValues(t);
+    g.setTargetAtTime(this.settings.musicVolume * 0.4, t, 0.05);
+    g.setTargetAtTime(this.settings.musicVolume, t + seconds, 0.35);
+  }
+
   /** Call after the audio context is unlocked (a user gesture) to start the remembered mood. */
   resume() {
     if (this.mood && this._ensureBus()) this.setMood(this.mood, this.key);

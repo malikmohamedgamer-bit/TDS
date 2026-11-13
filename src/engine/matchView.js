@@ -545,6 +545,61 @@ export class MatchView {
   }
 
   // ------------------------------------------------------------------------- per frame ------
+  /** One tower's visuals for this frame (pose, aim, recoil, rings). */
+  _updateTower(t, m, dt) {
+    const v = this.towerVis.get(t.uid) || this._makeTower(t);
+    if (v.rarity?.userData.pulse) v.rarity.material.opacity = this.settings.reducedMotion ? 0.85 : 0.55 + 0.35 * Math.sin(this.time * 2.4 + t.uid);
+    const tgt = t.target && m.enemies.find((e) => e.id === t.target && e.alive);
+    const ox = v.unit ? t.unit.x : t.x;
+    const oz = v.unit ? t.unit.z : t.z;
+    if (tgt) v.aimYaw = Math.atan2(tgt.x - ox, tgt.z - oz);
+    if (v.aimYaw !== undefined && !v.unit) {
+      const turret = v.parts.turret;
+      if (turret) turret.rotation.y += wrap(v.aimYaw - turret.rotation.y) * damp(10, dt);
+      else v.root.rotation.y += wrap(v.aimYaw - v.root.rotation.y) * damp(10, dt);
+    }
+    v.recoil = Math.max(0, v.recoil - dt * 8);
+    if (v.parts.recoil && v.parts.recoil !== v.parts.turret) v.parts.recoil.position.z = -0.12 * v.recoil;
+    for (const p of v.parts.spinY || []) p.rotation.y += dt * (p.name === 'rotor' ? 22 : 1.2);
+    for (const p of v.parts.spinX || []) p.rotation.x += dt * 30;
+    for (const p of v.parts.spinZ || []) p.rotation.z += dt * (v.recoil > 0 ? 25 : 2);
+    if (v.parts.bob) v.parts.bob.position.y += (Math.sin(this.time * 2 + t.uid) * 0.0015);
+    if (v.parts.sway) v.parts.sway.rotation.y = Math.sin(this.time * 2 + t.uid) * 0.25;
+    if (v.inst) {
+      v.inst.update(dt);
+      if (v.returnIdleAt && this.time > v.returnIdleAt && v.clips?.idle) { v.inst.play(v.clips.idle, { fade: 0.2 }); v.returnIdleAt = 0; }
+      // static pack towers have no attack clip: kick the whole model back a little when firing
+      if (!v.clips?.attack) v.inst.root.position.z = -0.12 * v.recoil;
+    }
+    if (v.unit && t.unit) {
+      v.unit.position.set(t.unit.x, t.unit.y + Math.sin(this.time * 1.7 + t.uid) * 0.25, t.unit.z);
+      const heading = v.aimYaw ?? t.unit.angle + Math.PI;
+      v.unit.rotation.y += wrap(heading - v.unit.rotation.y) * damp(4, dt);
+      v.unit.rotation.z = Math.sin(this.time * 1.3) * 0.05;
+    }
+    const evo = t.evolved || t.lobbyLevel >= 5;
+    v.aura.material.opacity = evo ? 0.55 + Math.sin(this.time * 3) * 0.2 : t.tier > 0 ? 0.2 : 0;
+    v.aura.material.color.set(t.evolved ? '#C9A7FF' : '#FFD166').multiplyScalar(2);
+    const targetScale = t.evolved ? 1.14 : 1 + t.tier * 0.02;
+    v.scale += (targetScale - v.scale) * damp(6, dt);
+    v.root.scale.setScalar(v.scale);
+    v.stun.visible = t.stunUntil > m.time;
+    if (v.stun.visible) { v.stun.position.y = 2.6; v.stun.rotation.y += dt * 4; }
+  }
+
+  /** Error boundary per unit: a unit whose visuals throw is skipped (and reported once) instead of
+   *  stopping the whole frame, so one bad model or data entry never freezes the match view. */
+  _guard(kind, id, defId, fn) {
+    const key = `${kind}:${id}`;
+    if (this.broken?.has(key)) return;
+    try {
+      fn();
+    } catch (err) {
+      (this.broken ||= new Set()).add(key);
+      console.error(`[view] ${kind} ${defId} (#${id}) failed and is hidden from now on`, err);
+    }
+  }
+
   update(dt) {
     this.time += dt;
     const m = this.match;
@@ -575,11 +630,11 @@ export class MatchView {
       v.data = e;
     }
     for (const id of [...this.enemyVis.keys()]) if (!seen.has(id)) this.enemyVis.delete(id); // leaked
-    for (const v of this.enemyVis.values()) this._drawEnemy(v);
+    for (const v of this.enemyVis.values()) this._guard('enemy', v.id, v.defId, () => this._drawEnemy(v));
     this.dying = this.dying.filter((v) => {
       v.t += dt;
       if (v.t > 1.6) return false;
-      this._drawEnemy(v);
+      this._guard('enemy', v.id, v.defId, () => this._drawEnemy(v));
       return true;
     });
     for (const rig of this.enemyRigs.values()) rig.end();
@@ -604,46 +659,7 @@ export class MatchView {
     for (const rig of this.allyRigs.values()) rig.end();
 
     // --- towers
-    for (const t of m.towers) {
-      const v = this.towerVis.get(t.uid) || this._makeTower(t);
-      if (v.rarity?.userData.pulse) v.rarity.material.opacity = this.settings.reducedMotion ? 0.85 : 0.55 + 0.35 * Math.sin(this.time * 2.4 + t.uid);
-      const tgt = t.target && m.enemies.find((e) => e.id === t.target && e.alive);
-      const ox = v.unit ? t.unit.x : t.x;
-      const oz = v.unit ? t.unit.z : t.z;
-      if (tgt) v.aimYaw = Math.atan2(tgt.x - ox, tgt.z - oz);
-      if (v.aimYaw !== undefined && !v.unit) {
-        const turret = v.parts.turret;
-        if (turret) turret.rotation.y += wrap(v.aimYaw - turret.rotation.y) * damp(10, dt);
-        else v.root.rotation.y += wrap(v.aimYaw - v.root.rotation.y) * damp(10, dt);
-      }
-      v.recoil = Math.max(0, v.recoil - dt * 8);
-      if (v.parts.recoil && v.parts.recoil !== v.parts.turret) v.parts.recoil.position.z = -0.12 * v.recoil;
-      for (const p of v.parts.spinY || []) p.rotation.y += dt * (p.name === 'rotor' ? 22 : 1.2);
-      for (const p of v.parts.spinX || []) p.rotation.x += dt * 30;
-      for (const p of v.parts.spinZ || []) p.rotation.z += dt * (v.recoil > 0 ? 25 : 2);
-      if (v.parts.bob) v.parts.bob.position.y += (Math.sin(this.time * 2 + t.uid) * 0.0015);
-      if (v.parts.sway) v.parts.sway.rotation.y = Math.sin(this.time * 2 + t.uid) * 0.25;
-      if (v.inst) {
-        v.inst.update(dt);
-        if (v.returnIdleAt && this.time > v.returnIdleAt && v.clips?.idle) { v.inst.play(v.clips.idle, { fade: 0.2 }); v.returnIdleAt = 0; }
-        // static pack towers have no attack clip: kick the whole model back a little when firing
-        if (!v.clips?.attack) v.inst.root.position.z = -0.12 * v.recoil;
-      }
-      if (v.unit && t.unit) {
-        v.unit.position.set(t.unit.x, t.unit.y + Math.sin(this.time * 1.7 + t.uid) * 0.25, t.unit.z);
-        const heading = v.aimYaw ?? t.unit.angle + Math.PI;
-        v.unit.rotation.y += wrap(heading - v.unit.rotation.y) * damp(4, dt);
-        v.unit.rotation.z = Math.sin(this.time * 1.3) * 0.05;
-      }
-      const evo = t.evolved || t.lobbyLevel >= 5;
-      v.aura.material.opacity = evo ? 0.55 + Math.sin(this.time * 3) * 0.2 : t.tier > 0 ? 0.2 : 0;
-      v.aura.material.color.set(t.evolved ? '#C9A7FF' : '#FFD166').multiplyScalar(2);
-      const targetScale = t.evolved ? 1.14 : 1 + t.tier * 0.02;
-      v.scale += (targetScale - v.scale) * damp(6, dt);
-      v.root.scale.setScalar(v.scale);
-      v.stun.visible = t.stunUntil > m.time;
-      if (v.stun.visible) { v.stun.position.y = 2.6; v.stun.rotation.y += dt * 4; }
-    }
+    for (const t of m.towers) this._guard('tower', t.uid, t.defId, () => this._updateTower(t, m, dt));
     for (const uid of [...this.towerVis.keys()]) if (!m.towerById(uid)) this._removeTower(uid);
 
     // --- selection range
