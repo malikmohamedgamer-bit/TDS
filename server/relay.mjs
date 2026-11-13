@@ -4,9 +4,14 @@
 // does everything game related on the clients.
 //
 // Protocol (full description in server/README.md):
-//   client -> server  {op:'join', room, peer, meta}   {op:'send', data, to?}   {op:'ping', ts}
+//   client -> server  {op:'join', room, peer, meta, secret?}   {op:'send', data, to?}   {op:'ping', ts}
 //   server -> client  {op:'joined', peer, peers}  {op:'peers', peers}  {op:'msg', from, data}
 //                     {op:'error', code, message}  {op:'pong', ts}
+//
+// Peer identity: the first socket to join a room as peer id P with secret S owns P in that room.
+// Later joins as P must bring the same S (a reconnect or reload) or are refused with 'taken'. The
+// claim is kept while P is connected and for PEER_GRACE_MS after P left, and dropped with the room.
+// 'from' on relayed messages is always the sender socket's own peer id, never a client field.
 //
 // Run: `node relay.mjs` (or `npm start` in server/). Environment:
 //   PORT              listen port (default 8787; 0 picks a free port, logged on start)
@@ -14,10 +19,14 @@
 //   HEARTBEAT_MS      WebSocket ping interval (default 15000); a peer that misses one is dropped
 //   MAX_CLIENTS       maximum simultaneous sockets (default 500)
 //   RATE_PER_SEC, RATE_BURST   per-socket token bucket (default 60 messages/s, burst 120)
+//   RATE_BYTES_PER_SEC, RATE_BYTES_BURST   per-socket byte bucket (default 1 MB/s, burst 2 MB)
+//   MAX_BUFFERED_BYTES  a receiver with more than this queued and unread is terminated (default 2 MB)
+//   PEER_GRACE_MS     how long a gone peer's id stays reserved for its secret (default 600000)
 //   JOIN_TIMEOUT_MS   a socket that has not joined a room after this long is closed (default 30000)
 //
 // Only dependency: `ws`. Node 18+.
 import { createServer } from 'node:http';
+import { timingSafeEqual } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
 
@@ -25,6 +34,8 @@ import { WebSocketServer, WebSocket } from 'ws';
 export const ROOM_RE = /^[A-Z0-9]{4,12}$/;
 /** Peer ids are chosen by the client: 1-64 characters of [A-Za-z0-9_-]. */
 export const PEER_RE = /^[A-Za-z0-9_-]{1,64}$/;
+/** Peer secrets are chosen by the client: 16-128 characters of [A-Za-z0-9_-] (the game sends 32 hex). */
+export const SECRET_RE = /^[A-Za-z0-9_-]{16,128}$/;
 
 export const DEFAULTS = Object.freeze({
   port: 8787,
@@ -34,6 +45,10 @@ export const DEFAULTS = Object.freeze({
   maxClients: 500,            // simultaneous sockets for the whole server
   ratePerSec: 60,             // token bucket refill per socket
   rateBurst: 120,             // token bucket size
+  rateBytesPerSec: 1024 * 1024,   // byte bucket refill per socket (received bytes)
+  rateBytesBurst: 2 * 1024 * 1024, // byte bucket size (never below maxBytes, so one big message can pass)
+  maxBufferedBytes: 2 * 1024 * 1024, // unread bytes queued for one receiver before it is terminated
+  peerGraceMs: 10 * 60 * 1000, // a gone peer's id stays reserved for its secret this long
   heartbeatMs: 15000,         // ping interval; a socket that did not pong since the last ping is dropped
   joinTimeoutMs: 30000,       // close sockets that never join a room
   allowedOrigins: [],         // empty = allow every origin
@@ -61,8 +76,17 @@ export function createRelay(options = {}) {
   const allowed = new Set((cfg.allowedOrigins || []).map(normOrigin).filter(Boolean));
   const log = cfg.log || ((line) => console.log(`[relay] ${line}`));
 
+  const bytesBurst = Math.max(cfg.rateBytesBurst, cfg.maxBytes);
+
   /** @type {Map<string, Map<string, Peer>>} room code -> (peer id -> peer) */
   const rooms = new Map();
+  /**
+   * Identity claims: room code -> (peer id -> { secret, goneAt }). secret '' is a legacy client
+   * that sent none (its id can be taken over, as before secrets existed). goneAt is 0 while the
+   * peer is connected, else the time it left; claims older than peerGraceMs are dropped.
+   * @type {Map<string, Map<string, { secret: string, goneAt: number }>>}
+   */
+  const claims = new Map();
   /** @type {Set<WebSocket>} */
   const sockets = new Set();
 
@@ -112,8 +136,26 @@ export function createRelay(options = {}) {
     return n;
   }
 
+  /**
+   * Every outgoing frame goes through here. Backpressure: a socket whose unsent queue is already
+   * over maxBufferedBytes is not reading (stalled tab, dead network, hostile client), so it is
+   * terminated instead of buffering without limit. Its close handler removes it from its room; a
+   * real client reconnects and the game resyncs it. Returns true when the frame was queued.
+   */
+  function push(ws, text) {
+    if (ws.readyState !== WebSocket.OPEN) return false;
+    // only what is already queued counts: one big frame to a socket that keeps up is fine
+    if (ws.bufferedAmount > cfg.maxBufferedBytes) {
+      log(`terminating ${ws.tds && ws.tds.peer ? `peer ${ws.tds.peer}` : 'a socket'}: ${ws.bufferedAmount} bytes unread`);
+      ws.terminate();
+      return false;
+    }
+    ws.send(text);
+    return true;
+  }
+
   function sendJson(ws, obj) {
-    if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
+    push(ws, JSON.stringify(obj));
   }
 
   function sendError(ws, code, message) {
@@ -134,7 +176,22 @@ export function createRelay(options = {}) {
     const r = rooms.get(room);
     if (!r) return;
     const msg = JSON.stringify({ op: 'peers', peers: peerList(room) });
-    for (const p of r.values()) if (p.ws !== skip && p.ws.readyState === WebSocket.OPEN) p.ws.send(msg);
+    for (const p of [...r.values()]) if (p.ws !== skip) push(p.ws, msg);
+  }
+
+  /** Drops the identity claims of peers that have been gone longer than peerGraceMs. */
+  function pruneClaims(now = Date.now()) {
+    for (const [room, c] of claims) {
+      for (const [peer, claim] of c) if (claim.goneAt && now - claim.goneAt > cfg.peerGraceMs) c.delete(peer);
+      if (c.size === 0) claims.delete(room);
+    }
+  }
+
+  /** Constant-time comparison of two secrets. */
+  function sameSecret(a, b) {
+    const x = Buffer.from(a);
+    const y = Buffer.from(b);
+    return x.length === y.length && timingSafeEqual(x, y);
   }
 
   /** Removes a socket's peer from its room (no-op if the slot now belongs to a newer socket). */
@@ -149,8 +206,14 @@ export function createRelay(options = {}) {
     const p = r.get(peer);
     if (!p || p.ws !== ws) return; // replaced by a reconnect: the new socket owns the slot
     r.delete(peer);
-    if (r.size === 0) rooms.delete(room);
-    else broadcastPeers(room, null);
+    if (r.size === 0) {
+      rooms.delete(room);
+      claims.delete(room); // nobody is left to impersonate
+    } else {
+      const claim = claims.get(room)?.get(peer);
+      if (claim) claim.goneAt = Date.now(); // keep the id reserved for its secret for a while
+      broadcastPeers(room, null);
+    }
   }
 
   // ---- message handlers --------------------------------------------------------------------------
@@ -161,6 +224,20 @@ export function createRelay(options = {}) {
     const meta = msg.meta == null ? {} : msg.meta;
     if (typeof meta !== 'object' || Array.isArray(meta)) return sendError(ws, 'bad_meta', 'meta must be an object');
     if (Buffer.byteLength(JSON.stringify(meta)) > cfg.maxMetaBytes) return sendError(ws, 'bad_meta', `meta is larger than ${cfg.maxMetaBytes} bytes`);
+    // no secret (null / absent): a legacy client, whose id anyone can take over as before
+    const secret = msg.secret == null ? '' : msg.secret;
+    if (secret !== '' && (typeof secret !== 'string' || !SECRET_RE.test(secret))) {
+      return sendError(ws, 'bad_secret', 'secret must be 16-128 characters A-Z a-z 0-9 _ -');
+    }
+
+    // Identity: a peer id that is (or recently was) in this room with a secret belongs to that
+    // secret. Same secret = the same player reconnecting or reloading; anything else is refused.
+    pruneClaims();
+    const roomClaims = claims.get(room);
+    const claim = roomClaims && roomClaims.get(peer);
+    if (claim && claim.secret !== '' && !sameSecret(claim.secret, secret)) {
+      return sendError(ws, 'taken', `peer id ${peer} is already used by another player in room ${room}`);
+    }
 
     const st = ws.tds;
     if (st.room === room && st.peer === peer) {
@@ -182,11 +259,14 @@ export function createRelay(options = {}) {
 
     let joinedAt = Date.now();
     if (existing) {
-      // Reconnect: the same peer id takes over its slot. The old socket is told and closed; its
-      // close handler sees that it no longer owns the slot and does not announce a leave.
+      // Reconnect (same id, same secret): the new socket takes over the slot. The old socket is
+      // told and closed; its close handler sees that it no longer owns the slot and does not
+      // announce a leave. If the old socket was still alive this is a second tab or window with
+      // the same identity (a duplicated tab copies sessionStorage): the client must not
+      // reconnect on 'replaced', or the two would take the slot from each other forever.
       joinedAt = existing.joinedAt;
       if (existing.ws !== ws) {
-        sendError(existing.ws, 'replaced', 'this peer id connected again from another socket');
+        sendError(existing.ws, 'replaced', 'This room was opened in another tab or window');
         existing.ws.tds.room = null;
         existing.ws.tds.peer = null;
         existing.ws.close(CLOSE.REPLACED, 'replaced');
@@ -198,6 +278,12 @@ export function createRelay(options = {}) {
       rooms.set(room, target);
     }
     target.set(peer, { id: peer, meta, joinedAt, ws });
+    let targetClaims = claims.get(room);
+    if (!targetClaims) {
+      targetClaims = new Map();
+      claims.set(room, targetClaims);
+    }
+    targetClaims.set(peer, { secret, goneAt: 0 });
     st.room = room;
     st.peer = peer;
     sendJson(ws, { op: 'joined', peer, peers: peerList(room) });
@@ -209,38 +295,50 @@ export function createRelay(options = {}) {
     if (!st.room) return sendError(ws, 'not_joined', 'join a room before sending');
     if (msg.data === undefined) return sendError(ws, 'bad_msg', 'send needs data');
     const r = rooms.get(st.room);
+    // 'from' is the authenticated sender's own id; a 'from' field in the client frame is ignored
     const out = JSON.stringify({ op: 'msg', from: st.peer, data: msg.data });
     if (msg.to != null) {
       const p = typeof msg.to === 'string' ? r.get(msg.to) : null;
       if (!p) return sendError(ws, 'no_peer', `no peer ${String(msg.to).slice(0, 64)} in this room`);
-      if (p.ws !== ws && p.ws.readyState === WebSocket.OPEN) p.ws.send(out);
+      if (p.ws !== ws) push(p.ws, out);
       return;
     }
-    for (const p of r.values()) if (p.ws !== ws && p.ws.readyState === WebSocket.OPEN) p.ws.send(out);
+    for (const p of [...r.values()]) if (p.ws !== ws) push(p.ws, out);
   }
 
-  /** Token bucket: refills `ratePerSec` per second up to `rateBurst`; one message costs one token. */
-  function takeToken(st) {
+  /**
+   * Two token buckets per socket: messages (refill ratePerSec up to rateBurst, one per message)
+   * and received bytes (refill rateBytesPerSec up to rateBytesBurst, one per byte).
+   * Returns '' when the message may pass, else which limit it hit ('messages' | 'bytes').
+   */
+  function takeTokens(st, bytes) {
     const now = Date.now();
-    st.tokens = Math.min(cfg.rateBurst, st.tokens + ((now - st.refilledAt) / 1000) * cfg.ratePerSec);
+    const dt = (now - st.refilledAt) / 1000;
     st.refilledAt = now;
-    if (st.tokens < 1) return false;
+    st.tokens = Math.min(cfg.rateBurst, st.tokens + dt * cfg.ratePerSec);
+    st.byteTokens = Math.min(bytesBurst, st.byteTokens + dt * cfg.rateBytesPerSec);
+    if (st.tokens < 1) return 'messages';
+    if (st.byteTokens < bytes) return 'bytes';
     st.tokens -= 1;
-    return true;
+    st.byteTokens -= bytes;
+    return '';
   }
 
   function onMessage(ws, raw, isBinary) {
     const st = ws.tds;
-    if (!takeToken(st)) {
+    const bytes = raw.length;
+    const limited = takeTokens(st, bytes);
+    if (limited) {
       // drop; tell the client at most once a second so a flood does not create a reply flood
       const now = Date.now();
       if (now - st.rateErrorAt >= 1000) {
         st.rateErrorAt = now;
-        sendError(ws, 'rate', `more than ${cfg.ratePerSec} messages per second: message dropped`);
+        sendError(ws, 'rate', limited === 'bytes'
+          ? `more than ${cfg.rateBytesPerSec} bytes per second: message dropped`
+          : `more than ${cfg.ratePerSec} messages per second: message dropped`);
       }
       return;
     }
-    const bytes = raw.length;
     if (bytes > cfg.maxBytes) return sendError(ws, 'too_big', `message is ${bytes} bytes, the limit is ${cfg.maxBytes}`);
     if (isBinary) return sendError(ws, 'bad_json', 'binary frames are not supported');
     let msg;
@@ -265,6 +363,7 @@ export function createRelay(options = {}) {
       peer: null,
       alive: true,
       tokens: cfg.rateBurst,
+      byteTokens: bytesBurst,
       refilledAt: Date.now(),
       rateErrorAt: 0,
       joinTimer: setTimeout(() => {
@@ -300,6 +399,7 @@ export function createRelay(options = {}) {
       ws.tds.alive = false;
       try { ws.ping(); } catch { /* socket already closing */ }
     }
+    pruneClaims();
   }, cfg.heartbeatMs);
   heartbeat.unref();
 
@@ -345,6 +445,10 @@ export function configFromEnv(env = process.env) {
     maxClients: num('MAX_CLIENTS', DEFAULTS.maxClients),
     ratePerSec: num('RATE_PER_SEC', DEFAULTS.ratePerSec),
     rateBurst: num('RATE_BURST', DEFAULTS.rateBurst),
+    rateBytesPerSec: num('RATE_BYTES_PER_SEC', DEFAULTS.rateBytesPerSec),
+    rateBytesBurst: num('RATE_BYTES_BURST', DEFAULTS.rateBytesBurst),
+    maxBufferedBytes: num('MAX_BUFFERED_BYTES', DEFAULTS.maxBufferedBytes),
+    peerGraceMs: num('PEER_GRACE_MS', DEFAULTS.peerGraceMs),
     joinTimeoutMs: num('JOIN_TIMEOUT_MS', DEFAULTS.joinTimeoutMs),
   };
 }

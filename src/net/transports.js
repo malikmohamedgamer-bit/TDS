@@ -5,14 +5,21 @@
 //   transport.send(data, to?)         JSON data; broadcast to the room (not to self) or to one peer
 //   transport.onMessage(fn)           fn(data, fromPeerId); returns an unsubscribe function
 //   transport.onPeers(fn)             fn([{ id, meta, joinedAt }]) on every room change (includes self)
-//   transport.onStatus(fn)            fn('connecting' | 'open' | 'closed' | 'error')
+//   transport.onStatus(fn)            fn('connecting' | 'open' | 'closed' | 'error' | 'replaced')
 //   transport.peers                   last known member list (includes self)
 //   transport.close()
+//
+// Status 'replaced' (RelayTransport only) is final: the same identity (peer id + secret) joined
+// the room from another tab or window, typically a duplicated browser tab, which copies
+// sessionStorage. The transport has stopped and does not reconnect; the UI should say "this room
+// is open in another tab" instead of retrying. RelayTransport also has transport.secret and
+// transport.onError(fn) ({ code, message } for server errors, including 'replaced' and 'taken').
 //
 // LocalTransport: BroadcastChannel (two tabs of one browser, Playwright pages of one context).
 // RelayTransport: WebSocket to server/relay.mjs. SupabaseTransport lives in ./supabaseTransport.js and
 // is loaded on demand by createTransport(). Transports never chunk: the session layer does that.
-// No DOM access here (only the BroadcastChannel / WebSocket globals, which can be injected).
+// No DOM access here (only the BroadcastChannel / WebSocket / sessionStorage globals, which can be
+// injected).
 
 /** Random peer id: 10 base-36 characters from crypto when available. */
 export function newPeerId() {
@@ -20,6 +27,14 @@ export function newPeerId() {
   if (globalThis.crypto?.getRandomValues) globalThis.crypto.getRandomValues(bytes);
   else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
   return Array.from(bytes, (b) => (b % 36).toString(36)).join('');
+}
+
+/** Random peer secret for the relay: 128 bits as 32 lower-case hex characters. */
+export function newPeerSecret() {
+  const bytes = new Uint8Array(16);
+  if (globalThis.crypto?.getRandomValues) globalThis.crypto.getRandomValues(bytes);
+  else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 /** Small listener set helper: add returns an unsubscribe function. */
@@ -184,42 +199,59 @@ export class LocalTransport {
 
 /**
  * WebSocket transport to the relay server (server/relay.mjs). Protocol, JSON text frames:
- *   client -> server  { op: 'join', room, peer, meta } | { op: 'send', data, to? } | { op: 'ping', ts }
+ *   client -> server  { op: 'join', room, peer, meta, secret } | { op: 'send', data, to? } | { op: 'ping', ts }
  *   server -> client  { op: 'joined', peer, peers: [{ id, meta, joinedAt }] } | { op: 'peers', peers }
  *                     { op: 'msg', from, data } | { op: 'error', code, message } | { op: 'pong', ts }
  * A lost socket is retried with backoff 1 s, 2 s, 4 s ... capped at 10 s, rejoining the same room with
- * the same peer id. While reconnecting, sends are queued (bounded) and flushed after the rejoin; the
- * peer list is not changed until the server reports it again, so a short drop does not look like
- * everyone leaving.
+ * the same peer id and secret. While reconnecting, sends are queued (bounded) and flushed after the
+ * rejoin; the peer list is not changed until the server reports it again, so a short drop does not
+ * look like everyone leaving.
+ *
+ * The secret proves the peer id is ours: the relay refuses a join with our id and another secret
+ * ('taken'), so nobody else in the room can take over our seat (or the host's). Keep the secret
+ * with the id to rejoin after a page reload (createTransport does that in sessionStorage).
+ *
+ * First join and a sleeping server: if no socket could be opened at all by joinTimeoutMs (a free
+ * Render service takes up to about a minute to wake), the first join keeps retrying until
+ * wakeTimeoutMs before it rejects with 'Could not reach the relay server'. Once a socket opened,
+ * joinTimeoutMs applies. A server error on the first join rejects at once.
+ *
+ * Error 'replaced' (another tab joined with our identity) stops the transport for good: status
+ * 'replaced', no reconnect. Error 'taken' is final as well (status 'error').
  */
 export class RelayTransport {
   /**
    * @param {string} url  ws:// or wss:// address of the relay
    * @param {object} [o]
    * @param {string} [o.id]               peer id (default: random)
+   * @param {string} [o.secret]           peer secret, 16-128 chars [A-Za-z0-9_-] (default: random 128-bit hex)
    * @param {Function} [o.WebSocket]      WebSocket constructor (default: the global one; tests inject a fake)
    * @param {number} [o.backoffMs]        first retry delay, doubled per failure (1000)
    * @param {number} [o.maxBackoffMs]     cap (10000)
    * @param {number} [o.pingMs]           app-level ping period (10000)
    * @param {number} [o.deadMs]           silence after which the socket is treated as dead (30000)
-   * @param {number} [o.joinTimeoutMs]    the first join() rejects after this (15000)
+   * @param {number} [o.joinTimeoutMs]    the first join() rejects after this once a socket opened (15000)
+   * @param {number} [o.wakeTimeoutMs]    ... or after this if no socket could open at all (60000)
    * @param {number} [o.queueMax]         sends kept while disconnected (256, oldest dropped)
    * @param {object} [o.timers]           { setTimeout, clearTimeout, setInterval, clearInterval }
    * @param {()=>number} [o.clock]
    */
   constructor(url, {
-    id, WebSocket: WS, backoffMs = 1000, maxBackoffMs = 10000, pingMs = 10000, deadMs = 30000,
-    joinTimeoutMs = 15000, queueMax = 256, timers, clock,
+    id, secret, WebSocket: WS, backoffMs = 1000, maxBackoffMs = 10000, pingMs = 10000, deadMs = 30000,
+    joinTimeoutMs = 15000, wakeTimeoutMs = 60000, queueMax = 256, timers, clock,
   } = {}) {
     this.url = url;
     this.id = id || newPeerId();
+    this.secret = secret || newPeerSecret();
     this.WS = WS === undefined ? globalThis.WebSocket : WS; // null: explicitly none
     this.backoffMs = backoffMs;
     this.maxBackoffMs = maxBackoffMs;
     this.pingMs = pingMs;
     this.deadMs = deadMs;
     this.joinTimeoutMs = joinTimeoutMs;
+    this.wakeTimeoutMs = Math.max(joinTimeoutMs, wakeTimeoutMs);
     this.queueMax = queueMax;
+    this.everOpened = false; // a socket opened during the current join() (the server is awake)
     this.timers = timers || defaultTimers();
     this.clock = clock || (() => Date.now());
     this.room = null;
@@ -256,14 +288,26 @@ export class RelayTransport {
     this.meta = meta;
     this.closed = false;
     this.everJoined = false;
+    this.everOpened = false;
     this.attempt = 0;
     this.queue = [];
     return new Promise((resolve, reject) => {
-      const timer = this.timers.setTimeout(() => {
+      let timer = null;
+      const giveUp = () => {
+        timer = null;
         if (!this._pendingJoin) return;
         this._pendingJoin = null;
         this.close();
         reject(Object.assign(new Error('Could not reach the relay server'), { code: 'timeout' }));
+      };
+      timer = this.timers.setTimeout(() => {
+        // no socket ever opened: the server may be asleep (free hosting wakes on the first
+        // request and takes up to about a minute), so keep retrying until wakeTimeoutMs
+        if (this._pendingJoin && !this.everOpened && this.wakeTimeoutMs > this.joinTimeoutMs) {
+          timer = this.timers.setTimeout(giveUp, this.wakeTimeoutMs - this.joinTimeoutMs);
+          return;
+        }
+        giveUp();
       }, this.joinTimeoutMs);
       this._pendingJoin = {
         resolve: (v) => { this.timers.clearTimeout(timer); resolve(v); },
@@ -292,6 +336,11 @@ export class RelayTransport {
   onError(fn) { return this.errorEv.add(fn); }
 
   close() {
+    this._shutdown('closed');
+  }
+
+  /** Stops for good (no reconnect) and ends in `status`; a pending join() rejects with `err`. */
+  _shutdown(status, err) {
     if (this.closed && !this.ws) return;
     this.closed = true;
     this.joined = false;
@@ -301,11 +350,11 @@ export class RelayTransport {
     this.pingTimer = null;
     this.queue = [];
     this._detach(1000, 'bye');
-    this._setStatus('closed');
+    this._setStatus(status);
     if (this._pendingJoin) {
       const p = this._pendingJoin;
       this._pendingJoin = null;
-      p.reject(Object.assign(new Error('Closed before joining'), { code: 'closed' }));
+      p.reject(err || Object.assign(new Error('Closed before joining'), { code: 'closed' }));
     }
   }
 
@@ -347,8 +396,9 @@ export class RelayTransport {
     this.ws = ws;
     this.joined = false;
     ws.onopen = () => {
+      this.everOpened = true;
       this.lastRx = this.clock();
-      this._raw({ op: 'join', room: this.room, peer: this.id, meta: this.meta });
+      this._raw({ op: 'join', room: this.room, peer: this.id, meta: this.meta, secret: this.secret });
     };
     ws.onmessage = (e) => this._onFrame(e.data);
     ws.onerror = () => {
@@ -416,15 +466,23 @@ export class RelayTransport {
         const err = { code: String(m.code || 'error'), message: String(m.message || 'Relay error') };
         this.lastError = err;
         this.errorEv.emit(err);
+        const fail = Object.assign(new Error(err.message), { code: err.code });
+        if (err.code === 'replaced') {
+          // the same identity joined from another tab or window: reconnecting would take the
+          // seat back and start a tug of war, so stop here for good
+          this._shutdown('replaced', fail);
+          break;
+        }
         this._setStatus('error');
+        if (err.code === 'taken') {
+          // our peer id belongs to someone else in this room: retrying cannot help
+          this._shutdown('error', fail);
+          break;
+        }
         if (!this.joined) {
           if (!this.everJoined) {
             // refused on the first join (room full, bad room code ...): retrying cannot help
-            const p = this._pendingJoin;
-            this._pendingJoin = null;
-            this.close();
-            this._setStatus('error');
-            if (p) p.reject(Object.assign(new Error(err.message), { code: err.code }));
+            this._shutdown('error', fail);
           } else {
             // refused while rejoining (for example our old connection still holds the seat until
             // the server notices it is dead): try again with backoff
@@ -458,6 +516,27 @@ export class RelayTransport {
 
 const KINDS = ['local', 'relay', 'supabase'];
 
+/** sessionStorage key of the relay identity: JSON { id, secret } (one per tab, like the peer id). */
+export const SECRET_KEY = 'tds.relaySecret';
+
+function defaultSecretStorage() {
+  try { return globalThis.sessionStorage || null; } catch { return null; } // blocked storage throws
+}
+
+/** The stored secret for peer `id`, or '' (nothing stored, another id, unreadable storage). */
+function loadSecret(storage, id) {
+  try {
+    const v = JSON.parse(storage?.getItem(SECRET_KEY) || 'null');
+    return v && v.id === id && typeof v.secret === 'string' ? v.secret : '';
+  } catch {
+    return '';
+  }
+}
+
+function saveSecret(storage, id, secret) {
+  try { storage?.setItem(SECRET_KEY, JSON.stringify({ id, secret })); } catch { /* private mode: no rejoin after reload */ }
+}
+
 /**
  * Which transport to use: `?net=local|relay|supabase` overrides `config.transport`; default 'local'.
  * @param {object} config  data/online.json
@@ -484,13 +563,23 @@ export function relayUrl(config = {}, search = '') {
  * @param {object} [o]
  * @param {string} [o.search]  location.search (default: the page's)
  * @param {string} [o.id]      peer id to reuse (keeps the same identity across a page reload)
+ * @param {string} [o.secret]  relay peer secret to reuse with that id. When omitted, the secret
+ *   stored for `id` in `storage` is reused, else a new one is made; either way the relay
+ *   transport's id + secret are stored again, so a reload that passes the same id rejoins as
+ *   the same peer instead of being refused as 'taken'.
+ * @param {{getItem:Function,setItem:Function}|null} [o.storage]  where relay secrets are kept
+ *   (default: sessionStorage when the page has one; null: do not store)
  */
-export async function createTransport(config = {}, { search = globalThis.location?.search ?? '', id } = {}) {
+export async function createTransport(config = {}, {
+  search = globalThis.location?.search ?? '', id, secret, storage = defaultSecretStorage(),
+} = {}) {
   const kind = transportKind(config, search);
   if (kind === 'relay') {
     const url = relayUrl(config, search);
     if (!url) throw new Error('No relay URL configured (data/online.json relayUrl or ?relay=wss://...)');
-    return new RelayTransport(url, { id });
+    const t = new RelayTransport(url, { id, secret: secret || (id ? loadSecret(storage, id) : '') || undefined });
+    saveSecret(storage, t.id, t.secret);
+    return t;
   }
   if (kind === 'supabase') {
     if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('Supabase is not configured (data/online.json supabaseUrl, supabaseAnonKey)');

@@ -107,8 +107,15 @@ or Docker and a host that allows WebSockets. Three ways to host it:
 5. In `data/online.json` set `"transport": "relay"` and
    `"relayUrl": "wss://tds-relay.onrender.com/"` (note `wss://`, not `https://`). Commit, push.
 
-The free plan sleeps after about 15 minutes without traffic. The first player to connect then
-waits up to about a minute while it wakes up. Paid plans or the hosts below avoid that.
+The free plan sleeps after about 15 minutes without traffic and takes up to about a minute to wake
+on the next request. While it wakes, **Create room** / **Join** shows "connecting": when no
+connection to the relay could be opened at all, the game keeps retrying for up to 60 seconds
+before it gives up with "Could not reach the relay server" (if the server answers but refuses or
+never confirms the join, it gives up after 15 seconds). If you still see that message, the
+service was slower than a minute to wake: press **Join** / **Create room** again. To avoid the
+wait, open `https://tds-relay.onrender.com/health` in a browser a minute before playing (it wakes
+the service; the page shows `{"ok":true,...}` once it is up). Paid plans or the hosts below do not
+sleep.
 
 ### B2. Fly.io (uses `server/fly.toml` and `server/Dockerfile`)
 
@@ -166,9 +173,23 @@ npm start          # "[relay] listening on port 8787 (all origins)"
 ```
 
 In another, `npm run dev`, then open
-http://localhost:5173/?net=relay&relay=ws://localhost:8787 in two tabs (or two browsers). Another
-device on your home network can join with your computer's local address instead of `localhost`
-(for example `ws://192.168.1.20:8787`), opening the game from `http://192.168.1.20:5173`.
+http://localhost:5173/?net=relay&relay=ws://localhost:8787 in two tabs (or two browsers).
+
+**Another device on your home network** (a second PC or a phone on the same Wi-Fi). `npm run dev`
+only listens on `127.0.0.1`, so other devices cannot reach it. Start the game server on all
+network interfaces instead:
+
+```sh
+npm run dev -- --host 0.0.0.0
+```
+
+(the same as `node tools/dev-server.mjs --host 0.0.0.0`). It prints `on your network:
+http://192.168.x.y:5173/` lines with your computer's address. The relay (`npm start` in `server/`)
+already listens on all interfaces. Windows asks once whether Node.js may accept connections on
+private networks: allow it. Then open, on the other device,
+`http://192.168.1.20:5173/?net=relay&relay=ws://192.168.1.20:8787` (your address instead of
+`192.168.1.20`), and the same address on your computer (not `localhost`, so both are the same page
+origin if you set `ALLOWED_ORIGINS`).
 
 **Supabase from your computer.** With `supabaseUrl` and `supabaseAnonKey` filled in, open
 http://localhost:5173/?net=supabase in two tabs.
@@ -187,7 +208,10 @@ without committing a change.
 | Supabase works for a while, then stops | Monthly or per-second quota reached: dashboard > **Usage**. Raise `supabaseTurnTicks` or switch to the relay. |
 | Relay: the connection fails at once | `relayUrl` must start with `wss://` on the live site (`ws://` only works on `http://localhost`). Check `<relay address>/health` in a browser. |
 | Relay: the console shows HTTP 403 | The page's origin is not in `ALLOWED_ORIGINS`. Add it exactly (scheme + host, no path, for example `https://malikmohamedgamer-bit.github.io`). |
-| Relay on Render: the first connection takes a minute | The free service was asleep; it wakes on the first request. Open `/health` a minute before playing. |
+| Relay on Render: "connecting" for up to a minute, or "Could not reach the relay server" | The free service was asleep; it wakes on the first request and the game retries for 60 seconds. If it still failed, press Join / Create room again. Opening `<relay address>/health` a minute before playing avoids the wait. |
+| Relay: after duplicating a tab, the older tab stops updating | Both tabs had the same player identity (a duplicated tab copies it). The relay keeps the newer tab and tells the older one "This room was opened in another tab or window"; the older one stops instead of fighting for the seat. Keep playing in the newer tab. |
+| Relay: "already used by another player" (`taken`) | Someone in the room uses that player id with a different secret. Leave and create or join the room again (a fresh id is used). |
+| Another device on the Wi-Fi cannot open the game | `npm run dev` listens only on this computer: use `npm run dev -- --host 0.0.0.0`, allow Node.js in the Windows firewall prompt, and use the address it prints. |
 | "room is full" | Rooms hold 4 players. |
 | Two tabs with `?net=local` do not see each other | Both tabs must be the same browser and the same address (both `localhost:5173`, not one `127.0.0.1`). Private windows do not share `BroadcastChannel` with normal ones. |
 | "version mismatch" in the lobby | One player has an old cached copy. Reload (twice if the service worker shows "update ready"). |
