@@ -146,7 +146,7 @@ maps (68: 13 flagships); tower skins (33 cosmetics); Index collection rewards; l
 store draft, daily live smoke test. Full e2e 27/28 then co-op 2/2 (VERIFICATION.md).
 
 **Still open, in order:**
-1. The 10 store screenshots (docs/STORE.md lists them; `node tools/screenshots.mjs`).
+1. Store screenshots: 9 drafts made by `node tools/store-shots.mjs` (software rendering); retake the final set on a real GPU and add a co-op shot.
 2. Full e2e + 30 min soak once more after the 8 new maps (soak covered the 60 older maps; the 8 new
    ones passed the generator's soak).
 3. Map decorations cosmetic; all UI strings in data files (only needed for translation).

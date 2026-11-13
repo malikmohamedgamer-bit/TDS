@@ -97,7 +97,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 
 ## Chunk 10: launch preparation (SHOULD)
 - [x] Credits, privacy and terms (Help tab), icons, meta tags, 404 page; credits audit (every pack folder and vendored library listed with its licence, 2026-11-14); docs/LEGAL-CHECKLIST.md. Open (owner): final name / trademark
-- [ ] README, store text (docs/STORE.md draft), feature list, itch.io zip script, CHANGELOG, daily live-URL smoke test (.github/workflows/smoke.yml) done. Open: the 10 store screenshots,
+- [ ] README, store text (docs/STORE.md draft), feature list, itch.io zip script, CHANGELOG, daily live-URL smoke test (.github/workflows/smoke.yml) done. Store screenshots: 9 drafts in docs/screenshots/store (`node tools/store-shots.mjs`, software rendering; retake on a real GPU and add a co-op shot). Open:
       version string, daily live-URL smoke test in CI, docs/LEGAL-CHECKLIST.md; no monetization by default
 
 ## Chunk 11: final verification and handover (MUST)

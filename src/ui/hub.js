@@ -341,7 +341,7 @@ export class Hub {
     const enemies = [...this.c.enemies.values()];
     const seenT = new Set([...Object.keys(this.save.towers.owned), ...this.save.index.towers]);
     const seenE = new Set(this.save.index.enemies);
-    const card = (kind, x, known) => `<div class="ix ${known ? '' : 'unknown'} ${kind === 't' ? `r-${x.rarity}` : ''}" data-testid="ix-${x.id}"><img alt="" data-thumb="${kind}:${x.id}:${known ? 0 : 1}"><b>${known ? esc(x.name) : '???'}</b><small class="ix-k">${known ? (kind === 't' ? `${rarityBadge(x.rarity)} ${icon(towerIcon(x))} ${esc(x.class)}` : `${icon(enemyIcon(x))} ${esc(x.archetype)}${x.boss ? ' · boss' : ''}`) : `${icon('lock')} Not discovered`}</small>${known ? `<p>${esc(x.description || '')}</p>` : ''}</div>`;
+    const card = (kind, x, known) => `<div class="ix ${known ? '' : 'unknown'} ${kind === 't' ? `r-${x.rarity}` : ''}" data-testid="ix-${x.id}"><img alt="" data-thumb="${kind}:${x.id}:${known ? 0 : 1}"><b>${known ? esc(x.name) : '???'}</b><small class="ix-k">${known ? (kind === 't' ? `${rarityBadge(x.rarity)} ${icon(towerIcon(x))} ${esc(x.class)}` : `${icon(enemyIcon(x))} ${esc(x.archetype)}${x.boss && x.archetype !== 'boss' ? ' · boss' : ''}`) : `${icon('lock')} Not discovered`}</small>${known ? `<p>${esc(x.description || '')}</p>` : ''}</div>`;
     const prog = (n, of) => `<div class="ix-progress"><div class="seg-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${of}" aria-valuenow="${n}"><span style="width:${(n / of) * 100}%"></span></div>${Math.round((n / of) * 100)}% discovered</div>`;
     const nt = towers.filter((t) => seenT.has(t.id)).length;
     const minions = enemies.filter((e) => !e.boss);
