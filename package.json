@@ -1,6 +1,6 @@
 {
   "name": "tds",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "private": true,
   "description": "TDS (working title): a 3D browser tower defense game with Magic and Modern War factions.",
   "type": "module",

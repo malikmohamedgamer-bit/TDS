@@ -54,23 +54,30 @@ give crowns, but do not set records, complete achievements or count for the dail
 ## Difficulty ladder (separate from presets)
 
 `data/difficulties.json`: Easy 0.67x, Normal 1x, Medium 1.5x, Hard 2.25x, Extra Hard 3.4x,
-Extreme 5.1x, Impossible 7.6x enemy health, multiplied with the preset.
+Extreme 5.1x, Impossible 11x enemy health (raised from 7.6x on 2026-11-14), multiplied with the
+preset. Bosses are the cliff (a final-boss leak loses the match), so a difficulty can soften bosses
+only with `bossHpMul`: Medium 0.72, Hard 0.85, Extra Hard 0.85.
 
-Bosses are the cliff (a final-boss leak loses the match), so a difficulty can soften bosses only
-with `bossHpMul`: Medium 0.72, Hard 0.85, Extra Hard 0.85. Bot (12 regular towers, Standard,
-Riftline) at each gate level:
+Measured with `node tools/ladder.mjs` (12 core towers, Standard, bot skill 0.7, 20 seeds, each
+difficulty at the permanent tower level a player has when it unlocks). Full rows in
+`docs/balance-ladder.json`.
 
-| Difficulty | Permanent tower level | Bot win rate |
-|---|---|---|
-| Normal | 1 | 7/12 (58%) this pass; 27/40 (68%) earlier |
-| Medium | 2 / 3 | 2/8 (25%) / 8/12 (67%) |
-| Hard | 6 | 7/12 (58%) |
-| Extra Hard | 9 | 6/8 (75%) |
-| Extreme | 12 | 4/6 (67%) |
-| Impossible | 15 (max) | 6/6 (100%) |
+| Difficulty (gate level) | Riftline | Frostmere | 6 more maps (Glacier Gate, Mirrormire, Russet Spiral, 3 generated) |
+|---|---|---|---|
+| Easy (L1) | 80% | 100% | |
+| Normal (L1) | 60% | 70% | all 60 maps calibrated to 50-80% (docs/balance-sweep.json) |
+| Medium (L3) | 65% | 100% | 0% (Russet Spiral) to 100%, mean 57% |
+| Hard (L6) | 65% | 70% | 5% (Russet Spiral) to 100%, mean 63% |
+| Extreme (L12) | 75% | 100% | 10% to 100%, mean 72% |
+| Impossible (L15) at 7.6x | 100% | 100% | 30% to 100%, mean 87%: too easy, hence the change |
+| Impossible (L15) at 11x | 20% | 95% | Mirrormire 100%, dunes_2 95%, Glacier Gate 50%, toxic_6 0%: mean of the six 60% |
 
-Frostmere is a little easier at the same gates (Medium L3 8/8, Hard L6 6/8). Medium is a knife
-edge around `bossHpMul` 0.65-0.8 (12/12 at 0.65, 1/8 at 0.8); change it in steps of 0.03.
+**Known limit:** maps are calibrated at Normal only. Above Normal the same multiplier lands very
+differently per map (layouts that pass the same towers several times scale differently from short
+roads), so one map can be 0% where another is 100%. Fixing that needs a per-map, per-difficulty
+factor measured with the bot: about 60 maps x 5 difficulties x 20 seeds (several hours of bot time).
+Win rate is steep at the top: Impossible went 82% (9.5x) → 71% (10.5x) → 60% (11x) → 30% (12x) on
+the six maps.
 
 ## Daily Challenge (data/modes.json, mode "daily")
 
@@ -101,3 +108,18 @@ with the 12 non-legendary towers, Standard, Normal, bot skill 0.7:
 
 Boss Rush has a sharp edge around 1950-2000 starting cash: the Titan Railgun costs 2000, so a
 player who owns it can open with it. Tune Boss Rush with `bonusPerWave`, not `startCash`.
+
+## Modes (bot, Riftline Normal, 12 core towers, 20 seeds, 2026-11-14)
+
+Boss Rush 45%, Time Attack 45%, Challenge 60%, Mutation 55%, War Chest 75%, Last Stand (tower level 5)
+85%, Endless: the bot falls on wave 20 on average. Skirmish won 100% with no pressure, so it got
+`tune: { enemyHp: 1.8, startCash: 0.85 }`: still 95-100% on five maps but the keep ends at 21-70 of
+its health instead of untouched (2.6x made gen_toxic_6 0%: too map-dependent for a short casual mode).
+
+## Economy and exploit check (2026-11-14)
+
+- Selling refunds 70% of what was spent (100% with the Full refund assist), never more: no buy / sell loop.
+- Rewards are granted once per match id, daily challenge once per date, quests once per claim id.
+- Sandbox pays nothing; assisted runs pay crowns and XP but never unlock difficulties or records.
+- Fixed: the Skip wave assist could skip every wave to a paid win (BUGS 65).
+- Commands with NaN / Infinity positions are refused (BUGS 66, 67; fuzz test).

@@ -7,7 +7,7 @@
     { "id": "daily", "name": "Daily Challenge", "desc": "Today's modifiers and a loaner loadout, the same for everyone. Reward once per day.", "daily": true, "map": "riftline", "allTowers": true, "score": "win", "dailyBudget": 3, "difficulty": "easy", "loanerLevel": 4, "loanerMaxRarity": "epic", "tune": { "enemyHp": 1.08 } },
     { "id": "time_attack", "name": "Time Attack", "desc": "Short wave timers: clear the campaign as fast as you can", "maxDuration": 32, "intermission": 1, "score": "time", "unlockLevel": 3, "tune": { "startCash": 1.3 } },
     { "id": "challenge", "name": "Challenge", "desc": "Pick your own modifiers for bigger rewards", "modifiers": true, "score": "win", "unlockLevel": 2 },
-    { "id": "skirmish", "name": "Skirmish", "desc": "A short match: the first 10 waves and the first boss. Half rewards.", "maxWaves": 10, "score": "win", "rewardMul": 0.5 },
+    { "id": "skirmish", "name": "Skirmish", "desc": "A short match: the first 10 waves and the first boss. Half rewards.", "maxWaves": 10, "score": "win", "rewardMul": 0.5, "tune": { "enemyHp": 1.8, "startCash": 0.85 } },
     { "id": "mutation", "name": "Mutation", "desc": "Every wave from the second mutates: swift, armoured, bloated or swarming. Check the banner and adapt.", "score": "win", "unlockLevel": 5, "rewardMul": 1.35, "mutationsFrom": 2,
       "mutations": [
         { "id": "swift", "name": "Swift", "desc": "This wave moves 28% faster", "speed": 1.28 },

@@ -3,7 +3,7 @@
 // bring late joiners in (docs/multiplayer.md, Contract 1).
 //
 // Object references become ids and are re-linked on restore:
-//   defs (towers, enemies, heroes, abilities) -> content ids     paths -> index in match.paths
+//   defs (towers, enemies, heroes, abilities) -> content ids     paths -> index in match.routes (roads, then air routes)
 //   enemy.burnSrc (a tower, maybe already sold) -> tower uid, sold towers as small "ghosts"
 // Everything derived from data (tower base stats, mine points, colliders) is rebuilt instead of
 // stored, so a snapshot stays small and cannot disagree with the content it is restored against.
@@ -26,7 +26,7 @@ const orInfinity = (v) => (v === null || v === undefined ? Infinity : v);
 
 /** Complete mutable state of match m as a JSON-serialisable object. */
 export function snapshotMatch(m) {
-  const pathIdx = (p) => m.paths.indexOf(p);
+  const pathIdx = (p) => m.routes.indexOf(p);
   const live = new Set(m.towers);
   // burn sources that were sold while the burn still ticks: keep what the burn still reads
   const ghosts = new Map();
@@ -130,7 +130,7 @@ export function restoreMatch(MatchClass, snap, { content, mapWorld }) {
   const byUid = new Map(m.towers.map((t) => [t.uid, t]));
   for (const g of s.ghosts) byUid.set(g.uid, { uid: g.uid, owner: g.owner, base: { bounty: g.bounty }, damage: g.damage, kills: g.kills, ghost: true });
   const path = (i) => {
-    const p = m.paths[i];
+    const p = m.routes[i];
     if (!p) throw new Error(`Snapshot path ${i} is not on map ${snap.map}`);
     return p;
   };

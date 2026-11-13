@@ -73,6 +73,10 @@ export class Match {
     this.levels = { ...(o.levels || {}) };
     this.progression = this.options.progression || this.content.progression?.towerLevels || DEFAULT_PROGRESSION;
     this.paths = this.map.paths.map((p) => new Path(p.id, p.points));
+    // air routes (optional, per map): fliers take these shortcuts over the terrain instead of the
+    // roads. this.paths stays roads only (traps, allies, coverage); snapshots index this.routes
+    this.airPaths = (this.map.airPaths || []).map((p) => new Path(p.id, p.points));
+    this.routes = [...this.paths, ...this.airPaths];
     this.pathWidth = Math.max(...this.map.paths.map((p) => p.width ?? 5));
 
     // players: static config here; per-player state (wallets, heroes, abilities, stats) below
@@ -561,16 +565,21 @@ export class Match {
     }
   }
 
-  spawnEnemy(id, { pathIdx = 0, d = 0, hpMul = 1, wave = this.wave, parent = null, leak } = {}) {
+  spawnEnemy(id, { pathIdx = 0, d = 0, hpMul = 1, wave = this.wave, parent = null, leak, from = null } = {}) {
     const def = this.content.enemies.get(id);
     if (!def) throw new Error(`Unknown enemy "${id}"`);
     if (!Number.isFinite(d)) throw new Error(`spawnEnemy: bad path distance ${d}`);
+    const list = def.flying && this.airPaths.length ? this.airPaths : this.paths;
+    const path = list[Math.max(0, pathIdx) % list.length];
+    // a child on the other kind of route (a walker split from a flier on an air route) starts at
+    // the same share of its own route
+    if (from && this.airPaths.includes(from) !== (list === this.airPaths)) d = (d / from.length) * path.length;
     // difficulty.bossHpMul softens boss scaling on a difficulty (bosses are the cliff: a leak loses)
     // wave mutations (Mutation mode) leave bosses alone except for speed and armour
     const mut = this.mutationFor(wave);
     const scale = this.enemyHpScale(Math.max(1, wave)) * hpMul * (def.boss ? this.tune.bossHp * (this.difficulty.bossHpMul ?? 1) : mut?.hp ?? 1);
     const e = {
-      id: this.nextId++, defId: id, def, path: this.paths[pathIdx % this.paths.length],
+      id: this.nextId++, defId: id, def, path,
       d, progress: d, x: 0, y: 0, z: 0, hp: def.hp * scale, maxHp: def.hp * scale,
       shield: (def.shield || 0) * scale, maxShield: (def.shield || 0) * scale,
       armor: Math.min(0.85, (def.armor || 0) + this.rules.armorAdd + (mut?.armor ?? 0)), flying: !!def.flying, stealth: !!def.stealth, alive: true,
@@ -587,6 +596,12 @@ export class Match {
     this.events.push({ type: 'spawn', id: e.id, enemy: id, boss: e.boss });
     if (e.boss) this.events.push({ type: 'bossSpawn', id: e.id, enemy: id, name: def.name });
     return e;
+  }
+
+  /** Where a child of e spawns: its index on e's kind of route, and e's route (distance scaling). */
+  _childRoute(e) {
+    const list = this.airPaths.includes(e.path) ? this.airPaths : this.paths;
+    return { pathIdx: Math.max(0, list.indexOf(e.path)), from: e.path };
   }
 
   _placeEnemy(e) {
@@ -698,7 +713,7 @@ export class Match {
         e.summonT -= dt;
         if (e.summonT <= 0) {
           e.summonT = def.summon.interval;
-          for (let i = 0; i < def.summon.count; i++) this.spawnEnemy(def.summon.into, { pathIdx: this.paths.indexOf(e.path), d: Math.max(0, e.d - 0.6 * (i + 1)), wave: e.wave, parent: e.id });
+          for (let i = 0; i < def.summon.count; i++) this.spawnEnemy(def.summon.into, { ...this._childRoute(e), d: Math.max(0, e.d - 0.6 * (i + 1)), wave: e.wave, parent: e.id });
           this.events.push({ type: 'summon', id: e.id, x: e.x, z: e.z });
         }
       }
@@ -1034,10 +1049,10 @@ export class Match {
     if (e.boss) this.stats.bossesKilled++;
     this.events.push({ type: 'death', id: e.id, enemy: e.defId, x: e.x, y: e.y, z: e.z, reward, boss: e.boss });
     if (e.def.split) {
-      for (let i = 0; i < e.def.split.count; i++) this.spawnEnemy(e.def.split.into, { pathIdx: this.paths.indexOf(e.path), d: Math.max(0, e.d - 0.5 * i), wave: e.wave, parent: e.id });
+      for (let i = 0; i < e.def.split.count; i++) this.spawnEnemy(e.def.split.into, { ...this._childRoute(e), d: Math.max(0, e.d - 0.5 * i), wave: e.wave, parent: e.id });
     }
     if (e.deathSpawn) {
-      for (let i = 0; i < e.deathSpawn.count; i++) this.spawnEnemy(e.deathSpawn.into, { pathIdx: this.paths.indexOf(e.path), d: Math.max(0, e.d - 0.6 * i), wave: e.wave, parent: e.id });
+      for (let i = 0; i < e.deathSpawn.count; i++) this.spawnEnemy(e.deathSpawn.into, { ...this._childRoute(e), d: Math.max(0, e.d - 0.6 * i), wave: e.wave, parent: e.id });
       this.events.push({ type: 'bossSplit', id: e.id, x: e.x, z: e.z, count: e.deathSpawn.count });
     }
   }
@@ -1053,7 +1068,7 @@ export class Match {
           this.telegraphs.push(tg);
           this.events.push({ type: 'telegraph', ...tg, delay: a.delay });
         } else if (a.type === 'summon') {
-          for (let i = 0; i < a.count; i++) this.spawnEnemy(a.into, { pathIdx: this.paths.indexOf(e.path), d: Math.max(0, e.d - 1 - i * 0.7), wave: e.wave, parent: e.id });
+          for (let i = 0; i < a.count; i++) this.spawnEnemy(a.into, { ...this._childRoute(e), d: Math.max(0, e.d - 1 - i * 0.7), wave: e.wave, parent: e.id });
         } else if (a.type === 'shield') {
           e.shield += e.maxHp * a.amount;
           e.maxShield = Math.max(e.maxShield, e.shield);
@@ -1070,7 +1085,6 @@ export class Match {
    */
   _bossAction(e, a) {
     const now = this.time;
-    const pathIdx = this.paths.indexOf(e.path);
     switch (a.type) {
       case 'teleport': { // blink forward along the road
         const x0 = e.x;
@@ -1124,9 +1138,13 @@ export class Match {
       }
       case 'portal': { // minions from the start of every other road (own road on one-road maps)
         // roads that start somewhere else (diamond lanes share one portal: that counts as its own)
-        const own = this.paths[pathIdx].pointAt(0);
-        const other = this.paths.map((_, i) => i).filter((i) => { const q = this.paths[i].pointAt(0); return i !== pathIdx && Math.hypot(q.x - own.x, q.z - own.z) > 1; });
-        const roads = other.length ? other : [pathIdx];
+        // (a boss on an air route counts the road that starts at its portal as its own)
+        const own = e.path.pointAt(0);
+        const startsAt = (i) => { const q = this.paths[i].pointAt(0); return Math.hypot(q.x - own.x, q.z - own.z); };
+        const idx = this.paths.map((_, i) => i);
+        const other = idx.filter((i) => startsAt(i) > 1);
+        const ownRoad = this.paths.indexOf(e.path);
+        const roads = other.length ? other : [ownRoad >= 0 ? ownRoad : idx.reduce((b, i) => (startsAt(i) < startsAt(b) ? i : b), 0)];
         for (const r of roads) {
           for (let i = 0; i < a.count; i++) this.spawnEnemy(a.into, { pathIdx: r, d: i * 0.8, wave: e.wave, parent: e.id });
           const p = this.paths[r].pointAt(0);

@@ -35,7 +35,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
 | Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
 | Music | 7 moods, 12 theme styles, one key per map; procedural |
-| Unit / server / E2E tests | 240 / 26 / 28 incl. two co-op e2e (same-browser and real relay) (see VERIFICATION.md) |
+| Unit / server / E2E tests | 245 / 26 / 28 incl. two co-op e2e (same-browser and real relay) (see VERIFICATION.md) |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 
@@ -136,6 +136,13 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   portal swirl shader in `src/engine/mapView.js` (`_buildPortalSwirls`); `map.scatterGap`.
 
 ## Next exact action
+
+**2026-11-14 run** (Opus 5.5): co-op start resync fixed (BUGS 64); chunk 3 ladder / modes / economy
+done (`tools/ladder.mjs`, docs/balance-ladder.json, TUNING.md; BUGS 65; Impossible 11x; Skirmish
+tuned); chunk 5 battle audio; chunk 6 tutorial v2 confirmed; chunk 8 fuzz tests (BUGS 66, 67) and
+per-unit error boundaries. Still open, in order: full e2e + 30 min soak (chunk 11), per-map
+difficulty factors above Normal (TUNING.md "Known limit"), air route template and 4 flagships,
+tower skins / map decorations, strings in data files, live Supabase + phone PWA test (owner).
 
 **FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in
 `docs/COMPLETION.md`). Session 2026-11-11 finished Chunk 2 and parts of 4, 5, 6, 7, 8. In order:

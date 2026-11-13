@@ -52,9 +52,9 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 
 ## Chunk 3: balance sweep (MUST)
 - [x] BUGS #44 heroes (30 seeds: 57-83%, was 75-100%). #37 and #46 were accepted earlier
-- [ ] 20 seeds per map done (mean 66%, all 56 maps in 50-80%, docs/balance-sweep.json). Open: modes and the difficulty ladder with 20 seeds, Relaxed + Original re-check
+- [x] 20 seeds per map (mean 66%, all in 50-80%, docs/balance-sweep.json); ladder, presets and modes with 20 seeds (`tools/ladder.mjs`, docs/balance-ladder.json, TUNING.md): Impossible 7.6x → 11x, Skirmish tuned. Known limit: above Normal the per-map spread is large (calibration is per map at Normal only)
 - [ ] New-player path, pacing (first win, first evolution, first summon rarity), no dead ends or exploits
-- [ ] Economy and sandbox exploit check; results in TUNING.md and VERIFICATION.md
+- [x] Economy and sandbox exploit check (TUNING.md): Skip wave assist farming fixed (BUGS 65)
 - [ ] Milestone: full e2e + 30 min soak
 
 ## Chunk 4: meta and cosmetics (SHOULD)
@@ -66,12 +66,12 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 
 ## Chunk 5: audio (SHOULD)
 - [x] Music style per theme (12), boss, final boss, victory and defeat pieces; volume dip on changes; Music volume. Not checked by ear
-- [ ] SFX per unit class and damage type, UI sounds, ducking, captions, mute, mix pass, reduced sound option
+- [x] SFX per damage type (impacts) and enemy class (deaths), UI clicks on every button, music ducking under big cues, captions, mute, Reduced sound option (2026-11-14). Mix not checked by ear
 
 ## Chunk 6: UI and tutorial (MUST)
 - [ ] Every screen in docs/ui-style.md finished (hub, pickers, loadout, shop, summon, Index, quests, settings,
       HUD, pause, results, credits, privacy, terms)
-- [ ] Tutorial v2 (< 5 min, skippable with confirm, replayable)
+- [x] Tutorial v2: 8 steps that complete when the player does them, device wording, glowing controls, skip needs a second tap, replay with the Tutorial box in the mission card
 - [ ] Searchable Help, battle report, tower stat tooltips and the first-run Easy default with a hint are done. Open: all strings in data files
 - [ ] Accessibility audit with fixes; screenshots at phone / tablet / desktop
 - [ ] Milestone: full e2e + 30 min soak
@@ -83,9 +83,9 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] PWA: manifest, code-made icons, service worker (offline, cache per build, update notice). Not yet tested on the live URL or a phone
 
 ## Chunk 8: QA and safety (MUST)
-- [ ] Full e2e, soak on every map, fuzz tests (inputs, settings)
+- [ ] Full e2e, soak on every map. Fuzz tests done (`test/unit/fuzz.test.js`: settings, 3000 hostile commands; found BUGS 66, 67)
 - [x] Save safety: corrupt / old / hand-edited saves (fuzz test), migrations, export / import UI (Help tab), backup copy. Open: huge saves
-- [ ] Memory leak check done (tools/leak-check.mjs; leak fixed, BUGS 62). Open: error boundaries per unit, client security review
+- [x] Memory leak check (tools/leak-check.mjs; BUGS 62), error boundary per enemy / tower visual (MatchView._guard), client security review (no injection paths; hostile co-op commands fuzzed)
 - [ ] Milestone: full e2e + 30 min soak
 
 ## Chunk 9: online (owner priority since 2026-11-12: "make sure multiplayer works")
@@ -127,3 +127,4 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 | 2026-11-12 | Chunk 7 + 8 | Perf budgets (docs/PERF.md), memory leak fixed (2,000 geometries per match), auto quality step-down, weak-device default. Unit 138 |
 | 2026-11-12 | Chunk 2 flagships + 6 UI | 4 hand-made flagships (crossings allowed on hand roads, cohort 3), calibrated 60-70%. Screenshot review at 3 sizes: phone status bar, boss bar, slot labels, Help tab, collapsed cosmetics fixed. Tutorial skip asks twice. Cosmetics 4 kinds |
 | 2026-11-12/13 | Chunk 9 co-op | Phase 1 by 3 parallel agents (sim co-op + snapshots, lockstep net layer, relay + Supabase), integration by hand after the weekly agent limit: lobby UI, controller, HUD, remote heroes; two-tab check found and fixed 7 integration bugs; co-op balance by bot. Unit 230, co-op e2e passes |
+| 2026-11-14 | Chunks 3, 5, 6, 8 | Co-op start resync fixed (BUGS 64); ladder / modes / economy check (BUGS 65, Impossible 11x, Skirmish); battle audio pass; per-unit error boundaries; fuzz tests (BUGS 66, 67) |

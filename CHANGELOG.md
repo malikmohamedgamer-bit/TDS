@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.13.0 - Balance, audio, hardening (2026-11-14)
+- **Co-op**: no more snapshot resync right after every start: a busy tab's late hello no longer
+  makes the host think 80+ turns were lost. Sessions keep a short event trace for bug reports.
+- **Economy**: the Skip wave assist could skip a whole match to a paid win (crowns and XP up to
+  x7.6): skipped waves now pay nothing.
+- **Balance**: Impossible enemy health 7.6x → 11x (it was won 87% of the time at max level by the
+  bot); Skirmish has 1.8x enemy health and 85% starting cash (it could not be lost). Ladder, presets
+  and modes measured with 20 seeds (`node tools/ladder.mjs`).
+- **Audio**: impact sounds per damage type (fire crackles, ice clinks, shields ring...), deaths per
+  enemy kind (armour clanks, fliers fall, ghosts fade, splitters splat), music dips under boss,
+  victory and wave horns, a click on every menu button, and a Reduced sound option.
+- **Robustness**: a unit whose visuals fail is hidden instead of freezing the match view; commands
+  with impossible positions are refused (one could crash a co-op match); hand-edited settings are
+  clamped to their ranges. New fuzz tests.
+
 ## 0.12.0 - Online co-op (2026-11-13)
 - **Co-op for 2-4 players** (Online tab): create a room (6-character code, invite link), join by code,
   ready up, the host picks the difficulty and starts. Each player has their own hero, abilities,

@@ -8,6 +8,6 @@
     {"id": "hard", "name": "Hard", "hpMul": 2.25, "bossHpMul": 0.85, "metaRewardMul": 2.25, "order": 4, "cashMul": 1.5},
     {"id": "extra_hard", "name": "Extra Hard", "hpMul": 3.4, "bossHpMul": 0.85, "metaRewardMul": 3.4, "order": 5, "cashMul": 1.84},
     {"id": "extreme", "name": "Extreme", "hpMul": 5.1, "metaRewardMul": 5.1, "order": 6, "cashMul": 2.26},
-    {"id": "impossible", "name": "Impossible", "hpMul": 7.6, "metaRewardMul": 7.6, "order": 7, "cashMul": 2.76}
+    {"id": "impossible", "name": "Impossible", "hpMul": 11, "metaRewardMul": 7.6, "order": 7, "cashMul": 2.76}
   ]
 }
