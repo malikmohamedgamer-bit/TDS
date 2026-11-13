@@ -11,7 +11,8 @@ Chromium with SwiftShader software WebGL: correct pixels, **not** real GPU perfo
 | Server tests | `cd server && npm test` | 26 / 26 (relay, real-relay integration) |
 | Co-op e2e | `npx playwright test test/e2e/coop.spec.js` | 2 / 2 (same-browser and real relay): recorded per-tick states identical in both tabs, rematch works, zero resyncs when the machine is not loaded |
 | Full e2e | `npm run test:e2e` | 27 / 28 (10.9 min): the co-op test saw one catch-up snapshot for the starved member tab while other jobs ran (states identical); the check now fails only on a desync snapshot or more than one resync, rerun 2 / 2 |
-| 30 minute soak | `npm run soak -- --minutes 30` | all 60 maps (before the 4 air maps): 0 rescues, 0 failures; the 4 air maps pass the generator's soak (0 rescues) |
+| Full e2e, after the 8 new maps and per-map difficulty factors | `npm run test:e2e` | **28 / 28** (11.4 min) |
+| 30 minute soak | `npm run soak -- --minutes 30` | **all 68 maps**: 30 simulated minutes each, 0 rescues, 0 failures |
 | Fuzz | `test/unit/fuzz.test.js` | 400 junk settings blobs, 3000 random / hostile commands: found and fixed BUGS 66 (NaN tower position) and 67 (ability at NaN crashed the sim) |
 | Error boundary | browser, a tower visual broken on purpose | logged once, hidden, the match kept running (180 ticks, all enemies drawn) |
 | Audio | browser, every new sound played once | 18 new sounds, no errors; ducking fires on boss and victory cues; Reduced sound thins repeats. Not heard by a person |
