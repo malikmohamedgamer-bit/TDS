@@ -139,8 +139,20 @@ export function validateContent(c) {
   return errs;
 }
 
+// The built site ships every data file in one data/bundle.json (tools/build-site.mjs): one
+// request instead of about 170. Without it (dev server) each file is fetched on its own.
+const bundles = new Map();
+function dataBundle(base) {
+  if (!bundles.has(base)) {
+    bundles.set(base, fetch(`${base}bundle.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null));
+  }
+  return bundles.get(base);
+}
+
 export function browserReadJson(base = 'data/') {
   return async (path) => {
+    const bundle = await dataBundle(base);
+    if (bundle && Object.hasOwn(bundle, path)) return structuredClone(bundle[path]);
     const res = await fetch(base + path);
     if (!res.ok) throw new Error(`Failed to load ${base + path}: ${res.status}`);
     return res.json();

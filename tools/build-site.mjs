@@ -18,6 +18,17 @@ for (const e of ENTRIES) {
 }
 writeFileSync(join(out, '.nojekyll'), '');
 
+// every data file in one request (src/core/content.js browserReadJson reads it first)
+const dataDir = join(out, 'data');
+const bundle = {};
+for (const d of readdirSync(dataDir, { recursive: true, withFileTypes: true })) {
+  if (!d.isFile() || !d.name.endsWith('.json')) continue;
+  const rel = join(d.parentPath, d.name).slice(dataDir.length + 1).replaceAll('\\', '/');
+  bundle[rel] = JSON.parse(readFileSync(join(dataDir, rel), 'utf8'));
+}
+writeFileSync(join(dataDir, 'bundle.json'), JSON.stringify(bundle));
+console.log(`data bundle: ${Object.keys(bundle).length} files`);
+
 // Service worker: list every file (offline play) and stamp a build id made from their contents,
 // so a deploy with any changed file gets a fresh cache and an unchanged one keeps the old.
 const files = readdirSync(out, { recursive: true, withFileTypes: true })
