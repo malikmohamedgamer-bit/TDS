@@ -114,6 +114,14 @@ export function validateContent(c) {
   for (const m of c.maps.values()) {
     if (m.waves && !c.waves.has(m.waves)) errs.push(`map ${m.id}: unknown wave set "${m.waves}"`);
     for (const p of m.props || []) if (!c.props.has(p.kind)) errs.push(`map ${m.id}: unknown prop "${p.kind}"`);
+    // an air route starts where a road starts (a portal) and ends where a road ends (the keep)
+    const ends = (m.paths || []).map((p) => [p.points[0], p.points[p.points.length - 1]]);
+    const near = (q, r) => Math.hypot(q[0] - r[0], q[1] - r[1]) < 6;
+    for (const a of m.airPaths || []) {
+      const pts = a.points || [];
+      if (pts.length < 2 || !pts.every((q) => Array.isArray(q) && Number.isFinite(q[0]) && Number.isFinite(q[1]))) errs.push(`map ${m.id}: air route ${a.id} needs 2+ [x, z] points`);
+      else if (!ends.some(([s0]) => near(pts[0], s0)) || !ends.some(([, e0]) => near(pts[pts.length - 1], e0))) errs.push(`map ${m.id}: air route ${a.id} must run from a portal to the keep`);
+    }
   }
   for (const h of c.heroes.values()) {
     for (const a of h.abilities || []) if (!c.abilities.has(a)) errs.push(`hero ${h.id}: unknown ability "${a}"`);

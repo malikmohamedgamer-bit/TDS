@@ -227,7 +227,7 @@ export class Hub {
       <h3>Mission</h3>
       <div class="mp-big">${mapPreviewSvg(map, { w: 240, h: 150 })}</div>
       <div class="m-name">${esc(map.name)}</div>
-      <div class="m-line">${icon('map')} ${esc(themeLabel(mapTheme(map)))} · ${map.paths.length} road${map.paths.length > 1 ? 's' : ''}</div>
+      <div class="m-line">${icon('map')} ${esc(themeLabel(mapTheme(map)))} · ${map.paths.length} road${map.paths.length > 1 ? 's' : ''}${map.airPaths?.length ? ` · ${icon('air')} air route` : ''}</div>
       <div class="m-line">${icon('hero')} ${esc(hero?.name || '')}</div>
       <div class="m-line">${icon('skull')} ${esc(mode.name || 'Campaign')} · ${esc(diff?.name || '')}</div>
       <div class="m-slots" aria-label="Loadout ${this.cfg.loadout.length} of 6">${slots.join('')}</div>

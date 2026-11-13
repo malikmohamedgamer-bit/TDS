@@ -1154,6 +1154,50 @@
       "hpMul": 1.6,
       "feature": 2,
       "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.351 -> 95%, hand-set hpMul 1.52 -> 85%, hand-set hpMul 1.6 -> 55%"
+    },
+    {
+      "id": "gen_air_1",
+      "template": "serpentine",
+      "theme": "verdant",
+      "seed": "air1s",
+      "unlockLevel": 14,
+      "air": true,
+      "feature": 4,
+      "hpMul": 1.18,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 92%, hpMul 0.97 -> 75%, 20 seeds: hpMul 1 -> 80%, hand-set hpMul 1.08 -> 90%, hand-set hpMul 1.18 -> 60%, hand-set hpMul 1.28 -> 50%"
+    },
+    {
+      "id": "gen_air_2",
+      "template": "fork",
+      "theme": "frost",
+      "seed": "air2f",
+      "unlockLevel": 22,
+      "air": true,
+      "feature": 4,
+      "hpMul": 1.133,
+      "calibration": "hpMul 1 -> 92%, hpMul 1.133 -> 67%, 20 seeds: hpMul 1.133 -> 70%"
+    },
+    {
+      "id": "gen_air_3",
+      "template": "trident",
+      "theme": "ember",
+      "seed": "air3t",
+      "unlockLevel": 30,
+      "air": true,
+      "feature": 4,
+      "hpMul": 1.05,
+      "calibration": "hpMul 1 -> 75%, hpMul 1.05 -> 75%, hpMul 1.208 -> 8%, 20 seeds: hpMul 1.05 -> 65%"
+    },
+    {
+      "id": "gen_air_4",
+      "template": "crossover",
+      "theme": "void",
+      "seed": "air4c",
+      "unlockLevel": 38,
+      "air": true,
+      "feature": 4,
+      "hpMul": 1.4,
+      "calibration": "hpMul 1 -> 100%, hpMul 1.175 -> 100%, hpMul 1.351 -> 75%, 20 seeds: hpMul 1.351 -> 75%, hand-set hpMul 1.4 -> 65%"
     }
   ]
 }

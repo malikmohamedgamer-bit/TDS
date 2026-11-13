@@ -46,9 +46,10 @@ function nameFor(theme, seed, used) {
 // so each cohort covers the whole pool and adding a new cohort never changes an existing map's waves
 // (their balance was measured on those waves). Bosses use the index over all featured maps, which
 // only grows at the end.
-// flagships come after the batch here, so featuring a flagship never shifts a batch map's bosses
-const FEATURED = [...spec.batch, ...spec.flagships].filter((e) => e.feature);
 const cohortOf = (e) => (e.feature === true ? 1 : e.feature);
+// ordered by cohort (stable): a later cohort, even in the batch list, never shifts the bosses of
+// an earlier one (cohort 3 is the flagships, cohort 4+ come after them)
+const FEATURED = [...spec.batch, ...spec.flagships].filter((e) => e.feature).sort((a, b) => cohortOf(a) - cohortOf(b));
 const byHp = (a, b) => a.hp - b.hp || (a.id < b.id ? -1 : 1);
 const KIT_ENEMIES = [...content.enemies.values()].filter((e) => !e.boss && !e.summonOnly && e.generated?.batch?.startsWith('mechanics_')).sort(byHp);
 const KIT_BOSSES = [...content.enemies.values()].filter((e) => e.boss && e.model?.kit).sort(byHp);
@@ -77,7 +78,7 @@ function build(entry, usedNames) {
   return generateMap({
     id: entry.id, name: entry.name || nameFor(entry.theme, entry.seed, usedNames), seed: entry.seed, template: entry.template,
     roads, theme, unlockLevel: entry.unlockLevel, description: entry.description, baseWaves: base, enemies: content.enemies, hpMul: entry.hpMul ?? 1,
-    swaps: entry.swaps, boss: entry.boss, timeOfDay: entry.timeOfDay, ...featureFor(entry),
+    swaps: entry.swaps, boss: entry.boss, timeOfDay: entry.timeOfDay, airRoutes: !!entry.air, ...featureFor(entry),
   });
 }
 
@@ -174,6 +175,8 @@ if (args.includes('--calibrate')) {
       continue;
     }
     pts = [];
+    // a new map has no hpMul yet: start from 1 (undefined made every step NaN)
+    if (!Number.isFinite(entry.hpMul)) entry.hpMul = 1;
     const apply = async (hp) => { entry.hpMul = +hp.toFixed(3); writeFileSync(BATCH, `${JSON.stringify(spec, null, 2)}
 `); maps = writeAll(); await reload(); };
     for (let attempt = 0; attempt < 3; attempt++) {

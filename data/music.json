@@ -282,6 +282,22 @@
     "void_convergence": {
       "root": 49,
       "scale": "lydian"
+    },
+    "gen_air_1": {
+      "root": 52,
+      "scale": "dorian"
+    },
+    "gen_air_2": {
+      "root": 45,
+      "scale": "aeolian"
+    },
+    "gen_air_3": {
+      "root": 47,
+      "scale": "phrygian"
+    },
+    "gen_air_4": {
+      "root": 49,
+      "scale": "lydian"
     }
   },
   "moods": {

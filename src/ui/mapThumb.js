@@ -55,6 +55,7 @@ export function mapPreviewSvg(map, { w = 160, h = 100, locked = false } = {}) {
   const rim = g.rim || ['#6E6E7A', '#8D8D99'];
   const id = `mp-${map.id}`;
   const roads = (map.paths || []).map((p) => (p.points || []).map((q) => (Array.isArray(q) ? q : [q.x, q.z])));
+  const air = (map.airPaths || []).map((p) => (p.points || []).map((q) => (Array.isArray(q) ? q : [q.x, q.z])));
   const line = (pts) => pts.map(([x, z], i) => `${i ? 'L' : 'M'}${X(x)} ${Z(z)}`).join('');
   // a few deterministic speckles from the map seed so maps of one theme still look different
   let hsh = 0;
@@ -74,5 +75,6 @@ export function mapPreviewSvg(map, { w = 160, h = 100, locked = false } = {}) {
 <defs><linearGradient id="${id}-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${grass[2] || grass[0]}"/><stop offset="1" stop-color="${grass[3] || grass[1] || grass[0]}"/></linearGradient></defs>
 <rect width="${w}" height="${h}" fill="${rim[0]}"/><rect x="4" y="4" width="${w - 8}" height="${h - 8}" fill="url(#${id}-g)" stroke="${rim[1] || rim[0]}" stroke-width="1.5"/>${dots.join('')}
 ${roads.map((p) => `<path d="${line(p)}" fill="none" stroke="${path[3] || path[1]}" stroke-width="${r1(Math.max(5, 7.5 * s * 1.6))}" stroke-linejoin="round" stroke-linecap="round"/><path d="${line(p)}" fill="none" stroke="${path[0]}" stroke-width="${r1(Math.max(3.4, 5.2 * s * 1.6))}" stroke-linejoin="round" stroke-linecap="round"/><path d="${line(p)}" fill="none" stroke="${path[2] || path[0]}" stroke-width="0.8" stroke-dasharray="2 3" stroke-linecap="round"/>`).join('')}
+${air.map((p) => `<path d="${line(p)}" fill="none" stroke="#0b2530" stroke-width="2.6" stroke-dasharray="5 4" stroke-linecap="round" opacity="0.5"/><path d="${line(p)}" fill="none" stroke="#7ff5e0" stroke-width="1.4" stroke-dasharray="5 4" stroke-linecap="round"/>`).join('')}
 ${portals}${base}${lockLayer}</svg>`;
 }

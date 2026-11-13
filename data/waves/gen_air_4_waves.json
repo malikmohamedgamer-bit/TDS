@@ -1,0 +1,467 @@
+{
+ "$doc": "Generated from riftline_campaign by src/core/mapGen.js (theme void, 1 road).",
+ "id": "gen_air_4_waves",
+ "name": "Riftline Campaign",
+ "startCash": 650,
+ "baseHp": 150,
+ "hpScalePerWave": 0.07,
+ "intermission": 6,
+ "firstWaveDelay": 12,
+ "maxDuration": 75,
+ "bonusBase": 100,
+ "bonusPerWave": 20,
+ "waves": [
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 6,
+     "interval": 1.4,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_009",
+     "count": 15,
+     "interval": 0.59,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "skeleton_base",
+     "count": 3,
+     "interval": 1,
+     "delay": 8,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_009",
+     "count": 19,
+     "interval": 0.47,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "skitter",
+     "count": 5,
+     "interval": 0.8,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "husk",
+     "count": 8,
+     "interval": 1,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "ironshell",
+     "count": 2,
+     "interval": 3,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mite",
+     "count": 20,
+     "interval": 0.35,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_009",
+     "count": 15,
+     "interval": 0.48,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "ufo_b_base",
+     "count": 5,
+     "interval": 1.5,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "husk",
+     "count": 10,
+     "interval": 0.8,
+     "delay": 3,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_136",
+     "count": 2,
+     "interval": 3.2,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_074",
+     "count": 3,
+     "interval": 1.6,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "ironshell",
+     "count": 5,
+     "interval": 2.5,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mender",
+     "count": 2,
+     "interval": 4,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "husk",
+     "count": 10,
+     "interval": 0.8,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_125",
+     "count": 4,
+     "interval": 3,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "gloomwing",
+     "count": 6,
+     "interval": 1.2,
+     "delay": 8,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "boss": true,
+   "groups": [
+    {
+     "enemy": "boss_mech_58",
+     "count": 1,
+     "hpMul": 0.489,
+     "leak": 60,
+     "path": 0
+    },
+    {
+     "enemy": "zombie_base",
+     "count": 12,
+     "interval": 1.2,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_096",
+     "count": 3,
+     "interval": 4,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_074",
+     "count": 4,
+     "interval": 1.25,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mossback",
+     "count": 3,
+     "interval": 4,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_009",
+     "count": 30,
+     "interval": 0.32,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_117",
+     "count": 2,
+     "interval": 6,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "shade",
+     "count": 6,
+     "interval": 1.2,
+     "delay": 3,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_124",
+     "count": 2,
+     "interval": 3,
+     "delay": 10,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_079",
+     "count": 9,
+     "interval": 1.6,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "bulwark",
+     "count": 4,
+     "interval": 2.5,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mender",
+     "count": 3,
+     "interval": 4,
+     "delay": 3,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mite",
+     "count": 40,
+     "interval": 0.2,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_125",
+     "count": 5,
+     "interval": 2.4,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_136",
+     "count": 4,
+     "interval": 2.5,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mossback",
+     "count": 4,
+     "interval": 4,
+     "delay": 4,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "gloomwing",
+     "count": 14,
+     "interval": 0.8,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "vampire_base",
+     "count": 6,
+     "interval": 2,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "mech_117",
+     "count": 4,
+     "interval": 5,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "ironshell",
+     "count": 10,
+     "interval": 1.5,
+     "delay": 2,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mender",
+     "count": 4,
+     "interval": 3,
+     "delay": 6,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "groups": [
+    {
+     "enemy": "zombie_base",
+     "count": 20,
+     "interval": 0.4,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "skeleton_base",
+     "count": 15,
+     "interval": 0.5,
+     "delay": 3,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mech_079",
+     "count": 7,
+     "interval": 1.71,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "vampire_base",
+     "count": 6,
+     "interval": 2,
+     "delay": 8,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "mossback",
+     "count": 4,
+     "interval": 3,
+     "delay": 10,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "shade",
+     "count": 8,
+     "interval": 1,
+     "delay": 12,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "ufo_b_base",
+     "count": 10,
+     "interval": 0.8,
+     "delay": 14,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  },
+  {
+   "boss": true,
+   "groups": [
+    {
+     "enemy": "boss_mech_64",
+     "count": 1,
+     "path": 0,
+     "hpMul": 1.203
+    },
+    {
+     "enemy": "mech_096",
+     "count": 3,
+     "interval": 4,
+     "delay": 5,
+     "path": 0,
+     "hpMul": 1.4
+    },
+    {
+     "enemy": "keeper_base",
+     "count": 2,
+     "interval": 5,
+     "delay": 8,
+     "path": 0,
+     "hpMul": 1.4
+    }
+   ]
+  }
+ ]
+}

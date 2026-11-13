@@ -44,6 +44,7 @@ test('map previews: valid SVG with one road per path, portals, keep and a lock l
     assert.ok(!svg.includes('NaN') && !svg.includes('undefined'), `${m.id} has no NaN / undefined`);
     assert.equal((svg.match(/stroke-dasharray="2 3"/g) || []).length, m.paths.length, `${m.id} draws every road`);
     assert.equal((svg.match(/stroke="#ff3cac"/g) || []).length, m.paths.length, `${m.id} has a portal per road`);
+    assert.equal((svg.match(/stroke="#7ff5e0"/g) || []).length, (m.airPaths || []).length, `${m.id} draws every air route`);
     assert.ok(!svg.includes('opacity="0.55"'));
     assert.ok(mapPreviewSvg(m, { locked: true }).includes('opacity="0.55"'));
   }

@@ -60,6 +60,11 @@
      "q": "How do bosses work?",
      "a": "Bosses arrive on boss waves and change behaviour as they lose health: shields, summons, dashes, cloaks, stuns on your towers and more. A ring on the ground warns before a big attack. A boss that reaches the keep usually ends the match.",
      "tags": "boss phases telegraph ring shield summon"
+    },
+    {
+     "q": "What is the glowing line in the sky?",
+     "a": "An air route. On some maps flying enemies ignore the road and take this shortcut straight to the keep, so they arrive much sooner than the walkers. Cover it with towers that can hit air (the tower panel shows Hits air: Yes). The map preview draws it as a dashed light-blue line.",
+     "tags": "air route flying fliers shortcut sky chevron"
     }
    ]
   },

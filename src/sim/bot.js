@@ -45,6 +45,8 @@ export function createBot(match, { loadout, maxTowers = 30, thinkEvery = 0.5, he
   // which is right: more enemies walk them)
   const samples = [];
   for (const path of m.paths) for (let d = 0; d < path.length; d += 2) samples.push(path.pointAt(d, {}));
+  // air routes (maps that have them): fliers pass there, so covering them counts too
+  for (const path of m.airPaths || []) for (let d = 0; d < path.length; d += 2) samples.push(path.pointAt(d, {}));
   // candidate spots on a grid, scored by path coverage per range
   const spots = [];
   const b = m.mw.world.bounds;

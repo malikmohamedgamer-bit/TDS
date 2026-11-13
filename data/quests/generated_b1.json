@@ -513,6 +513,16 @@
    }
   },
   {
+   "id": "s_map_gen_air_1",
+   "name": "Liberate Willow Hollow",
+   "desc": "Win a Campaign match on Willow Hollow",
+   "mapWon": "gen_air_1",
+   "reward": {
+    "sigils": 200,
+    "crowns": 500
+   }
+  },
+  {
    "id": "s_map_gen_dunes_4",
    "name": "Liberate Sandstone Road",
    "desc": "Win a Campaign match on Sandstone Road",
@@ -643,6 +653,16 @@
    }
   },
   {
+   "id": "s_map_gen_air_2",
+   "name": "Liberate Winter Gate",
+   "desc": "Win a Campaign match on Winter Gate",
+   "mapWon": "gen_air_2",
+   "reward": {
+    "sigils": 280,
+    "crowns": 700
+   }
+  },
+  {
    "id": "s_map_gen_verdant_6",
    "name": "Liberate Russet Thicket",
    "desc": "Win a Campaign match on Russet Thicket",
@@ -763,6 +783,16 @@
    }
   },
   {
+   "id": "s_map_gen_air_3",
+   "name": "Liberate Ashen Flats",
+   "desc": "Win a Campaign match on Ashen Flats",
+   "mapWon": "gen_air_3",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
    "id": "s_map_gen_ember_7",
    "name": "Liberate Obsidian Vents",
    "desc": "Win a Campaign match on Obsidian Vents",
@@ -847,6 +877,16 @@
    "name": "Liberate Willow Crossing",
    "desc": "Win a Campaign match on Willow Crossing",
    "mapWon": "gen_verdant_9",
+   "reward": {
+    "sigils": 360,
+    "crowns": 900
+   }
+  },
+  {
+   "id": "s_map_gen_air_4",
+   "name": "Liberate Null Rift",
+   "desc": "Win a Campaign match on Null Rift",
+   "mapWon": "gen_air_4",
    "reward": {
     "sigils": 360,
     "crowns": 900
@@ -1995,10 +2035,10 @@
    }
   },
   {
-   "id": "a_maps_60",
+   "id": "a_maps_64",
    "name": "The whole valley",
-   "desc": "Liberate 60 maps (Campaign wins)",
-   "mapsWon": 60,
+   "desc": "Liberate 64 maps (Campaign wins)",
+   "mapsWon": 64,
    "reward": {
     "sigils": 790,
     "crowns": 2500

@@ -1,0 +1,453 @@
+{
+ "id": "gen_air_1",
+ "name": "Willow Hollow",
+ "description": "Green valley: 1 road. Fliers take the glowing air route straight to the keep.",
+ "seed": "air1s",
+ "scatterGap": 1.3,
+ "waves": "gen_air_1_waves",
+ "unlockLevel": 14,
+ "theme": "verdant",
+ "generated": {
+  "template": "serpentine",
+  "seed": "air1s",
+  "theme": "verdant",
+  "air": true
+ },
+ "size": {
+  "w": 110,
+  "d": 80
+ },
+ "sky": {
+  "top": "#7FB8F5",
+  "horizon": "#E3F1FF",
+  "fog": "#CFE6FA",
+  "fogNear": 70,
+  "fogFar": 190
+ },
+ "sun": {
+  "azimuth": 215,
+  "elevation": 52,
+  "color": "#FFF1D6",
+  "intensity": 2.6
+ },
+ "ground": {
+  "grass": [
+   "#6BAA4A",
+   "#5A9440",
+   "#7DBE58",
+   "#4B7F36"
+  ],
+  "path": [
+   "#C49A6C",
+   "#A97D52",
+   "#D8B184",
+   "#8C6440"
+  ],
+  "rim": [
+   "#7A8A55",
+   "#6E6E7A"
+  ]
+ },
+ "terrain": {
+  "baseHeight": 0,
+  "pathBlend": 3,
+  "rim": {
+   "height": 7,
+   "width": 8
+  },
+  "flats": [
+   {
+    "x": 50.5,
+    "z": 9,
+    "r": 8,
+    "height": 0,
+    "blend": 5
+   },
+   {
+    "x": -51.5,
+    "z": 1,
+    "r": 5.5,
+    "height": 0,
+    "blend": 4
+   }
+  ],
+  "hills": [
+   {
+    "x": 34.5,
+    "z": -25.5,
+    "r": 7.5,
+    "h": 1.9
+   },
+   {
+    "x": 36,
+    "z": -32,
+    "r": 8.5,
+    "h": 1.9
+   },
+   {
+    "x": 29.5,
+    "z": -19,
+    "r": 9.5,
+    "h": 2.9
+   },
+   {
+    "x": 28.5,
+    "z": -25.5,
+    "r": 9.5,
+    "h": 2.8
+   },
+   {
+    "x": 45.5,
+    "z": 28.5,
+    "r": 6.5,
+    "h": 2.3
+   },
+   {
+    "x": -34.5,
+    "z": 16,
+    "r": 7,
+    "h": 1.7
+   },
+   {
+    "x": -37.5,
+    "z": 17,
+    "r": 8.5,
+    "h": 2.6
+   }
+  ]
+ },
+ "paths": [
+  {
+   "id": "main",
+   "width": 5,
+   "points": [
+    [
+     -57,
+     1
+    ],
+    [
+     -38,
+     1
+    ],
+    [
+     -38,
+     -27
+    ],
+    [
+     -20,
+     -27
+    ],
+    [
+     -20,
+     26
+    ],
+    [
+     -4.5,
+     26
+    ],
+    [
+     -4.5,
+     -29.5
+    ],
+    [
+     12,
+     -29.5
+    ],
+    [
+     12,
+     27
+    ],
+    [
+     30,
+     27
+    ],
+    [
+     30,
+     9
+    ],
+    [
+     45,
+     9
+    ]
+   ]
+  }
+ ],
+ "airPaths": [
+  {
+   "id": "air1",
+   "points": [
+    [
+     -57,
+     1
+    ],
+    [
+     -46,
+     -1
+    ],
+    [
+     -35.5,
+     -2
+    ],
+    [
+     -24.5,
+     -3
+    ],
+    [
+     -14.5,
+     -3
+    ],
+    [
+     -4,
+     -2.5
+    ],
+    [
+     6,
+     -1.5
+    ],
+    [
+     16,
+     0.5
+    ],
+    [
+     26,
+     2.5
+    ],
+    [
+     35.5,
+     5.5
+    ],
+    [
+     45,
+     9
+    ]
+   ]
+  }
+ ],
+ "base": {
+  "x": 50,
+  "z": 9
+ },
+ "playerSpawn": {
+  "x": 36,
+  "z": -16.5,
+  "yaw": 1.5708
+ },
+ "props": [
+  {
+   "kind": "enemy_portal",
+   "x": -51.5,
+   "z": 1,
+   "rot": 0
+  },
+  {
+   "kind": "base_keep",
+   "x": 50.5,
+   "z": 9,
+   "rot": 0
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 2,
+   "z": -16.5,
+   "rot": 6.23
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 35.5,
+   "z": 32.5,
+   "rot": 5.46
+  },
+  {
+   "kind": "ruin_pillar",
+   "x": 18,
+   "z": -22.5,
+   "rot": 5.19
+  },
+  {
+   "kind": "runestone",
+   "x": -32.5,
+   "z": 30,
+   "rot": 3.3
+  },
+  {
+   "kind": "runestone",
+   "x": 30,
+   "z": -27.5,
+   "rot": 2.36
+  },
+  {
+   "kind": "runestone",
+   "x": 1.5,
+   "z": 21.5,
+   "rot": 1.44
+  },
+  {
+   "kind": "fence_wood",
+   "x": -29,
+   "z": 5,
+   "rot": 2.83
+  },
+  {
+   "kind": "fence_wood",
+   "x": 41.5,
+   "z": 24,
+   "rot": 4.8
+  },
+  {
+   "kind": "fence_wood",
+   "x": -16,
+   "z": 33,
+   "rot": 0.02
+  },
+  {
+   "kind": "tent",
+   "x": 22,
+   "z": -7,
+   "rot": 1.03
+  },
+  {
+   "kind": "tent",
+   "x": -28,
+   "z": 25.5,
+   "rot": 3.86
+  },
+  {
+   "kind": "crate_stack",
+   "x": 37.5,
+   "z": -2.5,
+   "rot": 4.48
+  },
+  {
+   "kind": "barrel",
+   "x": 25.5,
+   "z": -11.5,
+   "rot": 4.48
+  },
+  {
+   "kind": "barrel",
+   "x": -13,
+   "z": -5,
+   "rot": 3.46
+  },
+  {
+   "kind": "barrel",
+   "x": 23.5,
+   "z": 17,
+   "rot": 4.12
+  },
+  {
+   "kind": "lamp_post",
+   "x": 8,
+   "z": -26,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -8,
+   "z": 20,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": -16,
+   "z": 13.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 26.5,
+   "z": 12,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 33.5,
+   "z": 18,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 7.5,
+   "z": -0.5,
+   "rot": 0
+  },
+  {
+   "kind": "lamp_post",
+   "x": 38,
+   "z": 4.5,
+   "rot": 0
+  }
+ ],
+ "scatter": [
+  {
+   "kind": "tree_round",
+   "count": 44,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 11,
+   "minPathDist": 5,
+   "spacing": 3,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "tree_pine",
+   "count": 26,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "edgeBand": 12,
+   "minPathDist": 5,
+   "spacing": 2.8,
+   "scale": [
+    0.8,
+    1.3
+   ]
+  },
+  {
+   "kind": "bush",
+   "count": 34,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4,
+   "spacing": 2
+  },
+  {
+   "kind": "rock",
+   "count": 14,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 4.5,
+   "spacing": 4
+  },
+  {
+   "kind": "rock_small",
+   "count": 24,
+   "area": [
+    -55,
+    -40,
+    55,
+    40
+   ],
+   "minPathDist": 3.6,
+   "spacing": 2
+  }
+ ]
+}

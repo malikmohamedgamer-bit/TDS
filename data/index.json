@@ -101,7 +101,11 @@
     "waves/russet_spiral_waves.json",
     "waves/crimson_crossing_waves.json",
     "waves/redrock_switchbacks_waves.json",
-    "waves/void_convergence_waves.json"
+    "waves/void_convergence_waves.json",
+    "waves/gen_air_1_waves.json",
+    "waves/gen_air_2_waves.json",
+    "waves/gen_air_3_waves.json",
+    "waves/gen_air_4_waves.json"
   ],
   "maps": [
     "maps/riftline.json",
@@ -163,6 +167,10 @@
     "maps/russet_spiral.json",
     "maps/crimson_crossing.json",
     "maps/redrock_switchbacks.json",
-    "maps/void_convergence.json"
+    "maps/void_convergence.json",
+    "maps/gen_air_1.json",
+    "maps/gen_air_2.json",
+    "maps/gen_air_3.json",
+    "maps/gen_air_4.json"
   ]
 }

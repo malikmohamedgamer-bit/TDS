@@ -97,6 +97,7 @@ export class MapView {
     this._buildProps();
     this._buildGrass(map, terrain);
     this._buildPathStones(map, terrain);
+    this._buildAirRoutes(map, terrain);
     this._buildClouds(map);
     this._buildMountains(map);
     this._buildPortalSwirls(terrain);
@@ -325,6 +326,34 @@ export class MapView {
       }
     }
     this._addInstanced(geo, sharedMaterials().body, list, false, 'path-stones');
+  }
+
+  /** Air routes: small glowing chevrons at the height fliers cruise, pointing toward the keep. */
+  _buildAirRoutes(map, terrain) {
+    if (!map.airPaths?.length) return;
+    const b = new ModelBuilder();
+    // a flat V (tip toward +z after the rotation), lit by bloom
+    b.extrude([[0, -0.55], [0.6, 0.2], [0.36, 0.34], [0, -0.12], [-0.36, 0.34], [-0.6, 0.2]], 0.08, '#7FF5E0', { glow: true, intensity: 1.6, rot: [-Math.PI / 2, 0, 0] });
+    const geo = b.build().glow;
+    const list = [];
+    for (const p of map.airPaths) {
+      const pts = p.points.map((q) => (Array.isArray(q) ? { x: q[0], z: q[1] } : q));
+      let carry = 2;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i];
+        const c = pts[i + 1];
+        const len = Math.hypot(c.x - a.x, c.z - a.z);
+        if (!len) continue;
+        const rot = Math.atan2(c.x - a.x, c.z - a.z);
+        for (let s = carry; s < len; s += 4.5) {
+          const x = a.x + ((c.x - a.x) * s) / len;
+          const z = a.z + ((c.z - a.z) * s) / len;
+          list.push({ x, y: terrain.height(x, z) + 3.4, z, rot, scale: 1.5 });
+        }
+        carry = Math.max(0, ((carry - len) % 4.5 + 4.5) % 4.5);
+      }
+    }
+    this._addInstanced(geo, sharedMaterials().glow, list, false, 'air-routes');
   }
 
   _buildClouds(map) {

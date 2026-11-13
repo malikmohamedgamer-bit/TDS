@@ -234,6 +234,36 @@ function roadDist(paths, x, z) {
  * opts: {id, name, seed, template, roads?, theme (tools/map-themes.json entry), unlockLevel, baseWaves
  *        (an existing wave set to vary), enemies (Map id -> def, for themed swaps), hpMul, description}
  */
+/**
+ * Air routes: one per portal, a gentle curve from where its roads start to where they end (the
+ * keep), so fliers cut across the bends the walkers follow. Deterministic from rng.
+ */
+export function airRoutesFor(paths, rng) {
+  const out = [];
+  const seen = new Set();
+  for (const p of paths) {
+    const [x0, z0] = p.points[0];
+    const [x1, z1] = p.points[p.points.length - 1];
+    const key = `${x0},${z0}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    // control point: off the straight line by 8-16 m, to the side with more room
+    const mx = (x0 + x1) / 2;
+    const mz = (z0 + z1) / 2;
+    const side = mz > 0 ? -1 : mz < 0 ? 1 : rng.chance(0.5) ? 1 : -1;
+    const cz = Math.max(-FRAME.zMax, Math.min(FRAME.zMax, mz + side * rng.range(8, 16)));
+    const cx = mx + rng.range(-8, 8);
+    const points = [];
+    for (let i = 0; i <= 10; i++) {
+      const t = i / 10;
+      const u = 1 - t;
+      points.push([r05(u * u * x0 + 2 * u * t * cx + t * t * x1), r05(u * u * z0 + 2 * u * t * cz + t * t * z1)]);
+    }
+    out.push({ id: `air${out.length + 1}`, points: points.filter((q, i) => i === 0 || q[0] !== points[i - 1][0] || q[1] !== points[i - 1][1]) });
+  }
+  return out;
+}
+
 export function generateMap(opts) {
   const { id, seed, template, theme } = opts;
   const rng = new Rng(`${seed}:map`);
@@ -249,6 +279,7 @@ export function generateMap(opts) {
   if (problems.length) throw new Error(`map ${id}: no valid layout: ${problems[0]}`);
   const { paths, zKeep, starts } = roads;
   const drng = rng.fork('decor');
+  const airPaths = opts.airRoutes ? airRoutesFor(paths, rng.fork('air')) : null;
 
   // portals, keep, then theme decorations clear of roads, landmarks and each other
   const props = starts.map((z) => ({ kind: 'enemy_portal', x: FRAME.xPortal, z, rot: 0 }));
@@ -300,14 +331,14 @@ export function generateMap(opts) {
   const map = {
     id,
     name: opts.name,
-    description: opts.description || `${theme.label}: ${paths.length} road${paths.length > 1 ? 's' : ''}.`,
+    description: opts.description || `${theme.label}: ${paths.length} road${paths.length > 1 ? 's' : ''}.${airPaths ? ' Fliers take the glowing air route straight to the keep.' : ''}`,
     seed: `${seed}`,
     scatterGap: 1.3,
     waves: `${id}_waves`,
     unlockLevel: opts.unlockLevel,
     theme: theme.id,
     ...(opts.timeOfDay ? { timeOfDay: opts.timeOfDay } : {}), // visual only (src/engine/mapView.js TIME_OF_DAY)
-    generated: { template: opts.roads ? 'hand' : template, seed: `${seed}`, theme: theme.id, ...(roads.crossings ? { crossings: roads.crossings } : {}) },
+    generated: { template: opts.roads ? 'hand' : template, seed: `${seed}`, theme: theme.id, ...(roads.crossings ? { crossings: roads.crossings } : {}), ...(airPaths ? { air: true } : {}) },
     size: { w: FRAME.w, d: FRAME.d },
     sky: theme.sky,
     sun: theme.sun,
@@ -320,6 +351,7 @@ export function generateMap(opts) {
       hills,
     },
     paths,
+    ...(airPaths ? { airPaths } : {}),
     base: { x: 50, z: zKeep },
     playerSpawn: spawn,
     props,
