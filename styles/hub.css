@@ -31,10 +31,11 @@
 .trow.locked { opacity: 0.7; }
 .lvbar { margin: 3px 0; }
 
-.summon { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(260px, 340px); gap: 16px; align-items: start; }
-.sm-side { display: grid; gap: 8px; }
+.summon { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(260px, 380px); gap: 16px; align-items: start; }
+.summon > * { min-width: 0; }
+.sm-side { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
 .sm-side h3 { margin: 0; }
-.odds { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.odds { width: 100%; border-collapse: collapse; font-size: 0.8rem; table-layout: fixed; }
 .odds caption { text-align: left; font-weight: 800; color: var(--gold); padding: 4px 0; }
 .odds th { text-align: left; font-weight: 700; }
 .odds td, .odds th { padding: 3px 4px; border-bottom: 1px solid var(--border); }
