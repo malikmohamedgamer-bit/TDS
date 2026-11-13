@@ -53,7 +53,7 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 ## Chunk 3: balance sweep (MUST)
 - [x] BUGS #44 heroes (30 seeds: 57-83%, was 75-100%). #37 and #46 were accepted earlier
 - [x] 20 seeds per map (mean 66%, all in 50-80%, docs/balance-sweep.json); ladder, presets and modes with 20 seeds (`tools/ladder.mjs`, docs/balance-ladder.json, TUNING.md): Impossible 7.6x → 11x, Skirmish tuned. Known limit: above Normal the per-map spread is large (calibration is per map at Normal only)
-- [ ] New-player path, pacing (first win, first evolution, first summon rarity), no dead ends or exploits
+- [x] New-player path and pacing (`tools/pacing.mjs`, TUNING.md): first win match 1, first evolution affordable after 1, summon from the start, all maps after ~156 matches (XP curve eased); no dead ends; exploits: BUGS 65
 - [x] Economy and sandbox exploit check (TUNING.md): Skip wave assist farming fixed (BUGS 65)
 - [ ] Milestone: full e2e + 30 min soak
 

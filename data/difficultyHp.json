@@ -1,4 +1,190 @@
 {
  "$doc": "Per-map enemy health factor for each difficulty above Normal, on top of data/difficulties.json. Measured by tools/ladder-calibrate.mjs (balance bot, 12 core towers, Standard, skill 0.7, each difficulty at its gate tower level, target 50-75%). Missing entries are 1. Normal is calibrated per map in tools/map-batches.json instead.",
- "maps": {}
+ "maps": {
+  "riftline": {
+   "medium": 1,
+   "hard": 1,
+   "extra_hard": 1,
+   "extreme": 1,
+   "impossible": 0.847
+  },
+  "frostmere": {
+   "hard": 1,
+   "extra_hard": 1.18,
+   "medium": 1.18,
+   "extreme": 1.18,
+   "impossible": 1.069
+  },
+  "glacier_gate": {
+   "medium": 0.903,
+   "hard": 0.847,
+   "impossible": 1,
+   "extra_hard": 1.064,
+   "extreme": 1.18
+  },
+  "mirrormire": {
+   "medium": 1,
+   "hard": 1.18,
+   "extra_hard": 1.18,
+   "impossible": 1.063,
+   "extreme": 1.18
+  },
+  "gen_verdant_1": {
+   "hard": 1,
+   "medium": 0.702,
+   "extra_hard": 0.911,
+   "extreme": 0.918,
+   "impossible": 0.678
+  },
+  "starfall_sanctum": {
+   "hard": 1.18,
+   "medium": 1.18,
+   "extra_hard": 1.18,
+   "impossible": 1.18,
+   "extreme": 1.475
+  },
+  "gen_frost_1": {
+   "hard": 1.18,
+   "medium": 1,
+   "extra_hard": 1.18,
+   "extreme": 1.18,
+   "impossible": 1.052
+  },
+  "gen_ember_1": {
+   "medium": 1,
+   "extreme": 1,
+   "hard": 1.063,
+   "extra_hard": 0.847,
+   "impossible": 0.901
+  },
+  "gen_toxic_1": {
+   "impossible": 1,
+   "medium": 1,
+   "extra_hard": 1.18,
+   "hard": 1.082,
+   "extreme": 1.18
+  },
+  "gen_dunes_1": {
+   "medium": 0.847,
+   "extra_hard": 1,
+   "hard": 0.847,
+   "extreme": 1,
+   "impossible": 0.884
+  },
+  "gen_starfall_1": {
+   "medium": 1.18,
+   "extra_hard": 1.18,
+   "hard": 1.084,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "gen_verdant_2": {
+   "hard": 1,
+   "medium": 1.18,
+   "extra_hard": 1.18,
+   "extreme": 1.18,
+   "impossible": 1.082
+  },
+  "gen_frost_2": {
+   "medium": 1.18,
+   "impossible": 1,
+   "extra_hard": 1.18,
+   "hard": 1.076,
+   "extreme": 1.18
+  },
+  "gen_ember_2": {
+   "hard": 1.18,
+   "medium": 1.18,
+   "extra_hard": 1,
+   "extreme": 1.18,
+   "impossible": 1.082
+  },
+  "gen_toxic_2": {
+   "medium": 1.18,
+   "impossible": 1,
+   "hard": 1.18,
+   "extra_hard": 1.084,
+   "extreme": 1.084
+  },
+  "gen_dunes_2": {
+   "medium": 1,
+   "hard": 1.378,
+   "extra_hard": 1,
+   "impossible": 1,
+   "extreme": 1.475
+  },
+  "gen_starfall_2": {
+   "medium": 0.847,
+   "hard": 1.18,
+   "extra_hard": 1.063,
+   "extreme": 1.108,
+   "impossible": 0.918
+  },
+  "gen_verdant_3": {
+   "medium": 1,
+   "hard": 1.18,
+   "impossible": 1,
+   "extreme": 1.18,
+   "extra_hard": 1.18
+  },
+  "gen_frost_3": {
+   "medium": 1,
+   "impossible": 1,
+   "extra_hard": 1.18,
+   "hard": 1.084,
+   "extreme": 1.18
+  },
+  "gen_ember_3": {
+   "medium": 1.084,
+   "hard": 1.076,
+   "extra_hard": 1.095,
+   "extreme": 1.18,
+   "impossible": 1
+  },
+  "gen_toxic_3": {
+   "hard": 0.847,
+   "medium": 0.847,
+   "extra_hard": 0.627,
+   "extreme": 0.847,
+   "impossible": 0.627
+  },
+  "gen_dunes_3": {
+   "impossible": 1,
+   "medium": 1.18,
+   "hard": 1.18,
+   "extra_hard": 1,
+   "extreme": 1.18
+  },
+  "gen_starfall_3": {
+   "medium": 1.475,
+   "hard": 1.475,
+   "extra_hard": 1,
+   "extreme": 1,
+   "impossible": 1.18
+  },
+  "gen_verdant_4": {
+   "medium": 1.475,
+   "hard": 1.593,
+   "extra_hard": 1.593,
+   "extreme": 1.593,
+   "impossible": 1.593
+  },
+  "gen_ember_4": {
+   "medium": 1,
+   "hard": 1.18,
+   "extra_hard": 1,
+   "extreme": 1.084
+  },
+  "gen_frost_4": {
+   "medium": 1.18,
+   "hard": 1,
+   "extra_hard": 1.18,
+   "impossible": 1.18,
+   "extreme": 1
+  },
+  "gen_toxic_4": {
+   "medium": 1.18,
+   "hard": 1.18
+  }
+ }
 }
