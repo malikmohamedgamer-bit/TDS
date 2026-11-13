@@ -1,0 +1,19 @@
+{
+  "name": "tds-relay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TDS online co-op relay: WebSocket rooms of up to 4 peers that forward JSON messages (protocol in README.md).",
+  "type": "module",
+  "license": "UNLICENSED",
+  "main": "relay.mjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node relay.mjs",
+    "test": "node --test test/relay.test.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.22.0"
+  }
+}

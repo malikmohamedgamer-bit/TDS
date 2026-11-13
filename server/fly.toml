@@ -1,0 +1,37 @@
+# Fly.io config for the TDS co-op relay (server/relay.mjs). Setup: docs/DEPLOY-ONLINE.md, part B.
+#   cd server
+#   fly launch --copy-config --no-deploy    (pick a unique app name; it rewrites `app` below)
+#   fly secrets set ALLOWED_ORIGINS=https://yourname.github.io
+#   fly deploy
+app = 'tds-relay'
+primary_region = 'ams'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  PORT = '8787'
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  # stop the machine when nobody is connected, start it on the next connection
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = 'connections'
+    soft_limit = 400
+    hard_limit = 500
+
+  [[http_service.checks]]
+    grace_period = '10s'
+    interval = '30s'
+    method = 'GET'
+    path = '/health'
+    timeout = '5s'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '256mb'
