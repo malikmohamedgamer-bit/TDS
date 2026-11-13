@@ -298,3 +298,36 @@ test('lobby -> lockstep: the start payload drives sessions on the same transport
   assert.deepEqual([...pids].sort(), ['p1', 'p2', 'p3'], 'the host stamped each sender\'s pid');
   assert.ok(hub.stats.dropped > 0);
 });
+
+test('lobby: each player reports the map their page has loaded; everyone sees it', async () => {
+  const hub = new MemoryHub({ latency: [20, 80], jitter: 10, seed: 'lobby-map' });
+  const { host, members, all } = await room(hub, 3);
+  host.setProfile({ map: 'riftline' });
+  members[0].setProfile({ map: 'riftline' });
+  members[1].setProfile({ map: 'frostmere' });
+  hub.advance(3000);
+  for (const l of all) assert.deepEqual(l.players.map((p) => p.map), ['riftline', 'riftline', 'frostmere']);
+  members[1].setProfile({ map: 'riftline' });
+  hub.advance(3000);
+  for (const l of all) assert.ok(l.players.every((p) => p.map === 'riftline'));
+});
+
+test('lobby: a member that briefly took over while the creator vanished rejoins the creator when it returns', async () => {
+  const hub = new MemoryHub({ latency: [20, 60], jitter: 10, seed: 'lobby-splitbrain' });
+  const { host, members } = await room(hub, 2);
+  const m = members[0];
+  // the creator goes quiet: the member's presence list loses it and the member takes over
+  const peersBefore = m.peersNow;
+  m._onPeers(peersBefore.filter((p) => p.id !== host.id));
+  assert.equal(m.isHost, true, 'took over while the creator was gone');
+  // the creator dropped the member meanwhile
+  host._onPeers(host.peersNow.filter((p) => p.id !== m.id));
+  assert.deepEqual(host.players.map((p) => p.name), ['HOST']);
+  // both reappear: the member must step down and get seated by the creator again
+  m._onPeers(peersBefore);
+  host._onPeers(peersBefore);
+  hub.advance(5000);
+  assert.equal(m.isHost, false);
+  assert.deepEqual(host.players.map((p) => p.name), ['HOST', 'M1']);
+  assert.deepEqual(m.players.map((p) => p.name), ['HOST', 'M1']);
+});

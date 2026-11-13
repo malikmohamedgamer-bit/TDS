@@ -59,12 +59,13 @@ export class LocalTransport {
    * @param {object} [o]
    * @param {string} [o.id]               peer id (default: random)
    * @param {number} [o.heartbeatMs]      1000
-   * @param {number} [o.timeoutMs]        4000
+   * @param {number} [o.timeoutMs]        10000
    * @param {(name:string)=>object} [o.channelFactory]  BroadcastChannel stand-in (tests)
    * @param {object} [o.timers]           { setInterval, clearInterval } (tests)
    * @param {()=>number} [o.clock]        wall clock in ms (joinedAt must compare across tabs)
    */
-  constructor({ id, heartbeatMs = 1000, timeoutMs = 4000, channelFactory, timers, clock } = {}) {
+  // timeoutMs: generous, because a busy or hidden tab can miss several heartbeats
+  constructor({ id, heartbeatMs = 1000, timeoutMs = 10000, channelFactory, timers, clock } = {}) {
     this.id = id || newPeerId();
     this.heartbeatMs = heartbeatMs;
     this.timeoutMs = timeoutMs;

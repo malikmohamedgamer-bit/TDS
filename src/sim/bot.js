@@ -224,6 +224,7 @@ export function playerView(m, pid) {
       if (prop === 'hero') return target.heroes.find((h) => h.pid === pid) || null;
       if (prop === 'abilities') return target.abilitiesOf(pid);
       if (prop === 'command') return (cmd) => target.command({ ...cmd, pid });
+      if (prop === 'localPid') return pid;
       const v = Reflect.get(target, prop, target);
       return typeof v === 'function' ? v.bind(target) : v;
     },

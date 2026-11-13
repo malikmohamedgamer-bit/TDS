@@ -86,10 +86,10 @@ test('LocalTransport: presence, broadcast, directed messages, heartbeat timeout 
   assert.deepEqual(got.b, [[{ hi: 1 }, 'a']]);
   assert.deepEqual(got.c, [[{ hi: 1 }, 'a'], [{ only: 'c' }, 'a']]);
 
-  // b crashes (no bye, no heartbeat): gone after the 4 s timeout, not before
+  // b crashes (no bye, no heartbeat): gone after the timeout, not before
   hub.timers.clearInterval(b.hbTimer);
   b.channel.postMessage = () => {};
-  hub.advance(3000);
+  hub.advance(a.timeoutMs - 1000);
   assert.equal(a.peers.length, 3);
   hub.advance(2100);
   assert.deepEqual(a.peers.map((p) => p.id), ['a', 'c']);

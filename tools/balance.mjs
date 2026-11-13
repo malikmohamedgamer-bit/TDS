@@ -35,6 +35,10 @@ const levels = Object.fromEntries([...content.towers.keys()].map((id) => [id, le
 if (args.includes('--coop')) {
   // co-op: one bot per player (docs/multiplayer.md); --coop 2|3|4, --map ids, --seeds n
   const n = Number(opt('coop', 2));
+  // --coopcash X --coophp Y: try co-op numbers without editing data/modes.json
+  const cm = content.modes.get('coop').coop;
+  if (opt('coopcash')) cm.cashShare[n - 1] = Number(opt('coopcash'));
+  if (opt('coophp')) cm.enemyHp[n - 1] = Number(opt('coophp'));
   const pool = loadoutArg === 'all' ? ['rifleman', 'marksman', 'gunner', 'rocket_battery', 'gunship', 'supply_depot', 'mine_layer', 'ember_adept', 'frost_weaver', 'storm_caller', 'rune_totem', 'spirit_summoner'] : loadout;
   let total = 0;
   let won = 0;
@@ -45,7 +49,7 @@ if (args.includes('--coop')) {
       if (r.won) w++;
       if (verbose) console.log(`  ${mapId} seed ${s}: ${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.waves} keep ${Math.round(r.baseHp)}`);
     }
-    console.log(`${mapId.padEnd(18)} coop x${n} ${diffs[0]}: ${w}/${seeds} won (${Math.round((w / seeds) * 100)}%)`);
+    console.log(`${mapId.padEnd(18)} coop x${n} cash ${cm.cashShare[n - 1]} hp ${cm.enemyHp[n - 1]} ${diffs[0]}: ${w}/${seeds} won (${Math.round((w / seeds) * 100)}%)`);
     won += w;
     total += seeds;
   }

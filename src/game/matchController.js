@@ -16,6 +16,9 @@ import { mapTheme } from '../ui/mapThumb.js';
 import { equippedCosmetic } from '../meta/cosmetics.js';
 import { towerThumbnail as tThumb, enemyThumbnail } from '../engine/thumbnails.js';
 import { buildMapWorld } from '../core/mapLayout.js';
+import { LockstepSession, matchSim } from '../net/lockstep.js';
+import { playerView } from '../sim/bot.js';
+import { PING_TEXTS, seatColor } from '../ui/coopUi.js';
 
 const ABILITY_CODES = ['KeyZ', 'KeyX', 'KeyG', 'KeyV'];
 
@@ -43,8 +46,8 @@ export class MatchController {
       onPause: () => this.setPaused(true),
       onResume: () => this.setPaused(false),
       onSettings: () => { this.hud.openSettings(); },
-      onRestart: () => { this.setPaused(false); this.restart(); },
-      onQuit: () => { this.setPaused(false); this.toLobby(); },
+      onRestart: () => { this.setPaused(false); if (this.online) { this.mhud.banner('Co-op matches cannot be restarted', 'warn'); return; } this.restart(); },
+      onQuit: () => { this.setPaused(false); if (this.online) this.backToOnlineLobby('You left the match'); else this.toLobby(); },
       onDeselect: () => this.select(null),
       onUpgrade: (branch) => this.upgrade(branch),
       onSell: () => this.sell(),
@@ -52,7 +55,8 @@ export class MatchController {
       onTargeting: (mode) => this.selected && this.command({ type: 'target', uid: this.selected, mode }),
       onAbility: (id) => this.useAbility(id),
       onAbilityMode: (id, mode) => this.command({ type: 'abilityMode', id, mode }),
-      onEnd: (a) => (a === 'again' ? this.restart() : this.toLobby()),
+      onEnd: (a) => (this.online ? this.backToOnlineLobby() : a === 'again' ? this.restart() : this.toLobby()),
+      onPing: (k) => this.sendPing(k),
     });
     this.tutorial = new Tutorial(this.ui, (skipped) => {
       this.save.progress.tutorialDone = true;
@@ -73,6 +77,7 @@ export class MatchController {
       date: () => ctx.date?.() || localDate(),
       modes: ctx.modes,
       mapId: this.map.id,
+      startOnline: (o) => this.startOnline(o),
       heroId: this.content.heroes.has(this.settings.hero) ? this.settings.hero : [...this.content.heroes.keys()][0],
       switchHero: (id) => {
         // the hero's look is built with the world: reload into it, like a map change
@@ -97,6 +102,14 @@ export class MatchController {
   }
 
   cycleSpeed() {
+    if (this.online) {
+      if (!this.online.isHost) { this.mhud.banner('Only the host changes the game speed', 'info'); return; }
+      const steps = [1, 1.5, 2, 3];
+      const next = steps[(steps.indexOf(this.online.session.speed) + 1) % steps.length] || 1;
+      this.online.session.setSpeed(next);
+      this.sfx.play('ui');
+      return;
+    }
     const list = this.speeds();
     const i = list.indexOf(this.speed);
     this.speed = list[(i + 1) % list.length];
@@ -163,8 +176,8 @@ export class MatchController {
     this.view = view;
     this.tutorialStats = { heroMoved: 0, cameraTurned: 0, tutorialTimer: 0, lastHero: { x: this.hero.x, z: this.hero.z }, lastYaw: this.rig.yaw };
     this.mhud.setLoadout(cfg.loadout, this.thumb, (d) => match.costOf(d));
-    this.mhud.setAbilities(this.match.abilities);
-    this.mhud.select(null, this.match);
+    this.mhud.setAbilities(this.me.abilities);
+    this.mhud.select(null, this.me);
     this.speed = 1;
     this.rewarded = false;
     this.endSeq = false;
@@ -184,6 +197,7 @@ export class MatchController {
   }
 
   end() {
+    this.closeOnline();
     if (this.view) this.view.dispose();
     if (this.match) this.match.dispose();
     this.view = null;
@@ -196,6 +210,14 @@ export class MatchController {
   }
 
   setPaused(on) {
+    if (this.online) {
+      // the host pauses everyone; a client only opens the menu (the match keeps running)
+      if (this.online.isHost) this.online.session.setPaused(on);
+      else if (on) this.mhud.banner('The match keeps running: only the host can pause', 'info');
+      if (on && this.match) this.mhud.setReport(battleReport(this.match));
+      this.mhud.setPaused(on);
+      return;
+    }
     this.paused = on;
     if (on && this.match) this.mhud.setReport(battleReport(this.match));
     this.mhud.setPaused(on);
@@ -204,6 +226,7 @@ export class MatchController {
   // ------------------------------------------------------------------------ commands -------
   command(cmd) {
     if (!this.match) return { ok: false };
+    if (this.online) return this.commandOnline(cmd);
     const r = this.match.command(cmd);
     if (!r.ok && cmd.type !== 'hero') {
       this.mhud.banner(r.reason, 'warn');
@@ -234,7 +257,7 @@ export class MatchController {
   select(uid) {
     this.selected = uid;
     this.view?.select(uid);
-    if (this.match) this.mhud.select(uid, this.match);
+    if (this.match) this.mhud.select(uid, this.me);
   }
 
   upgrade(branch) {
@@ -263,7 +286,7 @@ export class MatchController {
 
   useAbility(id) {
     if (!this.match) return;
-    const a = this.match.abilities.find((x) => x.id === id);
+    const a = this.me.abilities.find((x) => x.id === id);
     if (!a) return;
     if (a.ready > this.match.time) { this.mhud.banner(`${a.def.name} ready in ${Math.ceil(a.ready - this.match.time)} s`, 'warn'); this.sfx.play('error'); return; }
     if (a.def.target === 'self') { this.command({ type: 'ability', id, x: this.hero.x, z: this.hero.z }); return; }
@@ -322,7 +345,7 @@ export class MatchController {
     }
     if (this.paused || this.mhud.modalOpen) return;
     HOTBAR_KEYS.forEach((code, i) => { if (keys.has(code) && this.mhud.loadout?.[i]) this.pickTower(this.mhud.loadout[i]); });
-    ABILITY_CODES.forEach((code, i) => { const a = this.match.abilities[i]; if (keys.has(code) && a) this.useAbility(a.id); });
+    ABILITY_CODES.forEach((code, i) => { const a = this.me.abilities[i]; if (keys.has(code) && a) this.useAbility(a.id); });
     if (keys.has('KeyN')) this.command({ type: 'skip' });
     if (keys.has('KeyU')) this.upgrade(null);
     if (keys.has('KeyM')) this.startMove();
@@ -372,7 +395,9 @@ export class MatchController {
   // ------------------------------------------------------------------------ frame ----------
   /** One fixed simulation tick (called by the main loop). */
   step() {
-    if (!this.match || !this.ready || this.paused) return;
+    if (!this.match || !this.ready) return;
+    if (this.online) { this.stepOnline(); return; }
+    if (this.paused) return;
     // fractional speeds (0.5x, 1.5x) accumulate whole simulation steps
     this.speedAcc = (this.speedAcc || 0) + this.speed * (this.view?.timeScale ?? 1);
     while (this.speedAcc >= 1) { this.speedAcc -= 1; this.match.step(); }
@@ -391,7 +416,8 @@ export class MatchController {
     this.onEvents(events);
     this.view.update(this.paused ? 0 : dt);
     this._cinematics(dt);
-    this.mhud.update(m, { placing: this.mode === 'placing' ? this.placing : null, speed: this.speed });
+    if (this.online) this.speed = this.online.session.speed;
+    this.mhud.update(this.me, { placing: this.mode === 'placing' ? this.placing : null, speed: this.speed, team: this.online ? this.teamState() : null });
     // tutorial progress
     const ts = this.tutorialStats;
     ts.heroMoved += Math.hypot(this.hero.x - ts.lastHero.x, this.hero.z - ts.lastHero.z);
@@ -471,8 +497,194 @@ export class MatchController {
     }
   }
 
+  // ------------------------------------------------------------------------ online co-op ---
+  // docs/multiplayer.md contract 5. The lobby UI (src/ui/onlineLobby.js) owns the transport and the
+  // Lobby and calls startOnline when the host starts. Every client builds an identical Match from
+  // the start payload; the LockstepSession steps it and carries every command.
+
+  /** The local player's view of the match: own wallet, towers, hero and abilities online. */
+  get me() {
+    return this.online && this.match ? playerView(this.match, this.online.localPid) : this.match;
+  }
+
+  async startOnline({ lobby, transport, start, localPid, config = {} }) {
+    if (start.map !== this.map.id) throw new Error(`co-op start for map ${start.map} but ${this.map.id} is loaded`);
+    // the host repeats a start until everyone acknowledged it: the same start never runs twice
+    if (this.online?.start?.id === start.id) return;
+    this.end();
+    this.lastConfig = null;
+    const content = this.content;
+    const mw = buildMapWorld(this.map, content.props);
+    this.swapWorld(mw);
+    // identical on every client: nothing here may come from local settings or the local save
+    const players = start.players.map((p) => ({ pid: p.pid, name: p.name, hero: content.heroes.has(p.hero) ? p.hero : [...content.heroes.keys()][0] }));
+    const match = new Match({
+      content, mapWorld: mw, difficulty: start.difficulty, seed: String(start.seed), players,
+      loadout: [...content.towers.keys()], levels: {},
+      options: { manualStart: true, mode: 'coop' },
+    });
+    const looks = { projectile: equippedCosmetic(this.save, content, 'projectileFx'), plinth: equippedCosmetic(this.save, content, 'towerPlinth') };
+    this.ready = false;
+    const online = {
+      lobby, transport, start, localPid, config, isHost: start.hostId === transport.id, finished: false, heroAt: null,
+      names: Object.fromEntries(start.players.map((p) => [p.pid, p.name])), status: {}, offs: [],
+    };
+    const sim = matchSim(match, {
+      rebuild: (snap) => Match.restore(snap, { content, mapWorld: buildMapWorld(this.map, content.props) }),
+      onReplace: (next) => this.rebindOnline(next),
+    });
+    online.sim = sim;
+    online.session = new LockstepSession({
+      transport, hostId: start.hostId, sim,
+      turnTicks: config.turnTicks || 6, delayTicks: config.delayTicks || 12, hashEvery: 120,
+      peers: Object.keys(start.peers), peerPids: start.peers, awaitSnapshot: !!start.rejoin,
+    });
+    this.online = online;
+    const view = new MatchView(this.renderer, match, content, this.settings, this.ui.querySelector('.dmg-layer'), looks);
+    view.coop = { localPid, players: start.players, color: seatColor };
+    await view.preload();
+    if (this.online !== online) { view.dispose(); return; } // superseded while loading
+    this.match = match;
+    this.view = view;
+    this.listenOnline();
+    this.tutorialStats = { heroMoved: 0, cameraTurned: 0, tutorialTimer: 0, lastHero: { x: this.hero.x, z: this.hero.z }, lastYaw: this.rig.yaw };
+    const own = (this.save.towers.loadout?.length ? this.save.towers.loadout : DEFAULT_LOADOUT).filter((id) => content.towers.has(id)).slice(0, 6);
+    this.mhud.setLoadout(own, this.thumb, (d) => match.costOf(d));
+    this.mhud.setAbilities(this.me.abilities);
+    this.mhud.select(null, this.me);
+    this.mhud.setTeam(start.players.map((p, i) => ({ pid: p.pid, name: p.name, hero: content.heroes.get(p.hero)?.name || '', color: seatColor(i), me: p.pid === localPid })));
+    Object.assign(this, { speed: 1, rewarded: false, endSeq: false, introduced: new Set(), cine: null, mode: 'idle', paused: false });
+    document.body.classList.remove('cine');
+    document.body.classList.add('in-match', 'coop');
+    this.ready = true;
+    this.mhud.banner(online.isHost ? 'Co-op: build towers, then press N to start the first wave' : 'Co-op: build towers together; anyone can start the first wave', 'info');
+    this.sfx.unlock();
+    this.music?.resume();
+    this.music?.setMood('build', this.map.id, mapTheme(this.map));
+  }
+
+  /** A resync replaced the Match: draw the new one (the view builds missing visuals itself). */
+  rebindOnline(next) {
+    const o = this.online;
+    if (!o) return;
+    const old = this.view;
+    this.swapWorld(next.mw);
+    const view = new MatchView(this.renderer, next, this.content, this.settings, this.ui.querySelector('.dmg-layer'), old?.looks || {});
+    view.coop = old?.coop;
+    this.match = next;
+    this.view = view;
+    old?.dispose();
+    view.preload().catch((err) => console.warn('co-op: preload after resync failed', err));
+    this.select(null);
+    this.mhud.setAbilities(this.me.abilities);
+  }
+
+  listenOnline() {
+    const o = this.online;
+    const s = o.session;
+    const on = (ev, fn) => o.offs.push(s.on(ev, fn));
+    const name = (peerId) => o.names[o.start.peers[peerId]] || 'A player';
+    on('stall', (e) => { o.stalled = !!e.stalled; if (e.stalled && e.reason !== 'snapshot') this.mhud.banner(`Waiting for ${name(o.start.hostId)}...`, 'info'); });
+    on('resync', () => this.mhud.banner('Resynced with the host', 'info'));
+    on('peerLeft', (e) => { o.status[o.start.peers[e.id]] = 'left'; this.mhud.banner(`${name(e.id)} left`, 'warn'); });
+    on('peerJoined', (e) => { o.status[o.start.peers[e.id]] = 'ok'; if (e.returning) this.mhud.banner(`${name(e.id)} is back`, 'good'); });
+    on('reject', (e) => { if (e.cmd?.type !== 'hero') { this.mhud.banner(e.reason || 'Not allowed', 'warn'); this.sfx.play('error'); } });
+    on('hostLeft', () => { if (!o.finished) this.backToOnlineLobby('The host left: the match ended'); });
+    on('paused', (p) => { if (!o.isHost) this.mhud.banner(p ? 'Paused by the host' : 'The host resumed', 'info'); });
+    on('error', (err) => console.warn('co-op session:', err));
+    // quick pings ride on the same transport ({t:'chat'}; the session ignores unknown messages)
+    const offMsg = o.transport.onMessage((d, from) => {
+      if (d?.t !== 'chat' || !Number.isInteger(d.k) || !PING_TEXTS[d.k]) return;
+      const pid = o.start.peers[from];
+      if (pid) this.showPing(pid, d.k);
+    });
+    if (typeof offMsg === 'function') o.offs.push(offMsg);
+  }
+
+  commandOnline(cmd) {
+    const o = this.online;
+    const full = { ...cmd, pid: o.localPid };
+    // answer bad clicks at once from the local copy; the host still validates everything
+    const v = this.match.validate(full);
+    if (!v.ok) {
+      if (cmd.type !== 'hero') { this.mhud.banner(v.reason, 'warn'); this.sfx.play('error'); }
+      return v;
+    }
+    const r = o.session.issue(full);
+    if (!r.ok && cmd.type !== 'hero') { this.mhud.banner(r.reason || 'Not allowed', 'warn'); this.sfx.play('error'); }
+    return r.ok ? { ok: true, pending: !!r.pending } : r;
+  }
+
+  stepOnline() {
+    const o = this.online;
+    const s = o.session;
+    // the fixed loop calls this 60 times a second; the host's speed decides the sim steps
+    o.acc = (o.acc || 0) + (s.paused ? 0 : s.speed);
+    const n = Math.floor(o.acc);
+    o.acc -= n;
+    s.advance(n);
+    if (this.match !== o.sim.match) this.rebindOnline(o.sim.match);
+    // our hero's position: every 6 ticks, only when it moved
+    this.heroSync += 1;
+    if (this.heroSync >= 6) {
+      this.heroSync = 0;
+      const h = this.hero;
+      const last = o.heroAt;
+      if (!last || Math.hypot(h.x - last.x, h.z - last.z) > 0.2 || Math.abs(h.y - last.y) > 0.2) {
+        o.heroAt = { x: h.x, y: h.y, z: h.z };
+        o.session.issue({ type: 'hero', x: h.x, y: h.y, z: h.z, pid: o.localPid });
+      }
+    }
+  }
+
+  /** Team list rows for the HUD: connection state and cash per player. */
+  teamState() {
+    const o = this.online;
+    const m = this.match;
+    return m.players.map((p, i) => ({ pid: p.pid, cash: m.wallet(p.pid), status: o.status[p.pid] || 'ok', stalled: !!o.stalled && p.pid !== o.localPid && i === 0, me: p.pid === o.localPid }));
+  }
+
+  sendPing(k) {
+    const o = this.online;
+    if (!o || !PING_TEXTS[k]) return;
+    const now = performance.now();
+    if (now - (o.lastPing || 0) < 1200) return; // no spam
+    o.lastPing = now;
+    o.transport.send({ t: 'chat', k });
+    this.showPing(o.localPid, k);
+  }
+
+  showPing(pid, k) {
+    const o = this.online;
+    const i = this.match ? this.match.playerIndex(pid) : 0;
+    this.mhud.ping(o.names[pid] || 'Player', PING_TEXTS[k], seatColor(Math.max(0, i)));
+    this.sfx.play('ui');
+  }
+
+  /** Stop the session (match over or left); the transport and room stay for the lobby. */
+  closeOnline() {
+    const o = this.online;
+    if (!o) return;
+    for (const off of o.offs) { try { off?.(); } catch { /* already gone */ } }
+    try { o.session.close(); } catch { /* already closed */ }
+    this.online = null;
+    document.body.classList.remove('coop');
+  }
+
+  backToOnlineLobby(message = '') {
+    const o = this.online;
+    if (!o) { this.toLobby(); return; }
+    const { lobby, transport } = o;
+    this.end();
+    this.music?.setMood('hub', this.map.id, mapTheme(this.map));
+    this.mhud.setVisible(true);
+    // the hub resolves with a single-player config if the player starts a normal match from it
+    this.hub.showOnline({ lobby, transport, message }).then((cfg) => cfg && this.start(cfg));
+  }
+
   finish() {
     const m = this.match;
+    if (this.online) this.online.finished = true;
     this.rewarded = true;
     this.cancelMode();
     const res = m.result();

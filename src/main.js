@@ -178,6 +178,23 @@ async function boot() {
     }
   }
 
+  // Co-op: browsers stop animation frames in hidden tabs, which would freeze this player's
+  // simulation (and stall everyone if it is the host). A worker timer keeps the lockstep match
+  // stepping while the tab is hidden; nothing is drawn until the tab is visible again.
+  let hiddenLast = 0;
+  try {
+    const src = 'setInterval(() => postMessage(0), 50);';
+    const keepalive = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+    keepalive.onmessage = () => {
+      if (!document.hidden || !ctrl?.online) { hiddenLast = 0; return; }
+      const now = performance.now();
+      if (hiddenLast) {
+        try { loop.advance(Math.min(0.25, (now - hiddenLast) / 1000), () => ctrl.step()); } catch (err) { console.error(err); }
+      }
+      hiddenLast = now;
+    };
+  } catch { /* no workers: a hidden tab simply pauses, the session catches up afterwards */ }
+
   function tick(now) {
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
@@ -201,7 +218,8 @@ async function boot() {
       }
       : { mx: 0, mz: 0, jump: false, sprint: false };
     let jumpOnce = heroIn.jump;
-    const alpha = loop.advance(blocked ? 0 : dt, (step) => {
+    // co-op never stops for a local menu: the match runs on for everyone (only hero input stops)
+    const alpha = loop.advance(blocked && !ctrl.online ? 0 : dt, (step) => {
       prev = cur;
       hero.step(step, { ...heroIn, jump: jumpOnce });
       jumpOnce = false;

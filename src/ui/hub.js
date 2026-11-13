@@ -3,6 +3,7 @@
 // Quests and Daily rewards. All state changes go through src/meta/meta.js and are saved immediately.
 // Look: docs/ui-style.md (war-table panels, faction dress, code-drawn SVG icons).
 import { filterHelp } from './helpSearch.js';
+import { OnlineLobbyPanel } from './onlineLobby.js';
 import { VERSION } from '../version.js';
 import { cosmeticStatus, equipCosmetic } from '../meta/cosmetics.js';
 import { applyUiTheme } from './applyCosmetics.js';
@@ -18,7 +19,7 @@ import { mapPreviewSvg, mapTheme, themeLabel, groupMapsByTheme } from './mapThum
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const ORDER = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
-const TABS = [['play', 'Play', 'play'], ['towers', 'Towers', 'tower'], ['summon', 'Summon', 'summon'], ['shop', 'Shop', 'shop'], ['index', 'Index', 'book'], ['quests', 'Quests', 'scroll'], ['daily', 'Daily', 'gift'], ['help', 'Help', 'help']];
+const TABS = [['play', 'Play', 'play'], ['towers', 'Towers', 'tower'], ['summon', 'Summon', 'summon'], ['shop', 'Shop', 'shop'], ['index', 'Index', 'book'], ['quests', 'Quests', 'scroll'], ['daily', 'Daily', 'gift'], ['online', 'Online', 'globe'], ['help', 'Help', 'help']];
 const fmt = (n) => Math.round(n).toLocaleString('en-US');
 const CUR = { crowns: ['crown', 'Crowns'], sigils: ['sigil', 'Sigils'] };
 /** Reward / price as markup with currency icons. */
@@ -41,6 +42,9 @@ export class Hub {
     root.appendChild(this.el);
     this.el.addEventListener('cancel', (e) => e.preventDefault());
     this.thumbs = new Map();
+    this.online = new OnlineLobbyPanel(this);
+    // an invite link or our own reload onto a co-op room's map opens the Online tab
+    if (new URLSearchParams(location.search).get('room')) this.tab = 'online';
   }
 
   get save() {
@@ -53,6 +57,7 @@ export class Hub {
 
   /** Opens the hub; resolves with the chosen match config when the player presses Start. */
   open({ difficulty = 'normal', loadout, mode = 'campaign', tutorial = !this.save.progress.tutorialDone } = {}) {
+    this.lastOpen = { difficulty, loadout, mode };
     this.cfg = { difficulty, mode, modifiers: [], loadout: (loadout || []).filter((id) => owns(this.save, id)).slice(0, 6), tutorial };
     if (!this.cfg.loadout.length) this.cfg.loadout = Object.keys(this.save.towers.owned).slice(0, 6);
     this.render();
@@ -129,6 +134,7 @@ export class Hub {
     if (mg) { mg.scrollTop = mapScroll; this.applyMapFilter(); }
     this.fillThumbs();
     if (this.tab === 'summon') this.mountSlot();
+    if (this.tab === 'online') this.online.mount(this.el.querySelector('[data-online-root]'));
   }
 
   async fillThumbs() {
@@ -407,6 +413,17 @@ export class Hub {
       <button class="btn" data-act="import-save" data-testid="import-save">Import save code</button></div>
       ${about.map((a) => `<details class="help-q about" data-testid="about-${a.id}"><summary>${esc(a.title)}</summary>${a.body.map((p) => `<p>${esc(p)}</p>`).join('')}</details>`).join('')}
       <p class="note" data-testid="version">TDS version ${VERSION} · content ${esc(String(this.c.version || ''))}</p>`;
+  }
+
+  _online() {
+    return '<div class="online-root" data-online-root data-testid="online"></div>';
+  }
+
+  /** After a co-op match: re-open on the Online tab with the same room (or the start screen). */
+  showOnline({ lobby, transport, message = '' } = {}) {
+    this.tab = 'online';
+    this.online.resume({ lobby, transport, message });
+    return this.open(this.lastOpen || {});
   }
 
   // ------------------------------------------------------------------------- actions -------

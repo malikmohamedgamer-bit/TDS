@@ -8,7 +8,8 @@ const KEY = 'tds.settings.v1';
 export function defaultSettings(env = {}) {
   return {
     quality: defaultQuality(env),
-    qualityAuto: true, // false once the player picks a quality: the game then never changes it
+    qualityAuto: true,
+    playerName: 'Commander', // co-op display name (src/ui/coopUi.js cleanName) // false once the player picks a quality: the game then never changes it
     pixelation: 1, // 1 = off, 2..4 = pixel size
     bloom: true,
     vignette: true,

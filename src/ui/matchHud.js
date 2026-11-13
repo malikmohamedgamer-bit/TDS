@@ -5,6 +5,7 @@ import { TARGET_MODES } from '../sim/combat.js';
 import { DAMAGE_COLORS } from '../engine/effects.js';
 import { icon, abilityIcon } from './icons.js';
 import { countUp } from './counter.js';
+import { PING_TEXTS } from './coopUi.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const TARGET_LABEL = { first: 'First', last: 'Last', strongest: 'Strongest', weakest: 'Weakest', fastest: 'Fastest', closest: 'Closest', flying: 'Flying only' };
@@ -63,6 +64,9 @@ export class MatchHud {
       <section class="tower-panel panel" hidden aria-label="Selected tower" data-testid="tower-panel"></section>
       <div class="place-hint" hidden data-testid="place-hint"></div>
       <div class="captions" aria-live="polite" data-testid="captions"></div>
+      <section class="team panel" hidden aria-label="Team" data-testid="team"></section>
+      <div class="pings" hidden role="toolbar" aria-label="Quick pings" data-testid="pings">${PING_TEXTS.map((t, i) => `<button class="btn ping" data-ping="${i}">${esc(t)}</button>`).join('')}</div>
+      <div class="pingfeed" aria-live="polite" data-testid="pingfeed"></div>
       <div class="banner" aria-live="assertive" data-testid="banner"></div>
       <dialog class="modal panel pause-modal" data-testid="pause">
         <h2>Paused</h2>
@@ -78,6 +82,7 @@ export class MatchHud {
     root.appendChild(this.el);
     this.$ = (s) => this.el.querySelector(s);
     this.$('.skip').addEventListener('click', () => cb.onSkip());
+    this.$('.pings').addEventListener('click', (e) => { const b = e.target.closest('[data-ping]'); if (b) cb.onPing?.(Number(b.dataset.ping)); });
     this.$('.speed').addEventListener('click', () => cb.onSpeed());
     this.$('.assist-skip').addEventListener('click', () => cb.onAssistSkip());
     this.$('.pause').addEventListener('click', () => cb.onPause());
@@ -131,7 +136,47 @@ export class MatchHud {
   }
 
   // ------------------------------------------------------------------- per frame -------------
-  update(m, { placing, speed }) {
+  /** Co-op team list (null: single-player). rows: [{ pid, name, hero, color, me }]. */
+  setTeam(rows) {
+    this.team = rows;
+    const box = this.$('.team');
+    this.$('.pings').hidden = !rows;
+    box.hidden = !rows;
+    if (!rows) return;
+    box.innerHTML = rows.map((r) => `<div class="tm ${r.me ? 'me' : ''}" data-pid="${esc(r.pid)}"><i class="dot" style="background:${esc(r.color)}"></i><b class="nm"></b><small class="hr"></small><span class="tc"></span><span class="ts"></span></div>`).join('');
+    rows.forEach((r, i) => {
+      const row = box.children[i];
+      row.querySelector('.nm').textContent = r.me ? `${r.name} (you)` : r.name;
+      row.querySelector('.hr').textContent = r.hero;
+    });
+  }
+
+  /** A quick ping from a player (text comes from a fixed list, the name is escaped by textContent). */
+  ping(name, text, color) {
+    const feed = this.$('.pingfeed');
+    const el = document.createElement('div');
+    el.className = 'pg';
+    el.style.borderColor = color;
+    const n = document.createElement('b');
+    n.textContent = name;
+    n.style.color = color;
+    el.append(n, document.createTextNode(` ${text}`));
+    feed.appendChild(el);
+    while (feed.children.length > 4) feed.firstChild.remove();
+    setTimeout(() => el.remove(), 4500);
+  }
+
+  update(m, { placing, speed, team }) {
+    if (team && this.team) {
+      const box = this.$('.team');
+      for (const t of team) {
+        const row = box.querySelector(`[data-pid="${CSS.escape(t.pid)}"]`);
+        if (!row) continue;
+        row.querySelector('.tc').textContent = `$${fmt(t.cash)}`;
+        row.querySelector('.ts').textContent = t.status === 'left' ? 'left' : t.stalled ? 'waiting' : '';
+        row.classList.toggle('gone', t.status === 'left');
+      }
+    }
     const ws = m.waveCount();
     this.$('[data-testid="wave"]').textContent = Number.isFinite(ws) ? `${m.wave}/${ws}` : `${m.wave}/∞`;
     this.$('.wavebar span').style.width = `${Number.isFinite(ws) ? Math.min(1, m.wave / ws) * 100 : 100}%`;
@@ -203,6 +248,9 @@ export class MatchHud {
     const t = m.towerById(this.selectedUid);
     const p = this.$('.tower-panel');
     if (!t) { p.hidden = true; this.selectedUid = null; return; }
+    // co-op: another player's tower can be inspected, not changed
+    const mine = !m.localPid || !t.owner || t.owner === m.localPid;
+    const ownerName = mine ? '' : (m.players?.find((x) => x.pid === t.owner)?.name || 'a teammate');
     const eff = m.effective(t);
     const b = t.base;
     const n = nextStep(t.def, t.up, null);
@@ -259,8 +307,8 @@ export class MatchHud {
       ${t.stunUntil > m.time ? `<p class="stunned">${icon('warn')} Stunned</p>` : ''}
       <dl>${stats.map(([k, v]) => `<dt${STAT_TIPS[k] ? ` data-tip="${esc(STAT_TIPS[k])}" tabindex="0"` : ''}>${k}</dt><dd>${v}</dd>`).join('')}</dl>
       ${b.damage || b.trap ? `<div class="targeting" role="radiogroup" aria-label="Targeting">${TARGET_MODES.map((mode) => `<button role="radio" aria-checked="${t.targeting === mode}" data-target="${mode}">${TARGET_LABEL[mode]}</button>`).join('')}</div>` : ''}
-      ${upgrade}
-      <div class="row2"><button class="btn" data-act="move" data-testid="move">Move <kbd>M</kbd></button><button class="btn danger" data-act="sell" data-testid="sell">Sell $${refund}</button></div>`;
+      ${mine ? `${upgrade}
+      <div class="row2"><button class="btn" data-act="move" data-testid="move">Move <kbd>M</kbd></button><button class="btn danger" data-act="sell" data-testid="sell">Sell $${refund}</button></div>` : `<p class="note owner-note" data-testid="owner-note">Built by ${esc(ownerName)}: only they can upgrade, move or sell it.</p>`}`;
     p.onclick = (e) => {
       const a = e.target.closest('[data-act]')?.dataset.act;
       if (a === 'close') this.cb.onDeselect();

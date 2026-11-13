@@ -9,6 +9,7 @@ const C = (cx, cy, r, fill) => `<circle cx="${cx}" cy="${cy}" r="${r}"${fill ? `
 export const GLYPHS = {
   // ---- legacy HUD icons (camera chips, settings, help, sound)
   gear: C(12, 12, 3.2) + S('M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1'),
+  globe: C(12, 12, 9) + S('M3 12h18M12 3c2.6 2.8 2.6 15.2 0 18M12 3c-2.6 2.8-2.6 15.2 0 18'),
   help: C(12, 12, 9.5) + S('M9.3 9.2a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.6') + C(12, 17.2, 0.6, 'currentColor'),
   close: S('M6 6l12 12M18 6L6 18'),
   orbit: C(12, 9, 3) + S('M6 20c1-3.4 3.3-5 6-5s5 1.6 6 5') + '<path d="M3 9a9 9 0 0 1 18 0" stroke-dasharray="2 3"/>',

@@ -231,3 +231,26 @@ body.in-match .hud-top .brand { visibility: hidden; }
 .tower-panel dt[data-tip]::after { left: 0; transform: none; width: max-content; max-width: 240px; white-space: normal; }
 
 .tutorial .link.armed { color: var(--stop-2); font-weight: 700; }
+
+/* ---- co-op: team list, quick pings, ping feed (docs/multiplayer.md contract 5) ---- */
+.team { position: absolute; left: 12px; top: 110px; min-width: 190px; padding: 8px 10px; display: grid; gap: 4px; font-size: 0.82rem; }
+.team .tm { display: grid; grid-template-columns: 12px 1fr auto; grid-template-areas: "dot nm tc" "dot hr ts"; column-gap: 8px; align-items: center; }
+.team .dot { grid-area: dot; width: 10px; height: 10px; border-radius: 50%; }
+.team .nm { grid-area: nm; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.team .hr { grid-area: hr; color: var(--text-2); font-size: 0.7rem; }
+.team .tc { grid-area: tc; color: var(--brass); font-variant-numeric: tabular-nums; }
+.team .ts { grid-area: ts; color: var(--stop-2); font-size: 0.7rem; text-align: right; }
+.team .tm.me .nm { color: var(--brass); }
+.team .tm.gone { opacity: 0.5; }
+.pings { position: absolute; left: 12px; bottom: 96px; display: flex; flex-wrap: wrap; gap: 4px; max-width: 300px; pointer-events: auto; }
+.pings .ping { min-height: 36px; padding: 4px 8px; font-size: 0.72rem; }
+.pingfeed { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); display: grid; gap: 4px; pointer-events: none; }
+.pingfeed .pg { background: rgba(7, 8, 12, 0.82); border-left: 3px solid; padding: 4px 10px; border-radius: 4px; font-size: 0.86rem; }
+.owner-note { color: var(--text-2); }
+#ui .match-ui > .team { pointer-events: none; }
+#ui .match-ui > .pings { pointer-events: auto; }
+@media (max-width: 760px) {
+  .team { left: auto; right: 8px; top: 96px; min-width: 150px; font-size: 0.74rem; }
+  .pings { left: 80px; right: 72px; bottom: 8px; max-width: none; }
+  .pings .ping { min-height: 44px; font-size: 0.66rem; }
+}

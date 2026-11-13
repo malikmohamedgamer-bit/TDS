@@ -9,6 +9,7 @@ import { Effects } from './effects.js';
 import { ModelBuilder } from './geo.js';
 import { sharedMaterials } from './mapView.js';
 import { damp } from '../core/math.js';
+import { HeroView } from './heroView.js';
 
 const _m = new THREE.Matrix4();
 const _q = new THREE.Quaternion();
@@ -301,6 +302,13 @@ export class MatchView {
       vis.rarity.userData.pulse = def.rarity === 'legendary' || def.rarity === 'mythic';
       vis.root.add(vis.rarity);
     }
+    // co-op: a thin ring in the owner's seat colour, just outside the rarity ring
+    if (this.coop && t.owner) {
+      const col = new THREE.Color(this.coop.color(Math.max(0, this.match.playerIndex(t.owner))));
+      vis.owner = new THREE.Mesh(new THREE.RingGeometry(1.7, 1.86, 40).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: col.multiplyScalar(1.6), transparent: true, opacity: 0.9, depthWrite: false }));
+      vis.owner.position.y = 0.08;
+      vis.root.add(vis.owner);
+    }
     // tier / evolution marker ring
     vis.aura = new THREE.Mesh(new THREE.RingGeometry(1.1, 1.25, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: new THREE.Color('#FFD166').multiplyScalar(2), transparent: true, opacity: 0.0, depthWrite: false }));
     vis.aura.position.y = 0.12;
@@ -541,6 +549,7 @@ export class MatchView {
     this.time += dt;
     const m = this.match;
     const cam = this.r.camera;
+    if (this.coop) this._updateRemoteHeroes(dt);
 
     // --- enemies
     for (const rig of this.enemyRigs.values()) rig.begin();
@@ -750,8 +759,49 @@ export class MatchView {
   /** Match end: free everything this view created (rigs are rebuilt per match, so their baked
    *  geometry would otherwise stay on the GPU and in the renderer's caches: about 2,000 geometries
    *  and 30 MB per match before this). Materials shared between matches are kept. */
+  /**
+   * Co-op: teammates' heroes, drawn with the same HeroView as the local hero. Their sim positions
+   * change about ten times a second (hero commands), so the drawn position eases towards them.
+   */
+  _updateRemoteHeroes(dt) {
+    this.remoteHeroes ||= new Map();
+    const seen = new Set();
+    for (const h of this.match.heroes) {
+      if (h.pid === this.coop.localPid) continue;
+      seen.add(h.pid);
+      let r = this.remoteHeroes.get(h.pid);
+      if (!r) {
+        r = { view: new HeroView(this.scene, h.def.model?.colors, h.def.model?.gear), x: h.x, y: h.y, z: h.z, yaw: 0 };
+        this.remoteHeroes.set(h.pid, r);
+      }
+      const k = 1 - Math.exp(-dt * 10);
+      const dx = h.x - r.x;
+      const dz = h.z - r.z;
+      const dist = Math.hypot(dx, dz);
+      if (dist > 0.05) r.yaw = Math.atan2(dx, dz);
+      r.x += dx * k;
+      r.y += (h.y - r.y) * k;
+      r.z += dz * k;
+      const down = h.downUntil > this.match.time;
+      r.view.setVisible(!down);
+      const groundY = this.match.mw.terrain.height(r.x, r.z);
+      r.view.update(dt, { x: r.x, y: Math.max(r.y, groundY), z: r.z, yaw: r.yaw, grounded: true, sprinting: dist > 3, hSpeed: dt > 0 ? Math.min(12, (dist * k) / dt) : 0 }, groundY, this.settings.reducedMotion);
+    }
+    for (const [pid, r] of this.remoteHeroes) if (!seen.has(pid)) { this._dropHeroView(r.view); this.remoteHeroes.delete(pid); }
+  }
+
+  _dropHeroView(v) {
+    for (const o of [v.root, v.blob]) {
+      if (!o) continue;
+      this.scene.remove(o);
+      o.traverse((x) => { x.geometry?.dispose(); for (const m of [].concat(x.material || [])) m.dispose?.(); });
+    }
+  }
+
   dispose() {
     this.disposed = true; // rigs still baking are dropped when they finish
+    for (const r of this.remoteHeroes?.values() || []) this._dropHeroView(r.view);
+    this.remoteHeroes?.clear();
     const keep = new Set([sharedMaterials().body, sharedMaterials().glow, ...Object.values(decals)]);
     const geos = new Set();
     const mats = new Set();

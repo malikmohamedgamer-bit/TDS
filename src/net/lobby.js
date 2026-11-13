@@ -92,13 +92,15 @@ export class Lobby {
    * @param {number} [o.joinTimeoutMs]  joinRoom() gives up after this without a host (8000)
    */
   constructor({
-    transport, name, hero, version, gameVersion = '', settings, timers, now, rand,
+    transport, name, hero, map, version, gameVersion = '', settings, timers, now, rand,
     stateMs = 2000, helloMs = 1000, joinTimeoutMs = 8000,
   }) {
     if (!transport) throw new Error('Lobby needs a transport');
     this.transport = transport;
     this.id = transport.id;
-    this.profile = { name: clip(name) || 'Player', hero: clip(hero), ready: false };
+    // map: the map this player's page has loaded (the world is built at page load, so a match can
+    // only start when every player is on the lobby's map; see docs/multiplayer.md contract 5)
+    this.profile = { name: clip(name) || 'Player', hero: clip(hero), ready: false, map: clip(map) };
     this.version = String(version ?? '');
     this.gameVersion = String(gameVersion ?? '');
     this.timers = timers || {
@@ -195,10 +197,11 @@ export class Lobby {
   }
 
   /** Change name / hero / ready (members tell the host; the host applies at once). */
-  setProfile({ name, hero, ready } = {}) {
+  setProfile({ name, hero, ready, map } = {}) {
     if (name !== undefined) this.profile.name = clip(name) || 'Player';
     if (hero !== undefined) this.profile.hero = clip(hero);
     if (ready !== undefined) this.profile.ready = !!ready;
+    if (map !== undefined) this.profile.map = clip(map);
     if (this.isHost) {
       const me = this.members.get(this.id);
       if (me) Object.assign(me, this.profile);
@@ -358,8 +361,11 @@ export class Lobby {
 
   /** Member: does the host's state show this player exactly as it is locally? */
   _inSync() {
-    const me = this.state?.players?.find((p) => p.id === this.id);
-    return !!me && me.name === this.profile.name && me.hero === this.profile.hero && me.ready === this.profile.ready;
+    // a state from someone who is no longer the host (for example our own, after we briefly took
+    // over while the creator's presence was lost) does not count: keep saying hello
+    if (!this.state || this.state.host !== this.hostId) return false;
+    const me = this.state.players?.find((p) => p.id === this.id);
+    return !!me && me.name === this.profile.name && me.hero === this.profile.hero && me.ready === this.profile.ready && (me.map ?? '') === (this.profile.map ?? '');
   }
 
   _hello(force) {
@@ -378,6 +384,12 @@ export class Lobby {
     // a joiner never makes itself host of a room it has not seen yet (empty room = not found)
     if (host === this.id && !this.creator && !this.state) host = null;
     this.hostId = host;
+    // we were only a stand-in host (the creator's presence was lost for a while) and the real host
+    // is back: drop the stand-in room and rejoin theirs (hello until their state seats us)
+    if (host && host !== this.id && this.state?.host === this.id && !this.creator && this.phase !== 'started') {
+      this.state = null;
+      this.members.clear();
+    }
     if (this.phase === 'refused' || this.phase === 'closed') return;
     if (host !== prevHost && prevHost !== null) {
       this._emit('host', { id: host, previous: prevHost });
@@ -452,8 +464,8 @@ export class Lobby {
       m = { id: from, seat: this.nextSeat++ };
       this.members.set(from, m);
     }
-    const next = { name: clip(d.name) || 'Player', hero: clip(d.hero), ready: !!d.ready };
-    const changed = m.name !== next.name || m.hero !== next.hero || m.ready !== next.ready;
+    const next = { name: clip(d.name) || 'Player', hero: clip(d.hero), ready: !!d.ready, map: clip(d.map) };
+    const changed = m.name !== next.name || m.hero !== next.hero || m.ready !== next.ready || m.map !== next.map;
     Object.assign(m, next);
     if (changed) this._hostPublish();
     // a repeated hello (our state got lost) or a rejoining player (reload during the match): answer
@@ -464,7 +476,7 @@ export class Lobby {
   /** Rebuild the public state from the members, then broadcast it and tell the local UI. */
   _hostPublish() {
     const prev = this.state;
-    const players = this._seated().map(({ id, name, hero, ready }) => ({ id, name, hero, ready }));
+    const players = this._seated().map(({ id, name, hero, ready, map }) => ({ id, name, hero, ready, map }));
     this.state = { ...prev, rev: prev.rev + 1, host: this.id, players, settings: { ...prev.settings } };
     this._broadcastState();
     this._applyState(this.state, prev);
