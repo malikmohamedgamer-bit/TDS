@@ -123,3 +123,12 @@ its health instead of untouched (2.6x made gen_toxic_6 0%: too map-dependent for
 - Sandbox pays nothing; assisted runs pay crowns and XP but never unlock difficulties or records.
 - Fixed: the Skip wave assist could skip every wave to a paid win (BUGS 65).
 - Commands with NaN / Infinity positions are refused (BUGS 66, 67; fuzz test).
+
+## New-player pacing (2026-11-14, `node tools/pacing.mjs`)
+
+A player winning 70% of matches (Easy for 5, then Normal): first win in match 1; enough crowns for a
+first evolution (one tower to level 5, 460 crowns) after match 1; a free summon from the start (100
+sigils, cost 100); a rare tower from the shop after 8 matches; 10 maps open after 5. Every difficulty
+is selectable from the start (no dead end). The tail was long: with `xpPerLevel` 80 the last map
+(level 42) took about 266 matches. Now 45: level 10 after 10 matches, 20 after 35, 30 after 76, all
+68 maps after about 156.
