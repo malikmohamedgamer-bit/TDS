@@ -1,6 +1,6 @@
 # Legal and launch checklist
 
-A plain checklist for publishing TDS (GitHub Pages, itch.io, or another host). It records what is
+A plain checklist for publishing Riftkeep (GitHub Pages, itch.io, or another host). It records what is
 true today and what the owner still has to decide. It is not legal advice.
 
 ## Content and licences
@@ -11,7 +11,7 @@ true today and what the owner still has to decide. It is not legal advice.
 | Code libraries | Three.js (MIT), supabase-js (MIT, only loaded for Supabase co-op), ws (MIT, server only) | docs/credits.md, vendor/*/LICENSE |
 | Music and sound | Generated in the browser by code (src/audio): no recordings or samples | src/audio/music.js, sfx.js |
 | Fonts | System fonts only | styles/tokens.css |
-| Names | Original names for the game, towers, enemies, heroes and maps. "TDS" is a working title; check the final name for trademarks before a store launch | docs/ROADMAP.md chunk 10 |
+| Names | Original names for the game, towers, enemies, heroes and maps. "Riftkeep" is the chosen name (2026-11-14); a released game is called "Rift Keeper" (Xbox, Switch), so run a trademark search before a store launch | docs/ROADMAP.md chunk 10 |
 | Third-party games | Inspired by the tower defense genre; no names, characters, art, music or levels copied | design docs |
 
 ## Privacy

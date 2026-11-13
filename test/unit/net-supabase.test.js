@@ -102,7 +102,7 @@ describe('SupabaseTransport', () => {
     const [client] = hub.clients;
     assert.equal(client.url, 'https://demo.supabase.co');
     assert.equal(client.key, 'anon-key');
-    assert.deepEqual(client.options.realtime, { params: { eventsPerSecond: 20 } });
+    assert.deepEqual(client.options.realtime, { params: { eventsPerSecond: 20 }, timeout: 20000 });
     const [ch] = client.channels;
     assert.equal(ch.topic, 'tds:ABC123');
     assert.deepEqual(ch.params, { config: { broadcast: { self: false, ack: false }, presence: { key: 'pa' } } });
@@ -237,6 +237,22 @@ describe('SupabaseTransport', () => {
     await assert.rejects(a.join('R', {}), /could not join room R/);
     assert.deepEqual(seen, ['connecting', 'error']);
     assert.equal(hub.clients[0].disconnected, true, 'the failed client is cleaned up');
+  });
+
+  test('one TIMED_OUT is not a failure: the join waits for the client to retry', async () => {
+    const hub = fakeSupabase();
+    hub.fail = 'TIMED_OUT';
+    const a = mk(hub, 'pa', { timeoutMs: 2000 });
+    const seen = [];
+    a.onStatus((s) => seen.push(s));
+    const joined = a.join('R', {});
+    await tick();
+    await tick();
+    assert.equal(a.status, 'connecting', 'still trying after TIMED_OUT');
+    a._channel.statusCb('SUBSCRIBED'); // supabase-js rejoined by itself
+    await joined;
+    assert.equal(a.status, 'open');
+    assert.ok(!seen.includes('error'));
   });
 
   test('a join that never answers times out', async () => {

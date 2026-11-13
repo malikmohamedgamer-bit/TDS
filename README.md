@@ -1,4 +1,4 @@
-# TDS (working title)
+# Riftkeep
 
 A 3D browser tower defense game. Two factions, **Magic** (mages, summoners, spirits, dragons) and
 **Modern War** (soldiers, snipers, gunners, rockets, helicopters), hold a valley against **the
@@ -20,7 +20,7 @@ Status: late development (version in `package.json`). `docs/PROGRESS.md` has the
   **100 bosses** with phase mechanics, **10 heroes** with 4 abilities each.
 - **Online co-op for 2-4 players** (Online tab): room codes and invite links, each player with their
   own hero, towers and cash against shared waves, kept in exact sync by lockstep networking with
-  automatic resync. Runs on a free Supabase project or the included relay server
+  automatic resync. Live on the game's Supabase project (data/online.json); the included relay server is the alternative
   (docs/DEPLOY-ONLINE.md); without either it connects tabs of one browser for testing.
 - **11 modes:** Campaign, Endless, Boss Rush, Daily Challenge, Time Attack, Challenge, Skirmish,
   Mutation, War Chest, Last Stand, Sandbox. 9 challenge modifiers, 8 difficulties, 3 tuning presets

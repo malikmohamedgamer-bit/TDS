@@ -198,7 +198,7 @@
    "id": "credits",
    "title": "Credits",
    "body": [
-    "TDS is built with Three.js 0.187 (MIT licence).",
+    "Riftkeep is built with Three.js 0.187 (MIT licence).",
     "3D models: built in code and in Blender for this project, plus CC0 packs by Kenney (kenney.nl) and Quaternius (quaternius.com), recoloured to the game's palettes.",
     "Music and sound effects are synthesized in code. Icons are drawn in code.",
     "The full list with sources and licences is in docs/credits.md in the project."

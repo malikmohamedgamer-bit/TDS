@@ -1,8 +1,8 @@
 {
   "$doc": "Online co-op settings (docs/multiplayer.md, setup in docs/DEPLOY-ONLINE.md). transport: which network carries co-op games: 'local' (BroadcastChannel; two tabs of the same browser only, no server, the default for testing), 'supabase' (Supabase Realtime; needs supabaseUrl + supabaseAnonKey) or 'relay' (the WebSocket relay in server/; needs relayUrl). supabaseUrl: the project URL from the Supabase dashboard (Project Settings > API, https://<ref>.supabase.co). supabaseAnonKey: that project's anon / publishable key. It is public by design: it ships in every page and only grants what the project allows anonymous users; co-op uses Realtime broadcast and presence only, with no database tables, so there is nothing for it to read or write. Never put the service_role / secret key here. relayUrl: wss:// address of a deployed server/relay.mjs (ws://localhost:8787 when run locally). turnTicks: sim ticks per lockstep turn message on 'local' and 'relay'. delayTicks: ticks between issuing a command and it taking effect (hides network latency). supabaseTurnTicks: turnTicks used on 'supabase', larger so fewer messages count against the free-tier quota. URL overrides for testing: ?net=local|relay|supabase and ?relay=wss://host/.",
-  "transport": "local",
-  "supabaseUrl": "",
-  "supabaseAnonKey": "",
+  "transport": "supabase",
+  "supabaseUrl": "https://btlwvaktfohlcnwwlvck.supabase.co",
+  "supabaseAnonKey": "sb_publishable_KLXQkQgli5Exsgn7kNEHkA_PohjcUMe",
   "relayUrl": "",
   "turnTicks": 6,
   "delayTicks": 12,

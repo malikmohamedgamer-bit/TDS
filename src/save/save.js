@@ -124,7 +124,7 @@ export function exportSave(save) {
 
 export function importSave(text, content) {
   const parts = String(text).trim().split('.');
-  if (parts.length !== 3 || parts[0] !== 'TDS1') throw new Error('Not a TDS save code');
+  if (parts.length !== 3 || parts[0] !== 'TDS1') throw new Error('Not a Riftkeep save code');
   let json;
   try { json = b64decode(parts[1]); } catch { throw new Error('Save code is damaged'); }
   if (fnv(json) !== parts[2]) throw new Error('Save code checksum does not match (damaged or edited)');

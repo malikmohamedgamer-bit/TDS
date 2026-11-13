@@ -52,7 +52,7 @@ test('export / import round trip; tampering is rejected', () => {
   const parts = code.split('.');
   const tampered = `${parts[0]}.${Buffer.from(Buffer.from(parts[1], 'base64').toString().replace('4321', '999999')).toString('base64')}.${parts[2]}`;
   assert.throws(() => importSave(tampered, C), /checksum/);
-  assert.throws(() => importSave('hello', C), /Not a TDS save/);
+  assert.throws(() => importSave('hello', C), /Not a Riftkeep save/);
 });
 
 test('write keeps a backup; a corrupt main save falls back to the backup', () => {

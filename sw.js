@@ -37,7 +37,7 @@ self.addEventListener('fetch', (e) => {
       if (res.ok && res.type === 'basic') cache.put(req, res.clone());
       return res;
     } catch (err) {
-      if (req.mode === 'navigate') return new Response('<h1>TDS is offline</h1><p>Open the game once while online to play offline.</p>', { status: 503, headers: { 'Content-Type': 'text/html' } });
+      if (req.mode === 'navigate') return new Response('<h1>Riftkeep is offline</h1><p>Open the game once while online to play offline.</p>', { status: 503, headers: { 'Content-Type': 'text/html' } });
       throw err;
     }
   })());

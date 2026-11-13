@@ -92,7 +92,7 @@ export class Hub {
     this.el.innerHTML = `
       <header class="hub-head">
         <div class="lvl" title="Player level"><span class="lvl-badge" aria-hidden="true">${s.profile.level}</span><div class="xpwrap"><b data-testid="player-level">Lv ${s.profile.level}</b><div class="xpbar" role="progressbar" aria-label="XP ${lv.into} of ${lv.need}" aria-valuemin="0" aria-valuemax="${lv.need}" aria-valuenow="${lv.into}"><span style="width:${(lv.into / lv.need) * 100}%"></span></div><small>${fmt(lv.into)}/${fmt(lv.need)} XP</small></div></div>
-        <div class="hub-brand" aria-hidden="true">TDS<small>Rift defence command</small></div>
+        <div class="hub-brand" aria-hidden="true">Riftkeep<small>Rift defence command</small></div>
         <div class="wallet"><span data-tip="Crowns: earned in matches, spent in the Shop and on tower levels" data-testid="crowns">${icon('crown', { title: 'Crowns' })} ${fmt(s.wallet.crowns)}</span><span data-tip="Sigils: spent on Summons" data-testid="sigils">${icon('sigil', { title: 'Sigils' })} ${fmt(s.wallet.sigils)}</span></div>
       </header>
       <nav class="hub-tabs" role="tablist" aria-label="Lobby">${TABS.map(([id, label, ic]) => `<button role="tab" data-tab="${id}" aria-selected="${this.tab === id}" data-testid="tab-${id}">${icon(ic)}<span class="tl">${label}</span>${badges[id] ? `<i class="badge" aria-label="${badges[id]} ready">${badges[id]}</i>` : ''}</button>`).join('')}</nav>
@@ -428,7 +428,7 @@ export class Hub {
       <textarea name="savecode" rows="3" placeholder="Paste a save code here to import it" aria-label="Save code" spellcheck="false" data-testid="save-code"></textarea>
       <button class="btn" data-act="import-save" data-testid="import-save">Import save code</button></div>
       ${about.map((a) => `<details class="help-q about" data-testid="about-${a.id}"><summary>${esc(a.title)}</summary>${a.body.map((p) => `<p>${esc(p)}</p>`).join('')}</details>`).join('')}
-      <p class="note" data-testid="version">TDS version ${VERSION} · content ${esc(String(this.c.version || ''))}</p>`;
+      <p class="note" data-testid="version">Riftkeep version ${VERSION} · content ${esc(String(this.c.version || ''))}</p>`;
   }
 
   _online() {

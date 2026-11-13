@@ -79,7 +79,9 @@ export class SupabaseTransport {
     this._createClient = opts.createClient || null;
     this._scriptUrl = opts.scriptUrl || SUPABASE_SCRIPT;
     this._eventsPerSecond = opts.eventsPerSecond ?? 20;
-    this._timeoutMs = opts.timeoutMs ?? 15000;
+    // the whole join may take this long: on a busy phone or a slow network supabase-js reports
+    // TIMED_OUT and retries by itself, so one TIMED_OUT is not a failure (see join)
+    this._timeoutMs = opts.timeoutMs ?? 30000;
     this._maxPayloadChars = opts.maxPayloadChars ?? DEFAULT_MAX_PAYLOAD_CHARS;
     this._now = opts.now || (() => Date.now());
     this._trackRetries = opts.trackRetries ?? 3;
@@ -163,7 +165,7 @@ export class SupabaseTransport {
     if (this._closed) throw new Error('SupabaseTransport: closed while loading');
 
     this._client = createClient(this.url, this.anonKey, {
-      realtime: { params: { eventsPerSecond: this._eventsPerSecond } },
+      realtime: { params: { eventsPerSecond: this._eventsPerSecond }, timeout: 20000 },
       // no sign-in is used: keep the auth helper from touching storage or the page URL, so two
       // transports in one tab (tests, local co-op) do not fight over a stored session
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
@@ -207,6 +209,10 @@ export class SupabaseTransport {
             clearTimeout(timer);
             resolve();
           }
+        } else if (state === 'TIMED_OUT' && !settled) {
+          // the server did not answer in time (busy device, slow network): supabase-js rejoins on
+          // its own, so keep waiting until our own timeout instead of giving up on the first try
+          this._setStatus('connecting', 'slow connection, still trying');
         } else if (state === 'CHANNEL_ERROR' || state === 'TIMED_OUT') {
           const detail = err && err.message ? err.message : state;
           // before the first success this is a failed join; afterwards the client retries on its own

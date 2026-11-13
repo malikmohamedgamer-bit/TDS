@@ -63,7 +63,7 @@ h1, h2, h3, h4, legend, .hub-tabs button, .btn, .sec-h h3 { font-family: var(--f
 .xpbar span, .lvbar span, .qbar span, .seg-bar span { background: linear-gradient(90deg, var(--m-1), var(--m-2)); border-radius: 1px; }
 .xpbar::after, .lvbar::after, .qbar::after, .seg-bar::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 9px, rgba(7, 8, 12, 0.7) 9px 10px); pointer-events: none; }
 .wallet span { border-radius: var(--rad); background: var(--ink-1); border: 1px solid var(--ink-5); font-family: var(--font-display); letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 6px; }
-.hub-brand { font: 800 var(--fs-3) / 1 var(--font-display); letter-spacing: 0.32em; color: var(--text); text-align: center; }
+.hub-brand { font: 800 var(--fs-3) / 1 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); text-align: center; }
 .hub-brand small { display: block; font: 600 var(--fs-0) / 1.4 var(--font-display); letter-spacing: 0.24em; color: var(--brass-2); text-transform: uppercase; }
 
 .hub-tabs { grid-column: 1; grid-row: 2; flex-direction: column; gap: 2px; padding: 12px 8px; border-bottom: none; border-right: 1px solid rgba(255, 209, 102, 0.14); background: rgba(7, 8, 12, 0.35); overflow: auto; }
@@ -269,7 +269,7 @@ body.cine::before, body.cine::after { height: 7vh; }
 
 /* ---- loading screen tips ----------------------------------------------------------------- */
 #loading { background: radial-gradient(ellipse at 50% 35%, #2b2470 0%, #12141c 62%, #07080c 100%); }
-#loading h1 { font-family: var(--font-display); letter-spacing: 0.4em; }
+#loading h1 { font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; }
 .load-tip { max-width: 440px; margin: 14px 16px 0; padding: 10px 14px; border-left: 3px solid var(--brass); background: rgba(7, 8, 12, 0.5); color: var(--text-2); font-size: var(--fs-1); line-height: 1.4; }
 .load-tip b { color: var(--brass); font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.1em; margin-right: 6px; }
 

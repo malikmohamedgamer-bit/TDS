@@ -127,3 +127,12 @@ test('co-op over the real relay server (server/relay.mjs)', async ({ context }) 
     relay.kill();
   }
 });
+
+// Opt-in: the same match through the live Supabase project in data/online.json (Realtime broadcast +
+// presence over the internet). Skipped unless TDS_SUPABASE=1, so normal runs never use the quota.
+//   TDS_SUPABASE=1 npx playwright test test/e2e/coop.spec.js -g supabase
+test('co-op over the live Supabase project', async ({ context }) => {
+  test.skip(!process.env.TDS_SUPABASE, 'set TDS_SUPABASE=1 to run against the live project');
+  test.setTimeout(600_000);
+  await coopRun(context, 'net=supabase');
+});

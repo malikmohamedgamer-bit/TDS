@@ -1,5 +1,9 @@
 # Putting co-op online
 
+> **Status (2026-11-14):** co-op is live on the owner's Supabase project (`data/online.json`: transport
+> `supabase`). Tested with a full two-player match through it: `TDS_SUPABASE=1 npx playwright test
+> test/e2e/coop.spec.js -g supabase`. The steps below are for setting up a new project or the relay.
+
 How to make the co-op mode (docs/multiplayer.md) work between players on different computers.
 The game itself stays a static site (GitHub Pages). Players only need a way to pass messages to
 each other, and there are two options:

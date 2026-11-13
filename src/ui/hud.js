@@ -12,7 +12,7 @@ export class Hud {
     this.onCamera = onCamera;
     root.insertAdjacentHTML('beforeend', `
       <header class="hud-top" role="banner">
-        <div class="brand"><span class="brand-mark" aria-hidden="true">◆</span><span class="brand-name">TDS</span><span class="brand-map" data-testid="map-name">${esc(mapName)}</span></div>
+        <div class="brand"><span class="brand-mark" aria-hidden="true">◆</span><span class="brand-name">Riftkeep</span><span class="brand-map" data-testid="map-name">${esc(mapName)}</span></div>
         <div class="hud-actions">
           <span class="fps" data-testid="fps" hidden></span>
           <button class="chip cam-chip" data-testid="camera-mode" aria-label="Camera mode (click to cycle)"><span class="ico"></span><span class="lbl"></span></button>

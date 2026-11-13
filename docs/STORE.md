@@ -1,4 +1,4 @@
-# Store page draft (itch.io / web portals)
+# Store page draft: Riftkeep (itch.io / web portals)
 
 Counts are from `node tools/count-content.mjs` and docs/PROGRESS.md (version 0.13.0). Update them
 when content changes.

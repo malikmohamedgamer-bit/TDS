@@ -1,6 +1,6 @@
 {
-  "name": "TDS: Tower Defense",
-  "short_name": "TDS",
+  "name": "Riftkeep: Rift Defence Command",
+  "short_name": "Riftkeep",
   "description": "A 3D tower defense game. Magic and Modern War defend the valley against the Blight.",
   "start_url": "./",
   "scope": "./",
