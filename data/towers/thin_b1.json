@@ -1,0 +1,101 @@
+{
+ "$doc": "Hand-made batch for the thin classes (air, trap, summoner): a jet and a dragon for the air the brief asked for, a trap per faction, and a War summoner. Models are code-built (src/engine/unitModels.js TOWER_MODELS by id).",
+ "towers": [
+  {"id": "strike_jet", "name": "Strike Jet", "faction": "war", "class": "air", "rarity": "epic",
+   "description": "A ground-attack jet on wide, fast patrols. Rocket runs on anything below or beside it.",
+   "cost": 1600, "limit": 2, "footprint": 1.5, "placement": "ground", "model": {"builder": "strike_jet"},
+   "air": {"altitude": 13, "patrol": 13, "speed": 1.05},
+   "stats": {"damage": 34, "damageType": "explosive", "rate": 1.1, "range": 22, "splash": 2.2, "targets": {"ground": true, "air": true}, "detection": false, "projectile": {"kind": "rocket", "speed": 70}},
+   "upgrades": {
+    "linear": [
+     {"name": "Laser Designator", "cost": 600, "mul": {"damage": 1.35}, "desc": "+35% damage"},
+     {"name": "Targeting Pod", "cost": 650, "set": {"detection": true}, "add": {"range": 4}, "desc": "Sees hidden enemies, +4 range"}
+    ],
+    "branches": {
+     "A": {"name": "Carpet Run", "desc": "Cluster bombs: wider blasts.", "steps": [
+      {"name": "Cluster Bombs", "cost": 2100, "mul": {"damage": 1.4}, "add": {"splash": 1.8}, "desc": "+40% damage, much wider blasts"},
+      {"name": "Thunderbolt", "cost": 4400, "mul": {"damage": 1.9}, "evolve": "Thunderbolt", "desc": "+90% damage"}
+     ]},
+     "B": {"name": "Interceptor", "desc": "Air-to-air missiles: fast and accurate.", "steps": [
+      {"name": "Sidewinders", "cost": 2000, "mul": {"rate": 1.8}, "set": {"projectile.speed": 110}, "desc": "+80% fire rate, faster missiles"},
+      {"name": "Interceptor", "cost": 4100, "mul": {"rate": 1.3, "damage": 1.6}, "evolve": "Interceptor", "desc": "+30% fire rate, +60% damage"}
+     ]}
+    }
+   }},
+  {"id": "storm_drake", "name": "Storm Drake", "faction": "magic", "class": "air", "rarity": "legendary",
+   "description": "A tamed drake circles its roost and breathes chain lightning on ground and air.",
+   "cost": 2000, "limit": 2, "footprint": 1.5, "placement": "ground", "model": {"builder": "storm_drake"},
+   "air": {"altitude": 10, "patrol": 8, "speed": 0.6},
+   "stats": {"damage": 26, "damageType": "lightning", "rate": 1.4, "range": 19, "chain": {"count": 3, "falloff": 0.75, "range": 6}, "targets": {"ground": true, "air": true}, "detection": false, "projectile": {"kind": "lightning", "speed": 0}},
+   "upgrades": {
+    "linear": [
+     {"name": "Charged Scales", "cost": 700, "mul": {"damage": 1.35}, "desc": "+35% damage"},
+     {"name": "Sky Sight", "cost": 700, "set": {"detection": true}, "add": {"range": 3}, "desc": "Sees hidden enemies, +3 range"}
+    ],
+    "branches": {
+     "A": {"name": "Tempest", "desc": "Longer chains.", "steps": [
+      {"name": "Forked Breath", "cost": 2300, "set": {"chain.count": 6, "chain.falloff": 0.85}, "mul": {"damage": 1.2}, "desc": "Chains to 6 enemies, +20% damage"},
+      {"name": "Tempest Drake", "cost": 4800, "mul": {"damage": 1.8}, "evolve": "Tempest Drake", "desc": "+80% damage"}
+     ]},
+     "B": {"name": "Elder Drake", "desc": "Slower, crushing bolts.", "steps": [
+      {"name": "Thunderclap", "cost": 2200, "mul": {"damage": 1.9, "rate": 0.85}, "set": {"stun": 0.4}, "desc": "+90% damage, bolts stun 0.4 s"},
+      {"name": "Elder Drake", "cost": 4700, "mul": {"damage": 1.7}, "evolve": "Elder Drake", "desc": "+70% damage"}
+     ]}
+    }
+   }},
+  {"id": "claymore_nest", "name": "Claymore Nest", "faction": "war", "class": "trap", "rarity": "rare",
+   "description": "Sets directional charges along the road. Fewer than a Mine Layer, but each one hits hard.",
+   "cost": 750, "limit": 4, "footprint": 1, "placement": "ground", "model": {"builder": "claymore_nest"},
+   "stats": {"damage": 120, "damageType": "explosive", "range": 9, "splash": 3, "targets": {"ground": true, "air": false}, "detection": true, "trap": {"interval": 4, "max": 3, "trigger": 1.5}},
+   "upgrades": {
+    "linear": [
+     {"name": "Steel Balls", "cost": 300, "mul": {"damage": 1.4}, "desc": "+40% damage"},
+     {"name": "Tripwires", "cost": 350, "mul": {"trap.interval": 0.7}, "add": {"trap.trigger": 0.4}, "desc": "Sets 43% faster, wider trigger"}
+    ],
+    "branches": {
+     "A": {"name": "Killing Field", "desc": "More charges.", "steps": [
+      {"name": "Killing Field", "cost": 1300, "set": {"trap.max": 6}, "add": {"splash": 1}, "evolve": "Killing Field", "desc": "Up to 6 charges, bigger blasts"}
+     ]},
+     "B": {"name": "Breaching Charge", "desc": "Shreds armour.", "steps": [
+      {"name": "Breaching Charge", "cost": 1500, "mul": {"damage": 1.8}, "set": {"stun": 0.6}, "evolve": "Breacher", "desc": "+80% damage, charges stun 0.6 s"}
+     ]}
+    }
+   }},
+  {"id": "frost_glyph", "name": "Frost Glyph Ward", "faction": "magic", "class": "trap", "rarity": "rare",
+   "description": "Draws ice glyphs on the road. Walkers that step on one are frozen solid for a moment.",
+   "cost": 700, "limit": 4, "footprint": 0.9, "placement": "ground", "model": {"builder": "frost_glyph"},
+   "stats": {"damage": 45, "damageType": "ice", "range": 10, "splash": 2.6, "stun": 0.9, "targets": {"ground": true, "air": false}, "detection": true, "trap": {"interval": 3, "max": 4, "trigger": 1.4}},
+   "upgrades": {
+    "linear": [
+     {"name": "Deep Cold", "cost": 300, "mul": {"damage": 1.4}, "desc": "+40% damage"},
+     {"name": "Quick Sigils", "cost": 350, "mul": {"trap.interval": 0.7}, "desc": "Draws 43% faster"}
+    ],
+    "branches": {
+     "A": {"name": "Glacier Field", "desc": "Many glyphs.", "steps": [
+      {"name": "Glacier Field", "cost": 1200, "set": {"trap.max": 8}, "evolve": "Glacier Field", "desc": "Up to 8 glyphs"}
+     ]},
+     "B": {"name": "Permafrost", "desc": "Longer freezes.", "steps": [
+      {"name": "Permafrost", "cost": 1400, "set": {"stun": 1.6}, "mul": {"damage": 1.5}, "evolve": "Permafrost Ward", "desc": "Freezes 1.6 s, +50% damage"}
+     ]}
+    }
+   }},
+  {"id": "fireteam_post", "name": "Fireteam Post", "faction": "war", "class": "summoner", "rarity": "epic",
+   "description": "Sends rifle teams up the road from your keep to hold it.",
+   "cost": 1250, "limit": 3, "footprint": 1.1, "placement": "ground", "model": {"builder": "fireteam_post"},
+   "stats": {"range": 0, "targets": {"ground": true, "air": false}, "summon": {"interval": 9, "max": 3, "unit": {"id": "rifle_trooper", "hp": 120, "damage": 15, "rate": 1.5, "speed": 4, "range": 5, "damageType": "physical", "splash": 0}}},
+   "upgrades": {
+    "linear": [
+     {"name": "Body Armour", "cost": 500, "mul": {"summon.unit.hp": 1.6}, "desc": "Troopers +60% health"},
+     {"name": "Rapid Deployment", "cost": 600, "set": {"summon.max": 4, "summon.interval": 7}, "desc": "Up to 4 troopers, sent faster"}
+    ],
+    "branches": {
+     "A": {"name": "Heavy Weapons", "desc": "Machine-gun teams.", "steps": [
+      {"name": "Heavy Weapons", "cost": 1700, "mul": {"summon.unit.damage": 1.6, "summon.unit.rate": 1.6}, "evolve": "Heavy Weapons Post", "desc": "+60% damage and fire rate"}
+     ]},
+     "B": {"name": "Grenadiers", "desc": "Explosive rounds.", "steps": [
+      {"name": "Grenadiers", "cost": 1800, "set": {"summon.unit.damageType": "explosive", "summon.unit.splash": 2}, "mul": {"summon.unit.damage": 2}, "evolve": "Grenadier Post", "desc": "Explosive splash, x2 damage"}
+     ]}
+    }
+   }}
+ ]
+}

@@ -16,7 +16,8 @@ fire, frost, storms and spirits from the Magic orders. Upgrade them, choose a pa
 into something much worse for the Blight. Walk the battlefield as your Commander, call in abilities,
 and hold the line through 20 waves and their bosses.
 
-- **100 towers** across two factions, each with upgrade paths and evolutions
+- **105 towers** across two factions, including a strike jet and a storm drake, each with upgrade paths
+  and evolutions
 - **200 enemies and 100 bosses**, from swarming crawlers to bosses that cloak, shield, teleport and
   open portals
 - **68 maps on 14 themes**: winding roads, split lanes, roads that cross themselves, and air routes

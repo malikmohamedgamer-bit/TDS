@@ -27,7 +27,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Content | Count |
 |---|---|
 | Maps | 68 on 14 themes: 13 hand-made (Riftline, Frostmere, Glacier Gate, Mirrormire, Starfall Sanctum, Russet Spiral, Crimson Crossing, Redrock Switchbacks, Void Convergence, Frostbite Hairpin, Ashfall Gauntlet, Dune Ladder, Twin Bridges), 55 generated on 5 road templates (serpentine, fork, trident, diamond, crossover); 6 with air routes for fliers (Willow Hollow, Winter Gate, Ashen Flats, Null Rift, Frostbite Hairpin, Dune Ladder); unlock levels 1 to 42 |
-| Towers | 100 (57 War, 43 Magic), 85 mechanically distinct, 91 models |
+| Towers | 105 (60 War, 45 Magic), 87 mechanically distinct, 96 models; air 3 (helicopter, jet, drake), trap 3, summoner 3 |
 | Enemies / bosses | 200 (168 distinct, 191 models) / 100 (83 distinct, 94 models). 252 of the 300 appear in Campaign wave tables; all in Endless / Boss Rush |
 | Heroes / abilities | 10 heroes, 4 skills each / 39 skills |
 | Modes / modifiers | 11 single-player (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) + online Co-op / 9 |

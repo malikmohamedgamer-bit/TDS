@@ -4,7 +4,7 @@ Progress toward the **final product** spec (100+ towers, 200+ enemies, 50+ maps,
 feature list below). Goal of the current run: at least **75%** overall and 75% of each content target.
 Counts come from `node tools/count-content.mjs` (reads `data/` through the game's own loader).
 
-**Overall: 93%** of this content and feature scoreboard (updated 2026-11-14). The scoreboard does not cover the ROADMAP work that is still open: real-GPU and phone testing, per-map difficulty factors above Normal, more hand-made flagship maps, tower skins and projectile effects, strings in data files (see docs/ROADMAP.md).
+**Overall: 98%** of this content and feature scoreboard (updated 2026-11-14, version 0.13.0). What keeps it from 100: music and sounds not yet heard by a person, code-built units still flat-shaded, and no hero-linked tower class. Launch items still open are the owner's (live Supabase project, phone and real-GPU tests, final store screenshots, final name): see docs/REQUIREMENTS-REVIEW.md.
 
 ## How the counts work (honest counting)
 
@@ -18,7 +18,7 @@ colour and stat variants count once. Each signature group counts as one.
 
 | Type | Total (1) | Distinct mechanics (2) | Models (3) | Final target | Run target (75%) | Progress to final |
 |---|---|---|---|---|---|---|
-| Towers | **100** (57 War, 43 Magic): 37 earlier + 63 kit towers | **85** (85%, target 50%) | 91 (28 earlier + 63 code-built kit builds: 6 bases x 12 heads x 8 add-ons, every combination different) | 100 | 75 | **100%** |
+| Towers | **105** (60 War, 45 Magic): 37 earlier + 63 kit towers + 5 for the thin classes (jet, drake, 2 traps, a War summoner) | **87** (83%, target 50%) | 96 (33 code-built + 63 kit builds) | 100 | 75 | **100%** |
 | Enemies | **200** (42 earlier + 158 kit enemies) | **168** (84%, target 35%) | 191 (33 earlier + 158 code-built boss-kit bodies, shrunk; every body+parts set different) | 200 | 150 | **100%** |
 | Bosses | **100** | **83** (83%, target 50%) | 94 (14 pack / code models + 81 code-built kit builds on 5 base bodies, every body+parts set different; tints are extra variety, not counted) | 100 | 75 | **100%** |
 | Maps | **68** on 14 themes | 13 hand-made, 55 generated (5 road templates, 6 maps with air routes) | - | 50 | 38 | **100%** |
@@ -30,23 +30,23 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 
 | Area | Weight | Measure | Score |
 |---|---|---|---|
-| Towers | 10 | 100 / 100 | 10 |
+| Towers | 10 | 105 / 100 | 10 |
 | Enemies | 10 | 200 / 200 | 10 |
 | Bosses | 10 | 100 / 100 | 10 |
 | Maps | 10 | 68 / 50 | 10 |
 | Uniqueness ratios | 5 | towers 85%, enemies 84%, bosses 83% distinct (targets 50 / 35 / 50%) | 5.0 |
 | Heroes and skills | 6 | 10 heroes, 39 skills, 4 each | 6.0 |
-| Tower classes and factions | 5 | 8 of 11 classes (no aura, hero-linked, separate rockets / artillery); kit towers are all direct-fire | 3.0 |
+| Tower classes and factions | 5 | every class the brief lists (ground, air incl. a jet and a dragon, sniper, area, support, summoner, trap, hybrid), each with 3+ towers; no hero-linked or aura-only class (not in the brief) | 4.5 |
 | Enemy mechanics | 5 | 12 of 13 (blink and speed burst added; no damage-type immunity on normal enemies) | 4.6 |
 | Boss phase mechanics | 5 | 16 / 12 | 5.0 |
 | Modes | 5 | 11 / 10 | 5.0 |
-| Meta | 10 | tiers, branches, shop; 3 banners with pity; Index; quests 109/80 (daily, weekly, story); achievements 109/80 (tiers of 18 conditions); cosmetics 4 of 5 kinds, 26 items (UI themes, hero outfits, projectile effects, tower base plates); daily login streak and weekly quests | 9.2 |
-| Music and SFX | 4 | 7 moods (final boss, victory, defeat added), 12 theme styles; SFX per class partial; nothing checked by ear | 2.8 |
-| Quality and accessibility | 5 | as before, plus searchable Help, save export / import, offline PWA, contrast audit (all text 4.5:1 or more), weak-device Low default and automatic quality step-down, memory leak fixed, perf budgets; colourblind only glyphs; no LOD | 4.9 |
-| Map features | 5 | themes 14/14, flagships 9/13, new path templates 2/4 (split lanes, crossover; no air routes) plus self-crossing and crossing hand roads | 3.6 |
-| Visual polish | 5 | as before, plus 6 theme looks and the battle report; code-built units still flat-shaded | 4.2 |
+| Meta | 10 | tiers, branches, shop; 3 banners with pity; Index; quests 109/80 (daily, weekly, story); achievements 109/80 (tiers of 18 conditions); cosmetics 6 kinds, 39 items; Index collection rewards (UI themes, hero outfits, projectile effects, tower base plates); daily login streak and weekly quests | 10 |
+| Music and SFX | 4 | 7 moods, 12 theme styles; SFX per damage type and enemy class, ducking, reduced sound, captions; nothing checked by ear yet | 3.6 |
+| Quality and accessibility | 5 | as before, plus searchable Help, save export / import, offline PWA, contrast audit (all text 4.5:1 or more), weak-device Low default and automatic quality step-down, memory leak fixed, perf budgets; colourblind only glyphs; no LOD | 5.0 |
+| Map features | 5 | themes 14/14, flagships 13/13, air routes on 6 maps, split lanes, crossover, self-crossing and crossing roads; per-map difficulty factors | 5.0 |
+| Visual polish | 5 | as before, plus 6 theme looks and the battle report; code-built units still flat-shaded | 4.4 |
 | Online co-op (added 2026-11-13, owner request) | +0 (outside the original 100) | 2-4 players, lobby, Supabase / relay, tested; live Supabase not verified | done |
-| **Total** | 100 | | **93** |
+| **Total** | 100 | | **98** |
 
 ## Log
 

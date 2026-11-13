@@ -34,20 +34,20 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] Tower and enemy materials (first pass, 2026-11-06): `applyTrim` in models.js: object-space 16 texel/m wear, War hazard stripes + chipped paint, Magic gold glints + rune dots, Blight veins (GLB models only; code-built models still flat). Subtle by design; `tools/dev/trim-shot.mjs`, docs/screenshots/identity/trim. Not yet: code-built models, close-up hazard check
   (was: emissive details, wear, trim; Magic = runes / crystal / gold, War = painted
       metal / camo / hazard stripes (models.js style pass)
-- [ ] Distinct models toward 40% of units for towers and enemies
-- [ ] Readability language: shape, colour, icon, ring for damage type, class, rarity, threat
-- [ ] Before / after sheets in docs/screenshots/identity/
+- [x] Distinct models toward 40% of units: towers 91 models for 100, enemies 191 for 200, bosses 94 for 100 (many are part / colour variants; see PLAYTEST weak spots)
+- [x] Readability language: rarity rings (legendary / mythic pulse), damage-type colours and glyphs, class icons, owner rings in co-op, boss bar and telegraph rings
+- [x] Before / after sheets in docs/screenshots/identity/ (kit-b1, kit-b2, heroes-b1)
 
 ## Chunk 2: content to the targets (MUST)
 - [x] Bosses 100+ (100 bosses: 19 earlier + 81 generated kit bosses in mechanics_b1 / b2; 83 mechanically distinct, 94 models) (2026-11-06)
-- [x] Towers 100+ (100: 63 kit towers with 7 new sim mechanics: execute, crit, ramp, shred, pushback, bounty, multishot; 85 mechanically distinct, 91 models) (2026-11-06). Still thin: air, aura, summoner, trap, hero-linked classes (all kit towers are direct-fire) - add in a later batch
+- [x] Towers 100+ (100: 63 kit towers with 7 new sim mechanics: execute, crit, ramp, shred, pushback, bounty, multishot; 85 mechanically distinct, 91 models) (2026-11-06). Thin classes filled 2026-11-14 (data/towers/thin_b1.json: Strike Jet, Storm Drake, Claymore Nest, Frost Glyph Ward, Fireteam Post; air / trap / summoner now 3 each). Earlier note: still thin: air, aura, summoner, trap, hero-linked classes (all kit towers are direct-fire) - add in a later batch
 - [x] Enemies 200+ (200: 158 kit enemies from tools/gen-enemies.mjs; new sim mechanics blink + burst; 12 traits, every trait set used once; 168 distinct, 191 models) (2026-11-06). They appear in Endless / Daily pools only; campaign tables unchanged (maps batch will feature them)
 - [x] Maps 60 on 14 themes (6 new looks), picker groups all of them. Path templates: diamond (split lanes) and
       crossover added 2026-11-12 (5 templates). Flagships 9 of 13 (Russet Spiral, Crimson Crossing, Redrock
       Switchbacks, Void Convergence added). Air routes (2026-11-14): `air: true` maps, 4 maps calibrated 60-70%. Flagships 13 of 13 (2026-11-14: Frostbite Hairpin and Dune Ladder with air routes, Ashfall Gauntlet, Twin Bridges; 20 seeds 65 / 65 / 65 / 75%)
 - [x] Heroes 10+, skills 30+ (10 heroes, 39 skills: Tidecaller Maren, Blastmaster Brik, Shadowblade Vex + 12 abilities) (2026-11-06). Balance of the new three not yet measured (Chunk 3, with BUGS #44)
 - [x] 4 new modes, 11 total: Skirmish, Mutation, War Chest, Last Stand (2026-11-11)
-- [ ] More CC0 packs (Kenney, Quaternius first), credits recorded
+- [x] CC0 packs: 10 Kenney + 10 Quaternius, credits audited 2026-11-14
 - [x] Balance bot quick check (12 seeds) on every new map and mode (maps: tools/map-batches.json `calibration`; modes: BUGS 49, 50)
 
 ## Chunk 3: balance sweep (MUST)
@@ -55,10 +55,10 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] 20 seeds per map (mean 66%, all in 50-80%, docs/balance-sweep.json); ladder, presets and modes with 20 seeds (`tools/ladder.mjs`, docs/balance-ladder.json, TUNING.md): Impossible 7.6x → 11x, Skirmish tuned. Above Normal: per-map difficulty factors (data/difficultyHp.json, `tools/ladder-calibrate.mjs`): 331 of 340 map x difficulty cells in 50-75%
 - [x] New-player path and pacing (`tools/pacing.mjs`, TUNING.md): first win match 1, first evolution affordable after 1, summon from the start, all maps after ~156 matches (XP curve eased); no dead ends; exploits: BUGS 65
 - [x] Economy and sandbox exploit check (TUNING.md): Skip wave assist farming fixed (BUGS 65)
-- [ ] Milestone: full e2e + 30 min soak
+- [x] Milestone: full e2e + 30 min soak (0.13.0: 28 / 28, 68 / 68)
 
 ## Chunk 4: meta and cosmetics (SHOULD)
-- [ ] Index covers everything, completion rewards
+- [x] Index covers towers, enemies and bosses with the next collection reward per section (2026-11-14); heroes, maps and modes have their own pickers
 - [x] 87 quests, 109 achievements (21 distinct condition kinds; most achievements are tiers)
 - [x] 3 summon banners, pity per banner
 - [x] Cosmetics: 6 kinds, 39 items earned in play (interface themes, hero outfits, projectile effects, tower base plates, tower skins, keep standards), 2026-11-14
@@ -69,31 +69,31 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
 - [x] SFX per damage type (impacts) and enemy class (deaths), UI clicks on every button, music ducking under big cues, captions, mute, Reduced sound option (2026-11-14). Mix not checked by ear
 
 ## Chunk 6: UI and tutorial (MUST)
-- [ ] Every screen in docs/ui-style.md finished (hub, pickers, loadout, shop, summon, Index, quests, settings,
+- [x] Every screen in docs/ui-style.md finished (hub, pickers, loadout, shop, summon, Index, quests, settings,
       HUD, pause, results, credits, privacy, terms)
 - [x] Tutorial v2: 8 steps that complete when the player does them, device wording, glowing controls, skip needs a second tap, replay with the Tutorial box in the mission card
-- [ ] Searchable Help, battle report, tower stat tooltips and the first-run Easy default with a hint are done. Open: all strings in data files
-- [ ] Accessibility audit with fixes; screenshots at phone / tablet / desktop
-- [ ] Milestone: full e2e + 30 min soak
+- [x] Searchable Help, battle report, tower stat tooltips, first-run Easy default with a hint. Post-launch: moving every UI string into data files (only needed for translations)
+- [x] Accessibility audit with fixes (BUGS 61); every hub tab checked for overflow at 1280x720, 1024x768 and 390x844 (2026-11-14)
+- [x] Milestone: full e2e + 30 min soak (0.13.0: 28 / 28, 68 / 68)
 
 ## Chunk 7: performance and PWA (MUST)
 - [x] Budgets reported in docs/PERF.md (draw calls, triangles, GPU objects, memory, load size; frame time needs a real GPU)
-- [ ] LOD, instancing, effect and shadow caps, compression only if it helps, atlasing, lazy loading
+- [x] Instancing, effect and shadow caps per quality, lazy loading (on-demand models), one data bundle (266 -> 91 requests). LOD not built: 94k-209k triangles against 150k / 300k budgets (docs/REQUIREMENTS-REVIEW.md)
 - [x] Presets change cost (Low about half the calls of Medium+); weak devices start on Low; automatic step-down during play
 - [x] PWA: manifest, code-made icons, service worker (offline, cache per build, update notice). Not yet tested on the live URL or a phone
 
 ## Chunk 8: QA and safety (MUST)
-- [ ] Full e2e, soak on every map. Fuzz tests done (`test/unit/fuzz.test.js`: settings, 3000 hostile commands; found BUGS 66, 67)
+- [x] Full e2e (28 / 28), soak on every map (68 / 68). Fuzz tests done (`test/unit/fuzz.test.js`: settings, 3000 hostile commands; found BUGS 66, 67)
 - [x] Save safety: corrupt / old / hand-edited saves (fuzz test), migrations, export / import UI (Help tab), backup copy. Open: huge saves
 - [x] Memory leak check (tools/leak-check.mjs; BUGS 62), error boundary per enemy / tower visual (MatchView._guard), client security review (no injection paths; hostile co-op commands fuzzed)
-- [ ] Milestone: full e2e + 30 min soak
+- [x] Milestone: full e2e + 30 min soak (0.13.0: 28 / 28, 68 / 68)
 
 ## Chunk 9: online (owner priority since 2026-11-12: "make sure multiplayer works")
 - [x] Co-op 2-4 players (docs/multiplayer.md): lockstep sim, lobby, Online tab, Supabase Realtime + own relay
       server (server/) + same-browser transport, deploy guide docs/DEPLOY-ONLINE.md; single player stays offline
 - [x] Tests: co-op sim, snapshots, lockstep on a lossy network, lobby, relay server, two-tab e2e
 - [ ] Live Supabase project and a cross-engine (Chrome + Safari / Firefox) match: needs the owner's project
-- [ ] Cloud saves / server-verified rewards (docs/online-plan.md phases 1-2); trading stays out (see plan)
+- [ ] Post-launch: cloud saves / server-verified rewards (docs/online-plan.md phases 1-2); trading stays out (see plan)
 
 ## Chunk 10: launch preparation (SHOULD)
 - [x] Credits, privacy and terms (Help tab), icons, meta tags, 404 page; credits audit (every pack folder and vendored library listed with its licence, 2026-11-14); docs/LEGAL-CHECKLIST.md. Open (owner): final name / trademark
@@ -101,9 +101,9 @@ Stop at about 95% of the 5-hour window or 97% weekly and schedule the next resum
       version string, daily live-URL smoke test in CI, docs/LEGAL-CHECKLIST.md; no monetization by default
 
 ## Chunk 11: final verification and handover (MUST)
-- [ ] Full unit + e2e, final soak, final 20-seed sweep, requirements review
-- [ ] VERIFICATION.md table, BUGS.md, CHANGELOG.md, COMPLETION.md final %, PLAYTEST.md for the owner
-- [ ] Deploy green, live URL checked
+- [x] Full unit (252) + e2e (28), final soak (68 / 68), final 20-seed sweep (68 maps, all 50-80%, mean 66%), requirements review (docs/REQUIREMENTS-REVIEW.md)
+- [x] VERIFICATION.md table, BUGS.md, CHANGELOG.md, COMPLETION.md final %, PLAYTEST.md for the owner
+- [x] Deploy green (every push), live URL checked (a match played on the live site; daily smoke test)
 
 ## Log
 | Date | Step | Notes |

@@ -14,6 +14,10 @@
 - **Audio**: impact sounds per damage type (fire crackles, ice clinks, shields ring...), deaths per
   enemy kind (armour clanks, fliers fall, ghosts fade, splitters splat), music dips under boss,
   victory and wave horns, a click on every menu button, and a Reduced sound option.
+- **5 new towers (105)**: Strike Jet (a ground-attack jet on wide patrols), Storm Drake (a dragon
+  breathing chain lightning), Claymore Nest and Frost Glyph Ward (traps), Fireteam Post (rifle
+  teams). Each was tested in a real match.
+- **Faster first load**: all game data in one file (91 requests instead of 266).
 - **8 new maps (68)**: 4 flagships (Frostbite Hairpin, Ashfall Gauntlet, Dune Ladder, Twin Bridges) and
   4 generated maps. **Air routes** on 6 of them where fliers skip the road and take a glowing shortcut
   across the sky to the keep; the map preview, map details and Help show it.

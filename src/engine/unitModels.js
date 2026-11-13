@@ -643,6 +643,124 @@ export const TOWER_MODELS = {
     g.add(turret, spin);
     return { group: g, parts: { turret, spinY: [spin], bob: spin }, muzzle: new THREE.Vector3(-0.38, 2.1, 0.2) };
   },
+  strike_jet() {
+    const g = new THREE.Group();
+    g.add(part('pad', (b) => {
+      b.box(3.0, 0.16, 1.5, C.gunmetal, { pos: [0, 0, 0] });
+      for (let i = -2; i <= 2; i++) b.box(0.32, 0.02, 0.1, C.gold, { pos: [i * 0.55, 0.1, 0] });
+      for (const s of [-1, 1]) b.box(0.08, 0.06, 0.08, C.muzzle, { glow: true, pos: [s * 1.45, 0.11, 0.7] });
+      b.box(0.5, 0.9, 0.5, C.oliveDark, { pos: [-1.1, 0.5, -0.45] });
+      b.box(0.5, 0.06, 0.5, C.steel, { pos: [-1.1, 0.98, -0.45] });
+    }));
+    // the jet flies its patrol (sim position); swept wings, twin tails, glowing afterburner
+    const unit = new THREE.Group();
+    const jet = part('jet', (b) => {
+      b.cyl(0.22, 0.3, 3.0, 8, C.khakiDark, { pos: [0, 0, -0.2], rot: [P / 2, 0, 0], centered: true });
+      b.cone(0.22, 0.9, 8, C.khakiDark, { pos: [0, 0, 1.75], rot: [P / 2, 0, 0], centered: true });
+      b.box(0.26, 0.18, 0.7, '#1F3A4D', { pos: [0, 0.2, 0.8] });
+      for (const s of [-1, 1]) {
+        b.extrude([[0, 0], [s * 1.9, -0.9], [s * 1.9, -1.3], [0, -0.9]], 0.06, C.khaki, { pos: [0, -0.02, 0.4], rot: [P / 2, 0, 0] });
+        b.extrude([[0, 0], [s * 0.7, -0.45], [s * 0.7, -0.7], [0, -0.5]], 0.05, C.khaki, { pos: [0, 0, -1.2], rot: [P / 2, 0, 0] });
+        b.box(0.05, 0.6, 0.5, C.khakiDark, { pos: [s * 0.22, 0.38, -1.4], rot: [0, 0, s * 0.25] });
+        b.box(0.08, 0.08, 0.6, C.gunmetal, { pos: [s * 0.95, -0.1, -0.1] });
+        b.box(0.05, 0.05, 0.05, C.hazard, { pos: [s * 1.85, 0, -0.7] });
+      }
+      b.cyl(0.2, 0.2, 0.15, 8, C.ember, { glow: true, intensity: 2.2, pos: [0, 0, -1.78], rot: [P / 2, 0, 0], centered: true });
+    });
+    unit.add(jet);
+    return { group: g, unit, parts: { recoil: jet }, muzzle: new THREE.Vector3(0, -0.1, 1.6) };
+  },
+
+  storm_drake() {
+    const g = new THREE.Group();
+    g.add(part('roost', (b) => {
+      stonePlinth(b, C.cyan);
+      for (let i = 0; i < 6; i++) b.cone(0.18, 0.9, 5, C.stoneDark, { pos: [Math.cos(i * P / 3) * 1.0, 0.25, Math.sin(i * P / 3) * 1.0], rot: [Math.sin(i) * 0.2, 0, Math.cos(i) * 0.2] });
+      b.torus(0.7, 0.05, 3, 20, C.cyan, { glow: true, intensity: 1.6, pos: [0, 0.35, 0], rot: [P / 2, 0, 0] });
+    }));
+    // the drake circles its roost (sim position): long neck, horned head, wide wings, glowing eyes
+    const unit = new THREE.Group();
+    const drake = part('drake', (b) => {
+      b.ico(0.5, 1, C.night, { pos: [0, 0, 0], scale: [0.9, 0.75, 1.5] });
+      b.cyl(0.14, 0.24, 0.9, 6, C.night, { pos: [0, 0.35, 0.85], rot: [P / 2 - 0.6, 0, 0] });
+      b.box(0.34, 0.3, 0.55, C.night, { pos: [0, 0.68, 1.35] });
+      b.box(0.24, 0.12, 0.35, C.slate2, { pos: [0, 0.6, 1.72] });
+      for (const s of [-1, 1]) {
+        b.box(0.06, 0.06, 0.04, C.cyan, { glow: true, intensity: 2.4, pos: [s * 0.12, 0.74, 1.62] });
+        b.cone(0.05, 0.4, 4, C.bone, { pos: [s * 0.12, 0.88, 1.2], rot: [-1.0, 0, 0] });
+        b.extrude([[0, 0], [s * 2.2, 0.5], [s * 2.0, -0.2], [s * 1.2, -0.5], [s * 0.6, -0.7]], 0.05, C.violet, { pos: [0, 0.2, 0.2], rot: [P / 2, 0, 0] });
+        b.box(0.06, 0.06, 0.06, C.cyan, { glow: true, pos: [s * 2.1, 0.2, -0.2] });
+      }
+      b.cyl(0.18, 0.04, 1.6, 6, C.night, { pos: [0, -0.05, -1.4], rot: [-P / 2 - 0.15, 0, 0] });
+      b.cone(0.12, 0.3, 4, C.cyan, { glow: true, pos: [0, -0.15, -2.25], rot: [-P / 2, 0, 0] });
+    });
+    unit.add(drake);
+    return { group: g, unit, parts: { recoil: drake }, muzzle: new THREE.Vector3(0, 0.6, 1.9) };
+  },
+
+  claymore_nest() {
+    const g = new THREE.Group();
+    g.add(part('base', (b) => {
+      b.cyl(1.0, 1.1, 0.2, 10, C.gunmetal, { pos: [0, -0.05, 0] });
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * TAU;
+        b.box(0.5, 0.32, 0.3, C.khaki, { pos: [Math.cos(a) * 0.85, 0.22, Math.sin(a) * 0.85], rot: [0, -a, 0] });
+      }
+      b.box(0.7, 0.45, 0.5, C.oliveDark, { pos: [0, 0.32, 0] });
+      b.box(0.72, 0.06, 0.52, C.olive, { pos: [0, 0.56, 0] });
+      b.box(0.3, 0.05, 0.02, C.hazard, { pos: [0, 0.4, 0.26] });
+    }));
+    const turret = part('turret', (b) => {
+      for (const [x, ry] of [[-0.22, 0.3], [0.22, -0.3]]) {
+        b.box(0.32, 0.22, 0.08, C.olive, { pos: [x, 0.78, 0.1], rot: [0, ry, 0] });
+        b.box(0.03, 0.12, 0.03, C.gunmetal, { pos: [x - 0.1, 0.62, 0.1] });
+        b.box(0.03, 0.12, 0.03, C.gunmetal, { pos: [x + 0.1, 0.62, 0.1] });
+        b.box(0.05, 0.03, 0.02, C.muzzle, { glow: true, pos: [x, 0.84, 0.15] });
+      }
+    }, [0, 0.6, 0]);
+    g.add(turret);
+    return { group: g, parts: { turret }, muzzle: new THREE.Vector3(0, 0.8, 0.3) };
+  },
+
+  frost_glyph() {
+    const g = new THREE.Group();
+    g.add(part('base', (b) => {
+      stonePlinth(b, C.cyan);
+      b.box(0.5, 1.6, 0.5, C.stoneLight, { pos: [0, 0.95, 0] });
+      b.box(0.62, 0.2, 0.62, C.stone, { pos: [0, 1.85, 0] });
+      for (const [x, z, ry] of [[0, 0.26, 0], [0, -0.26, 0], [0.26, 0, P / 2], [-0.26, 0, P / 2]]) {
+        b.box(0.26, 0.05, 0.02, C.cyan, { glow: true, pos: [x, 1.0, z], rot: [0, ry, 0] });
+        b.box(0.05, 0.36, 0.02, C.cyan, { glow: true, pos: [x, 1.1, z], rot: [0, ry, P / 4] });
+        b.box(0.05, 0.36, 0.02, C.cyan, { glow: true, pos: [x, 1.1, z], rot: [0, ry, -P / 4] });
+      }
+    }));
+    const crystal = part('crystal', (b) => {
+      b.octa(0.3, '#BDEBFF', { glow: true, intensity: 1.7, pos: [0, 2.35, 0], scale: [0.8, 1.6, 0.8] });
+      for (let i = 0; i < 4; i++) b.octa(0.09, C.cyan, { glow: true, pos: [Math.cos(i * P / 2) * 0.55, 2.2, Math.sin(i * P / 2) * 0.55] });
+    }, [0, 2.3, 0]);
+    g.add(crystal);
+    return { group: g, parts: { spinY: [crystal], bob: crystal }, muzzle: new THREE.Vector3(0, 2.3, 0) };
+  },
+
+  fireteam_post() {
+    const g = new THREE.Group();
+    g.add(part('base', (b) => {
+      b.box(2.2, 0.18, 2.0, C.gunmetal, { pos: [0, -0.05, 0] });
+      b.box(1.7, 1.0, 1.4, C.olive, { pos: [0.1, 0.55, -0.1] });
+      b.box(1.9, 0.12, 1.6, C.oliveDark, { pos: [0.1, 1.1, -0.1], rot: [0, 0, 0.06] });
+      b.box(0.6, 0.75, 0.04, C.black, { pos: [0.1, 0.45, 0.61] });
+      for (const s of [-1, 1]) b.box(0.6, 0.3, 0.3, C.khaki, { pos: [s * 0.75, 0.2, 0.85] });
+      b.cyl(0.03, 0.03, 1.5, 4, C.steel, { pos: [-0.75, 1.0, -0.7] });
+      b.box(0.5, 0.32, 0.02, C.hazard, { pos: [-0.5, 1.6, -0.7] });
+      b.box(0.08, 0.06, 0.08, C.muzzle, { glow: true, pos: [0.85, 1.2, 0.5] });
+    }));
+    const flag = part('flag', (b) => {
+      b.box(0.04, 0.26, 0.4, C.olive, { pos: [-0.75, 1.62, -0.48] });
+    }, [-0.75, 1.62, -0.7]);
+    g.add(flag);
+    return { group: g, parts: { bob: flag }, muzzle: new THREE.Vector3(0.1, 1.0, 0.7) };
+  },
+
   titan_railgun() {
     const g = new THREE.Group();
     g.add(part('base', (b) => {

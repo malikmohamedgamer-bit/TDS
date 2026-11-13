@@ -1,14 +1,14 @@
 {
  "summary": {
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "seeds": 20,
   "loadout": "core 12",
   "difficulty": "normal",
   "preset": "standard",
-  "maps": 56,
+  "maps": 68,
   "mean": 0.664,
-  "in60to70": 33,
-  "in50to80": 56,
+  "in60to70": 44,
+  "in50to80": 68,
   "below50": [],
   "above80": []
  },
@@ -348,6 +348,78 @@
    "wins": 11,
    "seeds": 20,
    "rate": 0.55
+  },
+  {
+   "map": "russet_spiral",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "crimson_crossing",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "redrock_switchbacks",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "void_convergence",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_air_1",
+   "wins": 12,
+   "seeds": 20,
+   "rate": 0.6
+  },
+  {
+   "map": "gen_air_2",
+   "wins": 14,
+   "seeds": 20,
+   "rate": 0.7
+  },
+  {
+   "map": "gen_air_3",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "gen_air_4",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "frostbite_hairpin",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "ashfall_gauntlet",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "dune_ladder",
+   "wins": 13,
+   "seeds": 20,
+   "rate": 0.65
+  },
+  {
+   "map": "twin_bridges",
+   "wins": 15,
+   "seeds": 20,
+   "rate": 0.75
   }
  ]
 }
