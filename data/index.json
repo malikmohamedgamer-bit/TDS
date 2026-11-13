@@ -172,5 +172,6 @@
     "maps/gen_air_2.json",
     "maps/gen_air_3.json",
     "maps/gen_air_4.json"
-  ]
+  ],
+  "difficultyHp": "difficultyHp.json"
 }

@@ -1,0 +1,4 @@
+{
+ "$doc": "Per-map enemy health factor for each difficulty above Normal, on top of data/difficulties.json. Measured by tools/ladder-calibrate.mjs (balance bot, 12 core towers, Standard, skill 0.7, each difficulty at its gate tower level, target 50-75%). Missing entries are 1. Normal is calibrated per map in tools/map-batches.json instead.",
+ "maps": {}
+}

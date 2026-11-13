@@ -4,7 +4,7 @@ Progress toward the **final product** spec (100+ towers, 200+ enemies, 50+ maps,
 feature list below). Goal of the current run: at least **75%** overall and 75% of each content target.
 Counts come from `node tools/count-content.mjs` (reads `data/` through the game's own loader).
 
-**Overall: 93%** of this content and feature scoreboard (updated 2026-11-12). The scoreboard does not cover the ROADMAP work that is still open: error boundaries, security review, real-GPU and phone testing, more hand-made flagship maps, tower skins and projectile effects, strings in data files (see docs/ROADMAP.md).
+**Overall: 93%** of this content and feature scoreboard (updated 2026-11-14). The scoreboard does not cover the ROADMAP work that is still open: real-GPU and phone testing, per-map difficulty factors above Normal, more hand-made flagship maps, tower skins and projectile effects, strings in data files (see docs/ROADMAP.md).
 
 ## How the counts work (honest counting)
 
@@ -21,7 +21,7 @@ colour and stat variants count once. Each signature group counts as one.
 | Towers | **100** (57 War, 43 Magic): 37 earlier + 63 kit towers | **85** (85%, target 50%) | 91 (28 earlier + 63 code-built kit builds: 6 bases x 12 heads x 8 add-ons, every combination different) | 100 | 75 | **100%** |
 | Enemies | **200** (42 earlier + 158 kit enemies) | **168** (84%, target 35%) | 191 (33 earlier + 158 code-built boss-kit bodies, shrunk; every body+parts set different) | 200 | 150 | **100%** |
 | Bosses | **100** | **83** (83%, target 50%) | 94 (14 pack / code models + 81 code-built kit builds on 5 base bodies, every body+parts set different; tints are extra variety, not counted) | 100 | 75 | **100%** |
-| Maps | **60** on 14 themes | 9 hand-made, 51 generated (5 road templates) | - | 50 | 38 | **100%** |
+| Maps | **64** on 14 themes | 9 hand-made, 55 generated (5 road templates, 4 with air routes) | - | 50 | 38 | **100%** |
 | Heroes | **10** (10 looks: own colours + gear silhouettes, builds, weapons) | **39 skills**, 4 per hero | 1 code model with 8 headgear / 5 weapon / 3 shoulder parts and 6 body builds | 10, 4 skills each, 30 skills | - | **100%** |
 
 Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, speed + teleport, regen, cloak, damage-type immunity, armour, dash, cash drain, portals on other roads, heal pulse, snipe on the top tower, revive once, split on death). 40 generated bosses (`tools/gen-bosses.mjs`) each use a different set.
@@ -33,7 +33,7 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 | Towers | 10 | 100 / 100 | 10 |
 | Enemies | 10 | 200 / 200 | 10 |
 | Bosses | 10 | 100 / 100 | 10 |
-| Maps | 10 | 60 / 50 | 10 |
+| Maps | 10 | 64 / 50 | 10 |
 | Uniqueness ratios | 5 | towers 85%, enemies 84%, bosses 83% distinct (targets 50 / 35 / 50%) | 5.0 |
 | Heroes and skills | 6 | 10 heroes, 39 skills, 4 each | 6.0 |
 | Tower classes and factions | 5 | 8 of 11 classes (no aura, hero-linked, separate rockets / artillery); kit towers are all direct-fire | 3.0 |
@@ -52,6 +52,7 @@ Boss phase mechanics: **16** of 12 (telegraphed tower stun, summon, shield, spee
 
 | Date | Batch | Overall | Notes |
 |---|---|---|---|
+| 2026-11-14 | balance, audio, hardening, air routes | 93% | Co-op start resync fixed; ladder / modes / economy check (Skip-wave farming fixed, Impossible 11x, Skirmish tuned); battle audio pass; per-unit error boundaries; fuzz tests (2 crash bugs); air routes with 4 new maps (64) |
 | 2026-11-12 | flagships, cosmetics, phone UI, perf | 93% | 4 hand-made flagships (60 maps), projectile effects and tower base plates (4 cosmetic kinds), memory leak and on-demand loading (match memory 130-200 MB to 30-44 MB), phone layout fixes from the screenshot review |
 | 2026-11-12 | templates, balance, launch, perf | 92% | Split-lane and crossover road layouts (6 maps, 56 total), re-sweep after the ally fix (all 56 maps 50-80%), weekly quests, launch prep (404, meta tags, version, itch.io zip), memory leak fixed, perf budgets, auto quality, contrast fix |
 | 2026-11-11 | maps, modes, meta, PWA | 91% | 50 maps on 14 themes, campaign features 252 of 300 units, 11 modes, 87 quests, 3 banners, cosmetics, Help, battle report, music styles, PWA, save fuzz. The Score table above was also stale for towers / enemies / bosses (it still showed the counts from before those batches) |

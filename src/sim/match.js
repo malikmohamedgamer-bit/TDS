@@ -66,6 +66,9 @@ export class Match {
     if (this.mode.infiniteCash) this.options.infiniteCash = true;
     this.difficulty = this.content.difficulties.get(o.difficulty || 'normal');
     if (!this.difficulty) throw new Error(`Unknown difficulty ${o.difficulty}`);
+    // per-map correction above Normal (data/difficultyHp.json, measured by tools/ladder-calibrate.mjs):
+    // the same difficulty multiplier lands very differently on different layouts
+    this.mapDiffHp = this.content.difficultyHp?.[this.map.id]?.[this.difficulty.id] ?? 1;
     this.waveSet = this.content.waves.get(this.options.waveSet || this.mode.waves || this.map.waves);
     this.genWaves = new Map();
     if (!this.waveSet) throw new Error(`Map ${this.map.id} has no wave set`);
@@ -496,7 +499,7 @@ export class Match {
   }
 
   enemyHpScale(waveNo) {
-    const s = this.difficulty.hpMul * this.tune.enemyHp * (1 + (this.waveSet.hpScalePerWave ?? 0) * (waveNo - 1));
+    const s = this.difficulty.hpMul * this.mapDiffHp * this.tune.enemyHp * (1 + (this.waveSet.hpScalePerWave ?? 0) * (waveNo - 1));
     return this.coopScale.hp === 1 ? s : s * this.coopScale.hp;
   }
 

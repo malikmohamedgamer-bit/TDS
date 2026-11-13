@@ -26,12 +26,12 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 
 | Content | Count |
 |---|---|
-| Maps | 60 on 14 themes: 9 hand-made (Riftline, Frostmere, Glacier Gate, Mirrormire, Starfall Sanctum, Russet Spiral, Crimson Crossing, Redrock Switchbacks, Void Convergence), 51 generated on 5 road templates (serpentine, fork, trident, diamond, crossover); unlock levels 1 to 42 |
+| Maps | 64 on 14 themes: 9 hand-made (Riftline, Frostmere, Glacier Gate, Mirrormire, Starfall Sanctum, Russet Spiral, Crimson Crossing, Redrock Switchbacks, Void Convergence), 55 generated on 5 road templates (serpentine, fork, trident, diamond, crossover); 4 with air routes for fliers (Willow Hollow, Winter Gate, Ashen Flats, Null Rift); unlock levels 1 to 42 |
 | Towers | 100 (57 War, 43 Magic), 85 mechanically distinct, 91 models |
 | Enemies / bosses | 200 (168 distinct, 191 models) / 100 (83 distinct, 94 models). 252 of the 300 appear in Campaign wave tables; all in Endless / Boss Rush |
 | Heroes / abilities | 10 heroes, 4 skills each / 39 skills |
 | Modes / modifiers | 11 single-player (Campaign, Endless, Boss Rush, Daily, Time Attack, Challenge, Skirmish, Mutation, War Chest, Last Stand, Sandbox) + online Co-op / 9 |
-| Quests / achievements | 109: 23 daily pool (3 a day), 12 weekly pool (3 a week), 74 story (6 hand-written, 60 map liberations, 8 mode wins) / 109 |
+| Quests / achievements | 113: 23 daily pool (3 a day), 12 weekly pool (3 a week), 78 story (6 hand-written, 64 map liberations, 8 mode wins) / 109 |
 | Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
 | Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
 | Music | 7 moods, 12 theme styles, one key per map; procedural |
@@ -141,7 +141,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 done (`tools/ladder.mjs`, docs/balance-ladder.json, TUNING.md; BUGS 65; Impossible 11x; Skirmish
 tuned); chunk 5 battle audio; chunk 6 tutorial v2 confirmed; chunk 8 fuzz tests (BUGS 66, 67) and
 per-unit error boundaries. Still open, in order: full e2e + 30 min soak (chunk 11), per-map
-difficulty factors above Normal (TUNING.md "Known limit"), air route template and 4 flagships,
+difficulty factors above Normal (TUNING.md "Known limit"), 4 more flagships (air routes done: 4 maps),
 tower skins / map decorations, strings in data files, live Supabase + phone PWA test (owner).
 
 **FINISH THE GAME run** (owner brief 2026-11-06; checklist and tiers in `docs/ROADMAP.md`, scoreboard in

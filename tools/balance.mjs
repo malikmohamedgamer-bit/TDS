@@ -15,6 +15,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => (args.includes(`--${k}`) ? args[args.indexOf(`--${k}`) + 1] : d);
 const content = await loadContent(async (p) => JSON.parse(await readFile(join(root, 'data', p), 'utf8')));
+// --diffhp x: try a per-map difficulty factor (data/difficultyHp.json) for the --map / --difficulty given
+if (opt('diffhp')) for (const m of opt('map', '').split(',')) for (const d of opt('difficulty', 'normal').split(',')) (content.difficultyHp[m] ||= {})[d] = Number(opt('diffhp'));
 const errs = validateContent(content);
 if (errs.length) { console.error(errs.join('\n')); process.exit(1); }
 
