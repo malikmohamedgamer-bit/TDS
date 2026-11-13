@@ -8,7 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadContent, validateContent } from '../src/core/content.js';
 import { buildMapWorld } from '../src/core/mapLayout.js';
-import { playBot } from '../src/sim/bot.js';
+import { playBot, playCoopBot } from '../src/sim/bot.js';
 import { dailyChallenge } from '../src/meta/meta.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -31,6 +31,27 @@ const heroes = list(opt('hero', [...content.heroes.keys()][0]), [...content.hero
 const loadoutArg = opt('loadout', 'all');
 const loadout = loadoutArg === 'all' ? undefined : loadoutArg === 'starters' ? content.meta.starterTowers : loadoutArg.split(',');
 const levels = Object.fromEntries([...content.towers.keys()].map((id) => [id, level]));
+
+if (args.includes('--coop')) {
+  // co-op: one bot per player (docs/multiplayer.md); --coop 2|3|4, --map ids, --seeds n
+  const n = Number(opt('coop', 2));
+  const pool = loadoutArg === 'all' ? ['rifleman', 'marksman', 'gunner', 'rocket_battery', 'gunship', 'supply_depot', 'mine_layer', 'ember_adept', 'frost_weaver', 'storm_caller', 'rune_totem', 'spirit_summoner'] : loadout;
+  let total = 0;
+  let won = 0;
+  for (const mapId of maps) {
+    let w = 0;
+    for (let s = 0; s < seeds; s++) {
+      const r = playCoopBot({ content, mapWorld: buildMapWorld(content.maps.get(mapId), content.props), players: n, difficulty: diffs[0], seed: `coop-${n}-${s}`, pool, levels, skill, options: { preset: presets[0] } });
+      if (r.won) w++;
+      if (verbose) console.log(`  ${mapId} seed ${s}: ${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.waves} keep ${Math.round(r.baseHp)}`);
+    }
+    console.log(`${mapId.padEnd(18)} coop x${n} ${diffs[0]}: ${w}/${seeds} won (${Math.round((w / seeds) * 100)}%)`);
+    won += w;
+    total += seeds;
+  }
+  console.log(`co-op x${n}: ${won}/${total} won (${Math.round((won / total) * 100)}%)`);
+  process.exit(0);
+}
 
 if (args.includes('--daily')) {
   // Daily Challenge: each date fixes its own difficulty, modifiers, loaner loadout and levels.

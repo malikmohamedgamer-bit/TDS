@@ -211,6 +211,45 @@ export function playBot({ content, mapWorld, difficulty = 'normal', seed = 'bot'
   return { ...r, bot: bot.report, towers: m.towers.map((t) => `${t.name}(${t.up.linear}${t.up.branch || ''}${t.up.branchLevel || ''})`), simSeconds: m.tick * SIM_DT, match: m };
 }
 
+/**
+ * One player's view of a co-op match (docs/multiplayer.md): the bot sees its own wallet, towers, hero
+ * and abilities, and every command it issues carries its player id. Everything else is the shared
+ * match. Lets the single-player bot play one seat of a co-op game unchanged.
+ */
+export function playerView(m, pid) {
+  return new Proxy(m, {
+    get(target, prop) {
+      if (prop === 'cash') return target.wallet(pid);
+      if (prop === 'towers') return target.towers.filter((t) => t.owner === pid);
+      if (prop === 'hero') return target.heroes.find((h) => h.pid === pid) || null;
+      if (prop === 'abilities') return target.abilitiesOf(pid);
+      if (prop === 'command') return (cmd) => target.command({ ...cmd, pid });
+      const v = Reflect.get(target, prop, target);
+      return typeof v === 'function' ? v.bind(target) : v;
+    },
+  });
+}
+
+/**
+ * Co-op balance run: one bot per player, each with its own wallet and a 6-tower share of `pool`
+ * (rotating windows, so 2 players split the core 12 and 3-4 players overlap). Mode coop.
+ */
+export function playCoopBot({ content, mapWorld, players = 2, difficulty = 'normal', seed = 'coop', pool, levels, options = {}, skill = 0.7, heroes, maxTicks = 60 * 60 * 40 }) {
+  const ids = Array.from({ length: players }, (_, i) => `p${i + 1}`);
+  const heroList = heroes || [...content.heroes.keys()];
+  const towers = pool || [...content.towers.keys()];
+  const loadoutOf = (i) => Array.from({ length: 6 }, (_, k) => towers[(i * 6 + k) % towers.length]);
+  const loadout = [...new Set(ids.flatMap((_, i) => loadoutOf(i)))];
+  const m = new Match({ content, mapWorld, difficulty, seed, loadout, levels, options: { ...options, mode: 'coop', players: ids.map((pid, i) => ({ pid, hero: heroList[i % heroList.length], name: pid })) } });
+  const bots = ids.map((pid, i) => createBot(playerView(m, pid), { loadout: loadoutOf(i), skill, seed: `${seed}:${pid}` }));
+  while (m.phase !== 'won' && m.phase !== 'lost' && m.tick < maxTicks) {
+    for (const b of bots) b.update();
+    m.step();
+    m.drainEvents();
+  }
+  return { ...m.result(), bots: bots.map((b) => b.report), simSeconds: m.tick * SIM_DT, match: m };
+}
+
 /** Re-run a recorded match from its result (seed + log) and return the final hash. */
 export function replay(result, { content, mapWorld, loadout, levels, options }) {
   const m = new Match({ content, mapWorld, difficulty: result.difficulty, seed: result.seed, loadout, levels, options });
