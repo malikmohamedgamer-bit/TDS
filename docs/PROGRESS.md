@@ -35,7 +35,7 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
 | Summon banners | 3 (all towers, Modern War only, Magic only), pity per banner |
 | Cosmetics | 14: 7 interface themes, 7 hero outfits, earned in play |
 | Music | 7 moods, 12 theme styles, one key per map; procedural |
-| Unit tests / E2E tests | 142 / 26 (see VERIFICATION.md) |
+| Unit / server / E2E tests | 239 / 26 / 28 incl. two co-op e2e (same-browser and real relay) (see VERIFICATION.md) |
 
 ## Balance evidence (bot skill 0.7, Standard preset unless noted)
 

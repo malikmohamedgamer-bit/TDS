@@ -300,8 +300,14 @@ test('2 players over the relay: ~3000 ticks of real commands, identical state, z
     assert.deepEqual(matchOf(ps[1]).log, m.log, 'identical command logs');
     // every kind of command really travelled and applied, from both players where scripted
     const by = applied(m);
-    for (const type of ['place', 'upgrade', 'target', 'hero']) {
+    for (const type of ['place', 'upgrade', 'target']) {
       assert.deepEqual([...(by[type] || [])].sort(), ['p1', 'p2'], `${type} applied for both players (${JSON.stringify(tally)})`);
+    }
+    // co-op hero positions are not kept in the replay log (they would bloat it): check the heroes
+    const sp = m.map.playerSpawn;
+    for (const pid of ['p1', 'p2']) {
+      const h = m.heroOf(pid);
+      assert.ok(Math.hypot(h.x - sp.x, h.z - sp.z) > 0.5, `hero of ${pid} moved (${JSON.stringify(tally)})`);
     }
     assert.ok(by.skip?.has('p1') && by.skip?.has('p2'), 'skip from host and client');
     assert.ok(by.ability?.size >= 1, `ability cast (${JSON.stringify(tally)})`);
@@ -347,11 +353,13 @@ test('3 players: a client socket drops mid-match, RelayTransport reconnects, sta
       assert.ok(!p.session.ended, `${p.name} session still running`);
     }
     // the victim still commands its own player after the reconnect
-    const before = matchOf(host).log.filter((e) => e.pid === victim.localPid && e.type === 'hero').length;
+    const vh = matchOf(host).heroOf(victim.localPid);
+    const before = { x: vh.x, z: vh.z };
     host.session.setPaused(false);
     await run(ps, 120, script(ps, tally, { from: 0 }));
     await settle(ps, host);
-    assert.ok(matchOf(host).log.filter((e) => e.pid === victim.localPid && e.type === 'hero').length > before, 'victim commands apply after the reconnect');
+    const after = matchOf(host).heroOf(victim.localPid);
+    assert.ok(Math.hypot(after.x - before.x, after.z - before.z) > 0.05, 'victim commands apply after the reconnect (its hero moved)');
     assertSame(ps);
     noRateErrors(ps);
   } finally {

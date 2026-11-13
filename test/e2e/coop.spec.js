@@ -2,6 +2,7 @@
 // the lockstep session. Both tabs must end on the same tick with the same state hash and towers from
 // both players (docs/multiplayer.md). The longer version with screenshots: tools/dev/coop-check.mjs.
 import { test, expect } from '@playwright/test';
+import { spawn } from 'node:child_process';
 
 // two tabs share one window: the background tab must keep running (Chrome stops its frames)
 test.use({ launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows'] } });
@@ -14,10 +15,10 @@ const tap = (p, id) => p.evaluate((id) => {
   b.click();
 }, id);
 
-async function openOnline(context, name, errors) {
+async function openOnline(context, name, errors, net = 'net=local') {
   const p = await context.newPage();
   p.on('pageerror', (e) => errors.push(`${name}: ${e.message}`));
-  await p.goto('./?net=local&quality=low');
+  await p.goto(`./?${net}&quality=low`);
   await p.waitForFunction(() => window.TDS?.ready && window.TDS.ctrl.hub?.el.open, null, { timeout: 120_000 });
   await tap(p, 'tab-online');
   await p.waitForSelector('[data-testid="online-name"]', { timeout: 60_000 });
@@ -25,11 +26,10 @@ async function openOnline(context, name, errors) {
   return p;
 }
 
-test('co-op: create and join a room, start, build from both tabs, stay in lockstep', async ({ context }) => {
-  test.setTimeout(600_000);
+async function coopRun(context, net) {
   const errors = [];
-  const A = await openOnline(context, 'Alice', errors);
-  const B = await openOnline(context, 'Bob', errors);
+  const A = await openOnline(context, 'Alice', errors, net);
+  const B = await openOnline(context, 'Bob', errors, net);
   await tap(A, 'online-create');
   const code = (await A.getByTestId('room-code').textContent({ timeout: 60_000 })).trim();
   expect(code).toMatch(/^[A-Z0-9]{6}$/);
@@ -105,4 +105,21 @@ test('co-op: create and join a room, start, build from both tabs, stay in lockst
   expect(await A.evaluate(() => window.TDS.ctrl.match.towers.length)).toBe(0); // a fresh match
   expect(firstSeed).toBeTruthy();
   expect(errors).toEqual([]);
+}
+
+test('co-op (same-browser transport): lobby, lockstep, rematch', async ({ context }) => {
+  test.setTimeout(600_000);
+  await coopRun(context, 'net=local');
+});
+
+test('co-op over the real relay server (server/relay.mjs)', async ({ context }) => {
+  test.setTimeout(600_000);
+  const port = 8800 + Math.floor(Math.random() * 100);
+  const relay = spawn(process.execPath, ['server/relay.mjs'], { env: { ...process.env, PORT: String(port) }, stdio: 'ignore' });
+  try {
+    await expect.poll(async () => (await fetch(`http://localhost:${port}/health`).catch(() => null))?.ok ?? false, { timeout: 20_000 }).toBe(true);
+    await coopRun(context, `net=relay&relay=${encodeURIComponent(`ws://localhost:${port}`)}`);
+  } finally {
+    relay.kill();
+  }
 });

@@ -548,23 +548,24 @@ export class MatchController {
       onReplace: (next) => this.rebindOnline(next),
     });
     online.sim = sim;
+    this.online = online;
+    // load the models first, THEN join the session: the host starts the clock only when every
+    // player said hello (it waits up to 15 s), so nobody starts behind and needs a snapshot
+    online.loading = true;
+    const view = new MatchView(this.renderer, match, content, this.settings, this.ui.querySelector('.dmg-layer'), looks);
+    view.coop = { localPid, players: start.players, color: seatColor };
+    await view.preload();
+    if (this.online !== online) { view.dispose(); return; } // superseded while loading
     online.session = new LockstepSession({
       transport, hostId: start.hostId, sim,
       turnTicks: config.turnTicks || 6, delayTicks: config.delayTicks || 12, hashEvery: 120,
       peers: Object.keys(start.peers), peerPids: start.peers, awaitSnapshot: !!start.rejoin,
     });
-    this.online = online;
-    // listen before loading: a host 'bye' or a snapshot can arrive while the models load
-    online.loading = true;
     this.listenOnline();
-    const view = new MatchView(this.renderer, match, content, this.settings, this.ui.querySelector('.dmg-layer'), looks);
-    view.coop = { localPid, players: start.players, color: seatColor };
-    await view.preload();
-    if (this.online !== online) { view.dispose(); return; } // superseded while loading
     online.loading = false;
     this.match = match;
     this.view = view;
-    // a snapshot arrived while loading (rejoin): draw the restored match instead
+    // a snapshot already replaced the match (rejoin): draw the restored one
     if (online.sim.match !== match) this.rebindOnline(online.sim.match);
     this.tutorialStats = { heroMoved: 0, cameraTurned: 0, tutorialTimer: 0, lastHero: { x: this.hero.x, z: this.hero.z }, lastYaw: this.rig.yaw };
     const own = (this.save.towers.loadout?.length ? this.save.towers.loadout : DEFAULT_LOADOUT).filter((id) => content.towers.has(id)).slice(0, 6);
@@ -618,6 +619,13 @@ export class MatchController {
     on('hostLeft', () => { if (!o.finished) this.backToOnlineLobby('The host left: the match ended'); });
     on('paused', (p) => { if (!o.isHost) this.mhud.banner(p ? 'Paused by the host' : 'The host resumed', 'info'); });
     on('error', (err) => console.warn('co-op session:', err));
+    // the host ended the match (it went back to the room) before our session heard about it
+    o.offs.push(o.lobby.on('state', () => {
+      if (this.online === o && !o.isHost && !o.lobby.state?.start && o.lobby.phase === 'lobby') this.backToOnlineLobby('The host ended the match');
+    }));
+    o.offs.push(o.lobby.on('players', () => {
+      if (this.online === o && !o.isHost && !o.lobby.state?.start && o.lobby.phase === 'lobby') this.backToOnlineLobby('The host ended the match');
+    }));
     // quick pings ride on the same transport ({t:'chat'}; the session ignores unknown messages)
     const offMsg = o.transport.onMessage((d, from) => {
       if (d?.t !== 'chat' || !Number.isInteger(d.k) || !PING_TEXTS[d.k]) return;
@@ -631,6 +639,14 @@ export class MatchController {
       this.showPing(pid, d.k);
     });
     if (typeof offMsg === 'function') o.offs.push(offMsg);
+    // the same player opened this room in another tab: that tab takes over, this one stops
+    const offSt = o.transport.onStatus?.((st) => {
+      if (st !== 'replaced' || this.online !== o) return;
+      this.end();
+      this.mhud.setVisible(true);
+      this.hub.showOnline({ message: 'This room was opened in another tab or window' }).then((cfg) => cfg && this.start(cfg));
+    });
+    if (typeof offSt === 'function') o.offs.push(offSt);
   }
 
   commandOnline(cmd) {
@@ -699,7 +715,7 @@ export class MatchController {
     if (!o) return;
     clearTimeout(o.stallTimer);
     for (const off of o.offs) { try { off?.(); } catch { /* already gone */ } }
-    try { o.session.close(); } catch { /* already closed */ }
+    try { o.session?.close(); } catch { /* already closed */ }
     this.online = null;
     document.body.classList.remove('coop');
   }

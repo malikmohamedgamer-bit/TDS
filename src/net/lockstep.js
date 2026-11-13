@@ -32,6 +32,8 @@ import { CHUNK_BYTES, Reassembler, splitUtf8 } from './chunk.js';
 export const TURNS_KEPT = 600;
 /** A client missing more turns than this gets a snapshot instead of a resend burst. */
 export const RESEND_MAX = 40;
+/** A client housekeeping gap longer than this (ms) means the tab was frozen: skip one beat. */
+export const FREEZE_MS = 1000;
 /** Host hashes kept for comparison with late client reports. */
 export const HASHES_KEPT = 64;
 /** Allowed game speeds (host only). */
@@ -117,6 +119,9 @@ export class LockstepSession {
     const initial = peers || current;
     this.present = new Set([...current, this.id]);
     this.seen = new Set(this.present);
+    // last 40 session events (presence, hello, start, snapshots) for diagnosing co-op reports
+    this.trace = [];
+    this._trace('init', [...this.present].join(','));
     this.hostGoneAt = null; // client: when the host vanished from presence (grace period)
 
     if (this.isHost) {
@@ -270,6 +275,11 @@ export class LockstepSession {
 
   // ------------------------------------------------------------------ internals: shared -----
 
+  _trace(e, d = '') {
+    this.trace.push(`${Math.round(this.now() - this.created)}ms t${this.sim.tick} ${e} ${d}`);
+    if (this.trace.length > 40) this.trace.shift();
+  }
+
   _emit(name, payload) {
     const set = this.handlers.get(name);
     if (!set) return;
@@ -348,6 +358,7 @@ export class LockstepSession {
     for (const id of now) {
       if (this.present.has(id)) continue;
       this.present.add(id);
+      this._trace('peer+', id);
       const returning = this.seen.has(id);
       this.seen.add(id);
       if (id === this.hostId) this.hostGoneAt = null; // the host came back within the grace period
@@ -357,6 +368,7 @@ export class LockstepSession {
     for (const id of [...this.present]) {
       if (now.has(id)) continue;
       this.present.delete(id);
+      this._trace('peer-', id);
       this._emit('peerLeft', { id });
       if (this.isHost) {
         this.waiting.delete(id);
@@ -405,7 +417,7 @@ export class LockstepSession {
       // snapSess: the peer's session id when that snapshot went out; hashes: early client reports
       ps = {
         rtt: 0, results: new Map(), sess: null, epoch: 0, snapAt: -Infinity, snapWanted: null,
-        snapReason: null, snapSess: null, snapOut: null, hashes: new Map(), greeted: false,
+        snapReason: null, snapSess: null, snapOut: null, hashes: new Map(), greeted: false, staleHiAt: null,
       };
       this.peerState.set(id, ps);
     }
@@ -426,6 +438,7 @@ export class LockstepSession {
   }
 
   _start() {
+    this._trace('start', `waiting=${[...this.waiting].join(',')}`);
     this.started = true;
     this.waiting.clear();
     this._unstall();
@@ -504,6 +517,7 @@ export class LockstepSession {
           return;
         }
         ps.snapOut = null; // the client runs on the last snapshot: no more part resends needed
+        ps.staleHiAt = null; // it is receiving turns
         const ours = this.hashes.get(m.tick);
         if (ours !== undefined) this._compareHash(from, ps, m.tick, m.hash, ours);
         else if (m.tick > this.sim.tick) {
@@ -513,6 +527,7 @@ export class LockstepSession {
         break;
       }
       case 'hi': {
+        this._trace('hi', `${from} need=${!!m.need} seq=${m.seq}`);
         const first = !ps.greeted;
         ps.greeted = true;
         if (m.sess !== ps.sess) { ps.sess = m.sess; ps.results.clear(); }
@@ -523,8 +538,16 @@ export class LockstepSession {
           // before the peer's session existed (other sess) was lost, so send another
           const fresh = ps.snapSess === ps.sess && this.now() - ps.snapAt < this.cfg.snapTimeoutMs;
           if (!fresh) this._wantSnapshot(from, 'join');
-        } else if (first || (Number.isInteger(m.seq) && m.seq < this.seq)) {
+        } else if (first) {
+          ps.staleHiAt = null;
           this._resend(from, (m.seq | 0) + 1);
+        } else if (Number.isInteger(m.seq) && m.seq < this.seq) {
+          // the same session says hello again with an old seq: on a busy tab the turns already sent
+          // are usually still queued for delivery, so only act when it persists past snapTimeoutMs
+          // (a resend of many turns becomes a snapshot)
+          const now = this.now();
+          ps.staleHiAt ??= now;
+          if (now - ps.staleHiAt >= this.cfg.snapTimeoutMs) { ps.staleHiAt = null; this._resend(from, (m.seq | 0) + 1); }
         }
         break;
       }
@@ -598,6 +621,7 @@ export class LockstepSession {
   }
 
   _wantSnapshot(peer, reason) {
+    this._trace('snap?', `${peer} ${reason}`);
     const ps = this._ps(peer);
     ps.snapWanted = ps.snapWanted === 'desync' ? 'desync' : reason;
     this._flushSnapshot(peer, ps);
@@ -804,6 +828,12 @@ export class LockstepSession {
   }
 
   _clientHousekeep(t) {
+    // after a freeze (first render, a busy or throttled tab) the host's turns that arrived meanwhile
+    // are still queued behind this call: asking now would report a stale seq and cost a snapshot,
+    // so give them one beat to be delivered first
+    const gap = t - (this.lastHousekeepAt ?? t);
+    this.lastHousekeepAt = t;
+    if (gap > FREEZE_MS) { this._trace('freeze', `${Math.round(gap)}ms`); return; }
     if (!this.greeted && t - this.lastHelloAt >= this.cfg.helloMs) this._hello();
     // stalled at the confirmed tick with no news, or holding out-of-order turns: ask again
     if (this.ready && this.greeted && (this.buffered.size || (this.sim.tick >= this.upTo && t - this.lastTurnAt >= this.cfg.resendMs))) this._askResend();

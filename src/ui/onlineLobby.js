@@ -134,6 +134,8 @@ export class OnlineLobbyPanel {
     on('kicked', (e) => this.leave(e.reason || 'You were removed from the room'));
     on('error', (e) => { this.error = e?.message || String(e || ''); this.draw(); });
     on('start', (start) => this.onStart(start));
+    const offSt = transport.onStatus?.((st) => { if (st === 'replaced' && this.transport === transport) this.leave('This room was opened in another tab or window'); });
+    if (typeof offSt === 'function') this.offs.push(offSt);
   }
 
   detach() {

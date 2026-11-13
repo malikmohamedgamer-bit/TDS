@@ -124,6 +124,26 @@ test('lockstep: a gap older than the kept turns falls back to a snapshot', async
   assert.deepEqual(hashMismatches(sims), []);
 });
 
+test('lockstep: a stale hello from a busy but running client is not answered with a snapshot', async () => {
+  const { hub, sims, sessions } = await lockstepRoom({ n: 2, net: { latency: [20, 20] } });
+  runFrames(hub, sessions, 400); // the host is far past RESEND_MAX turns
+  const c = sessions[1];
+  // what a tab whose queued turns were not delivered yet sends: hello, still at seq 0
+  const staleHello = () => c._send({ t: 'hi', seq: 0, tick: 0, need: false, sess: c.sess }, c.hostId);
+  staleHello();
+  runFrames(hub, sessions, 60);
+  assert.equal(c.stats.resyncs, 0, 'a one-off stale hello costs nothing');
+  assert.ok(!sessions[0].trace.some((e) => e.includes('snap?')), sessions[0].trace.join(' | '));
+  // the same hello for longer than snapTimeoutMs from a client that reports no progress: answered
+  let silent = true;
+  hub.filter = (data, from) => !(silent && from === 'peer1' && data.t === 'hash');
+  runFrames(hub, sessions, 240, { onFrame: (f) => { if (f % 30 === 0) staleHello(); } });
+  silent = false;
+  runFrames(hub, sessions, 120);
+  assert.ok(c.stats.resyncs >= 1, 'a persisting stale hello is answered (resend became a snapshot)');
+  assert.deepEqual(hashMismatches(sims), []);
+});
+
 test('lockstep: lost commands are retried, applied exactly once and in issue order', async () => {
   const { hub, sims, sessions } = await lockstepRoom({ n: 2, net: { latency: [150, 150] } });
   // the first message (cid 1) is lost: the second one carries cid 1 along, so 1 still comes first
