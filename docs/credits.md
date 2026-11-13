@@ -3,6 +3,8 @@
 | Asset / library | Source | Licence | Used for |
 |---|---|---|---|
 | Three.js 0.187.0 | https://threejs.org (npm `three`) | MIT (vendor/three/LICENSE) | Rendering, GLTF loading, post-processing |
+| supabase-js 2.118.0 (UMD build) | https://github.com/supabase/supabase-js (npm `@supabase/supabase-js`) | MIT (vendor/supabase/LICENSE; version and sha256 in vendor/supabase/VERSION) | Online co-op over Supabase Realtime (broadcast + presence), loaded only when that transport is used |
+| ws 8 (relay server only, not shipped to players) | https://github.com/websockets/ws (npm `ws`) | MIT | WebSocket server in `server/relay.mjs` |
 | Props and hero models | Built in code (`src/engine/propModels.js`, `heroView.js`) | Project-owned | Props, hero |
 | Gravemaw (boss), Rifleman, Ember Adept, Rocket Battery, Husk, Gloomwing, Ironshell | Built in Blender 5.2 from `tools/blender/assets.py` (`assets/blend/tds_assets.blend`) | Project-owned | Tower and enemy GLBs |
 | Other towers, enemies, summons, VFX | Built in code (`src/engine/unitModels.js`, `effects.js`) | Project-owned | Units and effects |

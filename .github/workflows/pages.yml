@@ -23,9 +23,17 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
       - run: npm ci
       - name: Unit tests (fast; e2e runs locally per milestone)
         run: npm test
+      - name: Relay server tests (server/, its own package)
+        working-directory: server
+        run: |
+          npm ci
+          npm test
       - run: node tools/build-site.mjs _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

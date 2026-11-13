@@ -1,0 +1,21 @@
+# Render blueprint for the TDS co-op relay (server/relay.mjs). Setup: docs/DEPLOY-ONLINE.md, part B.
+# Render dashboard > New > Blueprint > pick this repository. It creates one free web service.
+# The free plan sleeps after a while without traffic; the first connection then takes up to about
+# a minute while it wakes (the game shows "connecting" meanwhile).
+services:
+  - type: web
+    name: tds-relay
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: node relay.mjs
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      # Render sets PORT itself. Put your game's address here (comma list), for example
+      # https://yourname.github.io ; leave empty to allow every site (fine for testing).
+      - key: ALLOWED_ORIGINS
+        sync: false

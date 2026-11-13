@@ -25,4 +25,9 @@ export default [
     files: ['tools/**', 'test/**', 'src/core/**', 'playwright.config.js', 'eslint.config.js'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
+  {
+    // the co-op relay (server/) runs on Node only: no browser globals there
+    files: ['server/**'],
+    languageOptions: { globals: { ...globals.node } },
+  },
 ];
