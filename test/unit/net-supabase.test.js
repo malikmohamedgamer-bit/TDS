@@ -17,7 +17,7 @@ const tick = () => new Promise((r) => setTimeout(r, 0));
  * makes subscribe never answer.
  */
 function fakeSupabase() {
-  const hub = { topics: new Map(), clients: [], fail: null, silent: false };
+  const hub = { topics: new Map(), clients: [], fail: null, silent: false, trackResults: [] };
   const members = (topic) => {
     if (!hub.topics.has(topic)) hub.topics.set(topic, new Set());
     return hub.topics.get(topic);
@@ -45,6 +45,11 @@ function fakeSupabase() {
             return ch;
           },
           async track(payload) {
+            hub.trackCalls = (hub.trackCalls || 0) + 1;
+            // hub.trackResults: scripted results ('timed out', 'error', an Error to throw), then 'ok'
+            const scripted = hub.trackResults.shift();
+            if (scripted instanceof Error) throw scripted;
+            if (scripted && scripted !== 'ok') return scripted;
             ch.tracked = [{ ...payload, presence_ref: `ref${++seq}` }];
             syncAll(topic);
             return 'ok';
@@ -258,6 +263,50 @@ describe('SupabaseTransport', () => {
     assert.equal(a.status, 'open');
     assert.equal(ch.tracked[0].joinedAt, joinedAt, 'joinedAt kept across the rejoin');
     assert.deepEqual(seen, ['connecting', 'open', 'error', 'open']);
+    a.close();
+  });
+
+  test('a failed presence track is retried with backoff before the join succeeds', async () => {
+    const hub = fakeSupabase();
+    const a = mk(hub, 'pa', { trackBackoffMs: 1 });
+    const b = mk(hub, 'pb');
+    await b.join('R', {});
+    hub.trackResults = ['timed out', 'error'];
+    const seenByB = [];
+    b.onPeers((list) => seenByB.push(list.map((p) => p.id)));
+    await a.join('R', { name: 'A' });
+    assert.equal(a.status, 'open');
+    assert.equal(hub.trackCalls, 4, 'b once, a three times');
+    assert.equal(a.trackFailures, 2);
+    assert.deepEqual(seenByB.at(-1), ['pb', 'pa'], 'the others see us once the track succeeded');
+    a.close(); b.close();
+  });
+
+  test('a presence track that keeps failing fails the join with status error', async () => {
+    const hub = fakeSupabase();
+    hub.trackResults = ['timed out', 'timed out', new Error('socket gone'), 'timed out'];
+    const a = mk(hub, 'pa', { trackBackoffMs: 1 });
+    const seen = [];
+    a.onStatus((s) => seen.push(s));
+    await assert.rejects(a.join('R', {}), /presence track failed \(timed out\)/);
+    assert.equal(hub.trackCalls, 4, 'first try plus 3 retries');
+    assert.deepEqual(seen, ['connecting', 'error']);
+    assert.equal(hub.clients[0].disconnected, true, 'cleaned up');
+  });
+
+  test('a failing re-track after an automatic rejoin reports status error', async () => {
+    const hub = fakeSupabase();
+    const a = mk(hub, 'pa', { trackBackoffMs: 1, trackRetries: 1 });
+    await a.join('R', {});
+    const ch = a._channel;
+    hub.trackResults = ['error', 'error'];
+    ch.statusCb('SUBSCRIBED'); // the Realtime client rejoined by itself
+    for (let i = 0; i < 20 && a.status !== 'error'; i++) await new Promise((r) => setTimeout(r, 5));
+    assert.equal(a.status, 'error');
+    // the next successful rejoin recovers
+    ch.statusCb('SUBSCRIBED');
+    for (let i = 0; i < 20 && a.status !== 'open'; i++) await new Promise((r) => setTimeout(r, 5));
+    assert.equal(a.status, 'open');
     a.close();
   });
 

@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { MemoryHub } from '../../src/net/memoryTransport.js';
-import { LocalTransport, RelayTransport, newPeerId, transportKind, relayUrl, createTransport } from '../../src/net/transports.js';
+import { LocalTransport, RelayTransport, newPeerId, newPeerSecret, transportKind, relayUrl, createTransport, SECRET_KEY } from '../../src/net/transports.js';
 
 // ------------------------------------------------------------------ fakes -----------------------
 
@@ -142,7 +142,8 @@ test('RelayTransport: join, peers, messages and the send queue follow the relay 
   assert.equal(sockets[0].url, 'wss://relay.test');
   t.send({ early: 1 }); // queued until joined
   sockets[0].open();
-  assert.deepEqual(sockets[0].sent[0], { op: 'join', room: 'ABC234', peer: 'me', meta: { name: 'Me', hero: 'h', version: 'v1' } });
+  assert.match(t.secret, /^[0-9a-f]{32}$/, 'default secret: 128 random bits as hex');
+  assert.deepEqual(sockets[0].sent[0], { op: 'join', room: 'ABC234', peer: 'me', meta: { name: 'Me', hero: 'h', version: 'v1' }, secret: t.secret });
   await Promise.resolve();
   assert.equal(joined, false, 'not joined before the server says so');
   sockets[0].recv({ op: 'joined', peer: 'me', peers: [peer('host', 5, { name: 'H' }), peer('me', 9)] });
@@ -214,7 +215,7 @@ test('RelayTransport: reconnects with backoff 1 s, 2 s, 4 s ... max 10 s and rej
   // the 6th attempt connects: rejoin with the same room and peer id, then the queue flushes
   const ws = sockets.at(-1);
   ws.open();
-  assert.deepEqual(ws.sent[0], { op: 'join', room: 'ROOM22', peer: 'me', meta: { name: 'Me' } });
+  assert.deepEqual(ws.sent[0], { op: 'join', room: 'ROOM22', peer: 'me', meta: { name: 'Me' }, secret: t.secret }, 'same secret on every rejoin');
   ws.recv({ op: 'joined', peer: 'me', peers: [peer('h', 1), peer('me', 2), peer('n', 3)] });
   assert.equal(status.at(-1), 'open');
   assert.deepEqual(peerLists.at(-1), ['h', 'me', 'n'], 'peers update after the rejoin');
@@ -276,11 +277,12 @@ test('RelayTransport: a refused first join rejects; a silent socket is replaced'
   assert.equal(sockets.length, count + 1, 'retried');
   t3.close();
 
-  // join timeout and missing WebSocket
+  // join timeout (a socket opened but the join was never confirmed) and missing WebSocket
   const t4 = new RelayTransport('wss://relay.test', { WebSocket: FakeWS, timers: hub.timers, clock: hub.clock, joinTimeoutMs: 3000 });
   const p4 = t4.join('ROOM22', {});
+  sockets.at(-1).open();
   hub.advance(3001);
-  await assert.rejects(p4, (err) => err.code === 'timeout');
+  await assert.rejects(p4, (err) => err.code === 'timeout' && /Could not reach the relay server/.test(err.message));
   await assert.rejects(new RelayTransport('wss://x', { WebSocket: null }).join('R', {}), /WebSocket/);
 });
 
@@ -303,4 +305,137 @@ test('transports: peer ids, transport choice and URL overrides', async () => {
   await assert.rejects(createTransport({ transport: 'relay' }, { search: '' }), /relay URL/);
   await assert.rejects(createTransport({ transport: 'supabase' }, { search: '' }), /Supabase is not configured/);
   if (LocalTransport.available()) assert.ok((await createTransport({}, { search: '' })) instanceof LocalTransport);
+});
+
+// ------------------------------------------------------------------ identity and cold start -----
+
+test('RelayTransport: secret option, and createTransport keeps id + secret together across a reload', async () => {
+  const secrets = new Set(Array.from({ length: 100 }, () => newPeerSecret()));
+  assert.equal(secrets.size, 100);
+  for (const s of secrets) assert.match(s, /^[0-9a-f]{32}$/);
+  const { FakeWS, sockets } = fakeSocketClass();
+  const hub = new MemoryHub();
+  const t = new RelayTransport('wss://relay.test', { id: 'me', secret: 'my-secret-0123456789', WebSocket: FakeWS, timers: hub.timers, clock: hub.clock });
+  assert.equal(t.secret, 'my-secret-0123456789');
+  t.join('ROOM22', {}).catch(() => {}); // closed below before joining
+  sockets[0].open();
+  assert.equal(sockets[0].sent[0].secret, 'my-secret-0123456789');
+  t.close();
+
+  // a page reload: createTransport with the stored id reuses the stored secret
+  const store = new Map();
+  const storage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)) };
+  const cfg = { transport: 'relay', relayUrl: 'wss://r' };
+  const first = await createTransport(cfg, { search: '', storage });
+  assert.deepEqual(JSON.parse(store.get(SECRET_KEY)), { id: first.id, secret: first.secret });
+  const reloaded = await createTransport(cfg, { search: '', id: first.id, storage });
+  assert.equal(reloaded.id, first.id);
+  assert.equal(reloaded.secret, first.secret, 'same id after a reload: same secret');
+  const fresh = await createTransport(cfg, { search: '', storage });
+  assert.notEqual(fresh.secret, first.secret, 'a new identity gets a new secret');
+  const other = await createTransport(cfg, { search: '', id: 'someone-else', storage });
+  assert.notEqual(other.secret, fresh.secret, 'a stored secret is only reused for its own id');
+  const explicit = await createTransport(cfg, { search: '', id: 'x', secret: 'given-secret-0123456', storage });
+  assert.equal(explicit.secret, 'given-secret-0123456');
+  // storage that throws, or none at all, still works
+  const broken = { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('blocked'); } };
+  assert.match((await createTransport(cfg, { search: '', id: 'y', storage: broken })).secret, /^[0-9a-f]{32}$/);
+  assert.match((await createTransport(cfg, { search: '', id: 'y', storage: null })).secret, /^[0-9a-f]{32}$/);
+});
+
+test('RelayTransport: replaced (another tab took the seat) stops for good with status replaced', async () => {
+  const hub = new MemoryHub();
+  const { FakeWS, sockets } = fakeSocketClass();
+  const t = new RelayTransport('wss://relay.test', { id: 'me', WebSocket: FakeWS, timers: hub.timers, clock: hub.clock });
+  const status = [];
+  t.onStatus((s) => status.push(s));
+  const errors = [];
+  t.onError((e) => errors.push(e));
+  const p = t.join('ROOM22', {});
+  sockets[0].open();
+  sockets[0].recv({ op: 'joined', peer: 'me', peers: [peer('me', 1)] });
+  await p;
+  sockets[0].recv({ op: 'error', code: 'replaced', message: 'This room was opened in another tab or window' });
+  assert.deepEqual(errors, [{ code: 'replaced', message: 'This room was opened in another tab or window' }]);
+  assert.equal(t.status, 'replaced');
+  assert.deepEqual(status, ['connecting', 'open', 'replaced']);
+  assert.ok(sockets[0].closedWith, 'the socket is closed');
+  sockets[0].drop(); // the server's close arrives afterwards: ignored
+  hub.advance(60000);
+  assert.equal(sockets.length, 1, 'no reconnect after replaced');
+  t.send({ late: true });
+  assert.equal(sockets[0].sent.filter((f) => f.op === 'send').length, 0, 'sends are dropped');
+  assert.equal(t.status, 'replaced');
+});
+
+test('RelayTransport: taken is final, on the first join and on a rejoin', async () => {
+  const hub = new MemoryHub();
+  const { FakeWS, sockets } = fakeSocketClass();
+  const t = new RelayTransport('wss://relay.test', { id: 'host', WebSocket: FakeWS, timers: hub.timers, clock: hub.clock });
+  const p = t.join('ROOM22', {});
+  sockets[0].open();
+  sockets[0].recv({ op: 'error', code: 'taken', message: 'peer id host is already used by another player in room ROOM22' });
+  await assert.rejects(p, (err) => err.code === 'taken' && /already used/.test(err.message));
+  assert.equal(t.status, 'error');
+  hub.advance(60000);
+  assert.equal(sockets.length, 1, 'no retry');
+
+  const t2 = new RelayTransport('wss://relay.test', { id: 'me', WebSocket: FakeWS, timers: hub.timers, clock: hub.clock });
+  const p2 = t2.join('ROOM22', {});
+  sockets.at(-1).open();
+  sockets.at(-1).recv({ op: 'joined', peer: 'me', peers: [] });
+  await p2;
+  sockets.at(-1).drop();
+  hub.advance(1000);
+  sockets.at(-1).open();
+  sockets.at(-1).recv({ op: 'error', code: 'taken', message: 'taken' });
+  const n = sockets.length;
+  hub.advance(60000);
+  assert.equal(sockets.length, n, 'a rejoin refused as taken is not retried');
+  assert.equal(t2.status, 'error');
+});
+
+test('RelayTransport: the first join waits up to wakeTimeoutMs for a sleeping server', async () => {
+  const hub = new MemoryHub();
+  const { FakeWS, sockets } = fakeSocketClass();
+  // the server is asleep: every socket fails before opening; it wakes after 40 s
+  const t = new RelayTransport('wss://relay.test', { id: 'me', WebSocket: FakeWS, timers: hub.timers, clock: hub.clock });
+  let settled = null;
+  const p = t.join('ROOM22', {}).then(() => { settled = 'joined'; }, (e) => { settled = e; });
+  let last = 0;
+  while (hub.now < 40000) {
+    hub.advance(100);
+    if (sockets.length > last) { last = sockets.length; sockets.at(-1).drop(); }
+  }
+  await Promise.resolve();
+  assert.equal(settled, null, 'still trying after joinTimeoutMs (15 s): no socket ever opened');
+  assert.ok(sockets.length >= 5, 'kept retrying');
+  hub.advance(10000); // the next retry (backoff is capped at 10 s) finds the server awake
+  const ws = sockets.at(-1);
+  ws.open();
+  ws.recv({ op: 'joined', peer: 'me', peers: [] });
+  await p;
+  assert.equal(settled, 'joined');
+  t.close();
+
+  // a server that never wakes: rejected at wakeTimeoutMs with the usual message
+  const t2 = new RelayTransport('wss://relay.test', { id: 'me2', WebSocket: FakeWS, timers: hub.timers, clock: hub.clock, wakeTimeoutMs: 60000 });
+  const start = hub.now;
+  let err2 = null;
+  t2.join('ROOM22', {}).catch((e) => { err2 = e; });
+  let seen = sockets.length;
+  while (hub.now - start < 59900) {
+    hub.advance(100);
+    if (sockets.length > seen) { seen = sockets.length; sockets.at(-1).drop(); }
+  }
+  await Promise.resolve();
+  assert.equal(err2, null, 'not before 60 s');
+  hub.advance(200);
+  await Promise.resolve();
+  assert.equal(err2?.code, 'timeout');
+  assert.match(err2.message, /Could not reach the relay server/);
+  assert.equal(t2.status, 'closed');
+  const count = sockets.length;
+  hub.advance(60000);
+  assert.equal(sockets.length, count, 'no retries after giving up');
 });

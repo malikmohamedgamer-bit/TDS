@@ -1,7 +1,9 @@
 # Render blueprint for the TDS co-op relay (server/relay.mjs). Setup: docs/DEPLOY-ONLINE.md, part B.
 # Render dashboard > New > Blueprint > pick this repository. It creates one free web service.
-# The free plan sleeps after a while without traffic; the first connection then takes up to about
-# a minute while it wakes (the game shows "connecting" meanwhile).
+# The free plan sleeps after about 15 minutes without traffic and takes up to about a minute to
+# wake. The game shows "connecting" and retries for up to 60 s while no connection can be opened,
+# then says "Could not reach the relay server": press Join again, or open <address>/health a
+# minute before playing to wake it.
 services:
   - type: web
     name: tds-relay

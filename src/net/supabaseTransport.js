@@ -69,6 +69,8 @@ export class SupabaseTransport {
    * @param {number} [opts.timeoutMs]    join gives up after this long (default 15000)
    * @param {number} [opts.maxPayloadChars] larger messages are dropped (default 250 KB)
    * @param {() => number} [opts.now]    clock for joinedAt (default Date.now)
+   * @param {number} [opts.trackRetries] presence track retries after a failed one (default 3)
+   * @param {number} [opts.trackBackoffMs] first retry delay, doubled per retry (default 500)
    */
   constructor(opts = {}) {
     this.url = opts.url || '';
@@ -80,11 +82,16 @@ export class SupabaseTransport {
     this._timeoutMs = opts.timeoutMs ?? 15000;
     this._maxPayloadChars = opts.maxPayloadChars ?? DEFAULT_MAX_PAYLOAD_CHARS;
     this._now = opts.now || (() => Date.now());
+    this._trackRetries = opts.trackRetries ?? 3;
+    this._trackBackoffMs = opts.trackBackoffMs ?? 500;
+    this._trackGen = 0;
 
     this.room = null;
     /** 'idle' until join; then 'connecting' | 'open' | 'closed' | 'error' */
     this.status = 'idle';
     this.stats = { sent: 0, received: 0, dropped: 0 };
+    /** presence track() calls that did not return 'ok' (each retried) */
+    this.trackFailures = 0;
 
     this._client = null;
     this._channel = null;
@@ -186,14 +193,13 @@ export class SupabaseTransport {
           // (Re)subscribed, also after an automatic rejoin: (re)announce ourselves. joinedAt is
           // fixed at the first subscribe so a reconnect keeps its place in the peer order.
           if (!this._joinedAt) this._joinedAt = this._now();
-          try {
-            await channel.track({ meta: this._meta, joinedAt: this._joinedAt });
-          } catch (e) {
-            if (!settled) fail(new Error(`Supabase: presence track failed: ${e && e.message ? e.message : e}`));
-            else this._setStatus('error', 'presence track failed');
+          const tracked = await this._track(channel);
+          if (this._closed || this._channel !== channel || tracked === null) return; // closed, or superseded
+          if (tracked !== 'ok') {
+            if (!settled) fail(new Error(`Supabase: presence track failed (${tracked})`));
+            else this._setStatus('error', `presence track failed (${tracked})`);
             return;
           }
-          if (this._closed || this._channel !== channel) return;
           this._setStatus('open');
           this._presenceSync(); // make sure listeners see at least ourselves
           if (!settled) {
@@ -212,6 +218,36 @@ export class SupabaseTransport {
         }
       });
     });
+  }
+
+  /**
+   * Announces our presence. channel.track() resolves 'ok', 'timed out' or 'error' (it does not
+   * throw for those), and without presence the others never see us join, so anything but 'ok' is
+   * retried trackRetries times with backoff trackBackoffMs, 2x, 4x ... Resolves 'ok', the last
+   * failure ('timed out' | 'error' | an exception message), or null when the transport closed or a
+   * newer subscribe started its own track meanwhile.
+   */
+  async _track(channel) {
+    const gen = ++this._trackGen;
+    const stale = () => this._closed || this._channel !== channel || gen !== this._trackGen;
+    let result = 'error';
+    for (let attempt = 0; attempt <= this._trackRetries; attempt++) {
+      if (attempt > 0) {
+        await new Promise((r) => setTimeout(r, this._trackBackoffMs * 2 ** (attempt - 1)));
+        if (stale()) return null;
+      }
+      try {
+        const res = await channel.track({ meta: this._meta, joinedAt: this._joinedAt });
+        // older clients resolved undefined on success; only an explicit failure string is one
+        result = res === undefined || res === 'ok' ? 'ok' : String(res);
+      } catch (e) {
+        result = e && e.message ? e.message : String(e);
+      }
+      if (stale()) return null;
+      if (result === 'ok') return 'ok';
+      this.trackFailures++;
+    }
+    return result;
   }
 
   // ---- receive -------------------------------------------------------------------------------
