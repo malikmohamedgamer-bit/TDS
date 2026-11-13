@@ -20,7 +20,7 @@ been measured; that needs a person with a phone and a desktop (see "Not measured
 | GPU geometries during a match | <= 1,000, stable between matches | 322-401 | 324-403 | within budget (was about 2,310: every enemy type was baked, BUGS 63) |
 | GPU geometries after leaving a match | back to the lobby level | 381 after every one of 5 matches | | fixed (was +1,974 per match) |
 | JS heap during a match | <= 128 MB | 33-44 MB | 30-44 MB | within budget (was 130-200 MB, BUGS 63) |
-| First download (cold cache) | <= 8 MB | 4.14 MB in 228 requests | | within budget |
+| First download (cold cache) | <= 8 MB | 4.14 MB in 228 requests; since 0.13.0 data is one bundle: 91 requests, live cold start 2.5 s (`tools/dev/coldload.mjs`) | | within budget |
 | itch.io package | <= 500 MB, <= 1000 files | 4.3 MB, 305 files | | within budget |
 
 Medium and above roughly double the draw calls and triangles of Low, because they add the shadow
