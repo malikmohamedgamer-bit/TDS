@@ -1,0 +1,134 @@
+{
+  "riftline/campaign": {
+    "hash": "52eb07bb",
+    "digest": "5c5c6968",
+    "tick": 66072,
+    "phase": "won",
+    "wave": 20,
+    "cash": 1101,
+    "baseHp": 81,
+    "kills": 517,
+    "towers": 14
+  },
+  "riftline/endless": {
+    "hash": "74b36422",
+    "digest": "d30210d0",
+    "tick": 64859,
+    "phase": "lost",
+    "wave": 21,
+    "cash": 44,
+    "baseHp": 0,
+    "kills": 566,
+    "towers": 16
+  },
+  "riftline/boss_rush": {
+    "hash": "3a2a2e5f",
+    "digest": "9d971566",
+    "tick": 36101,
+    "phase": "won",
+    "wave": 6,
+    "cash": 1266,
+    "baseHp": 90,
+    "kills": 98,
+    "towers": 6
+  },
+  "riftline/mutation": {
+    "hash": "c95886bd",
+    "digest": "9fb04e79",
+    "tick": 63940,
+    "phase": "lost",
+    "wave": 20,
+    "cash": 156,
+    "baseHp": 0,
+    "kills": 584,
+    "towers": 13
+  },
+  "frostmere/campaign": {
+    "hash": "b32a2bc5",
+    "digest": "24614623",
+    "tick": 64066,
+    "phase": "lost",
+    "wave": 20,
+    "cash": 51,
+    "baseHp": 0,
+    "kills": 572,
+    "towers": 13
+  },
+  "frostmere/endless": {
+    "hash": "694eff24",
+    "digest": "eda82b96",
+    "tick": 63565,
+    "phase": "lost",
+    "wave": 21,
+    "cash": 112,
+    "baseHp": 0,
+    "kills": 584,
+    "towers": 13
+  },
+  "frostmere/boss_rush": {
+    "hash": "a216ac33",
+    "digest": "703ffbba",
+    "tick": 29631,
+    "phase": "won",
+    "wave": 6,
+    "cash": 864,
+    "baseHp": 92,
+    "kills": 129,
+    "towers": 8
+  },
+  "frostmere/mutation": {
+    "hash": "7fd39239",
+    "digest": "abc8667a",
+    "tick": 58864,
+    "phase": "won",
+    "wave": 20,
+    "cash": 1039,
+    "baseHp": 73,
+    "kills": 544,
+    "towers": 13
+  },
+  "gen_verdant_9/campaign": {
+    "hash": "00bf3025",
+    "digest": "4780324c",
+    "tick": 62401,
+    "phase": "won",
+    "wave": 20,
+    "cash": 1005,
+    "baseHp": 105,
+    "kills": 624,
+    "towers": 13
+  },
+  "gen_verdant_9/endless": {
+    "hash": "206eda78",
+    "digest": "cffd7e4e",
+    "tick": 65582,
+    "phase": "lost",
+    "wave": 21,
+    "cash": 78,
+    "baseHp": 0,
+    "kills": 1156,
+    "towers": 17
+  },
+  "gen_verdant_9/boss_rush": {
+    "hash": "8d0bbbaf",
+    "digest": "b9ab74f3",
+    "tick": 37171,
+    "phase": "won",
+    "wave": 6,
+    "cash": 840,
+    "baseHp": 33,
+    "kills": 126,
+    "towers": 8
+  },
+  "gen_verdant_9/mutation": {
+    "hash": "e1dc329f",
+    "digest": "3216fd15",
+    "tick": 64239,
+    "phase": "won",
+    "wave": 20,
+    "cash": 1021,
+    "baseHp": 78,
+    "kills": 653,
+    "towers": 12
+  }
+}
