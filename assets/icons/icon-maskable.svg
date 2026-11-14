@@ -1,10 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#12141C"/>
-  <g transform="translate(256 256) scale(0.72) translate(-256 -256)">
-    <path d="M256 56l172 100v200L256 456 84 356V156z" fill="#7B4DFF"/>
-    <path d="M256 56l172 100v200L256 456z" fill="#5B34D6"/>
-    <path d="M256 150l92 53v106l-92 53-92-53V203z" fill="#FFD166"/>
-    <path d="M256 150l92 53v106l-92 53z" fill="#E0A93A"/>
-    <path d="M232 220h48v36h28l-52 64-52-64h28z" fill="#12141C"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22134A"/><stop offset="1" stop-color="#0A0716"/></linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.4" r="0.62"><stop offset="0" stop-color="#A07BFF" stop-opacity="0.5"/><stop offset="1" stop-color="#A07BFF" stop-opacity="0"/></radialGradient>
+    <linearGradient id="em" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDE6FF"/><stop offset="1" stop-color="#A07BFF"/></linearGradient>
+    <linearGradient id="ac" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#FFB020"/></linearGradient>
+    <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22134A"/><stop offset="1" stop-color="#0A0716"/></linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/><stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.55"/></filter>
+  </defs>
+  <rect x="0" y="0" width="512" height="512" rx="0" fill="url(#bg)"/>
+  <rect x="0" y="0" width="512" height="512" rx="0" fill="url(#glow)"/>
+  <g filter="url(#shadow)" transform="translate(71.68 71.68) scale(0.72)"><g transform="translate(256 256) scale(0.95) translate(-256 -244)">
+      <path fill="url(#ac)" d="M256 62l50 62-50 62-50-62z"/>
+      <path fill="url(#em)" fill-rule="evenodd" d="M156 206h44v26h36v-26h40v26h36v-26h44v70h-18v150H174V276h-18z M226 426v-58a30 30 0 0 1 60 0v58z M246 296h20v40h-20z"/>
+  </g></g>
+  <rect x="0" y="0" width="512" height="512" rx="0" fill="url(#sheen)"/>
 </svg>

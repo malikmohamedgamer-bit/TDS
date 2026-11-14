@@ -1,0 +1,32 @@
+{
+  "slug": "riftkeep",
+  "name": "Riftkeep",
+  "tagline": "Magic and Modern War hold the valley against the Blight",
+  "description": "A free 3D tower defense game in your browser. Build Magic and Modern War towers, fight as a commander and hold the keep, solo or in online co-op.",
+  "longDescription": "Walk the valley as a commander, build towers anywhere off the road and upgrade them down branching paths while you fight with your own hero abilities. Riftkeep has 60 maps on 14 themes, 100 towers, 200 enemies, 100 bosses and 10 heroes across 11 modes, from Campaign and Endless to Boss Rush and a Daily Challenge. Play solo or in online co-op for 2-4 players with room codes. No account, no ads, no purchases.",
+  "tags": [
+    "Tower defense",
+    "Strategy",
+    "3D",
+    "Co-op"
+  ],
+  "controls": [
+    "Walk / sprint / jump: WASD or arrows, Shift, Space (touch: joystick, Sprint, Jump)",
+    "Look: right-mouse drag, or L / middle click for mouse-lock (touch: drag)",
+    "Pick a tower: 1-6 or the hotbar, then click the ground to build (touch: tap)",
+    "Upgrade / move / sell: U / M / tower panel buttons",
+    "Abilities: Z, X, G, then click to aim",
+    "Next wave / pause: N / P or Esc",
+    "Cameras: V first person, F free camera, T map overview, C back to character"
+  ],
+  "platforms": [
+    "desktop",
+    "mobile"
+  ],
+  "icon": "https://malikmohamedgamer-bit.github.io/TDS/assets/icons/icon-192.png",
+  "banner": "https://malikmohamedgamer-bit.github.io/TDS/assets/banner.jpg",
+  "url": "https://malikmohamedgamer-bit.github.io/TDS/",
+  "repo": "https://github.com/malikmohamedgamer-bit/TDS",
+  "color": "#A07BFF",
+  "addedAt": "2026-11-05T01:46:29Z"
+}

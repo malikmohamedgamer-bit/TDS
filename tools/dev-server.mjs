@@ -39,6 +39,10 @@ const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x');
     let rel = decodeURIComponent(url.pathname);
+    if (rel === '/hub-sdk.js') { // on GitHub Pages the Game Hub serves this at the site root
+      res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store' }).end('// Local stand-in for the Game Hub SDK, which GitHub Pages serves at the site root (malikmohamedgamer-bit.github.io/hub-sdk.js).\n');
+      return;
+    }
     if (rel.endsWith('/')) rel += 'index.html';
     const file = normalize(join(root, rel));
     if (!file.startsWith(root + sep) && file !== root) {

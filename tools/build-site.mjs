@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, process.argv[2] || '_site');
-const ENTRIES = ['index.html', '404.html', 'viewer.html', 'manifest.webmanifest', 'sw.js', 'src', 'styles', 'data', 'vendor', 'assets/models', 'assets/icons'];
+const ENTRIES = ['index.html', '404.html', 'viewer.html', 'manifest.webmanifest', 'sw.js', 'src', 'styles', 'data', 'vendor', 'assets/models', 'assets/icons', 'assets/banner.jpg', 'game.json'];
 
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });

@@ -27,6 +27,8 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   const url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+  // only this game's own files: the Game Hub's shared files at the site root (/hub-sdk.js, /js/stats.js ...) stay live
+  if (!url.href.startsWith(self.registration.scope)) return;
   e.respondWith((async () => {
     const cache = await caches.open(CACHE);
     // the page itself: cached copy of this build (query strings like ?map= only pick options)
