@@ -93,9 +93,9 @@ export class Hub {
       <header class="hub-head">
         <div class="lvl" title="Player level"><span class="lvl-badge" aria-hidden="true">${s.profile.level}</span><div class="xpwrap"><b data-testid="player-level">Lv ${s.profile.level}</b><div class="xpbar" role="progressbar" aria-label="XP ${lv.into} of ${lv.need}" aria-valuemin="0" aria-valuemax="${lv.need}" aria-valuenow="${lv.into}"><span style="width:${(lv.into / lv.need) * 100}%"></span></div><small>${fmt(lv.into)}/${fmt(lv.need)} XP</small></div></div>
         <div class="hub-brand" aria-hidden="true">Riftkeep<small>Rift defence command</small></div>
-        <div class="wallet"><span data-tip="Crowns: earned in matches, spent in the Shop and on tower levels" data-testid="crowns">${icon('crown', { title: 'Crowns' })} ${fmt(s.wallet.crowns)}</span><span data-tip="Sigils: spent on Summons" data-testid="sigils">${icon('sigil', { title: 'Sigils' })} ${fmt(s.wallet.sigils)}</span></div>
+        <div class="wallet"><a class="hub-back" href="/" data-testid="game-hub" aria-label="Back to Game Hub">&larr; Hub</a><span data-tip="Crowns: earned in matches, spent in the Shop and on tower levels" data-testid="crowns">${icon('crown', { title: 'Crowns' })} ${fmt(s.wallet.crowns)}</span><span data-tip="Sigils: spent on Summons" data-testid="sigils">${icon('sigil', { title: 'Sigils' })} ${fmt(s.wallet.sigils)}</span></div>
       </header>
-      <nav class="hub-tabs" role="tablist" aria-label="Lobby">${TABS.map(([id, label, ic]) => `<button role="tab" data-tab="${id}" aria-selected="${this.tab === id}" data-testid="tab-${id}">${icon(ic)}<span class="tl">${label}</span>${badges[id] ? `<i class="badge" aria-label="${badges[id]} ready">${badges[id]}</i>` : ''}</button>`).join('')}</nav>
+      <nav class="hub-tabs" role="tablist" aria-label="Lobby">${TABS.map(([id, label, ic], i) => `<button role="tab" data-tab="${id}"${i === 0 ? ' autofocus' : ''} aria-selected="${this.tab === id}" data-testid="tab-${id}">${icon(ic)}<span class="tl">${label}</span>${badges[id] ? `<i class="badge" aria-label="${badges[id]} ready">${badges[id]}</i>` : ''}</button>`).join('')}</nav>
       <section class="hub-body" role="tabpanel" data-testid="panel-${this.tab}">${this['_' + this.tab]()}</section>`;
     this.el.querySelector('.hub-tabs').onclick = (e) => {
       const b = e.target.closest('[data-tab]');

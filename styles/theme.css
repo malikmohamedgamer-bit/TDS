@@ -63,6 +63,11 @@ h1, h2, h3, h4, legend, .hub-tabs button, .btn, .sec-h h3 { font-family: var(--f
 .xpbar span, .lvbar span, .qbar span, .seg-bar span { background: linear-gradient(90deg, var(--m-1), var(--m-2)); border-radius: 1px; }
 .xpbar::after, .lvbar::after, .qbar::after, .seg-bar::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 9px, rgba(7, 8, 12, 0.7) 9px 10px); pointer-events: none; }
 .wallet span { border-radius: var(--rad); background: var(--ink-1); border: 1px solid var(--ink-5); font-family: var(--font-display); letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 6px; }
+/* "← Hub": back to Game Hub, shown only inside the installed Game Hub app (its SDK sets <html data-hub-app>) */
+.wallet .hub-back { display: none; }
+[data-hub-app] .wallet .hub-back { display: inline-flex; align-items: center; position: relative; padding: 6px 12px; border-radius: var(--rad); background: var(--ink-1); border: 1px solid var(--ink-5); color: var(--text); font-family: var(--font-display); letter-spacing: 0.04em; text-decoration: none; }
+[data-hub-app] .wallet .hub-back::after { content: ""; position: absolute; inset: -6px; }
+[data-hub-app] .wallet .hub-back:hover { border-color: var(--brass); color: var(--brass); }
 .hub-brand { font: 800 var(--fs-3) / 1 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); text-align: center; }
 .hub-brand small { display: block; font: 600 var(--fs-0) / 1.4 var(--font-display); letter-spacing: 0.24em; color: var(--brass-2); text-transform: uppercase; }
 

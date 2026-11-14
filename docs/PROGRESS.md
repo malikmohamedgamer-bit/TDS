@@ -134,6 +134,11 @@ Resume point for any new session. Read this, then `CLAUDE.md`, before touching c
   as the baked rig. Contact sheets: docs/screenshots/quaternius.
 - Polish (milestone 8): `data/music.json`, `src/audio/musicPatterns.js` (pure), `src/audio/music.js`;
   portal swirl shader in `src/engine/mapView.js` (`_buildPortalSwirls`); `map.scatterGap`.
+- Game Hub (2026-11-14/15): listed on https://malikmohamedgamer-bit.github.io/ as Riftkeep (`game.json`,
+  `manifest.webmanifest`, icons, `assets/banner.jpg`, `<script src="/hub-sdk.js" data-hub-button="none">`;
+  the hub repo's `ADD_A_GAME.md` has the rules). The lobby header has a "← Hub" chip (`.wallet .hub-back`)
+  shown only in the installed hub app (`[data-hub-app]`), because the lobby is a modal dialog that would
+  cover a floating button; the first tab keeps the dialog's initial focus (`autofocus`).
 
 ## Next exact action
 
